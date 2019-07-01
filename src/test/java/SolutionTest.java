@@ -51,30 +51,6 @@ public class SolutionTest {
     }
 
     @Test
-    public void removeNthFromEnd() {
-        ListNode head = ListNode.builder()
-                .val(3).next(ListNode.builder()
-                        .val(5).next(ListNode.builder()
-                                .val(9).next(ListNode.builder()
-                                        .val(11).next(ListNode.builder()
-                                                .val(20).build()).build()).build()).build()).build();
-        ListNode newHead = INSTANCE.removeNthFromEnd_0(head, 1);
-
-        while (newHead != null) {
-            System.out.println(newHead.getVal());
-            newHead = newHead.getNext();
-        }
-
-        ListNode oneHead = ListNode.builder().val(1).build();
-        System.out.println("=====");
-        ListNode node = INSTANCE.removeNthFromEnd_0(oneHead, 1);
-        while (node != null) {
-            System.out.println(node.getVal());
-            node = node.getNext();
-        }
-    }
-
-    @Test
     public void TestsortList() {
         ListNode head = ListNode.builder()
                 .val(3).next(ListNode.builder()
@@ -109,8 +85,39 @@ public class SolutionTest {
         System.out.println(headNode);
         ListNode listNode = INSTANCE.reverseSingleLinkedList(headNode);
         System.out.println(listNode);
-
     }
+
+    @Test
+    public void Test3sum() {
+        int[] ints = {-1, 0, 1, 2, -1, -4};
+        System.out.println(INSTANCE.threeSum(ints));
+    }
+
+
+    @Test
+    public void removeNthFromEnd() {
+        /*
+        ListNode head = ListNode.builder().val(1).next(
+                ListNode.builder().val(2).next(
+                        ListNode.builder().val(3).next(
+                                ListNode.builder().val(4).next(
+                                        ListNode.builder().val(5).build()).build()).build()).build()).build();
+        ListNode node = INSTANCE.removeNthFromEnd(head, 2);*/
+
+        /*System.out.println("======");
+        ListNode head1 = ListNode.builder().val(1).next(
+                ListNode.builder().val(2).next(
+                        ListNode.builder().val(3).next(
+                                ListNode.builder().val(4).next(
+                                        ListNode.builder().val(5).build()).build()).build()).build()).build();
+
+        ListNode n1 = INSTANCE.removeNthFromEnd1(head1, 2);*/
+
+        ListNode head2 = ListNode.builder().val(1).build();
+        ListNode rn = INSTANCE.removeNthFromEnd(head2, 1);
+        System.out.println(rn);
+    }
+
 
 
 }

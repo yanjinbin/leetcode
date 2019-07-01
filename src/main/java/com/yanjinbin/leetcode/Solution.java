@@ -59,28 +59,6 @@ public class Solution {
         return dummyHead.next;
     }
 
-    // # 206. Reverse Linked List 反转单链表,说 内存超了什么鬼阿
-    public ListNode reverseList_0(ListNode head) {
-        Stack<ListNode> stack = new Stack<>();
-        ListNode cursor = head;
-        while (cursor != null) {
-            stack.push(head);
-            cursor = cursor.next;
-        }
-
-        ListNode pop = stack.pop();
-        ListNode tempNode = pop;
-        while (!stack.isEmpty()) {
-            tempNode.next = stack.pop();
-            tempNode = tempNode.next;
-        }
-        return pop;
-    }
-
-    public ListNode reverseList(ListNode head) {
-        /* recursive solution */
-        return reverseListInt(head, null);
-    }
 
     public static ListNode reverseListInt(ListNode head, ListNode newHead) {
         if (head == null) {
@@ -138,48 +116,6 @@ public class Solution {
             }
         }
         return false;
-    }
-
-    // 思路是对的 但是依旧无法处理corner case阿
-    public ListNode removeNthFromEnd_0(ListNode head, int n) {
-        System.out.println("head:" + head.val + "n:" + n);
-        // init ready
-        ListNode predecessor = head;
-        // 遍历n-1次 if n=1 corner case
-        for (int i = 0; i < n - 1; i++) {
-            predecessor = predecessor.next;
-        }
-        System.out.println("predecessor:" + predecessor.val);
-        ListNode cursor = head;
-        ListNode prev = null;
-        if (predecessor.next == null) {
-            return null;
-        }
-        // traverse
-        while (predecessor.next != null) {
-            prev = cursor;
-            cursor = cursor.next;
-            predecessor = predecessor.next;
-        }
-        // reconstruct
-        prev.next = cursor.next;
-        return head;
-    }
-
-    // leetcode上的处理让我们看到了更一般话的通俗规则处理.通过新增一个节点消除了corner case
-    public ListNode removeNthFromEnd(ListNode head, int n) {
-        ListNode start = new ListNode(0);
-        ListNode slow = start, fast = start;
-        slow.next = head;
-        for (int i = 0; i < n + 2; i++) {
-            fast = fast.next;
-        }
-        while (fast != null) {
-            slow = slow.next;
-            fast = fast.next;
-        }
-        slow.next = slow.next.next;
-        return start.next;
     }
 
     // #148 归并排序
@@ -325,6 +261,131 @@ public class Solution {
         }
         return ans;
     }
-    
 
+    // 121. 买卖股票的最佳时机
+    public int maxProfit(int prices[]) {
+        int minPrice = Integer.MAX_VALUE;
+        int maxProfit = 0;
+        for (int i = 0; i < prices.length; i++) {
+            if (prices[i] < minPrice) {
+                minPrice = prices[i];
+            } else if (prices[i] - minPrice > maxProfit) {
+                maxProfit = prices[i] - minPrice;
+            }
+        }
+        return maxProfit;
+    }
+
+    // leetcode 15 3sum
+    // 解决重复个数问题 1 2 3
+    // 3的化就是0
+    // 2的化 就是x+x+y=0 or (x+y+y=0,不用考虑 )
+    public List<List<Integer>> threeSum(int[] nums) {
+        List ret = new ArrayList();
+        Arrays.sort(nums);
+        if (nums[0] > 0) {
+            return Collections.EMPTY_LIST;
+        }
+        for (int num : nums) {
+            System.out.println(num);
+        }
+        int cursor = 0;
+        while (cursor <= nums.length - 3) {
+
+            int headcursor = cursor + 1;
+            int tailcursor = nums.length - 1;
+            int target = 0 - nums[cursor];
+            // corner case  if cursor value = head value then cursor++
+            System.out.println(nums[cursor] + "\t" + nums[headcursor] + "\t" + nums[tailcursor]);
+            if (nums[headcursor] == nums[cursor]) {
+                cursor++;
+                headcursor++;
+                System.out.println("===update===");
+                System.out.println(nums[cursor] + "\t" + nums[headcursor] + "\t" + nums[tailcursor]);
+            }
+
+            while (headcursor < tailcursor) {
+                int sum = nums[headcursor] + nums[tailcursor];
+                if (sum > target) {
+                    tailcursor--;
+                } else if (sum < target) {
+                    headcursor++;
+                } else {
+                    List<Integer> elements = new ArrayList();
+                    elements.add(nums[headcursor]);
+                    elements.add(nums[tailcursor]);
+                    elements.add(nums[cursor]);
+                    ret.add(elements);
+                    headcursor++;
+                    tailcursor--;
+                }
+            }
+            cursor++;
+        }
+        return ret;
+    }
+
+    // #19. 删除链表的倒数第N个节点
+    // 无法处理 corner case,
+    public ListNode removeNthFromEnd_poor(ListNode head, int n) {
+        ListNode delayNode = head, startNode = head;
+        int start = 0;
+        while (startNode.next != null) {
+            startNode = startNode.next;
+            start++;
+            if (start > n) {
+                delayNode = delayNode.next;
+            }
+        }
+        // 只有一个节点的情况下 就很难处理了 NPE
+        ListNode next = delayNode.next.next;
+        delayNode.next.next = null;
+        delayNode.next = next;
+        return head;
+    }
+
+    //// #19. 删除链表的倒数第N个节点, 完美处理corner case
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        // init dummy node
+        ListNode dummyNode = new ListNode(0);
+        dummyNode.next = head;
+        ListNode delayNode = dummyNode, start = dummyNode;
+        for (int i = 0; i < n; i++) {
+            start = start.next;
+        }
+        while (start.next != null) {
+            start = start.next;
+            delayNode = delayNode.next;
+        }
+        delayNode.next = delayNode.next.next;
+        // 参考如下代码 http://bit.ly/2xo4dEI
+        // return head; 错误的原因在于head 节点也有可能Update 为Null阿  在更新code---> " delayNode.next = delayNode.next.next; "
+        return dummyNode.next;
+    }
+
+    //  TODO 需要深刻理解 [LeetCode] 4. Median of Two Sorted Arrays 两个有序数组的中位数 http://bit.ly/2ROgk7B
+    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        int m = nums1.length, n = nums2.length;
+        int left = (m + n + 1) / 2;
+        int right = (m + n + 2) / 2;
+        return (findKth(nums1, 0, nums2, 0, left) + findKth(nums1, 0, nums2, 0, right)) / 2.0;
+    }
+
+    public int findKth(int[] nums1, int i, int[] nums2, int j, int k) {
+        if (i >= nums1.length) return nums2[j + k - 1];
+        if (j >= nums2.length) return nums1[i + k - 1];
+        if (k == 1) return Math.min(nums1[i], nums2[j]);
+        int midVal1 = (i + k / 2 - 1 < nums1.length) ? nums1[i + k / 2 - 1] : Integer.MAX_VALUE;
+        int midVal2 = (j + k / 2 - 1 < nums2.length) ? nums2[j + k / 2 - 1] : Integer.MAX_VALUE;
+        if (midVal1 < midVal2) {
+            return findKth(nums1, i + k / 2, nums2, j, k - k / 2);
+        } else {
+            return findKth(nums1, i, nums2, j + k / 2, k - k / 2);
+        }
+    }
+
+    //  最长回文字符串 5. Longest Palindromic Substring
+    public String longestPalindrome(String s) {
+        return null;
+    }
 }
