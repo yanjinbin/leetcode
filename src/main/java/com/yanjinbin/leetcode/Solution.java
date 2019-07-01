@@ -384,7 +384,7 @@ public class Solution {
         }
     }
 
-    //  最长回文字符串 5. Longest Palindromic Substring
+    //  最长回文字符串 5. Longest Palindromic Substring 官方题解垃圾的一点就是 start 和 end的更新问题 有问题
     public String longestPalindrome(String s) {
         if (s == null || s.length() < 1) {
             return "";
@@ -396,17 +396,19 @@ public class Solution {
             int len2 = expandAroundCenter(s, i, i + 1);
             int len = Math.max(len1, len2);
             if (len > (end - start)) {
-                //
-                start = i - (len - 1) / 2;
+                // 为什么要减一呢 （反推确实验证是越界问题,如果len是2的话）
+                System.out.println("update\t i:"+i+"\tstart:"+start+"\tend:"+end+"\tlen:"+len);
+                start = i - (len-1) / 2;
                 end = i + len / 2;
             }
         }
+        System.out.println("final! start:"+start+"\tend:"+end);
         return s.substring(start, end + 1);
     }
 
     private int expandAroundCenter(String s, int left, int right) {
         int L = left, R = right;
-        while (L > 0 && R < s.length() && s.charAt(L) == s.charAt(R)) {
+        while (L >= 0 && R < s.length() && s.charAt(L) == s.charAt(R)) {
             L--;
             R++;
         }

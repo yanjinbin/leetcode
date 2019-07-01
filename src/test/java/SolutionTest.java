@@ -124,6 +124,15 @@ public class SolutionTest {
         System.out.println(substring);
     }
 
+    @Test
+    public void longestPalindrome(){
+        String rs = INSTANCE.longestPalindrome("bb");
+        System.out.println(rs);
+
+        rs = INSTANCE.longestPalindrome("feccbbddeg");
+        System.out.println(rs);
+    }
+
 
 
 }
