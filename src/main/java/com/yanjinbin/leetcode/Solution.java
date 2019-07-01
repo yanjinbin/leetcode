@@ -69,37 +69,6 @@ public class Solution {
         return reverseListInt(next, head);
     }
 
-    // 21. Merge Two Sorted Lists
-    public ListNode mergeTwoLists_0(ListNode l1, ListNode l2) {
-        ListNode ret = l1.val > l2.val ? l2 : l1;
-        ListNode cursor;
-        // 这样想 ,其实有问题的 l1 l2长短不一的时候. 就会NPE阿
-        while (l1 != null || l2 != null) {
-            if (l1.val > l2.val) {
-                cursor = l2;
-                cursor.next = l1;
-            } else {
-                cursor = l1;
-                cursor.next = l2;
-            }
-            l1 = l1.next;
-            l2 = l2.next;
-        }
-        return ret;
-    }
-
-    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
-        if (l1 == null) return l2;
-        if (l2 == null) return l1;
-        if (l1.val < l2.val) {
-            l1.next = mergeTwoLists(l1.next, l2);
-            return l1;
-        } else {
-            l2.next = mergeTwoLists(l1, l2.next);
-            return l2;
-        }
-    }
-
     // 141. Linked List Cycle
     // todo 如何证明呢
     public boolean hasCycle(ListNode head) {
@@ -417,5 +386,78 @@ public class Solution {
             maxLen = k - j - 1;
             // System.out.println("after，maxLen:"+maxLen+"\tlo:"+lo+"\tk:"+k+"\tj:"+j);
         }
+    }
+
+    // 21. 合并两个有序链表Copy Merge Two Sorted Lists
+
+    public ListNode mergeTwoLists_1(ListNode l1, ListNode l2) {
+        ListNode dummyNode = new ListNode(0);
+        ListNode cur = dummyNode;
+        while (l1 != null && l2 != null) {
+            if (l1.val > l2.val) {
+                cur.next = new ListNode(l1.val);
+                l1 = l1.next;
+            } else {
+                cur.next = new ListNode(l2.val);
+                l2 = l2.next;
+            }
+            cur = cur.next;
+        }
+        cur.next = l1 == null ? l2 : l1;
+        return dummyNode.next;
+
+    }
+
+    // 21. Merge Two Sorted Lists
+
+    // 错误的解法
+    public ListNode mergeTwoLists_0(ListNode l1, ListNode l2) {
+        ListNode ret = l1.val > l2.val ? l2 : l1;
+        ListNode cursor;
+        // 这样想 ,其实有问题的 l1 l2长短不一的时候. 就会NPE阿
+        while (l1 != null || l2 != null) {
+            if (l1.val > l2.val) {
+                cursor = l2;
+                cursor.next = l1;
+            } else {
+                cursor = l1;
+                cursor.next = l2;
+            }
+            l1 = l1.next;
+            l2 = l2.next;
+        }
+        return ret;
+    }
+//    // 递归解法
+
+    public ListNode mergeTwoSortedList(ListNode l1, ListNode l2) {
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+        if (l1.val < l2.val) {
+            l1.next = mergeTwoSortedList(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = mergeTwoSortedList(l1, l2.next);
+            return l2;
+        }
+    }
+    // 23. 合并K个排序链表 Merge k Sorted Lists
+    // https://www.cnblogs.com/grandyang/p/4606710.html
+
+    public ListNode mergeKLists(ListNode[] lists) {
+        if (lists == null || lists.length == 0) return null;
+        return mergeKLists(lists, 0, lists.length - 1);
+    }
+    // 采用分治思想，递归解决此问题
+    public ListNode mergeKLists(ListNode[] lists, int start, int end) {
+        if (start > end) {
+            return null;
+        } else if (start == end) {
+            return lists[start];
+        }
+        int mid = (end - start) / 2 + start;
+        ListNode l1 = mergeKLists(lists, start, mid);
+        ListNode l2 = mergeKLists(lists, mid + 1, end);
+        return mergeTwoSortedList(l1, l2);
     }
 }
