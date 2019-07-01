@@ -277,50 +277,25 @@ public class Solution {
     }
 
     // leetcode 15 3sum
-    // 解决重复个数问题 1 2 3
-    // 3的化就是0
-    // 2的化 就是x+x+y=0 or (x+y+y=0,不用考虑 )
+    // https://www.cnblogs.com/grandyang/p/4481576.html
     public List<List<Integer>> threeSum(int[] nums) {
-        List ret = new ArrayList();
+        List<List<Integer>> ret = new ArrayList();
+        if (nums.length < 3) return ret;
         Arrays.sort(nums);
-        if (nums[0] > 0) {
-            return Collections.EMPTY_LIST;
-        }
-        for (int num : nums) {
-            System.out.println(num);
-        }
-        int cursor = 0;
-        while (cursor <= nums.length - 3) {
-
-            int headcursor = cursor + 1;
-            int tailcursor = nums.length - 1;
-            int target = 0 - nums[cursor];
-            // corner case  if cursor value = head value then cursor++
-            System.out.println(nums[cursor] + "\t" + nums[headcursor] + "\t" + nums[tailcursor]);
-            if (nums[headcursor] == nums[cursor]) {
-                cursor++;
-                headcursor++;
-                System.out.println("===update===");
-                System.out.println(nums[cursor] + "\t" + nums[headcursor] + "\t" + nums[tailcursor]);
+        int i = 0;
+        while (i < nums.length - 2) {
+            if (nums[i] > 0) break;
+            int j = i + 1;
+            int k = nums.length - 1;
+            while (j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum == 0) ret.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                // 跳过重复数字 注意前置++ -- 运算符 运算好立即调用 而不是等到下一次
+                if (sum < 0) while (nums[j] == nums[++j] && j < k) ;
+                if (sum > 0) while (nums[k] == nums[--k] && j < k) ;
             }
-
-            while (headcursor < tailcursor) {
-                int sum = nums[headcursor] + nums[tailcursor];
-                if (sum > target) {
-                    tailcursor--;
-                } else if (sum < target) {
-                    headcursor++;
-                } else {
-                    List<Integer> elements = new ArrayList();
-                    elements.add(nums[headcursor]);
-                    elements.add(nums[tailcursor]);
-                    elements.add(nums[cursor]);
-                    ret.add(elements);
-                    headcursor++;
-                    tailcursor--;
-                }
-            }
-            cursor++;
+            // 跳过重复数字
+            while (nums[i] == nums[++i] && i < nums.length - 2) ;
         }
         return ret;
     }

@@ -122,6 +122,17 @@ public class SolutionTest {
     public void misc() {
         String substring = "ab4je9kcd".substring(1, 3);
         System.out.println(substring);
+        int i=1;
+        int j = 0;
+        String s ="abcd";
+        int[] ints={293,394,45,8};
+        System.out.println(s.charAt(i));
+        System.out.println(s.charAt(i++));
+        System.out.println(s.charAt(++i));
+        System.out.println(ints[++j]);
+        System.out.println(ints[j++]);
+        System.out.println(ints[++j]);
+
     }
 
     @Test
@@ -137,6 +148,7 @@ public class SolutionTest {
         rs = INSTANCE.GoodLongestPalindrome(s2);
         System.out.println(rs);
     }
+
 
 
 }
