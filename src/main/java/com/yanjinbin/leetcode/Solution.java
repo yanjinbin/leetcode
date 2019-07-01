@@ -397,12 +397,12 @@ public class Solution {
             int len = Math.max(len1, len2);
             if (len > (end - start)) {
                 // 为什么要减一呢 （反推确实验证是越界问题,如果len是2的话）
-                System.out.println("update\t i:"+i+"\tstart:"+start+"\tend:"+end+"\tlen:"+len);
-                start = i - (len-1) / 2;
+                System.out.println("update\t i:" + i + "\tstart:" + start + "\tend:" + end + "\tlen:" + len);
+                start = i - (len - 1) / 2;
                 end = i + len / 2;
             }
         }
-        System.out.println("final! start:"+start+"\tend:"+end);
+        System.out.println("final! start:" + start + "\tend:" + end);
         return s.substring(start, end + 1);
     }
 
@@ -412,6 +412,35 @@ public class Solution {
             L--;
             R++;
         }
-        return R-L-1;
+        return R - L - 1;
+    }
+
+
+    // http://bit.ly/2KMyIgk
+    private int lo, maxLen;
+
+    public String GoodLongestPalindrome(String s) {
+        if (s.length() < 2) {
+            return s;
+        }
+        int length = s.length();
+        for (int i = 0; i < length - 1; i++) {
+            extendPalindrome(s, i, i);
+            extendPalindrome(s, i, i + 1);
+        }
+        return s.substring(lo, maxLen + lo);
+    }
+
+    public void extendPalindrome(String s, int j, int k) {
+        while (j >= 0 && k < s.length() && s.charAt(j) == s.charAt(k)) {
+            j--;
+            k++;
+        }
+        if (maxLen < k - j - 1) {
+            // System.out.println("before，maxLen:"+maxLen+"\tlo:"+lo+"\tk:"+k+"\tj:"+j);
+            lo = j + 1;
+            maxLen = k - j - 1;
+            // System.out.println("after，maxLen:"+maxLen+"\tlo:"+lo+"\tk:"+k+"\tj:"+j);
+        }
     }
 }

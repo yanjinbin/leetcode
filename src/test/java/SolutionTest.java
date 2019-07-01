@@ -119,20 +119,24 @@ public class SolutionTest {
     }
 
     @Test
-    public void misc(){
+    public void misc() {
         String substring = "ab4je9kcd".substring(1, 3);
         System.out.println(substring);
     }
 
     @Test
-    public void longestPalindrome(){
-        String rs = INSTANCE.longestPalindrome("bb");
+    public void longestPalindrome() {
+        String s1 = "bb", s2 = "feccbbddeg";
+        String rs = INSTANCE.longestPalindrome(s1);
         System.out.println(rs);
-
-        rs = INSTANCE.longestPalindrome("feccbbddeg");
+        rs = INSTANCE.longestPalindrome(s2);
+        System.out.println(rs);
+        System.out.println("=======");
+        rs = INSTANCE.GoodLongestPalindrome(s1);
+        System.out.println(rs);
+        rs = INSTANCE.GoodLongestPalindrome(s2);
         System.out.println(rs);
     }
-
 
 
 }
