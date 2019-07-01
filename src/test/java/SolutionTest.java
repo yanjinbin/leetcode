@@ -118,6 +118,12 @@ public class SolutionTest {
         System.out.println(rn);
     }
 
+    @Test
+    public void misc(){
+        String substring = "ab4je9kcd".substring(1, 3);
+        System.out.println(substring);
+    }
+
 
 
 }
