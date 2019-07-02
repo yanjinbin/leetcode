@@ -149,6 +149,11 @@ public class SolutionTest {
         System.out.println(rs);
     }
 
+    @Test
+    public  void generateParenthesis(){
+        System.out.println(INSTANCE.generateParenthesis(4));
+    }
+
 
 
 }

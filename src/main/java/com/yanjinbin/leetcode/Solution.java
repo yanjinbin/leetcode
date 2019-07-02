@@ -328,7 +328,7 @@ public class Solution {
         }
     }
 
-    //  最长回文字符串 5. Longest Palindromic Substring 官方题解垃圾的一点就是 start 和 end的更新问题 有问题
+    //  #5 最长回文字符串 5. Longest Palindromic Substring 官方题解垃圾的一点就是 start 和 end的更新问题 有问题
     public String longestPalindrome(String s) {
         if (s == null || s.length() < 1) {
             return "";
@@ -359,7 +359,7 @@ public class Solution {
         return R - L - 1;
     }
 
-
+    // 最长回文子串 最佳解法
     // http://bit.ly/2KMyIgk
     private int lo, maxLen;
 
@@ -448,6 +448,7 @@ public class Solution {
         if (lists == null || lists.length == 0) return null;
         return mergeKLists(lists, 0, lists.length - 1);
     }
+
     // 采用分治思想，递归解决此问题
     public ListNode mergeKLists(ListNode[] lists, int start, int end) {
         if (start > end) {
@@ -459,5 +460,29 @@ public class Solution {
         ListNode l1 = mergeKLists(lists, start, mid);
         ListNode l2 = mergeKLists(lists, mid + 1, end);
         return mergeTwoSortedList(l1, l2);
+    }
+
+    //  22. 括号生成  回溯法(http://bit.ly/2KPYQHi)  假如我先添加一个左括号，next 接下来我可以添加
+    public List<String> generateParenthesis(int n) {
+        List<String> ans = new ArrayList();
+        backtrack(ans, "", 0, 0, n);
+        return ans;
+    }
+
+    public void backtrack(List<String> ans, String cur, int open, int close, int max) {
+        // 问题的解 达成
+        if (cur.length() == max * 2) {
+            ans.add(cur);
+            return;
+        }
+        // 达到终点，问题的解 未达成，回溯
+        // 问题的解 不达成
+        // return
+
+        // DFS探索
+        if (close < open)
+            backtrack(ans, cur + ")", open, close + 1, max);
+        if (open < max)
+            backtrack(ans, cur + "(", open + 1, close, max);
     }
 }
