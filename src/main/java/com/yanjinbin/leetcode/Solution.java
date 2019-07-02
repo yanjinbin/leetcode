@@ -503,5 +503,22 @@ public class Solution {
         return maxArea;
     }
 
+    // 42. 接雨水 trap rain water
+    public int trap(int[] height) {
+        // 遍历一次，找左边最大值，然后遍历一次，找右边最大值，选个最大的dp[i],if dp[i] > height[i],则add
+        int res = 0, mx = 0, n = height.length;
+        int[] dp = new int[n];
+        for (int i = 0; i < n; ++i) {
+            dp[i] = mx;
+            mx = Math.max(mx, height[i]);
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            dp[i] = Math.min(dp[i], mx);
+            mx = Math.max(mx,height[i]);
+            if (dp[i]-height[i]>0) res =res+dp[i]-height[i];
+        }
+        return res;
+    }
+
 
 }

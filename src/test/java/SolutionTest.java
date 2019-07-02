@@ -133,6 +133,13 @@ public class SolutionTest {
         System.out.println(ints[j++]);
         System.out.println(ints[++j]);
 
+        for (int k = 0; k < 10; k++) {
+            System.out.println("k的值:\t" + k);
+        }
+        for (int m = 0; m < 10; ++m) {
+            System.out.println("m的值:\t" + m);
+        }
+
     }
 
     @Test
