@@ -503,8 +503,8 @@ public class Solution {
         return maxArea;
     }
 
-    // 42. 接雨水 trap rain water
-    public int trap(int[] height) {
+    // 42. 接雨水 trap rain water  http://bit.ly/2RKoy0k
+    public int trap1(int[] height) {
         // 遍历一次，找左边最大值，然后遍历一次，找右边最大值，选个最大的dp[i],if dp[i] > height[i],则add
         int res = 0, mx = 0, n = height.length;
         int[] dp = new int[n];
@@ -512,13 +512,136 @@ public class Solution {
             dp[i] = mx;
             mx = Math.max(mx, height[i]);
         }
+        // reset
+        mx = 0;
         for (int i = n - 1; i >= 0; i--) {
             dp[i] = Math.min(dp[i], mx);
-            mx = Math.max(mx,height[i]);
-            if (dp[i]-height[i]>0) res =res+dp[i]-height[i];
+            mx = Math.max(mx, height[i]);
+            if (dp[i] - height[i] > 0) res = res + dp[i] - height[i];
         }
         return res;
     }
 
+    //  42. 接雨水 trap rain water 双指针法
+    public int trap2(int[] height) {
+        int res = 0, l = 0, r = height.length - 1;
+        while (l < r) {
+            int min = Math.min(height[l], height[r]);
+            if (min == height[l]) {
+                l++;
+                while (l < r && height[l] < min) {
+                    System.out.println("l:" + l + "r:" + r);
+                    res = res + min - height[l++];
+                }
+            } else {
+                r--;
+                while (l < r && height[r] < min) {
+                    System.out.println("l:" + l + "r:" + r);
+                    res = res + min - height[r--];
+                }
+            }
 
+        }
+        return res;
+    }
+
+    // 更简洁写法
+    public int trap3(int[] height) {
+        int res = 0, l = 0, r = height.length - 1, level = 0;
+        while (l < r) {
+            int lower = height[height[l] < height[r] ? l++ : r--];
+            level = Math.max(level, lower);
+            System.out.println("l:" + l + "r:" + r);
+            res = res + level - lower;
+        }
+        return res;
+    }
+
+    public int trap4(int[] height) {
+        Stack<Integer> s = new Stack<>();
+        int i = 0, n = height.length, res = 0;
+        while (i < n) {
+            if (s.isEmpty() || height[i] <= height[s.peek()]) {
+                s.push(i++);
+            } else {
+                int t = s.pop();
+                if (s.isEmpty()) continue;
+                res += (Math.min(height[i], height[s.peek()]) - height[t]) * (i - s.peek() - 1);
+            }
+        }
+        return res;
+    }
+
+    // 206 反转链表 todo 递归解法 需要crack
+    public ListNode reverseList(ListNode head) {
+        ListNode prev = null;
+        ListNode cursor = head;
+        while (cursor != null) {
+            ListNode temp = cursor.next;
+            // 更新cursor.next 指向
+            cursor.next = prev;
+            prev = cursor;
+            // iterator
+            // cursor = cursor.next 为什么错了 因为cursor.next 已经换了对象了
+            cursor = temp;
+        }
+        return prev;
+    }
+
+    // 206 Leetcode 错误解答
+    public ListNode reverseListBad1(ListNode head) {
+        ListNode prev = null;
+        ListNode cursor = head;
+        while (cursor != null) {
+            cursor.next = prev;
+            ListNode temp = cursor;
+            prev = temp;
+            cursor = cursor.next;
+        }
+        return prev;
+    }
+
+    // 206 Leetcode 错误解答
+    public ListNode reverseListBad2(ListNode head) {
+        ListNode prev = null;
+        ListNode cursor = head;
+        while (cursor != null) {
+            ListNode temp = cursor;
+            cursor = cursor.next;
+            prev = cursor;
+            prev.next = temp;
+
+        }
+        return prev;
+    }
+
+
+    //  31. 下一个排列 首先理解字典序  找下一个字典序更大的 如果最大了 就全局升序排列了
+    //  题解连接 http://bit.ly/2RS8Wbd
+    //  总结 这道底模本身不难
+    public void nextPermutation(int[] nums) {
+        if (nums == null || nums.length == 0) return;
+
+        int i = nums.length - 2;
+        while (i >= 0 && nums[i] >= nums[i + 1]) i--; // 找到第一个破坏 descend order -->i
+        if (i >= 0) {
+            int j = nums.length - 1;
+            while (nums[j] <= nums[i]) j--;// i 指向元素 从右往左找第一个
+            swap(nums, i, j); //
+        }
+        reverse(nums, i + 1, nums.length - 1);
+
+    }
+
+    public void swap(int[] nums, int i, int j) {
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+
+    public void reverse(int[] nums, int i, int j) {
+        while (i < j) {
+            swap(nums, i++, j--);
+        }
+    }
 }

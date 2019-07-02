@@ -8,10 +8,19 @@ public class SolutionTest {
     private static Solution INSTANCE = new Solution();
 
     private ListNode headNode;
+    private ListNode demoNode;
 
     @Before
     public void init() {
         headNode = ListNode.builder()
+                .val(9).next(ListNode.builder()
+                        .val(11).next(ListNode.builder()
+                                .val(10).next(ListNode.builder()
+                                        .val(12).next(ListNode.builder()
+                                                .val(32).next(ListNode.builder()
+                                                        .val(13).build()).build()).build()).build()).build()).build();
+
+        demoNode = ListNode.builder()
                 .val(9).next(ListNode.builder()
                         .val(11).next(ListNode.builder()
                                 .val(10).next(ListNode.builder()
@@ -165,6 +174,34 @@ public class SolutionTest {
     public void maxArea() {
         int[] heights = {1, 4, 8, 4, 9, 5};
         System.out.println(INSTANCE.maxArea(heights));
+    }
+
+    @Test
+    public void trapRainWater() {
+        int[] height = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
+        for (int i = 0; i < height.length; i++) {
+            System.out.println("i:" + i + "height:" + height[i]);
+        }
+        System.out.println("trap1:\t" + INSTANCE.trap1(height));
+        System.out.println("trap2:\t" + INSTANCE.trap2(height));
+        System.out.println("trap3:\t" + INSTANCE.trap3(height));
+        System.out.println("trap4:\t" + INSTANCE.trap4(height));
+    }
+
+    @Test(timeout = 200)
+    public void reverseList() {
+        System.out.println(INSTANCE.reverseList(demoNode));
+        System.out.println(INSTANCE.reverseListBad1(demoNode));
+        System.out.println(INSTANCE.reverseListBad2(demoNode));
+    }
+
+    @Test(timeout = 1000)
+    public void nextPermutation() {
+        int[] nums = {1, 3, 4, 11, 9, 5, 4, 2};
+        INSTANCE.nextPermutation(nums);
+        for (int num : nums) {
+            System.out.printf("%d \t", num);
+        }
     }
 
 
