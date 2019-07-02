@@ -122,10 +122,10 @@ public class SolutionTest {
     public void misc() {
         String substring = "ab4je9kcd".substring(1, 3);
         System.out.println(substring);
-        int i=1;
+        int i = 1;
         int j = 0;
-        String s ="abcd";
-        int[] ints={293,394,45,8};
+        String s = "abcd";
+        int[] ints = {293, 394, 45, 8};
         System.out.println(s.charAt(i));
         System.out.println(s.charAt(i++));
         System.out.println(s.charAt(++i));
@@ -150,10 +150,15 @@ public class SolutionTest {
     }
 
     @Test
-    public  void generateParenthesis(){
+    public void generateParenthesis() {
         System.out.println(INSTANCE.generateParenthesis(4));
     }
 
+    @Test
+    public void maxArea() {
+        int[] heights = {1, 4, 8, 4, 9, 5};
+        System.out.println(INSTANCE.maxArea(heights));
+    }
 
 
 }

@@ -485,4 +485,23 @@ public class Solution {
         if (open < max)
             backtrack(ans, cur + "(", open + 1, close, max);
     }
+
+    // 11. 盛最多水的容器 双指针法，左右移动时候，选择移动 高度短的 可能能增加面积 如果是盛水最少的容器呢
+    public int maxArea(int[] height) {
+        int left = 0, right = height.length - 1;
+        int maxArea = 0;
+        while (left < right) {
+            maxArea = Math.max(maxArea, Math.min(height[left], height[right]) * (right - left));
+            // 移动策略
+            if (height[left] < height[right]) {
+                left++;
+            } else {
+                right--;
+
+            }
+        }
+        return maxArea;
+    }
+
+
 }
