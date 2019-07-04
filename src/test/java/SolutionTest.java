@@ -204,5 +204,15 @@ public class SolutionTest {
         }
     }
 
+    @Test
+    public void climbStairs() {
+        System.out.println(INSTANCE.climbStairs1(5));
+        System.out.println("======");
+        System.out.println(INSTANCE.climbStairs2(5));
+        System.out.println("=====爬楼梯follow up问题===");
+        System.out.println(INSTANCE.climbStairFU(10, 5));
+    }
+
+
 
 }

@@ -1,5 +1,10 @@
 package com.yanjinbin.leetcode;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.*;
 
 /**
@@ -694,14 +699,60 @@ public class Solution {
         return res;
     }
 
-    // leetcode 56 合并区间
-    public int[][] merge(int[][] intervals) {
-
+    // leetcode 70 climbing stairs
+    // todo follow up问题 https://blog.crayygy.com/14599905787744.html#toc_6
+    // 迭代形式
+    public int climbStairs1(int n) {
+        if (n <= 1) return 1;
+        int[] dp = new int[n];
+        dp[0] = 1;
+        dp[1] = 2;
+        for (int i = 2; i < n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n - 1];
     }
 
-    // leetcode 57 插入区间
-    public int[][] insert(int[][] intervals, int[] newInterval) {
+    // 递归+记忆数组
+    // DP问题: 记忆数组+迭代
+    public int climbStairs2(int n) {
+        // 为什么 n+1长度呢 这个怎么算出来的呢
+        // 首先memo 是用来存储数组用的
+        //  递归一次 n 分别-1 -2
+        // 递归终止条件是n <=1
+        // 假设 n= 1 可以推导出  climbHelper(n,memo)[memo(n)] --> memo[2]=climber(1)+climber(0),或者memo[3]=climber(2)+climber(1)--> memo[2]=climber(1)+climber(0),因此递归的时候memo数组的长度是n+1啦
 
+        int[] memo = new int[n + 1];
+        return climbHelper(n, memo);
     }
 
+    private int climbHelper(int n, int[] memo) {
+        if (n <= 1) return 1;
+        if (memo[n] > 0) {
+            //  System.out.println("n:" + n + "memo:" + memo[n]);
+            return memo[n];
+        }
+        return memo[n] = climbHelper(n - 1, memo) + climbHelper(n - 2, memo);
+    }
+    // follow up 问题
+
+    /**
+     * @param n 总步长
+     * @param m 每一次最能能跨的最大台阶数
+     * @return
+     */
+    public int climbStairFU(int n, int m) {
+        int stepCount = 0;
+        if (n == 0) {
+            return 1;
+        }
+        if (n >= m) {
+            for (int i = 1; i <= m; i++) {
+                stepCount = stepCount + climbStairFU(n - i, m);
+            }
+        } else {
+            stepCount += climbStairFU(n, n);
+        }
+        return stepCount;
+    }
 }
