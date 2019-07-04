@@ -644,4 +644,64 @@ public class Solution {
             swap(nums, i++, j--);
         }
     }
+
+    // 48 旋转图像 todo 这道题目 需要观察下规律
+    //  http://bit.ly/2RNX8a6
+    //  http://bit.ly/2JmVgB7
+    //  展示每次移动的元素 https://photos.app.goo.gl/LaeDGURidfWi1oLa7
+    public void rotate(int[][] matrix) {
+        int n = matrix.length;
+        // i < n/2 的原因是 从 外层到内层  你需要转移置换 多少个 "4数字"
+        for (int i = 0; i < n / 2; i++) {
+            // 告诉你  每一层 你需要移动的元素个数
+            for (int j = i; j < n - i - 1; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[n - j - 1][i];
+                matrix[n - j - 1][i] = matrix[n - i - 1][n - j - 1];
+                matrix[n - i - 1][n - j - 1] = matrix[j][n - i - 1];
+                matrix[j][n - i - 1] = tmp;
+
+            }
+        }
+
+    }
+
+    // 53. 最大子序和 错误解法
+    public int maxSubArray(int[] nums) {
+        int res = Integer.MIN_VALUE, curSum = 0;
+        for (int num : nums) {
+            // 为什么比较的是curSum+num 和 num呢  而不是curSum+num 和 curSum呢  也就是判断num的正负呢
+            // http://bit.ly/2KTtSOr 理解这里的增益效果是关键
+            // 思考角度从num元素个体来出发 而不是从连续累加和来出发
+            curSum = Math.max(curSum + num, num);
+            res = Math.max(res, curSum);
+        }
+        return res;
+    }
+
+    // 53. 最大子序和 错误解法
+    public int maxSubArray1(int[] nums) {
+        int cursum = 0;
+        int res = Integer.MIN_VALUE;
+        for (int i = 0; i < nums.length; i++) {
+            if (cursum > 0) {
+                cursum = cursum + nums[i];
+            }
+            if (res > cursum) {
+                res = cursum;
+            }
+        }
+        return res;
+    }
+
+    // leetcode 56 合并区间
+    public int[][] merge(int[][] intervals) {
+
+    }
+
+    // leetcode 57 插入区间
+    public int[][] insert(int[][] intervals, int[] newInterval) {
+
+    }
+
 }
