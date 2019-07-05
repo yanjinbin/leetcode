@@ -639,6 +639,7 @@ public class Solution {
     }
 
     public void swap(int[] nums, int i, int j) {
+        if (i == j) return;
         int tmp = nums[i];
         nums[i] = nums[j];
         nums[j] = tmp;
@@ -780,5 +781,19 @@ public class Solution {
             return memo[i][j] = routerHelper(i - 1, j, grid, memo) + grid[i][j];
         }
         return memo[i][j] = Math.min(routerHelper(i - 1, j, grid, memo), routerHelper(i, j - 1, grid, memo)) + grid[i][j];
+    }
+
+    // 75. 颜色分类  只要遇到 0和2 就进行交换即可
+    public void sortColors(int[] nums) {
+        // 双指针法 移动
+        int red = 0, blue = nums.length - 1;
+        for (int i = 0; i <= blue; i++) {
+            if (nums[i] == 0) {
+                swap(nums, red++, i);
+            } else if (nums[i] == 2) {
+                // 为什么i--呢 这里是关键点哦 因为1 比 0大 可能还需要再交换一次啦阿
+                swap(nums, blue--, i--);
+            }
+        }
     }
 }

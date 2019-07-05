@@ -230,5 +230,10 @@ public class SolutionTest {
         System.out.println(INSTANCE.minPathSum(grid1));
     }
 
+    @Test
+    public void sortColor() {
+        int[] sums = {0};
+        INSTANCE.sortColors(sums);
+    }
 
 }
