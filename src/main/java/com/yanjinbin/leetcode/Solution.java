@@ -755,4 +755,30 @@ public class Solution {
         }
         return stepCount;
     }
+
+    // 64. 最小路径和  这是一道很经典的题目  哈哈 😁  忠于自己亲手做出来了 😘
+    public int minPathSum(int[][] grid) {
+        int rowLen = grid.length;
+        int colLen = grid[rowLen].length;
+        int[][] memo = new int[rowLen][colLen];
+        return routerHelper(rowLen - 1, colLen - 1, grid, memo);
+    }
+
+    public int routerHelper(int i, int j, int[][] grid, int[][] memo) {
+        // 存在记忆了 不用再次计算
+        if (memo[i][j] > 0) {
+            return memo[i][j];
+        }
+
+        if (i == 0 && j == 0) {
+            return memo[i][j] = grid[0][0];
+        }
+        if (i == 0) {
+            return memo[i][j] = routerHelper(i, j - 1, grid, memo) + grid[i][j];
+        }
+        if (j == 0) {
+            return memo[i][j] = routerHelper(i - 1, j, grid, memo) + grid[i][j];
+        }
+        return memo[i][j] = Math.min(routerHelper(i - 1, j, grid, memo), routerHelper(i, j - 1, grid, memo)) + grid[i][j];
+    }
 }

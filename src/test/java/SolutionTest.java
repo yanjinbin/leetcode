@@ -1,3 +1,4 @@
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import com.yanjinbin.leetcode.ListNode;
 import com.yanjinbin.leetcode.Solution;
 import org.junit.Before;
@@ -149,6 +150,12 @@ public class SolutionTest {
             System.out.println("m的值:\t" + m);
         }
 
+        int[][] grid = {{1, 3, 5, 7, 8}, {2, 4, 6, 8}, {3, 6, 9, 10, 11, 12}};
+        System.out.println(grid[2][0]);
+        System.out.println(grid[0][2]);
+        System.out.println(grid[1][0]);
+        System.out.println("length:" + grid.length);
+
     }
 
     @Test
@@ -213,6 +220,15 @@ public class SolutionTest {
         System.out.println(INSTANCE.climbStairFU(10, 5));
     }
 
+    @Test
+    public void minPathSum() {
+        int[][] grid = {{1, 2}, {5, 6}, {1, 2}};
+        int[][] grid1 = {{0, 1}, {1, 0}};
+        int ret = INSTANCE.minPathSum(grid);
+        System.out.println(ret);
+        System.out.println("=======");
+        System.out.println(INSTANCE.minPathSum(grid1));
+    }
 
 
 }
