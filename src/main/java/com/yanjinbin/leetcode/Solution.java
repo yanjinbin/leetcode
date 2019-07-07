@@ -927,4 +927,45 @@ public class Solution {
         }
         return res;
     }
+
+    // 287. 寻找重复数
+    // 可以把index对应的value当做一个状态值 那么 value重复的化 就相当于是存在还了,可以使用floyd算法来检测
+    // Floyd算法wiki ---->   http://bit.ly/2S1omdy
+    public int findDuplicate0(int[] nums) {
+        // Find the intersection point of the two runners.
+        int tortoise = nums[0];
+        int hare = nums[0];
+        do {
+            tortoise = nums[tortoise];
+            hare = nums[nums[hare]];
+        } while (tortoise != hare);
+
+        // Find the "entrance" to the cycle.
+        int s = nums[0];
+        int m = tortoise;
+        while (s != m) {
+            s = nums[s];
+            m = nums[m];
+        }
+        return s;
+
+    }
+
+    //  这种二分法还是比较参见的 但是也存在多钟限制阿 中间数的计算近似 median=(right+left)/2;
+    public int findDuplicate1(int[] nums) {
+        int left = 0, right = nums.length;
+        while (left < right) {
+            int mid = (right + left) / 2;
+            int cnt = 0;
+            for (int num : nums) {
+                if (num <= mid) {
+                    cnt++;
+                }
+            }
+            if (cnt <= mid) left = mid + 1;
+            else right = mid;
+
+        }
+        return right;
+    }
 }

@@ -258,6 +258,13 @@ public class SolutionTest {
         System.out.println(INSTANCE.maxProduct(nums));
     }
 
+    @Test
+    public void findDuplicate(){
+        int[] nums = {1,3,4,6,7,8,3,3};
+        System.out.println(INSTANCE.findDuplicate0(nums));
+        System.out.println(INSTANCE.findDuplicate1(nums));
+    }
+
 
     @Test
     public void misc() {
@@ -307,7 +314,11 @@ public class SolutionTest {
         String res = "iwowjd";
         System.out.println(res.substring(2, res.length()));
         System.out.println(res.substring(res.length()).equals(""));
-
+        int a = 1, b =4, c = 14;
+        System.out.println(a + (c - a) / 2);
+        System.out.println((a + c) / 2);
+        System.out.println(b + (c - b) / 2);
+        System.out.println((b + c) / 2);
     }
 
 
