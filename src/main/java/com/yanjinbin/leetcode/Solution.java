@@ -667,7 +667,7 @@ public class Solution {
 
     }
 
-    // 53. 最大子序和 错误解法
+    // 53. 最大子序和
     public int maxSubArray(int[] nums) {
         int res = Integer.MIN_VALUE, curSum = 0;
         for (int num : nums) {
@@ -909,5 +909,22 @@ public class Solution {
                 splitHelper(s, length, cursor, wordDict);
             }
         }
+    }
+
+    // 这道题目 关键在于 负数 以及0的处理
+    // Leetcode 152 乘积最大的连续 子序列 http://bit.ly/2RZ9AUo
+    // 最大的最小的有可能互换  以及0 会使得  一切乘积都为0
+    public int maxProduct(int[] nums) {
+        int[] f = new int[nums.length];
+        int[] g = new int[nums.length];
+        // init
+        int res;
+        res = f[0] = g[0] = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            f[i] = Math.max(Math.max(nums[i], f[i - 1] * nums[i]), nums[i] * g[i - 1]);
+            g[i] = Math.min(Math.min(nums[i], f[i - 1] * nums[i]), nums[i] * g[i - 1]);
+            res = Math.max(res, f[i]);
+        }
+        return res;
     }
 }

@@ -132,57 +132,6 @@ public class SolutionTest {
     }
 
     @Test
-    public void misc() {
-        String substring = "ab4je9kcd".substring(1, 3);
-        System.out.println(substring);
-        int i = 1;
-        int j = 0;
-        String s = "abcd";
-        int[] ints = {293, 394, 45, 8};
-        System.out.println(s.charAt(i));
-        System.out.println(s.charAt(i++));
-        System.out.println(s.charAt(++i));
-        System.out.println(ints[++j]);
-        System.out.println(ints[j++]);
-        System.out.println(ints[++j]);
-
-        for (int k = 0; k < 10; k++) {
-            System.out.println("k的值:\t" + k);
-        }
-        for (int m = 0; m < 10; ++m) {
-            System.out.println("m的值:\t" + m);
-        }
-
-        int[][] grid = {{1, 3, 5, 7, 8}, {2, 4, 6, 8}, {3, 6, 9, 10, 11, 12}};
-        System.out.println(grid[2][0]);
-        System.out.println(grid[0][2]);
-        System.out.println(grid[1][0]);
-        System.out.println("length:" + grid.length);
-
-
-        int m = 0;
-        for (int k = 0; k < 10; k++) {
-//            //
-//            int temp = i;
-//            i = i+1;
-//            i = temp;
-
-            m = m++;
-
-
-            m = ++m;
-            System.out.println(m);
-        }
-        System.out.println("m值:\t" + m);
-        System.out.println("abcdimk".substring(3));
-        System.out.println("abcdef".substring(1, 3));
-        String res = "iwowjd";
-        System.out.println(res.substring(2,res.length()));
-        System.out.println(res.substring(res.length()).equals(""));
-
-    }
-
-    @Test
     public void longestPalindrome() {
         String s1 = "bb", s2 = "feccbbddeg";
         String rs = INSTANCE.longestPalindrome(s1);
@@ -301,6 +250,64 @@ public class SolutionTest {
         String s = "cars";
         boolean ret = INSTANCE.wordBreak(s, words);
         System.out.println(ret);
+    }
+
+    @Test
+    public void maxProduct() {
+        int[] nums = {2, 5, -3, 9, -1, 7, -2, 0, 10, 2, -9};
+        System.out.println(INSTANCE.maxProduct(nums));
+    }
+
+
+    @Test
+    public void misc() {
+        String substring = "ab4je9kcd".substring(1, 3);
+        System.out.println(substring);
+        int i = 1;
+        int j = 0;
+        String s = "abcd";
+        int[] ints = {293, 394, 45, 8};
+        System.out.println(s.charAt(i));
+        System.out.println(s.charAt(i++));
+        System.out.println(s.charAt(++i));
+        System.out.println(ints[++j]);
+        System.out.println(ints[j++]);
+        System.out.println(ints[++j]);
+
+        for (int k = 0; k < 10; k++) {
+            System.out.println("k的值:\t" + k);
+        }
+        for (int m = 0; m < 10; ++m) {
+            System.out.println("m的值:\t" + m);
+        }
+
+        int[][] grid = {{1, 3, 5, 7, 8}, {2, 4, 6, 8}, {3, 6, 9, 10, 11, 12}};
+        System.out.println(grid[2][0]);
+        System.out.println(grid[0][2]);
+        System.out.println(grid[1][0]);
+        System.out.println("length:" + grid.length);
+
+
+        int m = 0;
+        for (int k = 0; k < 10; k++) {
+//            //
+//            int temp = i;
+//            i = i+1;
+//            i = temp;
+
+            m = m++;
+
+
+            m = ++m;
+            System.out.println(m);
+        }
+        System.out.println("m值:\t" + m);
+        System.out.println("abcdimk".substring(3));
+        System.out.println("abcdef".substring(1, 3));
+        String res = "iwowjd";
+        System.out.println(res.substring(2, res.length()));
+        System.out.println(res.substring(res.length()).equals(""));
+
     }
 
 
