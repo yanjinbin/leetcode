@@ -1,10 +1,5 @@
 package com.yanjinbin.leetcode;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
 import java.util.*;
 
 /**
@@ -793,6 +788,125 @@ public class Solution {
             } else if (nums[i] == 2) {
                 // 为什么i--呢 这里是关键点哦 因为1 比 0大 可能还需要再交换一次啦阿
                 swap(nums, blue--, i--);
+            }
+        }
+    }
+
+    // leetcode 78 子集和
+    public List<List<Integer>> subsets1(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+        res.add(new ArrayList<>());
+        for (int num : nums) {
+            int size = res.size();
+            for (int i = 0; i < size; i++) {
+                List<Integer> sub = new ArrayList<>(res.get(i));
+                sub.add(num);
+                res.add(sub);
+            }
+        }
+        return res;
+    }
+
+    // dfs
+    public List<List<Integer>> subsets2(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> res = new ArrayList<>();
+        List empty = new ArrayList();
+        // 忘记添加empty了
+        res.add(empty);
+        dfsAdd(0, nums, res, empty);
+        return res;
+    }
+
+    // subset 类型 写错了 理解不到位 写成List<List<Integer>> subset 类型了。
+    public void dfsAdd(int level, int[] nums, List<List<Integer>> res, List<Integer> subset) {
+        // 注意循环便利次数阿  少写了一个=
+        if (level >= nums.length)
+            return;
+        subset = new ArrayList<>(subset);
+        dfsAdd(level + 1, nums, res, subset);
+        subset.add(nums[level]);
+        res.add(subset);
+        dfsAdd(level + 1, nums, res, subset);
+    }
+    // 位运算法
+
+    // backtrack 回溯算法
+
+
+    // leetcode 79 单次搜索
+    public boolean exist(char[][] board, String word) {
+        if (board == null || board.length == 0 || (board.length == 1 && board[0].length == 0)) return false;
+        int collen = board.length;
+        int rowLen = board[collen - 1].length;
+        boolean[][] visited = new boolean[collen][rowLen];
+        char[] words = word.toCharArray();
+        for (int i = 0; i < collen; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                // dfs search  back trace
+                if (dfsSearch(i, j, collen, rowLen, board, 0, words, visited)) return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean dfsSearch(int i, int j, int colLen, int rowLen, char[][] board, int cursor, char[] word, boolean[][] visited) {
+        if (cursor == word.length) {
+            return true;
+        }
+        // board[i][j] != word[cursor]  放到最后面阿  . visit数组 条件 不要漏掉哦
+        if (i < 0 || j < 0 || i >= colLen || j >= rowLen || visited[i][j] || board[i][j] != word[cursor]) {
+            return false;
+        }
+        visited[i][j] = true;
+        boolean exist = dfsSearch(i + 1, j, colLen, rowLen, board, cursor + 1, word, visited) ||
+                dfsSearch(i, j + 1, colLen, rowLen, board, cursor + 1, word, visited) ||
+                dfsSearch(i - 1, j, colLen, rowLen, board, cursor + 1, word, visited) ||
+                dfsSearch(i, j - 1, colLen, rowLen, board, cursor + 1, word, visited);
+        // 这是一个小细节阿 看到了没??!!!
+        // reset 重置哦
+        visited[i][j] = false;
+        return exist;
+    }
+
+    private boolean exist = false;
+
+    // leetcode 139  单词拆分 http://bit.ly/2Ld41Bt 这是一道DP题目
+    public boolean wordBreak(String s, List<String> wordDict) {
+        // 为什么要加1呢,因为要避免空数组, 这和哑节点类似(避免长度1的链表)
+        boolean[] dp = new boolean[s.length() + 1];
+        dp[0] = true;
+        // 关于对下面dp 状态转移方程的一点思考, 那就是 状态转移条件(内循环的if更新)和状态转移的更新迭代器(dict.contain(s.substring(j,i)---->dp[i]=true)
+        // i有写错了呢 !!! i要从1开始哦,这样最后一个字符串才能包含进去阿  substring 左闭右开
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = 0; j < i; j++) {
+                if (dp[j] && wordDict.contains(s.substring(j, i))) {
+                    dp[i] = true;
+                    break;
+                }
+            }
+        }
+        return dp[s.length()];
+    }
+
+
+    // leetcode 139 错误做法
+    public boolean wordBreakbad(String s, List<String> wordDict) {
+        splitHelper(s, s.length(), 0, wordDict);
+        return exist;
+    }
+
+    public void splitHelper(String s, int length, int cursor, List<String> wordDict) {
+        if (exist) return;
+        if (cursor > length) exist = false;
+        if (cursor == length) exist = true;
+        System.out.println(s + " " + cursor);
+        String ret = s.substring(cursor);
+        for (String word : wordDict) {
+            if (ret.startsWith(word)) {
+                cursor = cursor + word.length();
+                splitHelper(s, length, cursor, wordDict);
             }
         }
     }

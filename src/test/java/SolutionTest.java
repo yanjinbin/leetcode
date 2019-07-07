@@ -4,6 +4,9 @@ import com.yanjinbin.leetcode.Solution;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SolutionTest {
 
     private static Solution INSTANCE = new Solution();
@@ -156,6 +159,27 @@ public class SolutionTest {
         System.out.println(grid[1][0]);
         System.out.println("length:" + grid.length);
 
+
+        int m = 0;
+        for (int k = 0; k < 10; k++) {
+//            //
+//            int temp = i;
+//            i = i+1;
+//            i = temp;
+
+            m = m++;
+
+
+            m = ++m;
+            System.out.println(m);
+        }
+        System.out.println("m值:\t" + m);
+        System.out.println("abcdimk".substring(3));
+        System.out.println("abcdef".substring(1, 3));
+        String res = "iwowjd";
+        System.out.println(res.substring(2,res.length()));
+        System.out.println(res.substring(res.length()).equals(""));
+
     }
 
     @Test
@@ -235,5 +259,49 @@ public class SolutionTest {
         int[] sums = {0};
         INSTANCE.sortColors(sums);
     }
+
+    @Test
+    public void subset() {
+        int[] sums = {1, 3, 7};
+        List<List<Integer>> res = INSTANCE.subsets1(sums);
+        System.out.println(res);
+        res = INSTANCE.subsets2(sums);
+        System.out.println(res);
+    }
+
+    @Test
+    public void exist() {
+        char[][] board = new char[][]{
+                {'a', 'c', 'd'}, {'e', 'f', 'i'},
+                {'j', 'p', 'w'},
+        };
+        String word = "cpf";
+        System.out.println(INSTANCE.exist(board, word));
+        board = new char[][]{{'a', 'a'},};
+        word = "aaa";
+        System.out.println(INSTANCE.exist(board, word));
+    }
+
+    @Test
+    public void wordBreak() {
+        /*
+        List<String> words = new ArrayList<>();
+        words.add("apple");
+        words.add("pen");
+        words.add("cherry");
+        words.add("melon");
+        String s = "applepencherrypenmelon";
+
+         */
+
+        List<String> words = new ArrayList<>();
+        words.add("car");
+        words.add("ca");
+        words.add("rs");
+        String s = "cars";
+        boolean ret = INSTANCE.wordBreak(s, words);
+        System.out.println(ret);
+    }
+
 
 }
