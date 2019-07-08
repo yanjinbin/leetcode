@@ -1106,8 +1106,44 @@ public class Solution {
     }
 
     // 300. 最长上升子序列
+    // http://bit.ly/2S18Z4A 看动画就能理解为什么了 哈哈
     public int lengthOfLIS(int[] nums) {
-        return 0;
+        if (nums.length == 0) {
+            return 0;
+        }
+        int[] dp = new int[nums.length];
+        dp[0] = 1;
+        int maxLen = 1;
+        for (int i = 1; i < nums.length; i++) {
+            int maxVal = 0;
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    maxVal = Math.max(maxVal, dp[j]);
+                }
+            }
+            dp[i] = maxVal + 1;
+            maxLen = Math.max(dp[i], maxLen);
+        }
+        return maxLen;
+
+    }
+
+    // 审题审错了
+    public int lengthOfLISbad(int[] nums) {
+        int maxLen = 0, prevLen = 0;
+        int start = 0, end = 0;
+        while (end < nums.length - 1) {
+            if (nums[end] < nums[++end]) {
+                maxLen++;
+            } else {
+                //  System.out.println(start + "\t" + end + "\t" + maxLen + "\t" + prevLen);
+                // reset
+                start = end;
+                prevLen = Math.max(maxLen, prevLen);
+                maxLen = 0;
+            }
+        }
+        return prevLen;
     }
 
 
