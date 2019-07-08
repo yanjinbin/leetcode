@@ -259,8 +259,8 @@ public class SolutionTest {
     }
 
     @Test
-    public void findDuplicate(){
-        int[] nums = {1,3,4,6,7,8,3,3};
+    public void findDuplicate() {
+        int[] nums = {1, 3, 4, 6, 7, 8, 3, 3};
         System.out.println(INSTANCE.findDuplicate0(nums));
         System.out.println(INSTANCE.findDuplicate1(nums));
     }
@@ -314,11 +314,29 @@ public class SolutionTest {
         String res = "iwowjd";
         System.out.println(res.substring(2, res.length()));
         System.out.println(res.substring(res.length()).equals(""));
-        int a = 1, b =4, c = 14;
+        int a = 1, b = 4, c = 14;
         System.out.println(a + (c - a) / 2);
         System.out.println((a + c) / 2);
         System.out.println(b + (c - b) / 2);
         System.out.println((b + c) / 2);
+    }
+
+    @Test
+    public void detectedCycle() {
+        ListNode node4 = ListNode.builder().val(-4).build();
+        ListNode node2 = ListNode.builder().val(2).build();
+        ListNode node3 = ListNode.builder().val(0).build();
+        ListNode node1 = ListNode.builder().val(3).build();
+        node1.setNext(node2);
+        node2.setNext(node3);
+        node3.setNext(node4);
+        node4.setNext(node2);
+        System.out.println("ret\t" + INSTANCE.detectCycle0(node1));
+        ListNode node5 = ListNode.builder().val(1).build();
+        System.out.println("====");
+        System.out.println(INSTANCE.detectCycle2(node5));
+        System.out.println(INSTANCE.detectCycle0(null));
+
     }
 
 

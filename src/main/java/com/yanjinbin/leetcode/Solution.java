@@ -968,4 +968,142 @@ public class Solution {
         }
         return right;
     }
+
+    // 递减栈
+    public int[] dailyTemperatures(int[] T) {
+        Stack<Integer> stack = new Stack<>();
+        int[] res = new int[T.length];
+        for (int i = 0; i < T.length; i++) {
+            if (stack.peek() < i) {
+
+            } else {
+
+            }
+        }
+        return res;
+    }
+
+    // https://www.cnblogs.com/grandyang/p/4137302.html
+    // 142. 环形链表 II
+    // 环检测 https://leetcode-cn.com/problems/linked-list-cycle-ii/
+    // 解除环 环长度
+    public ListNode detectCycle0(ListNode head) {
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                // 错误写法
+                // return slow;
+                break;
+            }
+        }
+        //  条件没写全 if (fast != slow)
+        if (fast != slow || fast == null || fast.next == null) return null;
+        slow = head;
+        ListNode m = fast;
+        while (m != slow) {
+            slow = slow.next;
+            m = m.next;
+        }
+        return slow;
+    }
+
+    public ListNode detectCycle1(ListNode head) {
+        ListNode tortoise = head;
+        ListNode hare = head;
+        while (hare != null && hare.next != null) {
+            tortoise = tortoise.next;
+            hare = hare.next.next;
+            if (tortoise == hare) {
+                return tortoise;
+            }
+        }
+
+        return null;
+
+    }
+
+
+    private ListNode getIntersect(ListNode head) {
+        ListNode tortoise = head;
+        ListNode hare = head;
+
+        // A fast pointer will either loop around a cycle and meet the slow
+        // pointer or reach the `null` at the end of a non-cyclic list.
+        while (hare != null && hare.next != null) {
+            //  System.out.println("1");
+            tortoise = tortoise.next;
+            hare = hare.next.next;
+            if (tortoise == hare) {
+                return tortoise;
+            }
+        }
+
+        return null;
+    }
+
+    public ListNode detectCycle2(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+
+        // If there is a cycle, the fast/slow pointers will intersect at some
+        // node. Otherwise, there is no cycle, so we cannot find an e***ance to
+        // a cycle.
+        ListNode intersect = getIntersect(head);
+        if (intersect == null) {
+            return null;
+        }
+
+        // To find the e***ance to the cycle, we have two pointers traverse at
+        // the same speed -- one from the front of the list, and the other from
+        // the point of intersection.
+        ListNode ptr1 = head;
+        ListNode ptr2 = intersect;
+        while (ptr1 != ptr2) {
+            ptr1 = ptr1.next;
+            ptr2 = ptr2.next;
+        }
+        return ptr1;
+
+    }
+
+    // LT 416. 分割等和子集
+    public boolean canPartition(int[] nums) {
+        return false;
+    }
+
+    // 448. 找到所有数组中消失的数字
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        return null;
+    }
+
+    // 560. 和为K的子数组
+    public int subarraySum(int[] nums, int k) {
+        return 0;
+    }
+
+    // 581. 最短无序连续子数组
+    public int findUnsortedSubarray(int[] nums) {
+        return 0;
+    }
+
+    // 647. 回文子串
+    public int countSubstrings(String s) {
+        return 0;
+    }
+
+    // 494. 目标和
+    public int findTargetSumWays(int[] nums, int S) {
+        return 0;
+    }
+
+    // 300. 最长上升子序列
+    public int lengthOfLIS(int[] nums) {
+        return 0;
+    }
+
+
 }

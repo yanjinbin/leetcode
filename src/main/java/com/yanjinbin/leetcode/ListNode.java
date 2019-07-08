@@ -1,18 +1,17 @@
 package com.yanjinbin.leetcode;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ListNode {
 
     int val;
 
+    @ToString.Exclude
     ListNode next;
 
     ListNode(int x) {
