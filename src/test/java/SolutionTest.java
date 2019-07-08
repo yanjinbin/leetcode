@@ -336,7 +336,12 @@ public class SolutionTest {
         System.out.println("====");
         System.out.println(INSTANCE.detectCycle2(node5));
         System.out.println(INSTANCE.detectCycle0(null));
+    }
 
+    @Test
+    public void canPartition(){
+        int[]  nums = {1,5,11,5};
+        System.out.println(INSTANCE.canPartition0(nums));
     }
 
 

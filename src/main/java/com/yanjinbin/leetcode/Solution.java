@@ -1010,22 +1010,6 @@ public class Solution {
         return slow;
     }
 
-    public ListNode detectCycle1(ListNode head) {
-        ListNode tortoise = head;
-        ListNode hare = head;
-        while (hare != null && hare.next != null) {
-            tortoise = tortoise.next;
-            hare = hare.next.next;
-            if (tortoise == hare) {
-                return tortoise;
-            }
-        }
-
-        return null;
-
-    }
-
-
     private ListNode getIntersect(ListNode head) {
         ListNode tortoise = head;
         ListNode hare = head;
@@ -1057,9 +1041,7 @@ public class Solution {
             return null;
         }
 
-        // To find the e***ance to the cycle, we have two pointers traverse at
-        // the same speed -- one from the front of the list, and the other from
-        // the point of intersection.
+        // To find the entrance to the cycle, we have two pointers traverse at
         ListNode ptr1 = head;
         ListNode ptr2 = intersect;
         while (ptr1 != ptr2) {
@@ -1071,9 +1053,32 @@ public class Solution {
     }
 
     // LT 416. 分割等和子集
-    public boolean canPartition(int[] nums) {
+    //
+    public boolean canPartition0(int[] nums) {
+        int sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum = sum + nums[i];
+        }
+        int target = sum / 2;
+        if (sum % 2 == 1) return false;
+        boolean[] dp = new boolean[target + 1];
+        // init
+        dp[0] = true;
+        for (int num : nums) {
+            // 为什么递减不是递增呢 因为递增的化 都为true了阿
+            for (int i = target; i >= num; i--) {
+                System.out.println(i + "\t" + num);
+                dp[i] = dp[i] || dp[i - num];
+            }
+        }
+        return dp[target];
+    }
+
+    public boolean canPartition1(int[] nums) {
+        // todo DP之外 还可以用bitset来解 真滴有意思
         return false;
     }
+
 
     // 448. 找到所有数组中消失的数字
     public List<Integer> findDisappearedNumbers(int[] nums) {
