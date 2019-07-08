@@ -969,6 +969,25 @@ public class Solution {
         return right;
     }
 
+
+    // 448. 找到所有数组中消失的数字
+    // http://bit.ly/2S1ZqT0 这个特么我觉得还是
+    public List<Integer> findDisappearedNumbers(int[] nums) {
+        List<Integer> ret = new ArrayList<Integer>();
+        for (int i = 0; i < nums.length; i++) {
+            int val = Math.abs(nums[i]) - 1;
+            if (nums[val] > 0) {
+                nums[val] = -nums[val];
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] > 0) {
+                ret.add(i + 1);
+            }
+        }
+        return ret;
+    }
+
     // 递减栈
     public int[] dailyTemperatures(int[] T) {
         Stack<Integer> stack = new Stack<>();
@@ -1079,32 +1098,6 @@ public class Solution {
         return false;
     }
 
-
-    // 448. 找到所有数组中消失的数字
-    public List<Integer> findDisappearedNumbers(int[] nums) {
-        return null;
-    }
-
-    // 560. 和为K的子数组
-    public int subarraySum(int[] nums, int k) {
-        return 0;
-    }
-
-    // 581. 最短无序连续子数组
-    public int findUnsortedSubarray(int[] nums) {
-        return 0;
-    }
-
-    // 647. 回文子串
-    public int countSubstrings(String s) {
-        return 0;
-    }
-
-    // 494. 目标和
-    public int findTargetSumWays(int[] nums, int S) {
-        return 0;
-    }
-
     // 300. 最长上升子序列
     // http://bit.ly/2S18Z4A 看动画就能理解为什么了 哈哈
     public int lengthOfLIS(int[] nums) {
@@ -1144,6 +1137,27 @@ public class Solution {
             }
         }
         return prevLen;
+    }
+
+
+    // 560. 和为K的子数组
+    public int subarraySum(int[] nums, int k) {
+        return 0;
+    }
+
+    // 581. 最短无序连续子数组
+    public int findUnsortedSubarray(int[] nums) {
+        return 0;
+    }
+
+    // 647. 回文子串
+    public int countSubstrings(String s) {
+        return 0;
+    }
+
+    // 494. 目标和
+    public int findTargetSumWays(int[] nums, int S) {
+        return 0;
     }
 
 

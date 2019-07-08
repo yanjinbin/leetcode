@@ -339,15 +339,23 @@ public class SolutionTest {
     }
 
     @Test
-    public void canPartition(){
-        int[]  nums = {1,5,11,5};
+    public void canPartition() {
+        int[] nums = {1, 5, 11, 5};
         System.out.println(INSTANCE.canPartition0(nums));
     }
 
     @Test
-    public void lengthOfLIS(){
-        int[] nums = {10,9,2,5,3,7,101,18};
+    public void lengthOfLIS() {
+        int[] nums = {10, 9, 2, 5, 3, 7, 101, 18};
         System.out.println(INSTANCE.lengthOfLIS(nums));
+    }
+
+    @Test
+    public void findDisappearedNumbers() {
+        int[] nums = {1, 2, 5, 2, 1};
+        // https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/discuss/92956/Java-accepted-simple-solution/97460
+        // Each time when a new value X is read, it changes the corresponding Xth number (value at index X-1) into negative, indicating value X is read for the first time.
+        INSTANCE.findDisappearedNumbers(nums);
     }
 
 
