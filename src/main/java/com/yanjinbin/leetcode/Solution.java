@@ -1193,6 +1193,17 @@ public class Solution {
         return major;
     }
 
+    // 283. 移动零
+    public void moveZeroes(int[] nums) {
+        int swapIdx = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != 0) {
+                swap(nums, i, swapIdx);
+                swapIdx++;
+            }
+        }
+    }
+
 
     // 560. 和为K的子数组
     public int subarraySum(int[] nums, int k) {

@@ -363,4 +363,13 @@ public class SolutionTest {
         System.out.println(INSTANCE.majorityElement0(nums));
     }
 
+    @Test
+    public void moveZeros() {
+        int[] nums = {0, 1, 0, 3, 12};
+        INSTANCE.moveZeroes(nums);
+        for (int num : nums) {
+            System.out.println(num);
+        }
+    }
+
 }
