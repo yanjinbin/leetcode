@@ -231,20 +231,6 @@ public class Solution {
         return ans;
     }
 
-    // 121. 买卖股票的最佳时机
-    public int maxProfit(int prices[]) {
-        int minPrice = Integer.MAX_VALUE;
-        int maxProfit = 0;
-        for (int i = 0; i < prices.length; i++) {
-            if (prices[i] < minPrice) {
-                minPrice = prices[i];
-            } else if (prices[i] - minPrice > maxProfit) {
-                maxProfit = prices[i] - minPrice;
-            }
-        }
-        return maxProfit;
-    }
-
     // leetcode 15 3sum
     // https://www.cnblogs.com/grandyang/p/4481576.html
     public List<List<Integer>> threeSum(int[] nums) {
@@ -971,7 +957,7 @@ public class Solution {
 
 
     // 448. 找到所有数组中消失的数字
-    // http://bit.ly/2S1ZqT0 这个特么我觉得还是
+    // http://bit.ly/2S1ZqT0 这个解释的通
     public List<Integer> findDisappearedNumbers(int[] nums) {
         List<Integer> ret = new ArrayList<Integer>();
         for (int i = 0; i < nums.length; i++) {
@@ -1137,6 +1123,74 @@ public class Solution {
             }
         }
         return prevLen;
+    }
+
+    // 121. 买卖股票的最佳时机
+    public int maxProfit(int[] prices) {
+        if (prices.length == 0) return 0;
+        int min = prices[0];
+        int gap = 0;
+        for (int i = 0; i < prices.length; i++) {
+            min = Math.min(min, prices[i]);
+            gap = Math.max(prices[i] - min, gap);
+        }
+        return gap;
+    }
+
+    // 摩尔投票法 仔细想想 还是对的 因为不管如何排列,众数 频次肯定>=1阿  whatever even or odd
+    // 写的还是啰嗦,主要在于初始化步骤
+    // 另外一种哈希算法 就不做了
+    // 还有 分治算法来做
+    public int majorityElement0(int[] nums) {
+        if (nums.length == 0) {
+            return 0;
+        }
+        int cnt = 1;
+        int major = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == major) {
+                cnt++;
+            } else {
+                cnt--;
+                if (cnt == 0) {
+                    major = nums[i];
+                    cnt = 1;
+                }
+            }
+        }
+        return major;
+    }
+
+    public int majorityElement1(int[] nums) {
+        if (nums.length == 0) return 0;
+        int cnt = 0;
+        int major = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (cnt == 0) {
+                //reset
+                major = nums[i];
+                cnt = 1;
+            } else if (major == nums[i]) {
+                cnt++;
+            } else {
+                cnt--;
+            }
+        }
+        return major;
+    }
+
+    public int majorityElement2(int[] nums) {
+        if (nums.length == 0) return 0;
+        int cnt = 0;
+        int major = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (cnt == 0) {
+                //reset
+                major = nums[i];
+            }
+            cnt += (nums[i] == major) ? 1 : -1;
+        }
+        return major;
     }
 
 

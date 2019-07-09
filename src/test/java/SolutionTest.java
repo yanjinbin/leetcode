@@ -1,4 +1,3 @@
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import com.yanjinbin.leetcode.ListNode;
 import com.yanjinbin.leetcode.Solution;
 import org.junit.Before;
@@ -358,5 +357,10 @@ public class SolutionTest {
         INSTANCE.findDisappearedNumbers(nums);
     }
 
+    @Test
+    public void majorElement() {
+        int[] nums = {2, 1, 3, 2, 1, 2, 3, 2};
+        System.out.println(INSTANCE.majorityElement0(nums));
+    }
 
 }
