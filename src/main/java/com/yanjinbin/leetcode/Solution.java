@@ -910,20 +910,6 @@ public class Solution {
         return ret;
     }
 
-    // 递减栈
-    public int[] dailyTemperatures(int[] T) {
-        Stack<Integer> stack = new Stack<>();
-        int[] res = new int[T.length];
-        for (int i = 0; i < T.length; i++) {
-            if (stack.peek() < i) {
-
-            } else {
-
-            }
-        }
-        return res;
-    }
-
     // https://www.cnblogs.com/grandyang/p/4137302.html
     // 142. 环形链表 II
     // 环检测 https://leetcode-cn.com/problems/linked-list-cycle-ii/
@@ -1541,8 +1527,25 @@ public class Solution {
             // 这个方法难看懂  很容易出错阿
             tmp_list.remove(tmp_list.size() - 1);
         }
-
     }
+
+
+    // 739. 每日温度  递增栈
+    public int[] dailyTemperatures(int[] temperatures) {
+        Stack<Integer> stack = new Stack<>();
+        int[] ret = new int[temperatures.length];
+        for (int i = 0; i < temperatures.length; i++) {
+            // 维护一个有序的栈,仔细观察可以 发现 ret[idx]不是按顺序计算出她的等待天数的哦!!
+            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {
+                Integer idx = stack.pop();
+                // 不是ret[i]哦
+                ret[idx] = i - idx;
+            }
+            stack.push(i);
+        }
+        return ret;
+    }
+
 
 }
 

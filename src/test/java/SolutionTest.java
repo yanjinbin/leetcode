@@ -478,5 +478,14 @@ public class SolutionTest {
         System.out.println(INSTANCE.combinationSum1(nums, target));
     }
 
+    @Test
+    public void dailyTemperature() {
+        int[] T = {73, 74, 75, 71, 69, 72, 76, 73};
+        System.out.println(Arrays.toString(T));
+        String ret = Arrays.toString(INSTANCE.dailyTemperatures(T));
+        System.out.println(ret);
+
+    }
+
 
 }
