@@ -487,5 +487,12 @@ public class SolutionTest {
 
     }
 
+    @Test
+    public void largestRectangleArea() {
+        int[] heights = new int[]{2,1,5,6,2,3};
+        System.out.println(INSTANCE.largestRectangleArea0(heights));
+        System.out.println(INSTANCE.largestRectangleArea1(heights));
+
+    }
 
 }

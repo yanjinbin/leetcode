@@ -1546,6 +1546,51 @@ public class Solution {
         return ret;
     }
 
+    // 84. 柱状图中最大的矩形  局部峰值 选取第一个转折点(从大变小的那个点)  O(N²)
+    public int largestRectangleArea0(int[] heights) {
+        int maxArea = 0;
+        for (int i = 0; i < heights.length; i++) {
+            if (i + 1 < heights.length && heights[i] <= heights[i + 1]) continue;
+            int minV = heights[i];
+            for (int j = i; j >= 0; j--) {
+                minV = Math.min(minV, heights[j]);
+                int tmpArea = minV * (i - j + 1);
+                maxArea = Math.max(tmpArea, maxArea);
+            }
+        }
+        return maxArea;
+    }
+
+    // 和解法1 局部峰值思想类似
+    // 优化点在于 内层for循环的时候 j-- 应该在哪里停止的问题 ?
+    //解法2 给出了
+    //输入数组是[2,1,5,6,2,3],
+    //当 j 回退到 值 1 指向的idx 为1 的时候，
+    //就应该停止 比较 面积大小 。因为值1 < 值2
+    //紧接着 idx=5的值2 压入栈
+    // 表现在 stack.pop()和 stack.peek()操作
+    //可以结合博主提供的那篇博文 阅读思考或者debug下
+    //
+    //第二个疑点 为什么h长度 要多+1. 因为， 数组最后一个值 3 右边的值永远是0。这个是必定要进行面积大小比较的。
+    //时间复杂度应该还是O(N²)
+    public int largestRectangleArea1(int[] heights) {
+        Stack<Integer> stack = new Stack<>();
+        int i = 0;
+        int maxArea = 0;
+        int[] h;
+        h = Arrays.copyOf(heights, heights.length + 1);
+        while (i < h.length) {
+            if (stack.isEmpty() || h[stack.peek()] <= h[i]) {
+                stack.push(i);
+                i++;
+            } else {
+                int t = stack.pop();
+                maxArea = Math.max(maxArea, h[t] * (stack.isEmpty() ? i : i - stack.peek() - 1));
+            }
+        }
+        return maxArea;
+    }
+
 
 }
 
