@@ -1,5 +1,6 @@
 package com.yanjinbin.leetcode;
 
+
 import java.util.*;
 
 /**
@@ -85,71 +86,6 @@ public class Solution {
             }
         }
         return false;
-    }
-
-    // #148 归并排序
-    public ListNode sortList(ListNode head) {
-        if (head == null || head.next == null) return head;
-
-        //seperate the list into two parts
-        //Track the last node of first list and point the end to null
-        ListNode prev = null;
-        ListNode slow = head, fast = head;
-        while (fast != null && fast.next != null) {
-            prev = slow;
-            slow = slow.next;
-            fast = fast.next.next;
-        }
-        prev.next = null;
-        ListNode l1 = sortList(head);
-        ListNode l2 = sortList(slow);
-
-        return merge(l1, l2);
-    }
-
-    public ListNode merge(ListNode l1, ListNode l2) {
-        ListNode dummy = new ListNode(0);
-        ListNode l = dummy;
-        while (l1 != null && l2 != null) {
-            if (l1.val < l2.val) {
-                l.next = l1;
-                l1 = l1.next;
-            } else {
-                l.next = l2;
-                l2 = l2.next;
-            }
-            l = l.next;
-        }
-
-        while (l1 != null) {
-            l.next = l1;
-            l1 = l1.next;
-            l = l.next;
-        }
-        while (l2 != null) {
-            l.next = l2;
-            l2 = l2.next;
-            l = l.next;
-        }
-        System.out.println("dummy:" + dummy.val + "next:" + dummy.next);
-        return dummy.next;
-    }
-
-
-    private ListNode merge_1(ListNode l1, ListNode l2) {
-        if (l1 == null) {
-            return l2;
-        }
-        if (l2 == null) {
-            return l1;
-        }
-        if (l1.val <= l2.val) {
-            l1.next = this.merge_1(l1.next, l2);
-            return l1;
-        } else {
-            l2.next = this.merge_1(l1, l2.next);
-            return l2;
-        }
     }
 
     // 234 Palindrome Linked List 回文单链表
@@ -1195,25 +1131,150 @@ public class Solution {
 
     // 283. 移动零
     public void moveZeroes(int[] nums) {
-        int swapIdx = 0;
+        int idx = 0;
         for (int i = 0; i < nums.length; i++) {
             if (nums[i] != 0) {
-                swap(nums, i, swapIdx);
-                swapIdx++;
+                swap(nums, i, idx);
+                idx++;
             }
         }
     }
 
+    // 581. 最短无序连续子数组
+    // 先排序
+    public int findUnsortedSubarray0(int[] nums) {
+        int start = 0, end = nums.length - 1;
+        int[] bak = Arrays.copyOf(nums, nums.length);
+        Arrays.sort(bak);
+        while (start < nums.length && nums[start] == bak[start]) start++;
+        while (end > start && nums[end] == bak[end]) end--;
+        return end - start + 1;
+    }
+
+    public int findUnsortedSubarray1(int[] nums) {
+        int n = nums.length;
+        // -1 和 -2 也是有意义的哦 end-start+1 = 0!!!
+        int start = -1;
+        int end = -2;
+        int mn = nums[n - 1];
+        int mx = nums[0];
+        for (int i = 1; i < n; i++) {
+            mx = Math.max(mx, nums[i]);
+            mn = Math.min(mn, nums[n - 1 - i]);
+            if (mx > nums[i]) end = i;
+            if (mn < nums[n - 1 - i]) start = n - 1 - i;
+        }
+        System.out.println("end" + end + "start" + start);
+        return end - start + 1;
+    }
 
     // 560. 和为K的子数组
+    // corner case
+    // map.put(0,1) 这个为什么需要呢 道友门 注意下列入参
+    //比如 [2,2,2,2,2] k=4 ; [1,3,2,2,4] k=4 ; 以及 [0,0,0,0] k=0
+    //就是从起始数开始求的连续和为K 那么 这种corner case 你就需要 放上map.put(0,1) 0 1可以理解为0出现的次数为1 相当于 sum(0,i)=k --> sum(0,i)-k =0
+    //同理 count +=map.get(sum-k) 而不是count++哈哈
+    //自己可以 画个表格 列出nums[i] sum sum-k 函数count(k) count(sum-k)
+    // 花花酱视频  http://bit.ly/2S3K2We
     public int subarraySum(int[] nums, int k) {
-        return 0;
+        int count = 0, sum = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        //  map.put(0, 1);
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            if (map.containsKey(sum - k))
+                count += map.get(sum - k);
+            map.put(sum, map.getOrDefault(sum, 0) + 1);
+        }
+        return count;
     }
 
-    // 581. 最短无序连续子数组
-    public int findUnsortedSubarray(int[] nums) {
-        return 0;
+    // 56. 合并区间
+    public int[][] merge(int[][] intervals) {
+        if (intervals.length <= 1) return intervals;
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        List<int[]> ret = new ArrayList<>();
+        int[] cursor = intervals[0];
+        ret.add(cursor);
+        for (int[] interval : intervals) {
+            if (cursor[1] >= interval[0]) {// overlap update
+                cursor[1] = Math.max(interval[1], cursor[1]);
+            } else {// disjoint interval ,just add it
+                cursor = interval;
+                ret.add(cursor);
+            }
+        }
+        return ret.toArray(new int[ret.size()][]);
     }
+
+    //  215. 数组中的第K个最大元素
+    // quick sort思想
+    public int findKthLargest0(int[] nums, int k) {
+        int left = 0, right = nums.length - 1;
+        while (true) {
+            int pos = partition(nums, left, right);
+            if (pos == k - 1) return nums[pos];
+            if (pos < k - 1) {
+                left = pos + 1;
+            } else {
+                right = pos - 1;
+            }
+        }
+    }
+
+    public int partition(int[] nums, int lo, int hi) {
+        int pivot = nums[lo];
+        int l = lo + 1, r = hi;
+        while (l <= r) {
+            if (nums[l] < pivot && pivot < nums[r]) {
+                swap(nums, l++, r--);
+            }
+            if (nums[l] > pivot) l++;
+            if (nums[r] < pivot) r--;
+        }
+        swap(nums, lo, r);
+        return r;
+    }
+
+
+    private static boolean less(int v, int w) {
+        if (v == w) return false;   // optimization when reference equals
+        return v - w < 0;
+    }
+
+    private static void exch(int[] nums, int i, int j) {
+        System.out.println("i " + i + " j " + j);
+        int swap = nums[i];
+        nums[i] = nums[j];
+        nums[j] = swap;
+    }
+
+    // 85. 最大矩形
+    public int maximalRectangle(char[][] matrix) {
+        return 1;
+    }
+
+    // leetcode 148 排序链表
+    public ListNode sortList(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode slow = head, fast = head;
+        ListNode prev = head;
+        while (fast != null && fast.next != null) {
+            prev = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        // break
+        prev.next = null;
+        ListNode l1 = sortList(head);
+        ListNode l2 = sortList(slow);
+        ListNode merge = merge(l1, l2);
+        return merge;
+
+    }
+
 
     // 647. 回文子串
     public int countSubstrings(String s) {
@@ -1225,5 +1286,263 @@ public class Solution {
         return 0;
     }
 
+    public ListNode merge(ListNode l1, ListNode l2) {
+        ListNode dummy = new ListNode(0);
+        ListNode l = dummy;
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
+                l.next = l1;
+                l1 = l1.next;
+            } else {
+                l.next = l2;
+                l2 = l2.next;
+            }
+            l = l.next;
+        }
+
+        while (l1 != null) {
+            l.next = l1;
+            l1 = l1.next;
+            l = l.next;
+        }
+        while (l2 != null) {
+            l.next = l2;
+            l2 = l2.next;
+            l = l.next;
+        }
+        // System.out.println("dummy:" + dummy.val + "next:" + dummy.next);
+        return dummy.next;
+    }
+
+
+    int[] nums;
+
+    public void swap(int a, int b) {
+        int tmp = this.nums[a];
+        this.nums[a] = this.nums[b];
+        this.nums[b] = tmp;
+    }
+
+
+    public int partition(int left, int right, int pivot_index) {
+        int pivot = this.nums[pivot_index];
+        // 1. move pivot to end
+        swap(pivot_index, right);
+        int store_index = left;
+
+        // 2. move all smaller elements to the left
+        for (int i = left; i <= right; i++) {
+            if (this.nums[i] < pivot) {
+                swap(store_index, i);
+                store_index++;
+            }
+        }
+
+        // 3. move pivot to its final place
+        swap(store_index, right);
+
+        return store_index;
+    }
+
+    public int quickselect(int left, int right, int k_smallest) {
+    /*
+    Returns the k-th smallest element of list within left..right.
+    */
+
+        if (left == right) // If the list contains only one element,
+            return this.nums[left];  // return that element
+
+        // select a random pivot_index
+        Random random_num = new Random();
+        int pivot_index = left + 1;
+
+        pivot_index = partition(left, right, pivot_index);
+
+        // the pivot is on (N - k)th smallest position
+        if (k_smallest == pivot_index)
+            return this.nums[k_smallest];
+            // go left side
+        else if (k_smallest < pivot_index)
+            return quickselect(left, pivot_index - 1, k_smallest);
+        // go right side
+        return quickselect(pivot_index + 1, right, k_smallest);
+    }
+
+    public int findKthLargest1(int[] nums, int k) {
+        this.nums = nums;
+        int size = nums.length;
+        // kth largest is (N - k)th smallest
+        return quickselect(0, size - 1, size - k);
+    }
+
+    //  大小堆来做
+    public int findKthLargest2(int[] nums, int k) {
+        // init heap 'the smallest element first'
+        PriorityQueue<Integer> heap = new PriorityQueue<Integer>(Comparator.comparingInt(n -> n));
+
+        // keep k largest elements in the heap
+        for (int n : nums) {
+            heap.add(n);
+            if (heap.size() > k)
+                heap.poll();
+        }
+
+        // output
+        return heap.poll();
+    }
+
+    //  238. 除自身以外数组的乘积 至少需要2次遍历来
+    public int[] productExceptSelf(int[] nums) {
+        int size = nums.length;
+        int[] res = new int[size];
+        int[] l = new int[size];
+        int[] r = new int[size];
+        l[0] = 1;
+        r[size - 1] = 1;
+        for (int i = 1; i < size; i++) {
+            l[i] = l[i - 1] * nums[i - 1];
+            r[size - 1 - i] = r[size - i] * nums[size - i];
+
+        }
+        for (int i = 0; i < size; i++) {
+            res[i] = l[i] * r[i];
+        }
+        // System.out.println(Arrays.toString(res));
+        return res;
+    }
+
+    // 33. 搜索旋转排序数组
+    public int search(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == target) return mid;
+            if (nums[mid] < nums[right]) {
+                if (nums[mid] < target && nums[right] >= target) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            } else {
+                if (target >= nums[left] && target < nums[mid]) {
+                    right = mid - 1;
+                } else {
+                    left = mid + 1;
+                }
+            }
+        }
+        return -1;
+    }
+
+
+    // 34. 在排序数组中查找元素的第一个和最后一个位置
+    //  这个方法相当low逼阿 哈哈
+    // 看别人的解题思路 有一种卧槽 还可以这样子的感觉!
+    int minIdx = Integer.MAX_VALUE;
+    int maxIdx = Integer.MIN_VALUE;
+
+    public int[] searchRange0(int[] nums, int target) {
+        if (nums.length == 0) {
+            return new int[]{-1, -1};
+        }
+        int left = 0, right = nums.length - 1;
+        search(nums, left, right, target);
+        if (minIdx == Integer.MAX_VALUE || maxIdx == Integer.MAX_VALUE) return new int[]{-1, -1};
+        return new int[]{minIdx, maxIdx};
+    }
+
+    public void search(int[] nums, int left, int right, int target) {
+        int mid = left + (right - left) / 2;
+        if (left > right) {
+            return;
+        }
+        if (left == right) {
+            if (nums[left] == target) {
+                maxIdx = Math.max(maxIdx, mid);
+                minIdx = Math.min(minIdx, mid);
+            }
+            return;
+        }
+        if (nums[mid] < target) {
+            search(nums, mid + 1, right, target);
+        } else if (nums[mid] > target) {
+            search(nums, left, mid - 1, target);
+        } else if (nums[mid] == target) {
+            maxIdx = Math.max(maxIdx, mid);
+            minIdx = Math.min(minIdx, mid);
+            search(nums, mid + 1, right, target);
+            search(nums, left, mid - 1, target);
+        }
+    }
+/*
+    public int[] searchRange1(int[] nums, int target) {
+
+    }
+
+    public int searchBinary(int[] nums, int target) {
+        int left = 0, right = nums.length - 1;
+        int mid = left + (right - left) >> 2;
+        while (left <= right) {
+            if (nums[mid] < target) {
+                left = mid + 1;
+            } else if (nums[mid] > target) {
+                right = mid - 1;
+            } else if (nums[mid] == target) {
+                left++;
+               // searchBinary(nums,left,right)
+            }
+        }
+        return left;
+    }*/
+
+    // 62. 不同路径
+    public int uniquePaths(int m, int n) {
+        int count = 0;
+        int[][] memo = new int[m + 1][n + 1];
+        return path(m, n, memo);
+    }
+
+    public int path(int i, int j, int[][] memo) {
+        if (memo[i][j] > 0) {
+            return memo[i][j];
+        }
+        if (i == 1 && j == 1) {
+            return memo[i][j] = 1;
+        }
+        if (j > 1) {
+            memo[i][j] += path(i, j - 1, memo);
+        }
+        if (i > 1) {
+            memo[i][j] += path(i - 1, j, memo);
+        }
+        return memo[i][j];
+    }
+
+
+    //39. 组合总和
+
+    // http://bit.ly/2XHHBi2  这个方法感觉还是不够优雅阿
+    public List<List<Integer>> combinationSum1(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(candidates);
+        backtrack(candidates, target, res, 0, new ArrayList<Integer>());
+        return res;
+    }
+
+    private void backtrack(int[] candidates, int target, List<List<Integer>> res, int i, ArrayList<Integer> tmp_list) {
+        if (target < 0) return;
+        if (target == 0) {
+            res.add(tmp_list);
+        }
+        for (int start = i; start < candidates.length; start++) {
+            target = target - candidates[i];
+            tmp_list.add(candidates[i]);
+            backtrack(candidates, target, res, start, tmp_list);
+            // 这个方法难看懂  很容易出错阿
+            tmp_list.remove(tmp_list.size() - 1);
+        }
+
+    }
 
 }
+

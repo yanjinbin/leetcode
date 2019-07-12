@@ -3,8 +3,7 @@ import com.yanjinbin.leetcode.Solution;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class SolutionTest {
 
@@ -267,6 +266,17 @@ public class SolutionTest {
 
     @Test
     public void misc() {
+
+        int[][] intervals = new int[][]{{1, 2}, {10, 12}, {8, 9}, {3, 9}};
+        Arrays.sort(intervals, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[0] - o2[0];
+            }
+        });
+        for (int i = 0; i < intervals.length; i++) {
+            System.out.println(intervals[i][0] + "\t" + intervals[i][1]);
+        }
         String substring = "ab4je9kcd".substring(1, 3);
         System.out.println(substring);
         int i = 1;
@@ -371,5 +381,102 @@ public class SolutionTest {
             System.out.println(num);
         }
     }
+
+    @Test
+    public void mergeIntervals() {
+        int[][] intervals = new int[][]{{1, 2}, {10, 12}, {8, 9}, {3, 9}};
+        System.out.println(INSTANCE.merge(intervals));
+    }
+
+    @Test
+    public void findUnsortedSubarray() {
+        //  int[] nums = {2, 6, 4, 8, 10, 9, 15};
+        int[] nums = {1, 2, 3, 4};
+        System.out.println(INSTANCE.findUnsortedSubarray0(nums));
+        int[] nums1 = {9, 8, 7, 6, 12, 13, 15};
+        System.out.println(INSTANCE.findUnsortedSubarray1(nums1));
+    }
+
+    @Test
+    public void subarraySum() {
+        int[] nums = {1, 3, 4, 2, 1, 5, 1, 1, 4, 2, 3, 6, 1};
+        System.out.println(INSTANCE.subarraySum(nums, 7));
+    }
+
+    @Test
+    public void mergeTwoSortedList() {
+        ListNode node1 =
+                ListNode.builder().val(1).next(
+                        ListNode.builder().val(3).next(
+                                ListNode.builder().val(5).next(
+                                        ListNode.builder().val(7).build()).build()).build()).build();
+
+        ListNode node2 = ListNode.builder().val(2).next
+                (ListNode.builder().val(4).next(
+                        ListNode.builder().val(6).next(
+                                ListNode.builder().val(8).next(
+                                        ListNode.builder().val(10).next(
+                                                ListNode.builder().val(14).build()).build()).build()).build()).build()).build();
+        System.out.println(INSTANCE.merge(node1, node2));
+
+    }
+
+    @Test
+    public void sort() {
+        int[] nums = new int[]{7, 5, 1, 6, 4, 3, 8,};
+        System.out.println(INSTANCE.partition(nums, 0, nums.length - 1));
+        System.out.println(Arrays.toString(nums));
+    }
+
+    @Test
+    public void findKthLargest() {
+        int[] nums = new int[]{7, 5, 1, 6, 4, 3, 8,};
+        System.out.println(INSTANCE.findKthLargest0(nums, 3));
+        System.out.println(INSTANCE.findKthLargest1(nums, 5));
+        System.out.println(INSTANCE.findKthLargest2(nums, 4));
+    }
+
+    @Test
+    public void productExceptSelf() {
+        int[] nums = new int[]{1, 2, 3, 4};
+        INSTANCE.productExceptSelf(nums);
+        INSTANCE.productExceptSelf(nums);
+    }
+
+    @Test
+    public void searchRange() {
+        int[] nums = new int[]{5, 7, 7, 8, 8, 10};
+        int target = 8;
+        System.out.println(Arrays.toString(INSTANCE.searchRange0(nums, 8)));
+
+        nums = new int[]{2, 2};
+        target = 1;
+
+        nums = new int[]{};
+        target = 1;
+    }
+
+    @Test
+    public void uniquePath() {
+        int count = INSTANCE.uniquePaths(7, 3);
+        assert count == 28;
+    }
+
+    @Test
+    public void combinationSum() {
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(9);
+        list.add(119);
+        list.add(23);
+        list.add(37);
+        System.out.println(list.get(list.size() - 1));
+        System.out.println(list.remove(list.size() - 1));
+
+        int[] nums = {2, 3, 5};
+        int target = 7;
+        System.out.println(INSTANCE.combinationSum1(nums, target));
+    }
+
 
 }

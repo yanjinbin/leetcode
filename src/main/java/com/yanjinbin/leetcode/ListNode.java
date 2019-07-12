@@ -11,7 +11,6 @@ public class ListNode {
 
     int val;
 
-    @ToString.Exclude
     ListNode next;
 
     ListNode(int x) {
