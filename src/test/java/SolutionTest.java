@@ -1,5 +1,6 @@
 import com.yanjinbin.leetcode.ListNode;
 import com.yanjinbin.leetcode.Solution;
+import com.yanjinbin.leetcode.TreeNode;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -512,5 +513,36 @@ public class SolutionTest {
         int[] nums = {100, 1, 200, 3, 4, 2};
         assert INSTANCE.longestConsecutive(nums) == 4;
         //System.out.println(INSTANCE.longestConsecutive(nums));
+    }
+
+    @Test
+    public void inorderTraversal() {
+        /*
+        TreeNode root = TreeNode.builder().val(1).build();
+        TreeNode node2 = TreeNode.builder().val(2).build();
+        TreeNode node3 = TreeNode.builder().val(3).build();
+        root.setRight(node2);
+        node2.setLeft(node3);
+        */
+
+        //
+
+        TreeNode F = TreeNode.builder().name("F").build();
+        TreeNode B = TreeNode.builder().name("B").build();
+        TreeNode G = TreeNode.builder().name("G").build();
+        TreeNode A = TreeNode.builder().name("A").build();
+        TreeNode D = TreeNode.builder().name("D").build();
+        TreeNode I = TreeNode.builder().name("I").build();
+        TreeNode C = TreeNode.builder().name("C").build();
+        TreeNode E = TreeNode.builder().name("E").build();
+        TreeNode H = TreeNode.builder().name("H").build();
+
+        F.setLeft(B);F.setRight(G);
+        B.setLeft(A);B.setRight(D);
+        D.setLeft(C);D.setRight(E);
+        G.setRight(I);
+        I.setLeft(H);
+
+        System.out.println(INSTANCE.inorderTraversal0(F));
     }
 }

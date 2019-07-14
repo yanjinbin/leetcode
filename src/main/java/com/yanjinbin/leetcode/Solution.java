@@ -1,6 +1,5 @@
 package com.yanjinbin.leetcode;
 
-
 import java.util.*;
 
 /**
@@ -1653,6 +1652,21 @@ public class Solution {
         }
         return res;
 
+    }
+
+    //  接下去 进入 二叉树专题
+    // 94. 二叉树的中序遍历 递归做法
+    public List<String> inorderTraversal0(TreeNode root) {
+        List<String> ret = new ArrayList<>();
+        inorderHelper(root, ret);
+        return ret;
+    }
+
+    private void inorderHelper(TreeNode root, List<String> ret) {
+        if (root == null) return;
+        inorderHelper(root.left, ret);
+        ret.add(root.name);
+        inorderHelper(root.right, ret);
     }
 
 
