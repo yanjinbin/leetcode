@@ -489,10 +489,28 @@ public class SolutionTest {
 
     @Test
     public void largestRectangleArea() {
-        int[] heights = new int[]{2,1,5,6,2,3};
+        int[] heights = new int[]{2, 1, 5, 6, 2, 3};
         System.out.println(INSTANCE.largestRectangleArea0(heights));
         System.out.println(INSTANCE.largestRectangleArea1(heights));
-
     }
 
+    @Test
+    public void maximalRectangle() {
+        char[][] matrix = new char[][]{
+                {'0', '1', '0', '1', '1'},
+                {'0', '1', '1', '1', '0'},
+                {'0', '0', '1', '1', '1'},
+                {'0', '1', '1', '1', '1'},
+                {'0', '1', '1', '1', '0'},
+        };
+        // System.out.println(INSTANCE.maximalRectangle0(matrix));
+        assert INSTANCE.maximalRectangle0(matrix) == 8;
+    }
+
+    @Test
+    public void longestConsecutive() {
+        int[] nums = {100, 1, 200, 3, 4, 2};
+        assert INSTANCE.longestConsecutive(nums) == 4;
+        //System.out.println(INSTANCE.longestConsecutive(nums));
+    }
 }

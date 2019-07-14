@@ -1235,11 +1235,6 @@ public class Solution {
         nums[j] = swap;
     }
 
-    // 85. 最大矩形
-    public int maximalRectangle(char[][] matrix) {
-        return 1;
-    }
-
     // leetcode 148 排序链表
     public ListNode sortList(ListNode head) {
         if (head == null || head.next == null) {
@@ -1589,6 +1584,75 @@ public class Solution {
             }
         }
         return maxArea;
+    }
+
+    // 85. 最大矩形
+    public int maximalRectangle0(char[][] matrix) {
+        int res = 0;
+        int length = 0;
+        int[] height = new int[length];
+        for (int i = 0; i < matrix.length; i++) {
+            // reset
+            height = Arrays.copyOf(height, Math.max(length, matrix[i].length));
+            for (int j = 0; j < matrix[i].length; j++) {
+                height[j] = (matrix[i][j] == '0' ? 0 : (height[j] + 1));
+            }
+            res = Math.max(res, largestRectangleArea1(height));
+        }
+        return res;
+    }
+
+    //todo 其他解法待做 http://bit.ly/2Ga4HmE
+    public int maximalRectangle(char[][] matrix) {
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        int res = 0;
+        int[][] hMax = new int[matrix.length][];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                if (matrix[i][j] == '0') continue;
+                if (j > 0) {
+                    hMax[i][j] = hMax[i][j - 1] + 1;
+                } else {
+                    hMax[i][0] = 1;
+                }
+
+            }
+        }
+        // todo 哈
+        return 1;
+    }
+
+    //128. 最长连续序列 map set solve
+
+    public int longestConsecutive(int[] nums) {
+        int res = 0;
+        Set<Integer> set = new HashSet<>(nums.length);
+        for (int num : nums) {
+            set.add(num);
+        }
+
+        for (int num : nums) {
+
+            int cmp = 1;
+            set.remove(num);
+            int left = num - 1;
+            while (set.contains(left)) {
+                set.remove(left);
+                cmp++;
+                left--;
+            }
+            int right = num + 1;
+            while (set.contains(right)) {
+                set.remove(right);
+                cmp++;
+                right++;
+            }
+            res = Math.max(res, cmp);
+        }
+        return res;
+
     }
 
 
