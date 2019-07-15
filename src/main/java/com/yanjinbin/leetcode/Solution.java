@@ -1747,7 +1747,7 @@ public class Solution {
         if (root == null) {
             return;
         }
-        // 为什么要夹着一个呢 因为阿  index >= size的时候 就会包index out of range 错误了 tips 值得注意的点
+        // 为什么要加上这一判断呢 因为阿  index >= size的时候 就会包index out of range 错误了 tips 值得注意的点
         if (ret.size() == level) {
             ret.add(new ArrayList<>());
         }
@@ -1756,5 +1756,47 @@ public class Solution {
         levelHelper(root.left, level + 1, ret);
         levelHelper(root.right, level + 1, ret);
     }
+
+    // 144. 二叉树的前序遍历 递归玩法
+    public List<Integer> preorderTraversal0(TreeNode root) {
+        List<Integer> ret = new ArrayList<>();
+        preorderHelper(root, ret);
+        return ret;
+    }
+
+    public void preorderHelper(TreeNode root, List<Integer> ret) {
+        if (root == null) return;
+        ret.add(root.val);
+        preorderHelper(root.left, ret);
+        preorderHelper(root.right, ret);
+    }
+
+    // 144. 二叉树的前序遍历 栈的做法
+    public List<Integer> preorderTraversal1(TreeNode root) {
+        if (root == null) return Collections.EMPTY_LIST;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.add(root);
+        List<Integer> ret = new ArrayList<>();
+        while (!stack.isEmpty()) {
+            TreeNode cur = stack.pop();
+            ret.add(cur.val);
+            // 先压入右边的因为右边的后访问阿
+            if (cur.right != null) {
+                stack.push(cur.right);
+            }
+            if (cur.left != null) {
+                stack.push(cur.left);
+            }
+        }
+        return ret;
+    }
+
+
+    // 124. 二叉树中的最大路径和
+    public int maxPathSum(TreeNode root) {
+        return 1;
+    }
+
+
 }
 

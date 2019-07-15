@@ -516,7 +516,7 @@ public class SolutionTest {
     }
 
     @Test
-    public void inorderTraversal() {
+    public void traversal() {
 
         TreeNode root = TreeNode.builder().val(1).build();
         TreeNode node2 = TreeNode.builder().val(2).build();
@@ -544,36 +544,10 @@ public class SolutionTest {
         G.setRight(I);
         I.setLeft(H);
 
-        // System.out.println(INSTANCE.inorderTraversal0(F));
-        // System.out.println(INSTANCE.inorderTraversal1(root));
+        System.out.println("====中序遍历=====");
+        System.out.println(INSTANCE.inorderTraversal0(F));
+        System.out.println(INSTANCE.inorderTraversal1(root));
         System.out.println(INSTANCE.inorderTraversal2(F));
-    }
-
-    @Test
-    public void levelOrder() {
-
-
-        TreeNode F = TreeNode.builder().name("F").val(1).build();
-        TreeNode B = TreeNode.builder().name("B").val(2).build();
-        TreeNode G = TreeNode.builder().name("G").val(3).build();
-        TreeNode A = TreeNode.builder().name("A").val(4).build();
-        TreeNode D = TreeNode.builder().name("D").val(5).build();
-        TreeNode I = TreeNode.builder().name("I").val(6).build();
-        TreeNode C = TreeNode.builder().name("C").val(7).build();
-        TreeNode E = TreeNode.builder().name("E").val(8).build();
-        TreeNode H = TreeNode.builder().name("H").val(9).build();
-
-        F.setLeft(B);
-        F.setRight(G);
-        B.setLeft(A);
-        B.setRight(D);
-        D.setLeft(C);
-        D.setRight(E);
-        G.setRight(I);
-        I.setLeft(H);
-        List<List<Integer>> ret = INSTANCE.levelOrder0(F);
-        System.out.println(ret);
-        System.out.println("=========");
 
 
         TreeNode a = TreeNode.builder().name("a").val(3).build();
@@ -587,12 +561,39 @@ public class SolutionTest {
         b.setRight(null);
         c.setLeft(d);
         c.setRight(e);
+
+        System.out.println("=====层次遍历====");
+        System.out.println(INSTANCE.levelOrder0(F));
         System.out.println(INSTANCE.levelOrder1(a));
-        List<Integer> list = new ArrayList<>(1);
-        System.out.println(list.size());
-        System.out.println(list.isEmpty());
-        System.out.println(list.get(0));
 
 
     }
+
+
+    @Test
+    public void preorder() {
+
+        TreeNode F = TreeNode.builder().name("F").val(6).build();
+        TreeNode B = TreeNode.builder().name("B").val(2).build();
+        TreeNode G = TreeNode.builder().name("G").val(7).build();
+        TreeNode A = TreeNode.builder().name("A").val(1).build();
+        TreeNode D = TreeNode.builder().name("D").val(4).build();
+        TreeNode I = TreeNode.builder().name("I").val(9).build();
+        TreeNode C = TreeNode.builder().name("C").val(3).build();
+        TreeNode E = TreeNode.builder().name("E").val(5).build();
+        TreeNode H = TreeNode.builder().name("H").val(8).build();
+
+        F.setLeft(B);
+        F.setRight(G);
+        B.setLeft(A);
+        B.setRight(D);
+        D.setLeft(C);
+        D.setRight(E);
+        G.setRight(I);
+        I.setLeft(H);
+        System.out.println("======前序遍历=====");
+        System.out.println(INSTANCE.preorderTraversal0(F));
+        System.out.println(INSTANCE.preorderTraversal1(F));
+    }
+
 }
