@@ -1680,8 +1680,7 @@ public class Solution {
                 stack.push(cur);
                 cur = cur.left;
             }
-            cur = stack.peek();
-            stack.pop();
+            cur = stack.pop();
             ret.add(cur.val);
             cur = cur.right;
         }
@@ -1789,6 +1788,46 @@ public class Solution {
             }
         }
         return ret;
+    }
+
+    // 145. 二叉树的后序遍历 https://www.cnblogs.com/grandyang/p/4251757.html
+    public List<Integer> postorderTraversal0(TreeNode root) {
+        List<Integer> ret = new ArrayList<>();
+        postorderHelper(root, ret);
+        return ret;
+    }
+
+    public void postorderHelper(TreeNode root, List<Integer> ret) {
+        if (root == null) return;
+        postorderHelper(root.left, ret);
+        postorderHelper(root.right, ret);
+        ret.add(root.val);
+    }
+
+    public List<Integer> postorderTraversal1(TreeNode root) {
+        List<Integer> ret = new ArrayList<>();
+        if (root == null) return ret;
+        Stack<TreeNode> stack = new Stack<>();
+        stack.push(root);
+        // 后续遍历可以首先想到的就是 左右子树均为null--->向上搜寻 出现 左右子树一个为空的时候 你需要 标识上次的递归 必须是左右子树为null
+        TreeNode flag = root;
+        while (!stack.isEmpty()) {
+            TreeNode t = stack.peek();
+            if ((t.right == null && t.left == null) || t.left == flag || t.right == flag) {
+                ret.add(t.val);
+                stack.pop();
+                flag = t;
+            } else {
+                if (t.right != null) stack.push(t.right);
+                if (t.left != null) stack.push(t.left);
+            }
+        }
+        return ret;
+    }
+
+    // follow up  590. N叉树的后序遍历
+    public List<Integer> postorder(Node root) {
+        return null;
     }
 
 

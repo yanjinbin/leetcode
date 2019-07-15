@@ -597,4 +597,30 @@ public class SolutionTest {
         System.out.println(INSTANCE.preorderTraversal1(F));
     }
 
+    @Test(timeout = 3000)
+    public void postorder() {
+
+        TreeNode F = TreeNode.builder().name("F").val(6).build(); // ROOT
+        TreeNode B = TreeNode.builder().name("B").val(2).build();
+        TreeNode G = TreeNode.builder().name("G").val(7).build();
+        TreeNode A = TreeNode.builder().name("A").val(1).build();
+        TreeNode D = TreeNode.builder().name("D").val(4).build();
+        TreeNode I = TreeNode.builder().name("I").val(9).build();
+        TreeNode C = TreeNode.builder().name("C").val(3).build();
+        TreeNode E = TreeNode.builder().name("E").val(5).build();
+        TreeNode H = TreeNode.builder().name("H").val(8).build();
+
+        F.setLeft(B);
+        F.setRight(G);
+        B.setLeft(A);
+        B.setRight(D);
+        D.setLeft(C);
+        D.setRight(E);
+        G.setRight(I);
+        I.setLeft(H);
+        System.out.println("===后续遍历===");
+        System.out.println(INSTANCE.postorderTraversal0(F));
+        System.out.println(INSTANCE.postorderTraversal1(F));
+    }
+
 }
