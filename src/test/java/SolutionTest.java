@@ -3,6 +3,7 @@ import com.yanjinbin.leetcode.Solution;
 import com.yanjinbin.leetcode.TreeNode;
 import org.junit.Before;
 import org.junit.Test;
+import org.omg.CORBA.TIMEOUT;
 
 import java.util.*;
 
@@ -13,7 +14,7 @@ public class SolutionTest {
     private ListNode headNode;
     private ListNode demoNode;
 
-    @Before
+    @Before()
     public void init() {
         headNode = ListNode.builder()
                 .val(9).next(ListNode.builder()
@@ -515,7 +516,7 @@ public class SolutionTest {
         //System.out.println(INSTANCE.longestConsecutive(nums));
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void traversal() {
 
         TreeNode root = TreeNode.builder().val(1).build();
@@ -570,7 +571,7 @@ public class SolutionTest {
     }
 
 
-    @Test
+    @Test(timeout = 1000)
     public void preorder() {
 
         TreeNode F = TreeNode.builder().name("F").val(6).build();
