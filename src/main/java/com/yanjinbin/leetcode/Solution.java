@@ -1714,5 +1714,47 @@ public class Solution {
         return ret;
     }
 
+    // 102. 二叉树的层次遍历
+    public List<List<Integer>> levelOrder0(TreeNode root) {
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        List<List<Integer>> ret = new ArrayList<>();
+        while (!queue.isEmpty()) {
+            List<Integer> subSet = new ArrayList<>();
+            int len = queue.size();
+            for (int i = 0; i < len; i++) {
+                TreeNode node = queue.poll();
+                subSet.add(node.val);
+                if (node.left != null) queue.add(node.left);
+                if (node.right != null) queue.add(node.right);
+
+            }
+            if (!subSet.isEmpty()) {
+                ret.add(subSet);
+            }
+        }
+        return ret;
+    }
+
+    // 递归做法
+    public List<List<Integer>> levelOrder1(TreeNode root) {
+        List<List<Integer>> ret = new ArrayList<>();
+        levelHelper(root, 0, ret);
+        return ret;
+    }
+
+    public void levelHelper(TreeNode root, int level, List<List<Integer>> ret) {
+        if (root == null) {
+            return;
+        }
+        // 为什么要夹着一个呢 因为阿  index >= size的时候 就会包index out of range 错误了 tips 值得注意的点
+        if (ret.size() == level) {
+            ret.add(new ArrayList<>());
+        }
+
+        ret.get(level).add(root.val);
+        levelHelper(root.left, level + 1, ret);
+        levelHelper(root.right, level + 1, ret);
+    }
 }
 

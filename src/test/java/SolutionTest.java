@@ -548,4 +548,51 @@ public class SolutionTest {
         // System.out.println(INSTANCE.inorderTraversal1(root));
         System.out.println(INSTANCE.inorderTraversal2(F));
     }
+
+    @Test
+    public void levelOrder() {
+
+
+        TreeNode F = TreeNode.builder().name("F").val(1).build();
+        TreeNode B = TreeNode.builder().name("B").val(2).build();
+        TreeNode G = TreeNode.builder().name("G").val(3).build();
+        TreeNode A = TreeNode.builder().name("A").val(4).build();
+        TreeNode D = TreeNode.builder().name("D").val(5).build();
+        TreeNode I = TreeNode.builder().name("I").val(6).build();
+        TreeNode C = TreeNode.builder().name("C").val(7).build();
+        TreeNode E = TreeNode.builder().name("E").val(8).build();
+        TreeNode H = TreeNode.builder().name("H").val(9).build();
+
+        F.setLeft(B);
+        F.setRight(G);
+        B.setLeft(A);
+        B.setRight(D);
+        D.setLeft(C);
+        D.setRight(E);
+        G.setRight(I);
+        I.setLeft(H);
+        List<List<Integer>> ret = INSTANCE.levelOrder0(F);
+        System.out.println(ret);
+        System.out.println("=========");
+
+
+        TreeNode a = TreeNode.builder().name("a").val(3).build();
+        TreeNode b = TreeNode.builder().name("b").val(9).build();
+        TreeNode c = TreeNode.builder().name("c").val(20).build();
+        TreeNode d = TreeNode.builder().name("d").val(15).build();
+        TreeNode e = TreeNode.builder().name("e").val(7).build();
+        a.setLeft(b);
+        a.setRight(c);
+        b.setLeft(null);
+        b.setRight(null);
+        c.setLeft(d);
+        c.setRight(e);
+        System.out.println(INSTANCE.levelOrder1(a));
+        List<Integer> list = new ArrayList<>(1);
+        System.out.println(list.size());
+        System.out.println(list.isEmpty());
+        System.out.println(list.get(0));
+
+
+    }
 }
