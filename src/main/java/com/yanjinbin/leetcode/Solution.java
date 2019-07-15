@@ -1656,6 +1656,7 @@ public class Solution {
 
     //  接下去 进入 二叉树专题
     // 94. 二叉树的中序遍历 递归做法
+    // tips: 搞清楚 树的迭代是有轮回的 也就是说 中序遍历的左右子树要看清楚是哪个部分,子树层层递进的起点
     public List<String> inorderTraversal0(TreeNode root) {
         List<String> ret = new ArrayList<>();
         inorderHelper(root, ret);
@@ -1669,6 +1670,49 @@ public class Solution {
         inorderHelper(root.right, ret);
     }
 
+    // 解法2  栈来做
+    public List<Integer> inorderTraversal1(TreeNode root) {
+        List<Integer> ret = new ArrayList<>();
+        Stack<TreeNode> stack = new Stack<>();
+        TreeNode cur = root;
+        while (cur != null || !stack.isEmpty()) {
+            while (cur != null) {
+                stack.push(cur);
+                cur = cur.left;
+            }
+            cur = stack.peek();
+            stack.pop();
+            ret.add(cur.val);
+            cur = cur.right;
+        }
+        return ret;
+    }
+
+    // 解法 3 Morris遍历算法 todo 有点绕 ,  理解起来很麻烦 http://bit.ly/2jXmyW5
+    public List<Integer> inorderTraversal2(TreeNode root) {
+        List<Integer> ret = new ArrayList<>();
+        while (root != null) {
+            if (root.left == null) {
+                ret.add(root.val);
+                root = root.right;
+            } else {
+                TreeNode pre = root.left;
+                while (pre.right != null && pre.right != root) {
+                    pre = pre.right;
+                }
+                if (pre.right == null) {
+                    pre.right = root;
+                    root = root.left;
+                } else {
+                    pre.right = null;
+                    ret.add(root.val);
+                    root = root.right;
+                }
+            }
+
+        }
+        return ret;
+    }
 
 }
 

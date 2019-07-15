@@ -517,15 +517,13 @@ public class SolutionTest {
 
     @Test
     public void inorderTraversal() {
-        /*
+
         TreeNode root = TreeNode.builder().val(1).build();
         TreeNode node2 = TreeNode.builder().val(2).build();
         TreeNode node3 = TreeNode.builder().val(3).build();
         root.setRight(node2);
         node2.setLeft(node3);
-        */
 
-        //
 
         TreeNode F = TreeNode.builder().name("F").build();
         TreeNode B = TreeNode.builder().name("B").build();
@@ -537,12 +535,17 @@ public class SolutionTest {
         TreeNode E = TreeNode.builder().name("E").build();
         TreeNode H = TreeNode.builder().name("H").build();
 
-        F.setLeft(B);F.setRight(G);
-        B.setLeft(A);B.setRight(D);
-        D.setLeft(C);D.setRight(E);
+        F.setLeft(B);
+        F.setRight(G);
+        B.setLeft(A);
+        B.setRight(D);
+        D.setLeft(C);
+        D.setRight(E);
         G.setRight(I);
         I.setLeft(H);
 
-        System.out.println(INSTANCE.inorderTraversal0(F));
+        // System.out.println(INSTANCE.inorderTraversal0(F));
+        // System.out.println(INSTANCE.inorderTraversal1(root));
+        System.out.println(INSTANCE.inorderTraversal2(F));
     }
 }
