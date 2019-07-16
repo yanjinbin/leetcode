@@ -9,9 +9,9 @@ import lombok.*;
 @AllArgsConstructor
 public class TreeNode {
     int val;
-    @ToString.Exclude
+
     TreeNode left;
-    @ToString.Exclude
+
     TreeNode right;
     // extra
     String name;

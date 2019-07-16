@@ -645,7 +645,7 @@ public class SolutionTest {
     }
 
 
-    @Test
+    @Test(timeout = 2000)
     public void isValidBST() {
         TreeNode root = TreeNode.builder().val(2).name("A").build();
         TreeNode node0 = TreeNode.builder().val(1).name("B").build();
@@ -654,5 +654,45 @@ public class SolutionTest {
         root.setRight(node1);
         assert INSTANCE.isValidBST0(root) == true;
         assert INSTANCE.isValidBST0(TreeNode.builder().val(Integer.MAX_VALUE).build()) == true;
+    }
+
+    @Test(timeout = 2000)
+    public void isSymmetric() {
+        assert (true ^ true) == false;
+        assert (false ^ false) == false;
+        assert (true ^ false) == true;
+
+        TreeNode root = TreeNode.builder().val(2).name("A").build();
+        TreeNode node0 = TreeNode.builder().val(3).name("B").build();
+        TreeNode node1 = TreeNode.builder().val(3).name("B").build();
+        root.setLeft(node0);
+        root.setRight(node1);
+        assert INSTANCE.isSymmetric(root) == true;
+    }
+
+    @Test(timeout = 2000)
+    public void flatten() {
+        TreeNode a = TreeNode.builder().name("a").val(1).build();
+        TreeNode b = TreeNode.builder().name("b").val(2).build();
+        TreeNode c = TreeNode.builder().name("c").val(3).build();
+        TreeNode d = TreeNode.builder().name("d").val(4).build();
+        TreeNode e = TreeNode.builder().name("e").val(5).build();
+        TreeNode f = TreeNode.builder().name("f").val(6).build();
+        a.setLeft(b);
+        a.setRight(e);
+        b.setLeft(c);
+        b.setRight(d);
+        e.setRight(f);
+        INSTANCE.flatten(a);
+        System.out.println(a);
+    }
+
+    @Test
+    public void invertTree(){
+        TreeNode a = TreeNode.builder().name("a").val(1).build();
+        TreeNode b = TreeNode.builder().name("b").val(2).build();
+        TreeNode c = TreeNode.builder().name("c").val(3).build();
+        b.setLeft(a);b.setRight(c);
+        System.out.println(INSTANCE.invertTree(b));
     }
 }

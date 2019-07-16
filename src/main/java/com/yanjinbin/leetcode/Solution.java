@@ -1295,24 +1295,24 @@ public class Solution {
     }
 
 
-    int[] nums;
+    int[] items;
 
     public void swap(int a, int b) {
-        int tmp = this.nums[a];
-        this.nums[a] = this.nums[b];
-        this.nums[b] = tmp;
+        int tmp = this.items[a];
+        this.items[a] = this.items[b];
+        this.items[b] = tmp;
     }
 
 
     public int partition(int left, int right, int pivot_index) {
-        int pivot = this.nums[pivot_index];
+        int pivot = this.items[pivot_index];
         // 1. move pivot to end
         swap(pivot_index, right);
         int store_index = left;
 
         // 2. move all smaller elements to the left
         for (int i = left; i <= right; i++) {
-            if (this.nums[i] < pivot) {
+            if (this.items[i] < pivot) {
                 swap(store_index, i);
                 store_index++;
             }
@@ -1330,7 +1330,7 @@ public class Solution {
     */
 
         if (left == right) // If the list contains only one element,
-            return this.nums[left];  // return that element
+            return this.items[left];  // return that element
 
         // select a random pivot_index
         Random random_num = new Random();
@@ -1340,7 +1340,7 @@ public class Solution {
 
         // the pivot is on (N - k)th smallest position
         if (k_smallest == pivot_index)
-            return this.nums[k_smallest];
+            return this.items[k_smallest];
             // go left side
         else if (k_smallest < pivot_index)
             return quickselect(left, pivot_index - 1, k_smallest);
@@ -1349,7 +1349,7 @@ public class Solution {
     }
 
     public int findKthLargest1(int[] nums, int k) {
-        this.nums = nums;
+        this.items = nums;
         int size = nums.length;
         // kth largest is (N - k)th smallest
         return quickselect(0, size - 1, size - k);
@@ -1455,21 +1455,21 @@ public class Solution {
         }
     }
 /*
-    public int[] searchRange1(int[] nums, int target) {
+    public int[] searchRange1(int[] items, int target) {
 
     }
 
-    public int searchBinary(int[] nums, int target) {
-        int left = 0, right = nums.length - 1;
+    public int searchBinary(int[] items, int target) {
+        int left = 0, right = items.length - 1;
         int mid = left + (right - left) >> 2;
         while (left <= right) {
-            if (nums[mid] < target) {
+            if (items[mid] < target) {
                 left = mid + 1;
-            } else if (nums[mid] > target) {
+            } else if (items[mid] > target) {
                 right = mid - 1;
-            } else if (nums[mid] == target) {
+            } else if (items[mid] == target) {
                 left++;
-               // searchBinary(nums,left,right)
+               // searchBinary(items,left,right)
             }
         }
         return left;
@@ -1905,5 +1905,54 @@ public class Solution {
             return dfsValidateHelper(cur.left, left, cur.val) && dfsValidateHelper(cur.right, cur.val, right);
         return false;
     }
+
+    // 101. 对称二叉树递归左右对称即可。 迭代做法 两个队列放入元素顺序需要做到对称
+    public boolean isSymmetric(TreeNode root) {
+        if (root == null) return true;
+        return validateSymmetricHelper(root.left, root.right);
+    }
+
+    public boolean validateSymmetricHelper(TreeNode left, TreeNode right) {
+        if (left == null && right == null) return true;
+        if (left != null && right != null && left.val == right.val) {
+            return validateSymmetricHelper(left.left, right.right) && validateSymmetricHelper(left.right, right.left);
+        }
+        return false;
+    }
+
+
+    // 114. 二叉树展开为链表
+    // https://www.cnblogs.com/grandyang/p/4293853.html
+    // 看懂图解哦
+    public void flatten(TreeNode root) {
+        if (root == null) return;
+        flatten(root.left);
+        flatten(root.right);
+        TreeNode tmp = root.right;
+        root.right = root.left;
+        root.left = null;
+        while (root.right != null) {
+            root = root.right;
+        }
+        root.right = tmp;
+    }
+
+    // 226. 翻转二叉树
+    public TreeNode invertTree(TreeNode root) {
+        invertHelper(root);
+        return root;
+    }
+
+    public void invertHelper(TreeNode root) {
+        if (root == null) return;
+        invertHelper(root.left);
+        invertHelper(root.right);
+        // 交换
+        TreeNode tmp = root.right;
+        root.right = root.left;
+        root.left = tmp;
+    }
+
+
 }
 
