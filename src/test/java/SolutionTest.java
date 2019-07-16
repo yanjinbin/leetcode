@@ -3,7 +3,6 @@ import com.yanjinbin.leetcode.Solution;
 import com.yanjinbin.leetcode.TreeNode;
 import org.junit.Before;
 import org.junit.Test;
-import org.omg.CORBA.TIMEOUT;
 
 import java.util.*;
 
@@ -623,4 +622,37 @@ public class SolutionTest {
         System.out.println(INSTANCE.postorderTraversal1(F));
     }
 
+    @Test
+    public void numTrees() {
+        System.out.println(INSTANCE.numTrees(3));
+    }
+
+    @Test(timeout = 1000)
+    public void maxDepth() {
+        TreeNode a = TreeNode.builder().name("a").val(3).build();
+        TreeNode b = TreeNode.builder().name("b").val(9).build();
+        TreeNode c = TreeNode.builder().name("c").val(20).build();
+        TreeNode d = TreeNode.builder().name("d").val(15).build();
+        TreeNode e = TreeNode.builder().name("e").val(7).build();
+        a.setLeft(b);
+        a.setRight(c);
+        b.setLeft(null);
+        b.setRight(null);
+        c.setLeft(d);
+        c.setRight(e);
+        assert INSTANCE.maxDepth0(a) == 3;
+        assert INSTANCE.maxDepth1(a) == 3;
+    }
+
+
+    @Test
+    public void isValidBST() {
+        TreeNode root = TreeNode.builder().val(2).name("A").build();
+        TreeNode node0 = TreeNode.builder().val(1).name("B").build();
+        TreeNode node1 = TreeNode.builder().val(3).name("B").build();
+        root.setLeft(node0);
+        root.setRight(node1);
+        assert INSTANCE.isValidBST0(root) == true;
+        assert INSTANCE.isValidBST0(TreeNode.builder().val(Integer.MAX_VALUE).build()) == true;
+    }
 }

@@ -1825,7 +1825,7 @@ public class Solution {
         return ret;
     }
 
-    // follow up  590. N叉树的后序遍历
+    // follow up todo 590. N叉树的后序遍历
     public List<Integer> postorder(Node root) {
         return null;
     }
@@ -1836,6 +1836,74 @@ public class Solution {
         return 1;
     }
 
+    //96. 不同的二叉搜索树 卡塔兰数的运用
+    // 真的不太会做这种题目阿 mmp 好难
+    // https://www.cnblogs.com/grandyang/p/4299608.html
+    public int numTrees(int n) {
+        int[] dp = new int[n + 1];
+        dp[0] = dp[1] = 1;
+        for (int i = 2; i <= n; i++) {
+            for (int j = 0; j < i; j++) {
+                dp[i] += dp[j] * dp[i - j - 1];
+            }
+        }
+        return dp[n];
+    }
 
+    // 104. 二叉树的最大深度
+    //
+    public int maxDepth0(TreeNode root) {
+        int level = 0;
+        return dfsHeightHelper(root, level);
+    }
+
+
+    public int dfsHeightHelper(TreeNode root, int level) {
+        if (root == null) return level;
+        level++;
+        // 写错递归入参了 写了两个root.left
+        return Math.max(dfsHeightHelper(root.left, level), dfsHeightHelper(root.right, level));
+    }
+
+    //
+    public int maxDepth1(TreeNode root) {
+        if (root == null) return 0;
+        return 1 + Math.max(maxDepth1(root.left), maxDepth1(root.right));
+    }
+
+    // 98. 验证二叉搜索树
+    // 没做约束
+    //  https://www.cnblogs.com/grandyang/p/4298435.html
+    // 这道题目的基础是理解用递归 栈 以及Morris方法来做 可以参考上述链接
+    // 不过更推荐下面这种做法 dfs递归 确定左右边界.
+    public boolean isValidBSTBad(TreeNode root) {
+        if (root == null) return true;
+        return validateTreeNode(root) ? (isValidBSTBad(root.left) && isValidBSTBad(root.right)) : false;
+    }
+
+    private static boolean validateTreeNode(TreeNode node) {
+        if (node.right == null && node.left == null) return true;
+        if (node.right == null) {
+            return node.val > node.left.val;
+        }
+        if (node.left == null) {
+            return node.val < node.right.val;
+        }
+        return node.val > node.left.val && node.val < node.right.val;
+    }
+
+    // 用Long 代替int 就是为了满足边界条件 if root.val= Integer.MAX_VALUE
+    public boolean isValidBST0(TreeNode root) {
+        long right = Long.MAX_VALUE;
+        long left = Long.MIN_VALUE;
+        return dfsValidateHelper(root, left, right);
+    }
+
+    public boolean dfsValidateHelper(TreeNode cur, long left, long right) {
+        if (cur == null) return true;
+        if (cur.val < right && cur.val > left)
+            return dfsValidateHelper(cur.left, left, cur.val) && dfsValidateHelper(cur.right, cur.val, right);
+        return false;
+    }
 }
 
