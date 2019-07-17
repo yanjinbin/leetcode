@@ -8,13 +8,16 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TreeNode {
+
+    // extra
+    String name;
+
     int val;
 
     TreeNode left;
 
     TreeNode right;
-    // extra
-    String name;
+
 
     TreeNode(int x) {
         val = x;

@@ -63,7 +63,7 @@ public class SolutionTest {
     }
 
     @Test
-    public void TestsortList() {
+    public void sortList() {
         ListNode head = ListNode.builder()
                 .val(3).next(ListNode.builder()
                         .val(5).next(ListNode.builder()
@@ -93,14 +93,14 @@ public class SolutionTest {
     }
 
     @Test
-    public void TestReverseSingleLinkedList() {
+    public void ReverseSingleLinkedList() {
         System.out.println(headNode);
         ListNode listNode = INSTANCE.reverseSingleLinkedList(headNode);
         System.out.println(listNode);
     }
 
     @Test
-    public void Test3sum() {
+    public void Threesum() {
         int[] ints = {-1, 0, 1, 2, -1, -4};
         System.out.println(INSTANCE.threeSum(ints));
     }
@@ -687,12 +687,59 @@ public class SolutionTest {
         System.out.println(a);
     }
 
-    @Test
-    public void invertTree(){
+    @Test(timeout = 2000)
+    public void invertTree() {
         TreeNode a = TreeNode.builder().name("a").val(1).build();
         TreeNode b = TreeNode.builder().name("b").val(2).build();
         TreeNode c = TreeNode.builder().name("c").val(3).build();
-        b.setLeft(a);b.setRight(c);
+        b.setLeft(a);
+        b.setRight(c);
         System.out.println(INSTANCE.invertTree(b));
+    }
+
+    @Test(timeout = 2000)
+    public void pathSum() {
+        TreeNode root = TreeNode.builder().val(1).build();
+
+        INSTANCE.pathSum0(root, 7);
+        INSTANCE.pathSum1(root, 7);
+        INSTANCE.pathSum2(root, 7);
+    }
+
+    @Test(timeout = 2000)
+    public void convertBST() {
+        TreeNode a = TreeNode.builder().name("a").val(1).build();
+        TreeNode b = TreeNode.builder().name("b").val(2).build();
+        TreeNode c = TreeNode.builder().name("c").val(3).build();
+        TreeNode d = TreeNode.builder().name("d").val(4).build();
+        TreeNode e = TreeNode.builder().name("e").val(5).build();
+        TreeNode f = TreeNode.builder().name("f").val(6).build();
+        d.setLeft(b);
+        d.setRight(c);
+        b.setLeft(a);
+        d.setRight(e);
+        e.setRight(f);
+        INSTANCE.convertBST(d);
+        System.out.println(d);
+    }
+
+    @Test(timeout = 3000)
+    public void mergeTrees() {
+
+        TreeNode a = TreeNode.builder().name("a").val(1).build();
+        TreeNode b = TreeNode.builder().name("b").val(2).build();
+        TreeNode c = TreeNode.builder().name("c").val(3).build();
+
+        b.setLeft(a);
+        b.setRight(c);
+
+        TreeNode d = TreeNode.builder().name("d").val(4).build();
+        TreeNode e = TreeNode.builder().name("e").val(5).build();
+        TreeNode f = TreeNode.builder().name("f").val(6).build();
+        d.setRight(e);
+        e.setRight(f);
+
+        System.out.println(INSTANCE.mergeTrees0(a, d));
+        System.out.println(INSTANCE.mergeTrees1(a, d));
     }
 }

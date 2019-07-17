@@ -979,7 +979,6 @@ public class Solution {
     }
 
     // LT 416. 分割等和子集
-    //
     public boolean canPartition0(int[] nums) {
         int sum = 0;
         for (int i = 0; i < nums.length; i++) {
@@ -993,7 +992,7 @@ public class Solution {
         for (int num : nums) {
             // 为什么递减不是递增呢 因为递增的化 都为true了阿
             for (int i = target; i >= num; i--) {
-                System.out.println(i + "\t" + num);
+                //  System.out.println(i + "\t" + num);
                 dp[i] = dp[i] || dp[i - num];
             }
         }
@@ -1953,6 +1952,143 @@ public class Solution {
         root.left = tmp;
     }
 
+
+    int counter;
+
+    // 437. 路径总和 III  思路  https://www.cnblogs.com/grandyang/p/6007336.html
+    public int pathSum1(TreeNode root, int sum) {
+        LinkedList<TreeNode> queue = new LinkedList<>();
+        dfsPathSumHelper(root, sum, 0, queue);
+        return counter;
+    }
+
+    public void dfsPathSumHelper(TreeNode node, int sum, int curSum, LinkedList<TreeNode> queue) {
+        if (node == null) return;
+        curSum = curSum + node.val;
+        queue.add(node);
+        if (curSum == sum) counter = counter + 1;
+        int tmp = curSum;
+        for (int i = 0; i < (queue.size() - 1); i++) {
+            tmp = tmp - queue.get(i).val;
+            if (tmp == sum) counter = counter + 1;
+        }
+        dfsPathSumHelper(node.left, sum, curSum, queue);
+        dfsPathSumHelper(node.right, sum, curSum, queue);
+        // 维护队列
+        queue.pollLast();
+    }
+
+    // 易懂 不好想出来
+    public int pathSum2(TreeNode root, int sum) {
+        if (root == null) return 0;
+        return pathHelper(root, sum) + pathSum2(root.left, sum) + pathSum2(root.right, sum);
+    }
+
+    public int pathHelper(TreeNode root, int sum) {
+        if (root == null) return 0;
+        sum = sum - root.val;
+        return (sum == 0 ? 1 : 0) + pathHelper(root.left, sum) + pathHelper(root.right, sum);
+    }
+
+
+    int cnt;
+
+    // 错的阿
+    public int pathSum0(TreeNode root, int sum) {
+        dfsPathSumHelper0(root, root, sum, sum);
+        return cnt;
+    }
+
+    public void dfsPathSumHelper0(TreeNode root, TreeNode cur, int sum, int remainder) {
+        if (root == null || cur == null) return;
+        if ((cur.val - remainder) == 0) {
+            cnt = cnt + 1;
+            // reset
+            dfsPathSumHelper0(root.left, root.left, sum, sum);
+            dfsPathSumHelper0(root.right, root.right, sum, sum);
+        }
+        // continue
+        dfsPathSumHelper0(root, cur.left, sum, remainder - root.val);
+        dfsPathSumHelper0(root, cur.right, sum, remainder - root.val);
+
+
+        dfsPathSumHelper0(root.left, root.left, sum, sum);
+        dfsPathSumHelper0(root.right, root.right, sum, sum);
+    }
+
+    // 538. 把二叉搜索树转换为累加树  BST 中序遍历 满足顺序关系  先访问右子树-->root-->左子树 降序排列
+    int sum = 0;
+
+    public TreeNode convertBST(TreeNode root) {
+        convert(root);
+        return root;
+    }
+
+    public void convert(TreeNode cur) {
+        if (cur == null) return;
+        convertBST(cur.right);
+        cur.val = cur.val + sum;
+        sum = cur.val;
+        convertBST(cur.left);
+    }
+
+    public TreeNode convertBST1(TreeNode root) {
+        dfsPreSumHelper1(root);
+        return root;
+    }
+
+    public int dfsPreSumHelper1(TreeNode root) {
+        if (root == null) return 0;
+        int left = dfsPreSumHelper1(root.left);
+        int right = dfsPreSumHelper1(root.right);
+        int cmp = root.val;
+        boolean cl = cmp < left;
+        boolean cr = cmp < right;
+        boolean lr = left < right;
+        if (cl && lr) {
+            cmp = cmp + left + right;
+            left = left + right;
+        }
+        if (cr && !lr) {
+            cmp = cmp + left + right;
+            right = right + left;
+        }
+        // 6种排列顺序关系组合了(A3) 那就很麻烦了 不再继续写下去
+        return root.val;
+    }
+
+    // 617. 合并二叉树
+    public TreeNode mergeTrees0(TreeNode t1, TreeNode t2) {
+        TreeNode node = new TreeNode(0);
+        return mergeHelper(t1, t2, node);
+
+    }
+
+    public TreeNode mergeHelper(TreeNode t1, TreeNode t2, TreeNode node) {
+        if (t1 == null && t2 == null) return null;
+        if (t1 == null) return t2;
+        if (t2 == null) return t1;
+        node.val = t1.val + t2.val;
+        TreeNode left = mergeHelper(t1.left, t2.left, new TreeNode(0));
+        TreeNode right = mergeHelper(t1.right, t2.right, new TreeNode(0));
+        node.left = left;
+        node.right = right;
+        return node;
+    }
+
+    public TreeNode mergeTrees1(TreeNode t1, TreeNode t2) {
+        if (t1 == null && t2 == null) return null;
+        if (t1 == null) {
+            return t2;
+        }
+        if (t2 == null) {
+            return t1;
+        }
+        TreeNode node = new TreeNode(t1.val + t2.val);
+        node.right = mergeTrees1(t1.right, t2.right);
+        node.left = mergeTrees1(t1.left, t2.left);
+        return node;
+    }
 
 }
 
