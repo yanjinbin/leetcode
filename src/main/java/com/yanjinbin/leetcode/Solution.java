@@ -1,5 +1,7 @@
 package com.yanjinbin.leetcode;
 
+import org.omg.PortableInterceptor.DISCARDING;
+
 import java.util.*;
 
 /**
@@ -1856,7 +1858,6 @@ public class Solution {
         return dfsHeightHelper(root, level);
     }
 
-
     public int dfsHeightHelper(TreeNode root, int level) {
         if (root == null) return level;
         level++;
@@ -1869,6 +1870,7 @@ public class Solution {
         if (root == null) return 0;
         return 1 + Math.max(maxDepth1(root.left), maxDepth1(root.right));
     }
+
 
     // 98. 验证二叉搜索树
     // 没做约束
@@ -2089,6 +2091,24 @@ public class Solution {
         node.left = mergeTrees1(t1.left, t2.left);
         return node;
     }
+
+    // 543. 二叉树的直径
+    public int diameterOfBinaryTree(TreeNode root) {
+        if (root == null) return 0;
+        int height = dfsHeight(root.right) + dfsHeight(root.left);
+        if (dfsHeight(root.left) > dfsHeight(root.right)) {
+            height = Math.max(diameterOfBinaryTree(root.left), height);
+        } else {
+            height = Math.max(diameterOfBinaryTree(root.right), height);
+        }
+        return height;
+    }
+
+    public int dfsHeight(TreeNode root) {
+        if (root == null) return 0;
+        return 1 + Math.max(dfsHeight(root.left), dfsHeight(root.right));
+    }
+
 
 }
 

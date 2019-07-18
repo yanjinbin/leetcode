@@ -742,4 +742,25 @@ public class SolutionTest {
         System.out.println(INSTANCE.mergeTrees0(a, d));
         System.out.println(INSTANCE.mergeTrees1(a, d));
     }
+
+    @Test
+    public void diameterOfBinaryTree() {
+
+        TreeNode a = TreeNode.builder().name("a").val(1).build();
+        TreeNode b = TreeNode.builder().name("b").val(2).build();
+        TreeNode c = TreeNode.builder().name("c").val(3).build();
+        TreeNode d = TreeNode.builder().name("d").val(4).build();
+        TreeNode e = TreeNode.builder().name("e").val(5).build();
+        TreeNode f = TreeNode.builder().name("f").val(6).build();
+        d.setLeft(b);
+        d.setRight(c);
+        b.setLeft(a);
+        d.setRight(e);
+        e.setRight(f);
+
+        assert INSTANCE.diameterOfBinaryTree(d) == 4;
+        System.out.println(INSTANCE.diameterOfBinaryTree(d));
+
+
+    }
 }
