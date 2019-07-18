@@ -758,8 +758,9 @@ public class SolutionTest {
         d.setRight(e);
         e.setRight(f);
 
-        assert INSTANCE.diameterOfBinaryTree(d) == 4;
-        System.out.println(INSTANCE.diameterOfBinaryTree(d));
+        assert INSTANCE.diameterOfBinaryTree0(d) == 4;
+        assert INSTANCE.diameterOfBinaryTree1(d) == 4;
+        System.out.println(INSTANCE.diameterOfBinaryTree0(d));
 
 
     }

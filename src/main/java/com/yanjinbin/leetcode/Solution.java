@@ -1,7 +1,5 @@
 package com.yanjinbin.leetcode;
 
-import org.omg.PortableInterceptor.DISCARDING;
-
 import java.util.*;
 
 /**
@@ -2093,20 +2091,34 @@ public class Solution {
     }
 
     // 543. 二叉树的直径
-    public int diameterOfBinaryTree(TreeNode root) {
+    public int diameterOfBinaryTree0(TreeNode root) {
         if (root == null) return 0;
-        int height = dfsHeight(root.right) + dfsHeight(root.left);
-        if (dfsHeight(root.left) > dfsHeight(root.right)) {
-            height = Math.max(diameterOfBinaryTree(root.left), height);
-        } else {
-            height = Math.max(diameterOfBinaryTree(root.right), height);
-        }
-        return height;
+        int left = dfsHeight(root.left);
+        int right = dfsHeight(root.right);
+        int height = left + right;
+        return left > right ? Math.max(diameterOfBinaryTree0(root.left), height) : Math.max(diameterOfBinaryTree0(root.right), height);
     }
 
     public int dfsHeight(TreeNode root) {
         if (root == null) return 0;
         return 1 + Math.max(dfsHeight(root.left), dfsHeight(root.right));
+    }
+
+
+    // 第二种解法 为什么更快呢 好奇怪?
+    int res = 0;
+
+    public int diameterOfBinaryTree1(TreeNode root) {
+        DFS(root);
+        return res;
+    }
+
+    public int DFS(TreeNode root) {
+        if (root == null) return 0;
+        int left = DFS(root.left);
+        int right = DFS(root.right);
+        res = Math.max(res, left + right);
+        return Math.max(left, right) + 1;
     }
 
 
