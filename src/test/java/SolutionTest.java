@@ -743,7 +743,7 @@ public class SolutionTest {
         System.out.println(INSTANCE.mergeTrees1(a, d));
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void diameterOfBinaryTree() {
 
         TreeNode a = TreeNode.builder().name("a").val(1).build();
@@ -762,6 +762,47 @@ public class SolutionTest {
         assert INSTANCE.diameterOfBinaryTree1(d) == 4;
         System.out.println(INSTANCE.diameterOfBinaryTree0(d));
 
+    }
+
+    @Test(timeout = 1000)
+    public void sortedArrayToBST() {
+        int[] nums = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+        assert INSTANCE.sortedArrayToBST(nums).getVal() == 5;
+    }
+
+    @Test(timeout = 1000)
+    public void buildTree() {
+        int[] preOrder = {5, 4, 11, 8, 13, 9};
+        int[] inOrder = {11, 4, 5, 13, 8, 9};
+        int[] postOrder = {11, 4, 13, 9, 8, 5};
+        assert INSTANCE.buildTreePreIn(preOrder, inOrder).getVal() == 5;
+        assert INSTANCE.buildTreeInPost(inOrder, postOrder).getVal() == 5;
+
+    }
+
+    @Test(timeout = 3)
+    public void rob() {
+        int[] nums = {1, 2, 3, 1};
+        // 打家劫舍Ⅰ
+        assert INSTANCE.rob1(nums) == 4;
+        assert INSTANCE.rob2(nums) == 4;
+
+        // 打家劫舍Ⅱ
+        assert INSTANCE.rob3(nums) == 4;
+
+        // 打家劫舍Ⅲ
+        TreeNode a = TreeNode.builder().name("a").val(1).build();
+        TreeNode b = TreeNode.builder().name("b").val(2).build();
+        TreeNode c = TreeNode.builder().name("c").val(3).build();
+        TreeNode d = TreeNode.builder().name("d").val(4).build();
+        TreeNode e = TreeNode.builder().name("e").val(5).build();
+        TreeNode f = TreeNode.builder().name("f").val(6).build();
+        d.setLeft(b);
+        d.setRight(e);
+        b.setLeft(a);
+        b.setRight(c);
+        e.setRight(f);
+        assert INSTANCE.rob4(d) == 13;
 
     }
 }

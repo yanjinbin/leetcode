@@ -1824,17 +1824,6 @@ public class Solution {
         return ret;
     }
 
-    // follow up todo 590. N叉树的后序遍历
-    public List<Integer> postorder(Node root) {
-        return null;
-    }
-
-
-    // 124. 二叉树中的最大路径和
-    public int maxPathSum(TreeNode root) {
-        return 1;
-    }
-
     //96. 不同的二叉搜索树 卡塔兰数的运用
     // 真的不太会做这种题目阿 mmp 好难
     // https://www.cnblogs.com/grandyang/p/4299608.html
@@ -2121,6 +2110,150 @@ public class Solution {
         return Math.max(left, right) + 1;
     }
 
+    //108. 将有序数组转换为二叉搜索树 tips 考察的就是二分法
+    public TreeNode sortedArrayToBST(int[] nums) {
+        if (nums == null || nums.length == 0) return null;
+        return bstHelper(nums, 0, nums.length - 1);
+    }
 
+    public TreeNode bstHelper(int[] nums, int left, int right) {
+        if (left > right) return null;
+        int mid = left + (right - left) / 2;
+        TreeNode root = new TreeNode(nums[mid]);
+        root.left = bstHelper(nums, left, mid - 1);
+        root.right = bstHelper(nums, mid + 1, right);
+        return root;
+    }
+
+    //105. 从前序与中序遍历序列构造二叉树
+    public TreeNode buildTreePreIn(int[] preorder, int[] inorder) {
+        return buildTrePreIn(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
+    }
+
+    TreeNode buildTrePreIn(int[] preOrder, int pLeft, int pRight, int[] inorder, int iLeft, int iRight) {
+        if (pLeft > pRight || iLeft > iRight) {
+            return null;
+        }
+        int i = 0;
+        for (i = iLeft; i <= iRight; i++) {
+            //  System.out.println("pLeft " + pLeft + "\t" + preOrder[pLeft] + "\ti: " + i + "\t" + inorder[i]);
+            if (preOrder[pLeft] == inorder[i]) {
+                break;
+            }
+        }
+        TreeNode root = new TreeNode(preOrder[pLeft]);
+        //  参考 http://bit.ly/2LoQpTz
+        //  [pLeft+1 , pLeft+(i-iLeft)]是左子树元素区间哦
+        root.left = buildTrePreIn(preOrder, pLeft + 1, pLeft + (i - iLeft), inorder, iLeft, i - 1);
+        root.right = buildTrePreIn(preOrder, pLeft + i - iLeft + 1, pRight, inorder, i + 1, iRight);
+        return root;
+    }
+
+
+    // 106. 从中序与后序遍历序列构造二叉树
+    public TreeNode buildTreeInPost(int[] inorder, int[] postorder) {
+        return buildTreeInPost(inorder, 0, inorder.length - 1, postorder, 0, postorder.length - 1);
+    }
+
+    public TreeNode buildTreeInPost(int[] inorder, int iLeft, int iRight, int[] postOrder, int pLeft, int pRight) {
+        if (pLeft > pRight || iLeft > iRight) {
+            return null;
+        }
+        int i = 0;
+        for (i = iRight; i >= iLeft; i--) {
+            if (postOrder[pRight] == inorder[i]) break;
+        }
+        TreeNode root = new TreeNode(postOrder[pRight]);
+        root.left = buildTreeInPost(inorder, iLeft, i - 1, postOrder, pLeft, pRight - (iRight - i) - 1);
+        //   root.right = buildTreeInPost(inorder, i + 1, iRight, postOrder, pRight - (iRight - i) +1, pRight-1);
+        // 为什么 +1 就错了呢 详见 http://bit.ly/2SooOma
+        root.right = buildTreeInPost(inorder, i + 1, iRight, postOrder, pRight - (iRight - i), pRight - 1);
+        return root;
+    }
+
+
+    //889. 根据前序和后序遍历构造二叉树(结果不唯一)
+    public TreeNode constructFromPrePost(int[] pre, int[] post) {
+        return null;
+    }
+
+
+    // 297. 二叉树的序列化与反序列化
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root) {
+        return null;
+    }
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(String data) {
+        return null;
+    }
+
+    // 打家劫舍系列
+
+    // 198. 打家劫舍  DP dp[i]=Math.max(dp[i-2]+nums[i],dp[i-1])
+    public int rob1(int[] nums) {
+        if (nums.length == 0) return 0;
+        if (nums.length == 1) return nums[0];
+        int len = nums.length;
+        int[] dp = new int[len];
+        dp[0] = nums[0];
+        dp[1] = Math.max(nums[0], nums[1]);
+        for (int i = 2; i < len; i++) {
+            dp[i] = Math.max(dp[i - 2] + nums[i], dp[i - 1]);
+        }
+        return dp[len - 1];
+    }
+
+    //  只用到memo[i] memo[i-1] 所以 用两个变量 去迭代更新即可
+    // http://bit.ly/2SppaZW
+    public int rob2(int[] nums) {
+        int prev1 = 0;
+        int prev2 = 0;
+        for (int num : nums) {
+            int tmp = prev1;
+            prev1 = Math.max(prev1, prev2 + num);
+            prev2 = tmp;
+        }
+        return prev1;
+    }
+
+    //  213. 打家劫舍 II
+    public int rob3(int[] nums) {
+        if (nums.length == 0) return 0;
+        if (nums.length == 1) return nums[0];
+        return Math.max(robHelper(nums, 0, nums.length - 1), robHelper(nums, 1, nums.length));
+    }
+
+    // index: left inclusive , right exclusive
+    public int robHelper(int[] nums, int left, int right) {
+        int len = right - left;
+        if (len <= 1) return nums[left];
+        int[] dp = new int[len];
+        dp[0] = nums[left];
+        dp[1] = Math.max(nums[left], nums[left + 1]);
+        for (int i = 2; i < len; i++) {
+            dp[i] = Math.max(dp[i - 2] + nums[i + left], dp[i - 1]);
+        }
+        return dp[len - 1];
+    }
+
+
+    // 337. 打家劫舍 III
+    // dp(right) = max(dp(root),dp(left)+right.val)
+    public int rob4(TreeNode root) {
+        return 1;
+    }
+
+    // follow up todo 590. N叉树的后序遍历
+    public List<Integer> postorder(Node root) {
+        return null;
+    }
+
+
+    // 124. 二叉树中的最大路径和
+    public int maxPathSum(TreeNode root) {
+        return 1;
+    }
 }
 
