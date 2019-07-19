@@ -802,7 +802,7 @@ public class SolutionTest {
         b.setLeft(a);
         b.setRight(c);
         e.setRight(f);
-        assert INSTANCE.rob4(d) == 13;
+        assert INSTANCE.rob4(d) == 14;
 
     }
 }

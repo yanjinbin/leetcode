@@ -2239,10 +2239,26 @@ public class Solution {
     }
 
 
-    // 337. 打家劫舍 III
+    // 337. 打家劫舍 III  看懂比较模型即可 http://bit.ly/2LtppCe
     // dp(right) = max(dp(root),dp(left)+right.val)
     public int rob4(TreeNode root) {
-        return 1;
+        Map<TreeNode, Integer> map = new HashMap<>();
+        return dfsRobHelper(root, map);
+    }
+
+    public int dfsRobHelper(TreeNode root, Map<TreeNode, Integer> map) {
+        if (root == null) return 0;
+        if (map.containsKey(root)) return map.get(root);
+        int val = 0;
+        if (root.left != null) {
+            val += dfsRobHelper(root.left.left, map) + dfsRobHelper(root.left.right, map);
+        }
+        if (root.right != null) {
+            val += dfsRobHelper(root.right.left, map) + dfsRobHelper(root.right.right, map);
+        }
+        val = Math.max(val + root.val, dfsRobHelper(root.left, map) + dfsRobHelper(root.right, map));
+        map.put(root, val);
+        return val;
     }
 
     // follow up todo 590. N叉树的后序遍历
