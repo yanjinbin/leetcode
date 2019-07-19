@@ -805,4 +805,32 @@ public class SolutionTest {
         assert INSTANCE.rob4(d) == 14;
 
     }
+
+    @Test(timeout = 1000)
+    public void serializeDeserialize() {
+
+        Integer[] nums = {1, 2, 3, 4, 5, null, 6};
+        System.out.println(Arrays.toString(nums));
+        String s = Arrays.toString(nums);
+        System.out.println("====");
+        System.out.println(s.substring(1, s.length() - 1));
+
+        TreeNode a = TreeNode.builder().name("a").val(1).build();
+        TreeNode b = TreeNode.builder().name("b").val(2).build();
+        TreeNode c = TreeNode.builder().name("c").val(3).build();
+        TreeNode d = TreeNode.builder().name("d").val(4).build();
+        TreeNode e = TreeNode.builder().name("e").val(5).build();
+        TreeNode f = TreeNode.builder().name("f").val(6).build();
+        d.setLeft(b);
+        d.setRight(e);
+        b.setLeft(a);
+        b.setRight(c);
+        e.setRight(f);
+
+        System.out.println(INSTANCE.serialize(d));
+
+        assert INSTANCE.deserialize(INSTANCE.serialize(d)).getVal() == d.getVal();
+
+
+    }
 }

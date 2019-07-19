@@ -2178,15 +2178,46 @@ public class Solution {
     }
 
 
-    // 297. 二叉树的序列化与反序列化
+    // 297. 二叉树的序列化与反序列化 这道题目就直接抄把 没啥好说的了 http://bit.ly/2LteuIY
+    // Encodes a tree to a single string.
+    public String serialize(TreeNode root, String str) {
+        if (root == null) {
+            str += "null,";
+        } else {
+            str += root.val + ",";
+            str = serialize(root.left, str);
+            str = serialize(root.right, str);
+        }
+        return str;
+    }
+
     // Encodes a tree to a single string.
     public String serialize(TreeNode root) {
-        return null;
+        return serialize(root, "[") + "]";
+    }
+
+
+    // Decodes your encoded data to tree.
+    public TreeNode deserialize(List<String> l) {
+        if (l.get(0).equals("null")) {
+            l.remove(0);
+            return null;
+        }
+        TreeNode root = new TreeNode(Integer.valueOf(l.get(0)));
+        l.remove(0);
+        root.left = deserialize(l);
+        root.right = deserialize(l);
+        return root;
     }
 
     // Decodes your encoded data to tree.
     public TreeNode deserialize(String data) {
-        return null;
+        // remove "["   "]"
+        data = data.substring(1, data.length() - 1);
+
+        String[] data_array = data.split(",");
+        List<String> data_list = new LinkedList<String>(Arrays.asList(data_array));
+        return deserialize(data_list);
     }
 
     // 打家劫舍系列
