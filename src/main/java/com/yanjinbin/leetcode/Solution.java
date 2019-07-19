@@ -167,7 +167,7 @@ public class Solution {
     }
 
     // leetcode 15 3sum
-    // https://www.cnblogs.com/grandyang/p/4481576.html
+    // http://bit.ly/2Sp1iFG
     public List<List<Integer>> threeSum(int[] nums) {
         List<List<Integer>> ret = new ArrayList();
         if (nums.length < 3) return ret;
@@ -363,7 +363,7 @@ public class Solution {
         }
     }
     // 23. 合并K个排序链表 Merge k Sorted Lists
-    // https://www.cnblogs.com/grandyang/p/4606710.html
+    // http://bit.ly/2LtXUbI
 
     public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) return null;
@@ -617,7 +617,7 @@ public class Solution {
     }
 
     // leetcode 70 climbing stairs
-    // todo follow up问题 https://blog.crayygy.com/14599905787744.html#toc_6
+    // todo follow up问题 http://bit.ly/2SplozJ
     // 迭代形式
     public int climbStairs1(int n) {
         if (n <= 1) return 1;
@@ -909,7 +909,7 @@ public class Solution {
         return ret;
     }
 
-    // https://www.cnblogs.com/grandyang/p/4137302.html
+    // http://bit.ly/2LuhFQO
     // 142. 环形链表 II
     // 环检测 https://leetcode-cn.com/problems/linked-list-cycle-ii/
     // 解除环 环长度
@@ -1789,7 +1789,7 @@ public class Solution {
         return ret;
     }
 
-    // 145. 二叉树的后序遍历 https://www.cnblogs.com/grandyang/p/4251757.html
+    // 145. 二叉树的后序遍历 http://bit.ly/2SodiqQ
     public List<Integer> postorderTraversal0(TreeNode root) {
         List<Integer> ret = new ArrayList<>();
         postorderHelper(root, ret);
@@ -1826,7 +1826,7 @@ public class Solution {
 
     //96. 不同的二叉搜索树 卡塔兰数的运用
     // 真的不太会做这种题目阿 mmp 好难
-    // https://www.cnblogs.com/grandyang/p/4299608.html
+    // http://bit.ly/2LqUWVL
     public int numTrees(int n) {
         int[] dp = new int[n + 1];
         dp[0] = dp[1] = 1;
@@ -1861,7 +1861,7 @@ public class Solution {
 
     // 98. 验证二叉搜索树
     // 没做约束
-    //  https://www.cnblogs.com/grandyang/p/4298435.html
+    //  http://bit.ly/2Sq9V2U
     // 这道题目的基础是理解用递归 栈 以及Morris方法来做 可以参考上述链接
     // 不过更推荐下面这种做法 dfs递归 确定左右边界.
     public boolean isValidBSTBad(TreeNode root) {
@@ -1910,7 +1910,7 @@ public class Solution {
 
 
     // 114. 二叉树展开为链表
-    // https://www.cnblogs.com/grandyang/p/4293853.html
+    // http://bit.ly/2LtZDhc
     // 看懂图解哦
     public void flatten(TreeNode root) {
         if (root == null) return;
@@ -1944,7 +1944,7 @@ public class Solution {
 
     int counter;
 
-    // 437. 路径总和 III  思路  https://www.cnblogs.com/grandyang/p/6007336.html
+    // 437. 路径总和 III  思路  http://bit.ly/2LukqSa
     public int pathSum1(TreeNode root, int sum) {
         LinkedList<TreeNode> queue = new LinkedList<>();
         dfsPathSumHelper(root, sum, 0, queue);
