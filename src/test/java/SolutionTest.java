@@ -828,8 +828,20 @@ public class SolutionTest {
         e.setRight(f);
 
         System.out.println(INSTANCE.serialize(d));
-
         assert INSTANCE.deserialize(INSTANCE.serialize(d)).getVal() == d.getVal();
+    }
+
+    @Test()
+    public void countSubstrings() {
+        String data = "abdccdbbdca";
+        System.out.println(INSTANCE.countSubstrings(data));
+        data = "aaa";
+        assert INSTANCE.countSubstrings(data) == 6;
+
+
+        //   INSTANCE.countSubstrings1("fdsklf");
+        System.out.println("-=====");
+        INSTANCE.countSubstrings2("fdsklf");
 
 
     }

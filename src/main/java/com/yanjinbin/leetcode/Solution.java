@@ -1254,12 +1254,6 @@ public class Solution {
 
     }
 
-
-    // 647. 回文子串
-    public int countSubstrings(String s) {
-        return 0;
-    }
-
     // 494. 目标和
     public int findTargetSumWays(int[] nums, int S) {
         return 0;
@@ -2290,6 +2284,85 @@ public class Solution {
         val = Math.max(val + root.val, dfsRobHelper(root.left, map) + dfsRobHelper(root.right, map));
         map.put(root, val);
         return val;
+    }
+
+    // 647. 回文子串 http://bit.ly/2LugfFU
+    public int countSubstrings(String s) {
+        if (s.isEmpty()) {
+            return 0;
+        }
+        int len = s.length();
+        int res = 0;
+        for (int i = 0; i < len; i++) {
+            // 还是要遍历阿 从字符串中找到一个回文子串
+            // 考虑对称的奇偶性状况
+            res += dfsCountSubHelper(s, i, i) + dfsCountSubHelper(s, i, i + 1);
+        }
+        return res;
+
+    }
+
+    // 状态转移方程 dp[i,j]=dp[i+1,j-1]+(dp[i]==dp[j]  逆向化--->init i+1 == j-1
+    int dfsCountSubHelper(String s, int i, int j) {
+        int res = 0;
+        while (i >= 0 && j < s.length() && s.charAt(i) == s.charAt(j)) {
+            i--;
+            j++;
+            res++;
+        }
+        return res;
+    }
+
+    // 解法2 错误的双层for循环 越界了
+    // 解法2 并不太推崇 如果 i j的初始化方向不一样的话 还是有越界问题
+    // 我觉得 要避免这种问题 还是不好想到的
+    // 本质上是输入数据 "fdsklf" ff重复了 引发的问题
+    // 而且 感觉有些重复计算问题存在 , 并不优雅啦
+    // 解法1 比较可取 !
+    public int countSubstrings1(String s) {
+        int res = 0;
+        int len = s.length();
+        boolean[][] dp = new boolean[len][len];
+        for (int i = 0; i < len; i++) {
+            for (int j = i; j >= 0; j--) {
+
+                dp[i][j] = s.charAt(i) == s.charAt(j) && (i-j <= 2 || dp[i + 1][j - 1]);
+                if (dp[i][j]) {
+                    System.out.println("i:" + i + "\tj:" + j);
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+    // 这道题目就是有点取巧了阿  不推荐这种做法
+    public int countSubstrings2(String s) {
+        int res = 0;
+        int len = s.length();
+        boolean[][] dp = new boolean[len][len];
+        for (int i = len-1; i >=0; i--) {
+            for (int j = i; j <len; j++) {
+
+                dp[i][j] = s.charAt(i) == s.charAt(j) && (j - i <= 2 || dp[i + 1][j - 1]);
+                if (dp[i][j]) {
+                    System.out.println("i:" + (i) + "\tj:" + (j));
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+
+
+    // 76. 最小覆盖子串//  滑动窗口解决问题  http://bit.ly/2LvcJLu
+    //
+    public String minWindow(String s, String t) {
+        return "";
+    }
+
+    // 438. 找到字符串中所有字母异位词
+    public List<Integer> findAnagrams(String s, String p) {
+        return null;
     }
 
     // follow up todo 590. N叉树的后序遍历
