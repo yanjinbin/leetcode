@@ -121,32 +121,6 @@ public class Solution {
         return prev;
     }
 
-    //这道题还有一种特别巧妙的方法，虽然题目中强调了链表中不存在环，
-    // 但是我们可以用环的思想来做，我们让两条链表分别从各自的开头开始往后遍历，
-    // 当其中一条遍历到末尾时，我们跳到另一个条链表的开头继续遍历。两个指针最终会相等，
-    // 而且只有两种情况，
-    // 一种情况是在交点处相遇，
-    // 另一种情况是在各自的末尾的空节点处相等。
-    // 为什么一定会相等呢，因为两个指针走过的路程相同，
-    // 是两个链表的长度之和，所以一定会相等。这个思路真的很巧妙，而且更重要的是代码写起来特别的简洁，参见代码如下：
-
-    //  [160]. Intersection of Two Linked Lists
-    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
-        if (headA == null || headB == null) {
-            return null;
-        }
-        ListNode a = headA, b = headB;
-        // 两个指针最终会相等，
-        //    // 而且只有两种情况，
-        //    // 一种情况是在交点处相遇，
-        //    // 另一种情况是在各自的末尾的空节点处相等。
-        while (a != b) {
-            a = (a != null) ? a.next : headB;
-            b = (b != null) ? b.next : headA;
-        }
-        return a;
-    }
-
 
     // lt 3 无重复最长子串
     public int lengthOfLongestSubstring(String s) {
@@ -2326,7 +2300,7 @@ public class Solution {
         for (int i = 0; i < len; i++) {
             for (int j = i; j >= 0; j--) {
 
-                dp[i][j] = s.charAt(i) == s.charAt(j) && (i-j <= 2 || dp[i + 1][j - 1]);
+                dp[i][j] = s.charAt(i) == s.charAt(j) && (i - j <= 2 || dp[i + 1][j - 1]);
                 if (dp[i][j]) {
                     System.out.println("i:" + i + "\tj:" + j);
                     res++;
@@ -2335,13 +2309,14 @@ public class Solution {
         }
         return res;
     }
+
     // 这道题目就是有点取巧了阿  不推荐这种做法
     public int countSubstrings2(String s) {
         int res = 0;
         int len = s.length();
         boolean[][] dp = new boolean[len][len];
-        for (int i = len-1; i >=0; i--) {
-            for (int j = i; j <len; j++) {
+        for (int i = len - 1; i >= 0; i--) {
+            for (int j = i; j < len; j++) {
 
                 dp[i][j] = s.charAt(i) == s.charAt(j) && (j - i <= 2 || dp[i + 1][j - 1]);
                 if (dp[i][j]) {
@@ -2354,15 +2329,29 @@ public class Solution {
     }
 
 
+    // 322. 零钱兑换  ★ 经典题目阿
+    public int coinChange(int[] coins, int amount) {
+        Arrays.sort(coins);
+        int[] f = new int[amount + 1];
+        f[0] = 0;
+        for (int i = 1; i <= amount; i++) {
+            int cost = Integer.MAX_VALUE;
+            for (int j = 0; j < coins.length; j++) {
+                if (i - coins[j] >= 0 && f[i - coins[j]] != Integer.MAX_VALUE) {
+                    cost = Math.min(cost, f[i - coins[j]] + 1);
+                }
+            }
+            f[i] = cost;
+        }
+        return f[amount] == Integer.MAX_VALUE ? -1 : f[amount];
+    }
+    //  518. 零钱兑换 II
+
+
     // 76. 最小覆盖子串//  滑动窗口解决问题  http://bit.ly/2LvcJLu
     //
     public String minWindow(String s, String t) {
         return "";
-    }
-
-    // 438. 找到字符串中所有字母异位词
-    public List<Integer> findAnagrams(String s, String p) {
-        return null;
     }
 
     // follow up todo 590. N叉树的后序遍历
@@ -2375,5 +2364,60 @@ public class Solution {
     public int maxPathSum(TreeNode root) {
         return 1;
     }
+
+    // 160. 相交链表
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null) return null;
+        ListNode a = headA;
+        ListNode b = headB;
+        while (a != b) {
+            a = a != null ? a.next : headB;
+            b = b != null ? b.next : headA;
+        }
+        return a;
+    }
+
+    // 461. 汉明距离
+    public int hammingDistance(int x, int y) {
+        int xor = x ^ y, count = 0;
+        for (int i = 0; i < 32; i++) count += (xor >> i) & 1;
+        return count;
+    }
+
+    // http://bit.ly/2LvcJLu
+    // 438. 找到字符串中所有字母异位词
+    public List<Integer> findAnagrams(String s, String p) {
+        List<Integer> res = new ArrayList<>();
+        if (s.isEmpty() || s == null || p.isEmpty() || p == null) return res;
+        int[] chr = new int[256];
+        for (char c : p.toCharArray()) {
+            chr[c] = chr[c] + 1;
+        }
+        int sLen = s.length();
+        int pLen = p.length();
+        int i = 0;
+        while (i < sLen) {
+            boolean success = true;
+            int[] tmp = Arrays.copyOf(chr, chr.length);
+            for (int j = i; j < pLen + i; j++) {
+                if (--tmp[s.charAt(j)] < 0) {
+                    success = false;
+                    break;
+                }
+            }
+            if (success) {
+                res.add(i);
+            }
+            i++;
+        }
+        return res;
+    }
+
+    // 49. 字母异位词分组
+    public List<List<String>> groupAnagrams(String[] strs) {
+        return null;
+    }
+
+
 }
 

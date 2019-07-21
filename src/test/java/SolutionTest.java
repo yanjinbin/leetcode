@@ -1,6 +1,4 @@
-import com.yanjinbin.leetcode.ListNode;
-import com.yanjinbin.leetcode.Solution;
-import com.yanjinbin.leetcode.TreeNode;
+import com.yanjinbin.leetcode.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,7 +7,7 @@ import java.util.*;
 public class SolutionTest {
 
     private static Solution INSTANCE = new Solution();
-
+    private static CareerUp INSTANCEM2 = new CareerUp();
     private ListNode headNode;
     private ListNode demoNode;
 
@@ -831,7 +829,7 @@ public class SolutionTest {
         assert INSTANCE.deserialize(INSTANCE.serialize(d)).getVal() == d.getVal();
     }
 
-    @Test()
+    @Test(timeout = 2000)
     public void countSubstrings() {
         String data = "abdccdbbdca";
         System.out.println(INSTANCE.countSubstrings(data));
@@ -843,6 +841,49 @@ public class SolutionTest {
         System.out.println("-=====");
         INSTANCE.countSubstrings2("fdsklf");
 
+    }
+
+    @Test
+    public void getIntersectionNode() {
+        ListNode a = ListNode.builder().val(1).next(
+                ListNode.builder().val(2).next(
+                        ListNode.builder().val(3).build()).build()).build();
+        ListNode b = ListNode.builder().val(4).next(
+                ListNode.builder().val(5).next(
+                        ListNode.builder().val(6).next(ListNode.builder().val(7).next(ListNode.builder().val(8).build()).build()).build()).build()).build();
+
+        ListNode c = ListNode.builder().val(9).next(
+                ListNode.builder().val(10).next(
+                        ListNode.builder().val(11).next(
+                                ListNode.builder().val(12).next(
+                                        ListNode.builder().val(13).build()).build()).build()).build()).build();
+        a.setNext(c);
+        b.setNext(c);
+        assert INSTANCE.getIntersectionNode(a, b).getVal() == 9;
+    }
+
+    @Test
+    public void hammingDistance() {
+        assert INSTANCE.hammingDistance(1, 4) == 2;
+    }
+
+    @Test
+    public void findAnagrams() {
+        INSTANCE.findAnagrams("cbaebabacd", "abc");
+        // 越界了
+        System.out.println(INSTANCE.findAnagrams("abab", "ab"));
+    }
+
+    @Test
+    public  void minStack(){
+        MinStack minStack = new MinStack();
+        minStack.push(-2);
+        minStack.push(0);
+        minStack.push(-3);
+        minStack.getMin();   // --> 返回 -3.
+        minStack.pop();
+        minStack.top();      // --> 返回 0.
+        assert minStack.getMin() == -2;
 
     }
 }
