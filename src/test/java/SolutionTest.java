@@ -35,6 +35,72 @@ public class SolutionTest {
         Solution.demo();
     }
 
+    // 基础知识准备
+    @Test
+    public void operator() {
+        System.out.println("====自增运算符====");
+        int i = 1;
+        i++;
+        ++i;
+        System.out.println(i); // 3
+        i = i++;
+        System.out.println(i); // 3
+        System.out.println(i); // 3
+        int j = i++;
+        System.out.println(j); // 3
+        System.out.println(i); // 4
+        j = ++i;
+        System.out.println(i); // 5
+        System.out.println(j); // 5
+    }
+
+    @Test
+    public void whileFor() {
+        int i = 3;
+        for (; i < 5; ++i) {
+            System.out.println("i值: " + i);
+        }
+        // reset
+        i = 3;
+        for (; i < 5; i++) {
+            System.out.println("i值: " + i);
+        }
+        LinkedList<Integer> ll = new LinkedList<>();
+        ll.add(1);
+        ll.add(2);
+        System.out.println(ll);
+        ll.addFirst(3);
+        System.out.println(ll);
+        ll.pollLast();
+        System.out.println(ll);
+        ll.add(2, 10);
+        System.out.println(ll);
+        ll.add(2, 77);
+        System.out.println(ll);
+        // Integer类型了
+        Integer[] nums = {5, 4, 3, 2, 1};
+        Arrays.sort(nums);
+        for (int num : nums) {
+            System.out.printf("%d \t", num);
+            System.out.println();
+        }
+
+        int tmp = nums[1];
+        Arrays.sort(nums, Collections.reverseOrder());
+        List<Integer> integers = Arrays.asList(1, 2, 3);
+        System.out.println(integers);
+    }
+
+
+    @Test
+    public void StringAPI() {
+        System.out.println("abc".charAt(1));
+        char[] chars = "abc".toCharArray();
+        System.out.println(chars[0]);
+        // char 单子字符 256
+        chars = new char[256];
+    }
+
     @Test
     public void twoSum() {
         int[] ints = {1, 34, 45};
@@ -95,6 +161,14 @@ public class SolutionTest {
         System.out.println(headNode);
         ListNode listNode = INSTANCE.reverseSingleLinkedList(headNode);
         System.out.println(listNode);
+    }
+
+
+    @Test
+    public void isPalindrome() {
+        // todo
+        ListNode head = ListNode.builder().val(0).next(ListNode.builder().val(0).build()).build();
+        assert INSTANCE.isPalindrome(head) == true;
     }
 
     @Test
@@ -875,7 +949,7 @@ public class SolutionTest {
     }
 
     @Test
-    public  void minStack(){
+    public void minStack() {
         MinStack minStack = new MinStack();
         minStack.push(-2);
         minStack.push(0);
@@ -886,4 +960,30 @@ public class SolutionTest {
         assert minStack.getMin() == -2;
 
     }
+
+    @Test
+    public void findTargetSumWays() {
+        int[] nums = {1, 1, 1, 1, 1};
+        INSTANCE.findTargetSumWays(nums, 3);
+    }
+
+    @Test
+    public void reconstructedQueue() {
+        int[][] people = new int[][]{{7, 0}, {4, 4}, {7, 1}, {5, 0}, {6, 1}, {5, 2}};
+        Arrays.sort(people, (o1, o2) -> o1[0] == o2[0] ? o1[1] - o2[1] : o2[0] - o1[0]);
+        INSTANCE.reconstructQueue0(people);
+    }
+
+    @Test(timeout = 3000)
+    public void isMatch() {
+        assert INSTANCE.isMatch0("aa", "a") == false;
+        assert INSTANCE.isMatch0("aa", "*") == true;
+        assert INSTANCE.isMatch0("cb", "*a") == false;
+        assert INSTANCE.isMatch0("adceb", "*a*b") == true;
+        assert INSTANCE.isMatch0("acdcb", "a*c?b") == false;
+
+        assert INSTANCE.isMatch1("aa", "a") == false;
+        assert INSTANCE.isMatch1("adceb", "*a*b") == true;
+    }
+
 }

@@ -98,6 +98,8 @@ public class Solution {
         if (fast != null) {
             slow = slow.next;
         }
+
+
         ListNode newHead = reverseSingleLinkedList(slow);
         while (newHead != null) {
             if (head.val != newHead.val) {
@@ -952,7 +954,7 @@ public class Solution {
 
     }
 
-    // LT 416. 分割等和子集
+    // LT 416. 分割等和子集  经典题目 dp
     public boolean canPartition0(int[] nums) {
         int sum = 0;
         for (int i = 0; i < nums.length; i++) {
@@ -1228,11 +1230,6 @@ public class Solution {
 
     }
 
-    // 494. 目标和
-    public int findTargetSumWays(int[] nums, int S) {
-        return 0;
-    }
-
     public ListNode merge(ListNode l1, ListNode l2) {
         ListNode dummy = new ListNode(0);
         ListNode l = dummy;
@@ -1490,6 +1487,41 @@ public class Solution {
         }
     }
 
+
+    // 77  组合
+    public List<List<Integer>> combine(int n, int k) {
+        return null;
+    }
+
+    // follow up https://www.cnblogs.com/grandyang/p/4358831.html
+    public List<List<Integer>> combine1(int n, int k) {
+        return null;
+    }
+
+
+    // 46. 全排列
+    public List<List<Integer>> permute(int[] nums) {
+        List<List<Integer>> ret = new ArrayList<>();
+        LinkedList<Integer> sub = new LinkedList<>();
+        boolean[] visit = new boolean[nums.length];
+        dfsPermute(nums, 0, visit, sub, ret);
+        return ret;
+    }
+
+    public void dfsPermute(int[] nums, int level, boolean[] visit, LinkedList<Integer> sub, List<List<Integer>> ret) {
+        if (level == nums.length) {
+            ret.add(sub);
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (visit[i]) continue;
+            visit[i] = true;
+            sub.addLast(nums[i]);
+            dfsPermute(nums, level + 1, visit, sub, ret);
+            sub.pollLast();
+            visit[i] = false;
+        }
+    }
 
     // 739. 每日温度  递增栈
     public int[] dailyTemperatures(int[] temperatures) {
@@ -2348,23 +2380,6 @@ public class Solution {
     //  518. 零钱兑换 II
 
 
-    // 76. 最小覆盖子串//  滑动窗口解决问题  http://bit.ly/2LvcJLu
-    //
-    public String minWindow(String s, String t) {
-        return "";
-    }
-
-    // follow up todo 590. N叉树的后序遍历
-    public List<Integer> postorder(Node root) {
-        return null;
-    }
-
-
-    // 124. 二叉树中的最大路径和
-    public int maxPathSum(TreeNode root) {
-        return 1;
-    }
-
     // 160. 相交链表
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
         if (headA == null || headB == null) return null;
@@ -2413,11 +2428,146 @@ public class Solution {
         return res;
     }
 
+
+    public int findTargetSumWays(int[] nums, int S) {
+        return dfsTargetSumHelper(nums, S, 0, res);
+    }
+
+    int dfsTargetSumHelper(int[] nums, int S, int start, int res) {
+        if (start >= nums.length) {
+            if (S == 0) res++;
+            return res;
+        }
+        return dfsTargetSumHelper(nums, S - nums[start], start + 1, res) + dfsTargetSumHelper(nums, S + nums[start], start + 1, res);
+    }
+
+    // 406. 根据身高重建队列
+    public int[][] reconstructQueue0(int[][] people) {
+        Arrays.sort(people, (o1, o2) -> o1[0] == o2[0] ? o1[1] - o2[1] : o2[0] - o1[0]);
+        List<int[]> res = new LinkedList<>();
+        for (int[] person : people) {
+            // tips: add的用法 是第二次重复插入的时候 需要右移 shift current element to right.
+            res.add(person[1], person);
+        }
+        return res.toArray(new int[res.size()][]);
+    }
+
+    // 解法2
+    public int[][] reconstructQueue1(int[][] people) {
+        return null;
+    }
+
+
+    // 岛屿系列 todo
+    // 200. 岛屿数量
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) return 0;
+        boolean[][] visited = new boolean[grid.length][grid[0].length];
+        int res = 0;
+        for (int i = 0; i < grid.length; i++) {
+            for (int j = 0; j < grid[i].length; j++) {
+                if (grid[i][j] == '0' || visited[i][j]) {
+                    continue;
+                }
+                dfsIslandHelper(grid, visited, i, j);
+                res++;
+            }
+        }
+        return res;
+    }
+
+    public void dfsIslandHelper(char[][] grid, boolean[][] visit, int x, int y) {
+        if (x < 0 || x >= grid.length || y < 0 || y >= grid[x].length || grid[x][y] == '0' || visit[x][y]) return;
+        visit[x][y] = true;
+        dfsIslandHelper(grid, visit, x + 1, y);
+        dfsIslandHelper(grid, visit, x - 1, y);
+        dfsIslandHelper(grid, visit, x, y + 1);
+        dfsIslandHelper(grid, visit, x, y - 1);
+    }
+
+    // 44. 通配符匹配  参考这篇文章 匹配优先向下原则(说的不是通配哦!)  本质上是在构建NFA  http://bit.ly/2LyOYSq
+    public boolean isMatch0(String s, String p) {
+        char[] S = s.toCharArray(), P = p.toCharArray();
+        int i = 0, j = 0, sStar = -1, pStar = -1;
+        while (i < s.length()) {
+            if (j < p.length() && (S[i] == P[j] || P[j] == '?')) { //如果匹配，两指针同时后移
+                i++;
+                j++;
+            } else if (j < p.length() && P[j] == '*') { //如果不匹配但j指向'*'，那么记录此时j的位置以构建回路，同时记录i的位置以标记i此时可以后移却停留在此一次，同时j后移
+                pStar = j;
+                j = j + 1;
+                sStar = i;
+            } else if (sStar >= 0) { //仍然不匹配，但是i有路可走，且i已经停在那一次了，那么i要后移，连同i停留的位置也要更新，j直接到回路'*'的后一个位置。此时j也可以取pStar，但运行速度会变慢
+                j = pStar + 1;
+                i = ++sStar;
+            } else return false; //仍然不匹配，i与j均已无路可走，返回false
+        }
+        while (j < p.length() && P[j] == '*') j++; //i扫描完成后要看j能不能够到达终点，即j可以沿着'*'行程的通路一直向下
+        return j == p.length(); //i与j同时到达终点完成匹配
+    }
+
+    // 解法2 dp来做  解题思路参考这个做法 http://bit.ly/2StUSFc
+    public boolean isMatch1(String s, String p) {
+        char[] S = s.toCharArray();
+        int sLen = S.length;
+        char[] P = p.toCharArray();
+        int pLen = P.length;
+        boolean[][] dp = new boolean[sLen + 1][pLen + 1];
+        dp[0][0] = true;
+        // 处理特殊情况
+        // 当s为空，p为连续的星号时的情况。由于星号是可以代表空串的，所以只要s为空，那么连续的星号的位置都应该为 true，所以我们现将连续星号的位置都赋为 true
+        for (int i = 1; i <= pLen; i++) {
+            if (P[i - 1] == '*') dp[0][i] = dp[0][i - 1];
+        }
+
+        for (int i = 1; i <= sLen; i++) {
+            for (int j = 1; j <= pLen; j++) {
+                if (P[j - 1] == '*') {
+                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+                } else {
+                    dp[i][j] = dp[i - 1][j - 1] && (S[i - 1] == P[j - 1] || P[j - 1] == '?');
+                }
+            }
+        }
+        return dp[sLen][pLen];
+    }
+
+
+    // 399. 除法求值
+    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
+        return null;
+    }
+
+    // 32. 最长有效括号
+    public int longestValidParentheses(String s) {
+        return 0;
+    }
+
+    // 621. 任务调度器 好难 暂时放弃 http://bit.ly/2LxLShE
+    public int leastInterval(char[] tasks, int n) {
+        return 1;
+    }
+
+
+    // 76. 最小覆盖子串//  滑动窗口解决问题  http://bit.ly/2LvcJLu
+    //
+    public String minWindow(String s, String t) {
+        return "";
+    }
+
+    // follow up todo 590. N叉树的后序遍历
+    public List<Integer> postorder(Node root) {
+        return null;
+    }
+
     // 49. 字母异位词分组
     public List<List<String>> groupAnagrams(String[] strs) {
         return null;
     }
 
-
+    // 124. 二叉树中的最大路径和
+    public int maxPathSum(TreeNode root) {
+        return 1;
+    }
 }
 
