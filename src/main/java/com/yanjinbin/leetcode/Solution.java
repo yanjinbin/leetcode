@@ -2690,6 +2690,51 @@ public class Solution {
         return sb.toString();
     }
 
+    // 72. 编辑距离 DP的递归做法
+    public int minDistance(String word1, String word2) {
+        int m = word1.length();
+        int n = word2.length();
+        int[][] memo = new int[m][n];
+        return dfsMinDistanceHelper(word1, 0, word2, 0, memo);
+    }
+
+    public int dfsMinDistanceHelper(String word1, int i, String word2, int j, int[][] memo) {
+        if (i == word1.length()) return word2.length() - j;
+        if (j == word2.length()) return word1.length() - i;
+        if (memo[i][j] > 0) return memo[i][j];
+        int res = 0;
+        if (word1.charAt(i) == word2.charAt(j)) {
+            return dfsMinDistanceHelper(word1, i + 1, word2, j + 1, memo);
+        } else {
+            int insertCnt = dfsMinDistanceHelper(word1, i, word2, j + 1, memo);
+            int deleteCnt = dfsMinDistanceHelper(word1, i + 1, word2, j, memo);
+            int replaceCnt = dfsMinDistanceHelper(word1, i + 1, word2, j + 1, memo);
+            res = Math.min(insertCnt, Math.min(deleteCnt, replaceCnt)) + 1;
+        }
+        return memo[i][j] = res;
+    }
+
+    // 解法2 DP的迭代做法 参考这个连接 http://bit.ly/2SyePLi
+    public int minDistance1(String word1, String word2) {
+        int m = word1.length();
+        int n = word2.length();
+        int[][] dp = new int[m + 1][n + 1];
+        // init
+        for (int i = 0; i <= m; i++) dp[i][0] = i;
+        for (int i = 0; i <= n; i++) dp[0][i] = i;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (word1.charAt(i - 1) == word2.charAt(j - 1)) {
+                    dp[i][j] = dp[i - 1][j - 1];
+                } else {
+                    // 替换 插入 删除 操作
+                    dp[i][j] = Math.min(dp[i - 1][j - 1], Math.min(dp[i - 1][j], dp[i][j - 1])) + 1;
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
     // 399. 除法求值
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
         return null;

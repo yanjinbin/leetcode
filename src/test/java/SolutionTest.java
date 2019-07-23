@@ -1017,4 +1017,20 @@ public class SolutionTest {
 
     }
 
+
+    @Test
+    public void TwoDArray() {
+        System.out.println("==常识===");
+        int[][] nums = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        assert nums[0][0] == 1;
+        assert nums[0][1] == 2;
+        assert nums[1][0] == 4;
+    }
+
+
+    @Test
+    public void minDistance() {
+        assert INSTANCE.minDistance("horse", "rose") == 2;
+        assert INSTANCE.minDistance1("horse", "rois") == 3;
+    }
 }
