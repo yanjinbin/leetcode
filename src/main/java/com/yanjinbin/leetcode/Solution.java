@@ -2533,6 +2533,163 @@ public class Solution {
     }
 
 
+    // leetcode 10 正则表达式匹配 http://bit.ly/2SsG9dA  todo 暂时放弃  看不懂示例3为什么true!
+    public boolean isMatch2(String s, String p) {
+        boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
+        dp[0][0] = true;
+
+        for (int i = 0; i < p.length(); i++) {
+            if (p.charAt(i) == '*' && dp[0][i - 1]) {
+                dp[0][i + 1] = true;
+            }
+        }
+
+        for (int i = 0; i < s.length(); i++) {
+            for (int j = 0; j < p.length(); j++) {
+                if (p.charAt(j) == '.') {
+                    dp[i + 1][j + 1] = dp[i][j];
+                }
+                if (p.charAt(j) == s.charAt(i)) {
+                    dp[i + 1][j + 1] = dp[i][j];
+                }
+
+                if (p.charAt(j) == '*') {
+                    if (p.charAt(j - 1) != s.charAt(i) && p.charAt(j - 1) != '.') {
+                        dp[i + 1][j + 1] = dp[i + 1][j - 1];
+                    } else {
+                        dp[i + 1][j + 1] = (dp[i + 1][j] || dp[i][j + 1] || dp[i + 1][j - 1]);
+                    }
+                }
+            }
+        }
+        return dp[s.length()][p.length()];
+    }
+
+    // 221. 最大正方形 todo暂时放弃
+    public int maximalSquare(char[][] matrix) {
+        int res = 0;
+        for (int i = 0; i < matrix.length; i++) {
+            int[] vector = new int[matrix[i].length];
+            for (int j = i; j < matrix.length; j++) {
+                for (int k = 0; k < matrix[j].length; k++) {
+                    if (matrix[j][k] == '1') vector[k]++;
+                }
+                res = Math.max(res, getSquareArea(vector, j - i + 1));
+            }
+        }
+        return res;
+    }
+
+    int getSquareArea(int[] vector, int k) {
+        if (vector.length < k) return 0;
+        int count = 0;
+        for (int i = 0; i < vector.length; i++) {
+            if (vector[i] != k) count = 0;
+            else count++;
+            if (count == k) return k * k;
+        }
+        return 0;
+    }
+
+
+    // 394. 字符串解码  递归解法 注意idx的取值阿
+    public int idx;
+
+    public String decodeString(String s) {
+        return decode(s);
+    }
+
+    //  字符+数字+[+字母+] 的 模型
+    public String decode(String s) {
+        String res = "";
+        int n = s.length();
+        while (idx < n && s.charAt(idx) != ']') {
+            if (s.charAt(idx) > '9' || s.charAt(idx) < '0') {
+                res += s.charAt(idx);
+                idx++;
+            } else {
+                // cal numstr to cnt
+                int cnt = 0;
+                while (s.charAt(idx) >= '0' && s.charAt(idx) <= '9') {
+                    cnt = cnt * 10 + s.charAt(idx) - '0';
+                    idx++;
+                }
+                // 进入左括号后第一个
+                idx++;
+                String t = decode(s);
+                // 当进入循环的时候的s.charAt(i=6)=']'。  那么，需要跳过去， 所以idx++。
+                idx++;
+                while (cnt-- > 0) {
+                    res += t;
+                }
+            }
+        }
+        return res;
+    }
+
+
+    // 解法2
+    public String decodeString1(String s) {
+        return null;
+    }
+
+
+    public String decodeString0(String s) {
+        StringBuilder res = new StringBuilder();
+        Stack<Integer> numStack = new Stack<>();
+        Stack<String> strStack = new Stack<>();
+        String tempStr = null;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (s.charAt(i) == ']') {
+                String str = strStack.pop();
+                int num = numStack.pop();
+                String nowStr = repeatStr(str, num);
+                if (!numStack.isEmpty()) {
+                    StringBuilder builder = new StringBuilder();
+                    builder.append(strStack.peek());
+                    builder.append(nowStr);
+                    int m = i + 1;
+                    while (s.charAt(m) != ']' && !('0' < s.charAt(m) && '9' >= s.charAt(m))) {
+                        m++;
+                    }
+                    builder.append(s.substring(i + 1, m));
+                    strStack.set(strStack.size() - 1, builder.toString());
+                    i = m - 1;
+                } else {
+                    tempStr = null;
+                    res.append(nowStr);
+                }
+            } else if ('0' <= c && '9' >= c) {
+                int m = i + 1;
+                while ('0' <= s.charAt(m) && '9' >= s.charAt(m)) {
+                    m++;
+                }
+                numStack.push(Integer.parseInt(s.substring(i, m)));
+                i = m - 1;
+                int k = i + 2;
+                while (s.charAt(k) != ']' && !('0' <= s.charAt(k) && '9' >= s.charAt(k))) {
+                    k++;
+                }
+                strStack.push(s.substring(i + 2, k));
+                i = k - 1;
+            } else if (numStack.isEmpty()) {
+                res.append(s.charAt(i));
+            }
+        }
+        return res.toString();
+
+    }
+
+    private String repeatStr(String s, int num) {
+        StringBuilder sb = new StringBuilder();
+        if (num <= 0) return "";
+        for (int i = 0; i < num; i++) {
+            sb.append(s);
+        }
+        return sb.toString();
+    }
+
     // 399. 除法求值
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
         return null;
@@ -2540,7 +2697,7 @@ public class Solution {
 
     // 32. 最长有效括号
     public int longestValidParentheses(String s) {
-        return 0;
+        return 1;
     }
 
     // 621. 任务调度器 好难 暂时放弃 http://bit.ly/2LxLShE

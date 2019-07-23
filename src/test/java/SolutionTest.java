@@ -46,12 +46,15 @@ public class SolutionTest {
         i = i++;
         System.out.println(i); // 3
         System.out.println(i); // 3
+        //  System.out.println("abcdefg".charAt(i++)); // d
+        //  System.out.println("abcdefg".charAt(++i)); // f
         int j = i++;
         System.out.println(j); // 3
         System.out.println(i); // 4
         j = ++i;
         System.out.println(i); // 5
         System.out.println(j); // 5
+
     }
 
     @Test
@@ -984,6 +987,34 @@ public class SolutionTest {
 
         assert INSTANCE.isMatch1("aa", "a") == false;
         assert INSTANCE.isMatch1("adceb", "*a*b") == true;
+
+        System.out.println(INSTANCE.isMatch2("ab", ".*"));
+    }
+
+    @Test
+    public void decodeNumStr() {
+        // 展示字符串如何转成数字 例: "789e" ---> 789
+        System.out.println("展示字符串如何转成数字 例: \"789e\" ---> 789");
+        String s = "789e";
+        int cnt = 0;
+        int idx = 0;
+        while (s.charAt(idx) >= '0' && s.charAt(idx) <= '9') {
+            // 利用ascii 性质 int =  char -'0'
+            cnt = cnt * 10 + s.charAt(idx++) - '0';
+            //  cnt = cnt * 10 + s.charAt(idx++) - 48;
+        }
+        System.out.println("=======");
+        System.out.println("值: " + cnt);
+
+    }
+
+    @Test
+    public void decodeString() {
+        INSTANCE.decodeString("3[a2[c]]").equals("accaccacc");
+        // reset
+        INSTANCE.idx = 0;
+        System.out.println(INSTANCE.decodeString("3[a]2[bc]"));
+
     }
 
 }
