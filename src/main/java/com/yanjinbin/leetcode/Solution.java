@@ -2564,34 +2564,6 @@ public class Solution {
         }
         return dp[s.length()][p.length()];
     }
-
-    // 221. 最大正方形 todo暂时放弃
-    public int maximalSquare(char[][] matrix) {
-        int res = 0;
-        for (int i = 0; i < matrix.length; i++) {
-            int[] vector = new int[matrix[i].length];
-            for (int j = i; j < matrix.length; j++) {
-                for (int k = 0; k < matrix[j].length; k++) {
-                    if (matrix[j][k] == '1') vector[k]++;
-                }
-                res = Math.max(res, getSquareArea(vector, j - i + 1));
-            }
-        }
-        return res;
-    }
-
-    int getSquareArea(int[] vector, int k) {
-        if (vector.length < k) return 0;
-        int count = 0;
-        for (int i = 0; i < vector.length; i++) {
-            if (vector[i] != k) count = 0;
-            else count++;
-            if (count == k) return k * k;
-        }
-        return 0;
-    }
-
-
     // 394. 字符串解码  递归解法 注意idx的取值阿
     public int idx;
 
@@ -2734,6 +2706,11 @@ public class Solution {
         }
         return dp[m][n];
     }
+
+
+    // 221. 最大正方形
+
+
 
     // 399. 除法求值
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
