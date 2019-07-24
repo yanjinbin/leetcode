@@ -1,5 +1,7 @@
 package com.yanjinbin.leetcode;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 import java.util.*;
 
 /**
@@ -2564,6 +2566,7 @@ public class Solution {
         }
         return dp[s.length()][p.length()];
     }
+
     // 394. 字符串解码  递归解法 注意idx的取值阿
     public int idx;
 
@@ -2601,11 +2604,7 @@ public class Solution {
 
 
     // 解法2
-    public String decodeString1(String s) {
-        return null;
-    }
-
-
+    // 不懂阿
     public String decodeString0(String s) {
         StringBuilder res = new StringBuilder();
         Stack<Integer> numStack = new Stack<>();
@@ -2707,10 +2706,80 @@ public class Solution {
         return dp[m][n];
     }
 
+    //301 删除最小数量的无效括号 BFS扫描做法
+    public List<String> removeInvalidParentheses0(String s) {
+        List<String> res = new ArrayList<>();
+        // sanity check
+        if (s == null) return res;
+        Set<String> visited = new HashSet<>();
+        Queue<String> queue = new LinkedList<>();
 
-    // 221. 最大正方形
+        visited.add(s);
+        queue.add(s);
+
+        boolean found = false;
+
+        while (!queue.isEmpty()) {
+            s = queue.poll();
+
+            if (isValid(s)) {
+                res.add(s);
+                found = true;
+            }
+            // 这里是实现BFS的关键哦  判断是否要进行下一层次(子节点)的BFS扫描,if true ,执行同级节点的扫描.
+            if (found) continue;
+
+            for (int i = 0; i < s.length(); i++) {
+                if (s.charAt(i) != '(' && s.charAt(i) != ')') continue;
+                String t = s.substring(0, i) + s.substring(i + 1);
+                if (!visited.contains(t)) {
+                    queue.add(t);
+                    visited.add(t);
+                }
+            }
+        }
+        return res;
+    }
 
 
+    public boolean isValid(String s) {
+        int count = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '(') count++;
+            // 左右括号存在顺序性
+            if (c == ')' && --count < 0) return false;
+        }
+        return count == 0;
+    }
+
+    // 312. 戳气球 DP思想 迭代 http://bit.ly/2K4T01Z dp[i,j]
+    public int maxCoins(int[] nums) {
+        // ready data
+        int n = nums.length;
+        int[] numbers = new int[n + 2];
+        numbers[0] = numbers[numbers.length - 1] = 1;
+        for (int i = 0; i < n; i++) {
+            numbers[i + 1] = nums[i];
+        }
+        int[][] dp = new int[n + 2][n + 2];
+
+        for (int len = 1; len <= n; len++) {
+            for (int i = 1; i <= n - len + 1; i++) {
+                int j = i + len - 1;
+                for (int k = i; k <= j; k++) {
+                    // 求出dp[i,j]区间 第k个气球被打破时候的最大值Max(dp[i,j])
+                    // k 的遍历区间 [i,i+len-1]
+                    dp[i][j] = Math.max(dp[i][j], numbers[i - 1] * numbers[k] * numbers[j + 1] + dp[i][k - 1] + dp[k + 1][j]);
+                }
+            }
+        }
+
+        return dp[1][n];
+    }
+
+    // 解法2 递归 todo
 
     // 399. 除法求值
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {

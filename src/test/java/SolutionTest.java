@@ -1033,4 +1033,20 @@ public class SolutionTest {
         assert INSTANCE.minDistance("horse", "rose") == 2;
         assert INSTANCE.minDistance1("horse", "rois") == 3;
     }
+
+    @Test
+    public void removeInvalidParentheses() {
+        System.out.println(INSTANCE.isValid("(((a)()))"));
+        System.out.println(INSTANCE.isValid(")()("));
+
+        System.out.println(INSTANCE.removeInvalidParentheses0("()())()"));
+        System.out.println(INSTANCE.removeInvalidParentheses0("(a)())()"));
+        System.out.println(INSTANCE.removeInvalidParentheses0(")("));
+    }
+
+    @Test
+    public void maxCoins() {
+        int[] nums = {3, 1, 5, 8};
+        assert INSTANCE.maxCoins(nums) == 167;
+    }
 }
