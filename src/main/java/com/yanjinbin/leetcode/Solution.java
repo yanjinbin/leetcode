@@ -3,6 +3,7 @@ package com.yanjinbin.leetcode;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 
 /**
  * top-100-liked-questions
@@ -2401,36 +2402,6 @@ public class Solution {
         return count;
     }
 
-    // http://bit.ly/2LvcJLu
-    // 438. 找到字符串中所有字母异位词
-    public List<Integer> findAnagrams(String s, String p) {
-        List<Integer> res = new ArrayList<>();
-        if (s.isEmpty() || s == null || p.isEmpty() || p == null) return res;
-        int[] chr = new int[256];
-        for (char c : p.toCharArray()) {
-            chr[c] = chr[c] + 1;
-        }
-        int sLen = s.length();
-        int pLen = p.length();
-        int i = 0;
-        while (i < sLen) {
-            boolean success = true;
-            int[] tmp = Arrays.copyOf(chr, chr.length);
-            for (int j = i; j < pLen + i; j++) {
-                if (--tmp[s.charAt(j)] < 0) {
-                    success = false;
-                    break;
-                }
-            }
-            if (success) {
-                res.add(i);
-            }
-            i++;
-        }
-        return res;
-    }
-
-
     public int findTargetSumWays(int[] nums, int S) {
         return dfsTargetSumHelper(nums, S, 0, res);
     }
@@ -2781,6 +2752,91 @@ public class Solution {
 
     // 解法2 递归 todo
 
+    // http://bit.ly/2LvcJLu
+    // 438. 找到字符串中所有字母异位词
+    public List<Integer> findAnagrams(String s, String p) {
+        List<Integer> res = new ArrayList<>();
+        int[] letters = new int[27];
+        for (char c : p.toCharArray()) {
+            letters[c - 'a'] = letters[c - 'a'] + 1;
+        }
+        int i = 0;
+        while (i < s.length()) {
+            boolean match = true;
+            int[] cnt = Arrays.copyOf(letters, letters.length);
+            // 忘记add j < s.length()条件了
+            for (int j = i; j < p.length() + i; j++) {
+                if (j >= s.length() || --cnt[s.charAt(j) - 'a'] < 0) {
+                    match = false;
+                    break;
+                }
+            }
+            if (match) {
+                res.add(i);
+            }
+            i++;
+        }
+        return res;
+    }
+
+    // 解法2 滑动窗口   观察 p 频数的自增自减
+    public List<Integer> findAnagrams1(String s, String p) {
+        List<Integer> res = new ArrayList<>();
+        if (s.isEmpty()) return res;
+        int[] m = new int[27];
+        int left = 0, right = 0, cnt = p.length(), n = s.length();
+        for (char c : p.toCharArray()) {
+            m[c - 'a']++;
+        }
+        while (right < n) {
+            if (m[s.charAt(right++) - 'a']-- >= 1) --cnt;
+            if (cnt == 0) res.add(left);
+            if (right - left == p.length() && m[s.charAt(left++) - 'a']++ >= 0) ++cnt;
+        }
+        return res;
+    }
+
+
+    // 49. 字母异位词分组
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> res = new ArrayList<>();
+        Map<String, List<String>> m = new HashMap<>();
+        for (String str : strs) {
+            char[] chars = str.toCharArray();
+            Arrays.sort(chars);
+            String key = Arrays.toString(chars);
+            List<String> value = m.getOrDefault(key, new ArrayList<>());
+            value.add(str);
+            m.put(key, value);
+        }
+        return new ArrayList<>(m.values());
+    }
+
+    // 解法2 没什么区别 说真的
+    public List<List<String>> groupAnagrams1(String[] strs) {
+        List<List<String>> res = new ArrayList<>();
+        Map<String, List<String>> m = new HashMap<>();
+        for (String str : strs) {
+            int[] cnt = new int[27];
+            for (char c : str.toCharArray()) {
+                cnt[c - 'a']++;
+            }
+            String key = "";
+            for (int i : cnt) {
+                key += i + "/";
+            }
+            // System.out.println("key值 " + key);
+            List<String> value = m.getOrDefault(key, new ArrayList<>());
+            value.add(str);
+            m.put(key, value);
+        }
+        for (List<String> value : m.values()) {
+            res.add(value);
+        }
+        return res;
+    }
+
+
     // 399. 除法求值
     public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
         return null;
@@ -2808,10 +2864,6 @@ public class Solution {
         return null;
     }
 
-    // 49. 字母异位词分组
-    public List<List<String>> groupAnagrams(String[] strs) {
-        return null;
-    }
 
     // 124. 二叉树中的最大路径和
     public int maxPathSum(TreeNode root) {

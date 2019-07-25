@@ -404,6 +404,15 @@ public class SolutionTest {
         System.out.println((a + c) / 2);
         System.out.println(b + (c - b) / 2);
         System.out.println((b + c) / 2);
+
+        int k = 10;
+        System.out.println(k-- >= 10);
+        int y = 10;
+        System.out.println(--y >= 10);
+
+        char[] key = {'c', 'b', 'a'};
+        System.out.println(Arrays.toString(key));
+        System.out.println(String.valueOf(key));
     }
 
     @Test
@@ -944,11 +953,13 @@ public class SolutionTest {
         assert INSTANCE.hammingDistance(1, 4) == 2;
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void findAnagrams() {
-        INSTANCE.findAnagrams("cbaebabacd", "abc");
+        System.out.println(INSTANCE.findAnagrams1("cbaebabacd", "abc"));
         // 越界了
         System.out.println(INSTANCE.findAnagrams("abab", "ab"));
+
+        System.out.println(INSTANCE.findAnagrams1("acac", "ac"));
     }
 
     @Test
@@ -1048,5 +1059,12 @@ public class SolutionTest {
     public void maxCoins() {
         int[] nums = {3, 1, 5, 8};
         assert INSTANCE.maxCoins(nums) == 167;
+    }
+
+    @Test
+    public void groupAnagrams() {
+        String[] strs = {"eat", "tea", "tan", "ate", "nat", "bat"};
+        System.out.println(INSTANCE.groupAnagrams(strs));
+        System.out.println(INSTANCE.groupAnagrams1(strs));
     }
 }
