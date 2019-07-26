@@ -1,8 +1,10 @@
 package com.yanjinbin.leetcode;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.omg.CORBA.PUBLIC_MEMBER;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.BiConsumer;
 
 /**
@@ -2783,7 +2785,7 @@ public class Solution {
     public List<Integer> findAnagrams1(String s, String p) {
         List<Integer> res = new ArrayList<>();
         if (s.isEmpty()) return res;
-        int[] m = new int[27];
+        int[] m = new int[26];
         int left = 0, right = 0, cnt = p.length(), n = s.length();
         for (char c : p.toCharArray()) {
             m[c - 'a']++;
@@ -2796,10 +2798,8 @@ public class Solution {
         return res;
     }
 
-
     // 49. 字母异位词分组
     public List<List<String>> groupAnagrams(String[] strs) {
-        List<List<String>> res = new ArrayList<>();
         Map<String, List<String>> m = new HashMap<>();
         for (String str : strs) {
             char[] chars = str.toCharArray();
@@ -2812,9 +2812,8 @@ public class Solution {
         return new ArrayList<>(m.values());
     }
 
-    // 解法2 没什么区别 说真的
+    // 解法2 和解1 没什么区别 说真的,本质就是维护异位词key的唯一性
     public List<List<String>> groupAnagrams1(String[] strs) {
-        List<List<String>> res = new ArrayList<>();
         Map<String, List<String>> m = new HashMap<>();
         for (String str : strs) {
             int[] cnt = new int[27];
@@ -2825,15 +2824,229 @@ public class Solution {
             for (int i : cnt) {
                 key += i + "/";
             }
-            // System.out.println("key值 " + key);
             List<String> value = m.getOrDefault(key, new ArrayList<>());
             value.add(str);
             m.put(key, value);
         }
-        for (List<String> value : m.values()) {
-            res.add(value);
+        return new ArrayList<>(m.values());
+    }
+
+    // 621. 任务调度器 好难  http://bit.ly/2LxLShE
+    public int leastInterval(char[] tasks, int n) {
+        int[] cnt = new int[26];
+        for (char c : tasks) {
+            cnt[c - 'A']++;
+        }
+        Arrays.sort(cnt);
+        int i = 25;
+        // 最高频次
+        while (i >= 0 && cnt[i] == cnt[25]) i--;
+        // if n =0; 取task.length
+        return Math.max(tasks.length, (cnt[25] - 1) * (n + 1) + 25 - i);
+    }
+
+    // http://bit.ly/2LxLShE
+    public int leastInterval1(char[] tasks, int n) {
+        int mx = 0;
+        int mxCnt = 0;
+        int[] cnt = new int[26];
+        for (char c : tasks) {
+            cnt[c - 'A']++;
+            if (mx == cnt[c - 'A']) {
+                mxCnt++;
+            } else if (mx < cnt[c - 'A']) {
+                mx = cnt[c - 'A'];
+                mxCnt = 1;
+            }
+        }
+
+        //     return Math.max(tasks.length, (mx - 1) * (n + 1) + mxCnt);
+
+        int partCnt = mx - 1;
+        int partLen = n - (mxCnt - 1);
+        int emptySlot = partCnt * partLen;
+        int taskLeft = tasks.length - mx * mxCnt;
+        int idles = Math.max(0, emptySlot - taskLeft);
+        return tasks.length + idles;
+    }
+
+    // 252. 会议室
+    public boolean canAttendMeetings(int[][] intervals) {
+        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        for (int i = 1; i < intervals.length; i++) {
+            if (intervals[i][0] < intervals[i - 1][1])
+                return false;
+        }
+        return true;
+    }
+
+
+    // 253. 会议室 II
+    public int minMeetingRooms0(int[][] intervals) {
+        Map<Integer, Integer> map = new TreeMap<>();
+        for (int[] interval : intervals) {
+            map.put(interval[0], map.getOrDefault(interval[0], 0) + 1);
+            map.put(interval[1], map.getOrDefault(interval[1], 0) - 1);
+        }
+        int rooms = 0;
+        int res = 0;
+
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            System.out.println("entry:\t" + entry + "\troom: " + rooms);
+            // 求前缀和的最大值
+            res = Math.max(res, rooms += entry.getValue());
         }
         return res;
+    }
+
+    // 参考这个视频 https://youtu.be/wB884_Os58U  主要是人脑怎么处理的问题
+    public int minMeetingRooms1(int[][] intervals) {
+        if (intervals.length == 0) return 0;
+        Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        // init
+        pq.add(intervals[0][1]);
+        for (int i = 1; i < intervals.length; i++) {
+            if (intervals[i][0] >= pq.peek()) {
+                pq.poll();
+            }
+            pq.add(intervals[i][1]);
+        }
+        return pq.size();
+    }
+
+
+    // 347. 前 K 个高频元素
+    // follow up
+    // 692 Top K Frequent Words
+    // 451 Sort Characters By Frequency
+    public List<Integer> topKFrequent1(int[] nums, int k) {
+        Map<Integer, Integer> cnt = new HashMap<>();
+        for (int num : nums) {
+            cnt.put(num, cnt.getOrDefault(num, 0) + 1);
+        }
+        // 最小堆
+        PriorityQueue<Map.Entry<Integer, Integer>> pq = new PriorityQueue<>((o1, o2) -> o1.getValue() - o2.getValue());
+        for (Map.Entry<Integer, Integer> item : cnt.entrySet()) {
+            pq.offer(item);
+            // 剔除 最小k
+            if (pq.size() > k) pq.poll();
+        }
+
+        List<Integer> res = new LinkedList<>();
+        while (!pq.isEmpty()) {
+            Map.Entry<Integer, Integer> item = pq.poll();
+            res.add(0, item.getKey());
+        }
+        return res;
+    }
+
+    // 解法2 TreeMap
+    public List<Integer> topKFrequent2(int[] nums, int k) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int n : nums) {
+            map.put(n, map.getOrDefault(n, 0) + 1);
+        }
+
+        TreeMap<Integer, List<Integer>> freqMap = new TreeMap<>();
+        for (int num : map.keySet()) {
+            int freq = map.get(num);
+            if (!freqMap.containsKey(freq)) {
+                freqMap.put(freq, new LinkedList<>());
+            }
+            freqMap.get(freq).add(num);
+        }
+
+        List<Integer> res = new ArrayList<>();
+        while (res.size() < k) {
+            Map.Entry<Integer, List<Integer>> entry = freqMap.pollLastEntry();
+            // System.out.println(entry);
+            res.addAll(entry.getValue());
+        }
+        return res;
+    }
+
+    // todo 解法3 bucket sort
+
+    // 279. 完全平方数 http://bit.ly/2Yl0Xt2 四平方和定理 但是 不太推荐
+    public int numSquares1(int n) {
+        System.out.println("四平方和定理 不过不好记住");
+        /*
+
+        while (n % 4 == 0) n /= 4;
+        if (n % 8 == 7) return 4;
+        for (int a = 0; a * a <= n; ++a) {
+            int b = sqrt(n - a * a);
+            if (a * a + b * b == n) {
+                return !!a + !!b;
+            }
+        }
+        return 3;
+
+        * */
+        return -1;
+    }
+
+    // 这道题目 意义不强阿
+    public int numSquares2(int n) {
+        int[] dp = new int[n + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        dp[0] = 0;
+        for (int i = 0; i <= n; i++) {
+            for (int j = 1; i + j * j <= n; j++) {
+                int idx = i + j * j;
+                dp[idx] = Math.min(dp[idx], dp[i] + 1);
+                System.out.println("i值: " + i + "\tj值: " + j + "\tj平方: " + (j * j) + "\t(i+j*j): " + idx + "\tdp:" + dp[idx] + "\n");
+            }
+        }
+        return dp[n];
+    }
+
+    // 239. 滑动窗口最大值 这道题目也是考察数据结构的熟悉程度了 大堆 优先队列
+    public int[] maxSlidingWindow0(int[] nums, int k) {
+        int[] res = new int[nums.length - k + 1];
+        if (nums.length == 0 || nums == null) return new int[0];
+        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> (o2 - o1));
+        // init
+        for (int i = 0; i < k; i++) {
+            pq.add(nums[i]);
+        }
+        res[0] = pq.peek();
+        for (int i = k; i < nums.length; i++) {
+            pq.remove(nums[i - k]);
+            pq.add(nums[i]);
+            res[i - k + 1] = pq.peek();
+        }
+        return res;
+    }
+
+    public int[] maxSlidingWindow1(int[] nums, int k) {
+        if (nums == null || k <= 0) {
+            return new int[0];
+        }
+        int len = nums.length;
+        int[] ret = new int[len - k + 1];
+
+        int retIdx = 0;
+        Deque<Integer> q = new ArrayDeque<>();
+        for (int i = 0; i < len; i++) {
+
+            // 超过长度 无条件移除head
+            while (!q.isEmpty() && q.peek() < i - k + 1) {
+                q.pollFirst();
+            }
+            while (!q.isEmpty() && nums[q.peekLast()] < nums[i]) {
+                // 入列的时候 从尾部剔除小于nums[i]元素
+                q.pollLast();
+            }
+            q.offer(i);
+            if (i >= k - 1) {// 表示 i可以赋值了，因为i必须到k-1时候，获取到第一个滑动窗口。
+                // head代表 固定长度k的头部元素为最大值,赋值给ret
+                ret[retIdx++] = nums[q.peek()];
+            }
+            System.out.println("i值:" + i + "长度为3的单调栈:" + q);
+        }
+        return ret;
     }
 
 
@@ -2844,11 +3057,6 @@ public class Solution {
 
     // 32. 最长有效括号
     public int longestValidParentheses(String s) {
-        return 1;
-    }
-
-    // 621. 任务调度器 好难 暂时放弃 http://bit.ly/2LxLShE
-    public int leastInterval(char[] tasks, int n) {
         return 1;
     }
 
@@ -2864,10 +3072,16 @@ public class Solution {
         return null;
     }
 
+    // 207. 课程表 拓扑排序
 
     // 124. 二叉树中的最大路径和
     public int maxPathSum(TreeNode root) {
         return 1;
     }
+
+    // https://leetcode-cn.com/problems/add-strings/
+    // 415. 字符串相加
+
 }
+
 

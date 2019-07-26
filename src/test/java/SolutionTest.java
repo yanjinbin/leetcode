@@ -1067,4 +1067,65 @@ public class SolutionTest {
         System.out.println(INSTANCE.groupAnagrams(strs));
         System.out.println(INSTANCE.groupAnagrams1(strs));
     }
+
+    @Test
+    public void leastInterval() {
+        char[] tasks = {'A', 'A', 'A', 'B', 'B', 'B', 'C'};
+        int n = 2;
+        System.out.println(INSTANCE.leastInterval(tasks, n));
+        System.out.println(INSTANCE.leastInterval1(tasks, n));
+        // corner case
+        n = 0;
+        System.out.println(INSTANCE.leastInterval(tasks, n));
+
+    }
+
+    @Test
+    public void meeting() {
+        int[][] intervals = {{0, 30}, {5, 10}, {15, 20}};
+        assert INSTANCE.canAttendMeetings(intervals) == false;
+
+        assert INSTANCE.minMeetingRooms0(intervals) == 2;
+        assert INSTANCE.minMeetingRooms1(intervals) == 2;
+
+    }
+
+    @Test
+    public void topKFrequent() {
+        int[] nums = {1, 1, 1, 2, 2, 3};
+        int k = 2;
+        System.out.println(INSTANCE.topKFrequent2(nums, k));
+    }
+
+    @Test
+    public void numSquares() {
+        // 四平方和定理 不好掌握 就用迭代DP方法算吧
+        System.out.println(INSTANCE.numSquares1(12));
+        assert INSTANCE.numSquares2(12) == 3;
+    }
+
+    @Test
+    public void maxSlidingWindow() {
+        int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
+        int k = 3;
+        System.out.println(Arrays.toString(INSTANCE.maxSlidingWindow0(nums, k)));
+        System.out.println(Arrays.toString(INSTANCE.maxSlidingWindow1(nums, k)));
+    }
+
+    @Test
+    public void bitOperation() {
+        int cap = 16;
+        int head = 18;
+        int ret = (head + 1) & (cap - 1);
+        System.out.println(ret);
+        System.out.println("=====上述这些都不是问题关键关键是如何处理head从尾回到头 ===");
+        // 参考链接 http://bit.ly/2YsFIpg
+        head = 15;
+        ret = (head + 1) & (cap - 1);
+        System.out.println(ret);
+        assert ret == 0;
+        assert head++ == 15;
+    }
+
+
 }
