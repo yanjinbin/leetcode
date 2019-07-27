@@ -1,11 +1,22 @@
 package com.yanjinbin.leetcode;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-import org.omg.CORBA.PUBLIC_MEMBER;
-
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.BiConsumer;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Random;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeMap;
 
 /**
  * top-100-liked-questions
@@ -531,7 +542,7 @@ public class Solution {
             while (nums[j] <= nums[i]) j--;// i 指向元素 从右往左找第一个
             swap(nums, i, j); //
         }
-        reverse(nums, i + 1, nums.length - 1);
+        reverse0(nums, i + 1, nums.length - 1);
 
     }
 
@@ -542,7 +553,7 @@ public class Solution {
         nums[j] = tmp;
     }
 
-    public void reverse(int[] nums, int i, int j) {
+    public void reverse0(int[] nums, int i, int j) {
         while (i < j) {
             swap(nums, i++, j--);
         }
@@ -3057,7 +3068,19 @@ public class Solution {
 
     // 32. 最长有效括号
     public int longestValidParentheses(String s) {
-        return 1;
+        int res = 0, start = 0;
+        Stack<Integer> m = new Stack<>();
+        for (int i = 0; i < s.length(); ++i) {
+            if (s.charAt(i) == '(') m.push(i);
+            else if (s.charAt(i) == ')') {
+                if (m.empty()) start = i + 1;
+                else {
+                    m.pop();
+                    res = m.empty() ? Math.max(res, i - start + 1) : Math.max(res, i - m.peek());
+                }
+            }
+        }
+        return res;
     }
 
 
@@ -3082,6 +3105,79 @@ public class Solution {
     // https://leetcode-cn.com/problems/add-strings/
     // 415. 字符串相加
 
+    // 7. 整数反转
+    // 无法处理负数问题阿
+    public int reverse0(int x) {
+        Queue<Integer> s = new LinkedList<>();
+        int i = x;
+        while (i != 0) { // i !=0
+            int mod = i % 10;
+            s.add(mod);
+            i = i / 10;
+        }
+        int res = 0;
+        while (!s.isEmpty()) {
+            if (Math.abs(res) > Integer.MAX_VALUE / 10) {
+                return 0;
+            }
+            res = res * 10 + s.poll();
+        }
+        return res;
+    }
+
+    public int reverse(int x) {
+        int res = 0;
+        while (x != 0) {
+            if (Math.abs(res) > Integer.MAX_VALUE / 10) return 0;
+            res = res * 10 + x % 10;
+            x = x / 10;
+        }
+        return res;
+    }
+
+    // 88. 合并两个有序数组
+    public void merge(int[] nums1, int m, int[] nums2, int n) {
+        int i1 = m - 1;
+        int i2 = n - 1;
+        int k = m + n - 1;
+        while (i1 >= 0 && i2 >= 0) {
+            if (nums1[i1] > nums2[i2]) {
+                nums1[k--] = nums1[i1--];
+            } else {
+                nums1[k--] = nums2[i2--];
+            }
+        }
+        while (i2 >= 0) nums1[k--] = nums1[i2--];
+    }
+
+
+    public void merge1(int[] nums1, int m, int[] nums2, int n) {
+        int i1 = m - 1;
+        int i2 = n - 1;
+        int k = m + n - 1;
+        while (i2 >= 0) nums1[k--] = (i1 >= 0 && nums1[i1] > nums2[i2]) ? nums1[i1--] : nums2[i2--];
+    }
+
+    // 237. 删除链表中的节点
+    public void deleteNode(ListNode node) {
+        node.val = node.next.val;
+        ListNode tmp = node.next;
+        node.next = node.next.next;
+        tmp.next = null;
+    }
+
+    // 326. 3的幂
+    public boolean isPowerOfThree0(int n) {
+        // 1162261467 is 3^19,  3^20 is bigger than int
+        return (n > 0 && 1162261467 % n == 0);
+    }
+
+    public boolean isPowerOfThree1(int n) {
+        while (n % 3 == 0 && n >= 3) {
+            n = n / 3;
+        }
+        return n == 1;
+    }
 }
 
 

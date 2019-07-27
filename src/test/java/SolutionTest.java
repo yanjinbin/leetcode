@@ -1127,5 +1127,27 @@ public class SolutionTest {
         assert head++ == 15;
     }
 
+    @Test
+    public void longestValidParentheses() {
+        assert INSTANCE.longestValidParentheses(")(()()()(") == 6;
+    }
+
+    @Test
+    public void reverse() {
+        assert INSTANCE.reverse0(543) == 345;
+        assert INSTANCE.reverse0(-543) == -345;
+        // int overflow
+        System.out.println(INSTANCE.reverse(1534236469));
+        assert INSTANCE.reverse(-543) == -345;
+    }
+
+    @Test
+    public void powerThree() {
+        assert INSTANCE.isPowerOfThree0(27) == true;
+        assert INSTANCE.isPowerOfThree1(27) == true;
+    }
+
+
+
 
 }
