@@ -169,9 +169,41 @@ public class SolutionTest {
 
     @Test
     public void isPalindrome() {
-        // todo
-        ListNode head = ListNode.builder().val(0).next(ListNode.builder().val(0).build()).build();
-        assert INSTANCE.isPalindrome(head) == true;
+
+
+        ListNode heada = ListNode.builder().val(1).next(ListNode.builder().val(2).next(
+                ListNode.builder().val(3).next(ListNode.builder().val(4).next(
+                        ListNode.builder().val(5).next(ListNode.builder().val(6).build()).build()).build()
+                ).build()).build()).build();
+
+
+        ListNode head = ListNode.builder().val(1).next(ListNode.builder().val(2).next(
+                ListNode.builder().val(3).next(ListNode.builder().val(4).next(
+                        ListNode.builder().val(5).next(ListNode.builder().val(6).next(
+                                ListNode.builder().val(7).build()
+                        ).build()).build()).build()
+                ).build()).build()).build();
+
+
+        ListNode head0 = ListNode.builder().val(7).next(ListNode.builder().val(23).next(ListNode.builder().val(11).build()).build()).build();
+
+
+        ListNode head1 = ListNode.builder().val(7).next(ListNode.builder().val(23).build()).build();
+
+        ListNode head2 = ListNode.builder().val(9).build();
+
+        ListNode head3 = null;
+
+        System.out.println(INSTANCE.isPalindrome1(heada));
+        System.out.println(INSTANCE.isPalindrome1(head));
+        System.out.println(INSTANCE.isPalindrome1(head0));
+        System.out.println(INSTANCE.isPalindrome1(head1));
+        System.out.println(INSTANCE.isPalindrome1(head2));
+        System.out.println(INSTANCE.isPalindrome1(head3));
+
+
+        ListNode head4 = ListNode.builder().val(1).next(ListNode.builder().val(2).next(ListNode.builder().val(1).build()).build()).build();
+        System.out.println(INSTANCE.isPalindrome2(head4));
     }
 
     @Test
@@ -1114,6 +1146,7 @@ public class SolutionTest {
 
     @Test
     public void bitOperation() {
+        System.out.println("ArrayDeque函数的用到的位运算");
         int cap = 16;
         int head = 18;
         int ret = (head + 1) & (cap - 1);
@@ -1125,6 +1158,9 @@ public class SolutionTest {
         System.out.println(ret);
         assert ret == 0;
         assert head++ == 15;
+
+        System.out.println("8&7的值: " + (8 & 7));
+        System.out.println(5 & 3);
     }
 
     @Test
@@ -1147,7 +1183,11 @@ public class SolutionTest {
         assert INSTANCE.isPowerOfThree1(27) == true;
     }
 
-
+    @Test
+    public void countBits() {
+        int[] res = INSTANCE.countBits(7);
+        System.out.println(Arrays.toString(res));
+    }
 
 
 }

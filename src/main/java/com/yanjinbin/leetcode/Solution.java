@@ -105,24 +105,67 @@ public class Solution {
 
     // 234 Palindrome Linked List 回文单链表
     public boolean isPalindrome(ListNode head) {
-        ListNode slow = head, fast = head;
+        if (head == null) return true;
+        ListNode cur = head;
+        Stack<ListNode> s = new Stack<>();
+        while (cur != null) {
+            s.push(cur);
+            cur = cur.next;
+        }
+        while (!s.isEmpty()) {
+            if (s.pop().val != head.val) return false;
+            head = head.next;
+        }
+        return true;
+    }
+
+    // 快慢指针法
+    public boolean isPalindrome1(ListNode head) {
+        if (head == null || head.next == null) return true;
+        // 比较一般元素即可
+        ListNode slow = head;
+        ListNode fast = head;
+        Stack<ListNode> s = new Stack<>();
+        s.add(head);
+
         while (fast != null && fast.next != null) {
             slow = slow.next;
-            // prevent fast.next is null
+            s.push(slow);
             fast = fast.next.next;
         }
+        System.out.println("head: " + (head == null ? "null" : head) + "\tslow: " + (slow == null ? "null" : slow.val) + "\tfast: " + (fast == null ? "null " : fast.val) + "\n");
+        for (ListNode listNode : s) {
+            System.out.println("栈元素 " + listNode.val);
+        }
+        // System.out.println("===stack end ===");
+        s.pop();
+        // 奇数时候 去掉中间不参与比较的数字
         if (fast != null) {
             slow = slow.next;
         }
 
+        while (!s.isEmpty()) {
+            if (slow.val != s.pop().val) return false;
+            slow = slow.next;
 
-        ListNode newHead = reverseSingleLinkedList(slow);
-        while (newHead != null) {
-            if (head.val != newHead.val) {
-                return false;
-            }
         }
         return true;
+    }
+
+    // 递归方法
+    // cur必须 是个成员变量阿
+    private ListNode cur;
+
+    public boolean isPalindrome2(ListNode head) {
+        cur = head;
+        return helper(head);
+    }
+
+    boolean helper(ListNode node) {
+        if (node == null) return true;
+        boolean res = helper(node.next) && (node.val == cur.val);
+        if (res) cur = cur.next;
+        return res;
     }
 
     // 反转单链表
@@ -2842,7 +2885,7 @@ public class Solution {
         return new ArrayList<>(m.values());
     }
 
-    // 621. 任务调度器 好难  http://bit.ly/2LxLShE
+    // 621. 任务调度器 好难  http://bit.ly/2LxLShE [经典]
     public int leastInterval(char[] tasks, int n) {
         int[] cnt = new int[26];
         for (char c : tasks) {
@@ -3178,6 +3221,18 @@ public class Solution {
         }
         return n == 1;
     }
+
+    // 338. 比特位计数
+    // http://bit.ly/2SNB67J  观察下数字规律
+    public int[] countBits(int num) {
+        int[] res = new int[num + 1];
+        for (int i = 1; i <= num; i++) {
+            res[i] = res[i & (i - 1)] + 1;
+        }
+        return res;
+    }
+
+
 }
 
 
