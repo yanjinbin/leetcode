@@ -1161,6 +1161,12 @@ public class SolutionTest {
 
         System.out.println("8&7的值: " + (8 & 7));
         System.out.println(5 & 3);
+        System.out.println(219/10);
+        System.out.println(219%10);
+        System.out.println(219/10);
+        System.out.println(21%10);
+        System.out.println(21/10);
+        System.out.println(2/10);
     }
 
     @Test
@@ -1215,4 +1221,10 @@ public class SolutionTest {
     public void pascalTriangle() {
         System.out.println(INSTANCE.generate(5));
     }
+
+    @Test
+    public void isHappy(){
+        assert INSTANCE.isHappy(82) == true;
+    }
+
 }

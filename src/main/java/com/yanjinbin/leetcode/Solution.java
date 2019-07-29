@@ -1,6 +1,5 @@
 package com.yanjinbin.leetcode;
 
-import com.google.common.collect.Lists;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -3303,7 +3302,7 @@ public class Solution {
         for (int i = 0; i < numRows; i++) {
             // i+1
             List sub = new ArrayList();
-            for (int j = 0; j < i+1; j++) {
+            for (int j = 0; j < i + 1; j++) {
                 if (j == 0 || j == i) {
                     sub.add(1);
                 } else {
@@ -3313,6 +3312,29 @@ public class Solution {
             ret[i] = sub;
         }
         return Arrays.asList(ret);
+    }
+
+    // 202 快乐数
+    public boolean isHappy(int n) {
+        Set<Integer> set = new HashSet<>();
+        int ret = n;
+        while (true) {
+            ret = square(ret);
+            if (ret == 1) return true;
+            if (!set.contains(ret)) set.add(ret);
+            else return false;
+        }
+    }
+
+
+    public int square(int n) {
+        int res = 0;
+        while (n != 0) {
+            int modRet = n % 10;
+            res += modRet * modRet;
+            n = n / 10;
+        }
+        return res;
     }
 }
 
