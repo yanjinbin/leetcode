@@ -1189,5 +1189,25 @@ public class SolutionTest {
         System.out.println(Arrays.toString(res));
     }
 
+    @Test
+    public void permute() {
+        int[] nums = {1, 2, 3};
+        System.out.println(INSTANCE.permute(nums));
+    }
 
+    @Test
+    public void titleToNumber() {
+        assert INSTANCE.titleToNumber("AB") == 28;
+        assert INSTANCE.titleToNumber("AA") == 27;
+        assert INSTANCE.titleToNumber("ZY") == 701;
+        System.out.println(INSTANCE.titleToNumber("CFDGSXM"));
+    }
+
+    @Test
+    public void romanToInt() {
+        assert INSTANCE.romanToInt("MCMXCIV") == 1994;
+        // http://bit.ly/32Zi9DF  有点迷 这道题目 不太合理
+        System.out.println(INSTANCE.romanToInt("IIX"));
+        System.out.println(INSTANCE.romanToInt("III"));
+    }
 }

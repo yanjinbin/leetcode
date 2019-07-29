@@ -1569,7 +1569,9 @@ public class Solution {
 
     public void dfsPermute(int[] nums, int level, boolean[] visit, LinkedList<Integer> sub, List<List<Integer>> ret) {
         if (level == nums.length) {
-            ret.add(sub);
+            // 错误写法
+            // ret.add(sub);
+            ret.add(new ArrayList<>(sub));
             return;
         }
         for (int i = 0; i < nums.length; i++) {
@@ -3232,7 +3234,65 @@ public class Solution {
         return res;
     }
 
+    // 171. Excel表列序号  进制转换问题
+    public int titleToNumber(String s) {
+        int i = 0;
+        int res = 0;
+        while (i < s.length() && s.charAt(i) >= 'A' && s.charAt(i) <= 'Z') {
+            res = res * 26 + s.charAt(i) - 'A' + 1;
+            i++;
+        }
+        return res;
+    }
 
+    // 13. 罗马数字转整数
+    public int romanToInt(String s) {
+        Map<Character, Integer> dict = new HashMap<>();
+        dict.put('I', 1);
+        dict.put('V', 5);
+        dict.put('X', 10);
+        dict.put('L', 50);
+        dict.put('C', 100);
+        dict.put('D', 500);
+        dict.put('M', 1000);
+
+        int res = dict.get(s.charAt(0));
+        for (int i = 1; i < s.length(); i++) {
+            int cur = dict.get(s.charAt(i));
+            int before = dict.get(s.charAt(i - 1));
+            if (cur <= before) {
+                res += cur;
+            } else {
+                res += cur - 2 * before;
+            }
+        }
+        return res;
+    }
+
+
+    /*public int romanToInt1(String s) {
+
+        Map<Character, Integer> dict = new HashMap<>();
+        dict.put('I', 1);
+        dict.put('V', 5);
+        dict.put('X', 10);
+        dict.put('L', 50);
+        dict.put('C', 100);
+        dict.put('D', 500);
+        dict.put('M', 1000);
+        int res = 0;
+        for (int i = 1; i < s.length(); i++) {
+            int val = dict.get(s.charAt(i));
+
+            if (i == s.length() - 1 || dict.get(s.charAt(i + 1)) <= val) {
+                res += val;
+            } else {
+                res -= val;
+            }
+        }
+        return res;
+    }
+*/
 }
 
 
