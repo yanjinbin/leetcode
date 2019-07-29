@@ -3336,6 +3336,18 @@ public class Solution {
         }
         return res;
     }
+
+    // 快慢指针方法 if存在环
+   public boolean isHappy1(int n) {
+        int slow = n, fast = n;
+        while (true) {
+            slow = square(slow);
+            fast = square(square(fast));
+            if (slow == fast) break;
+        }
+        return slow == 1;
+    }
+
 }
 
 

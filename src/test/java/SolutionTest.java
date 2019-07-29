@@ -1161,12 +1161,12 @@ public class SolutionTest {
 
         System.out.println("8&7的值: " + (8 & 7));
         System.out.println(5 & 3);
-        System.out.println(219/10);
-        System.out.println(219%10);
-        System.out.println(219/10);
-        System.out.println(21%10);
-        System.out.println(21/10);
-        System.out.println(2/10);
+        System.out.println(219 / 10);
+        System.out.println(219 % 10);
+        System.out.println(219 / 10);
+        System.out.println(21 % 10);
+        System.out.println(21 / 10);
+        System.out.println(2 / 10);
     }
 
     @Test
@@ -1223,8 +1223,9 @@ public class SolutionTest {
     }
 
     @Test
-    public void isHappy(){
+    public void isHappy() {
         assert INSTANCE.isHappy(82) == true;
+        assert INSTANCE.isHappy1(82) == true;
     }
 
 }
