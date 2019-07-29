@@ -1,5 +1,7 @@
 package com.yanjinbin.leetcode;
 
+import com.google.common.collect.Lists;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +19,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 /**
  * top-100-liked-questions
@@ -3293,6 +3296,24 @@ public class Solution {
         return res;
     }
 */
+
+    // 118. 杨辉三角
+    public List<List<Integer>> generate(int numRows) {
+        List<Integer>[] ret = new List[numRows];
+        for (int i = 0; i < numRows; i++) {
+            // i+1
+            List sub = new ArrayList();
+            for (int j = 0; j < i+1; j++) {
+                if (j == 0 || j == i) {
+                    sub.add(1);
+                } else {
+                    sub.add(ret[i - 1].get(j) + ret[i - 1].get(j - 1));
+                }
+            }
+            ret[i] = sub;
+        }
+        return Arrays.asList(ret);
+    }
 }
 
 

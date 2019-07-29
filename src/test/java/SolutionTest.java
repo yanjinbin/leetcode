@@ -1210,4 +1210,9 @@ public class SolutionTest {
         System.out.println(INSTANCE.romanToInt("IIX"));
         System.out.println(INSTANCE.romanToInt("III"));
     }
+
+    @Test
+    public void pascalTriangle() {
+        System.out.println(INSTANCE.generate(5));
+    }
 }
