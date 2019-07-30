@@ -3338,7 +3338,7 @@ public class Solution {
     }
 
     // 快慢指针方法 if存在环
-   public boolean isHappy1(int n) {
+    public boolean isHappy1(int n) {
         int slow = n, fast = n;
         while (true) {
             slow = square(slow);
@@ -3346,6 +3346,113 @@ public class Solution {
             if (slow == fast) break;
         }
         return slow == 1;
+    }
+
+    // 371. 两整数之和  [和的位运算实现] http://bit.ly/2MpSWN0  求和运算 sum=2*C(进位)+S(本位), 李永乐老师 本位 进位 https://youtu.be/pUwYvJtfbsY
+    public int getSum(int a, int b) {
+        if (b == 0) return a;
+        // 本位
+        int sum = a ^ b;
+        // 进位
+        int carry = (a & b) << 1;
+        return getSum(sum, carry);
+    }
+
+    // 两数想减
+    public int substract(int a, int b) {
+        return getSum(a, -b);
+    }
+
+    // 两数相乘
+    public int multiple(int a, int b) {
+        int m = Math.abs(a);
+        int n = Math.abs(b);
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            res = getSum(m, res);
+        }
+        return ((a > 0) ^ (b > 0)) ? -res : res;
+        // return ((a > 0) == (b > 0)) ? res : -res;
+    }
+
+    //29. 两数相除
+    // 这个方法是最好的
+    public int divide2(int dividend, int divisor) {
+        if (dividend == 1 << 31 && divisor == -1) return (1 << 31) - 1;
+        int a = Math.abs(dividend), b = Math.abs(divisor), res = 0, x = 0;
+        while (a - b >= 0) {
+            for (x = 0; a - (b << x << 1) >= 0; x++) ;
+            res += 1 << x;
+            a -= b << x;
+        }
+        return (dividend > 0) == (divisor > 0) ? res : -res;
+    }
+
+    public int divide3(int dividend, int divisor) {
+        if (dividend == 1 << 31 && divisor == -1) return (1 << 31) - 1;
+        int a = Math.abs(dividend), b = Math.abs(divisor), res = 0, x = 0;
+        while (a - b >= 0) {
+            for (x = 0; a - (b << x << 1) >= 0; x++) ;
+            res += 1 << x;
+            // 错误 运算符优先级 - 比 << 先执行
+            a = a - b << x;
+        }
+        return (dividend > 0) == (divisor > 0) ? res : -res;
+    }
+
+
+    public int divide0(int dividend, int divisor) {
+        // 这个除法挺lowB的
+        if (dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE;
+        int sign = ((dividend < 0) ^ (divisor < 0)) ? -1 : 1;
+        long x = Math.abs(((long) dividend));
+        long y = Math.abs(((long) divisor));
+        int result = 0;
+        while (x >= y) {
+            x -= y;
+            result++;
+        }
+        return result * sign;
+    }
+
+    public int divide1(int dividend, int divisor) {// 这个方法不行 会存在 int 越界问题
+        if (dividend == Integer.MIN_VALUE && divisor == -1)
+            return Integer.MAX_VALUE;
+
+        boolean sign = (dividend < 0) ^ (divisor < 0);
+        dividend = Math.abs(dividend);
+        divisor = Math.abs(divisor);
+        int count = 0;
+        //  System.out.println("count: " + count + "\tdivisor: " + divisor);
+        while (dividend >= divisor) {
+            // 会存在int越界问题 divisor ---> 0
+            count++;
+            divisor <<= 1;
+            System.out.println("count: " + count + "\tdivisor: " + divisor);
+            if (divisor == 0) return -1;
+
+        }
+
+        int result = 0;
+        System.out.println("=====split====");
+        while (count > 0) {
+
+            count--;
+            divisor >>= 1;
+            int temp = dividend;
+            if (divisor <= dividend) {
+                result = result + 1 << count;
+                dividend = dividend - divisor;
+            }
+            System.out.println("count: " + count + "\tdivisor: " + divisor + "\t before: " + temp + "\tdividend: " + dividend + "\tresult: " + result);
+        }
+        if (sign) result = -result;
+        return result;
+    }
+
+
+    public List<String> fizzBuzz(int n) {
+        return null;
     }
 
 }

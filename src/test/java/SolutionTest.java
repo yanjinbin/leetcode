@@ -1146,6 +1146,16 @@ public class SolutionTest {
 
     @Test
     public void bitOperation() {
+
+        System.out.println(Integer.toBinaryString(209));
+        System.out.println(true ^ true);
+        System.out.println(true ^ false);
+        System.out.println(false ^ true);
+        System.out.println(false ^ false);
+        System.out.println(true || true);
+        System.out.println(true || false);
+        System.out.println(false || false);
+
         System.out.println("ArrayDeque函数的用到的位运算");
         int cap = 16;
         int head = 18;
@@ -1226,6 +1236,30 @@ public class SolutionTest {
     public void isHappy() {
         assert INSTANCE.isHappy(82) == true;
         assert INSTANCE.isHappy1(82) == true;
+    }
+
+    @Test
+    public void getSum() {
+        // 参考 [计算机加减乘除运算实现原理]()
+        System.out.println(INSTANCE.getSum(759, 674));
+    }
+
+    @Test
+    public void arithmetic() {
+        assert INSTANCE.getSum(623, 469) == 1092;
+        assert INSTANCE.substract(10, 3) == 7;
+        assert INSTANCE.multiple(-3, -5) == 15;
+   //     System.out.println(INSTANCE.divide2(25, 3));
+        System.out.println(1 << 31 == Integer.MIN_VALUE);
+        System.out.println(3 << 0);
+        System.out.println(3 << 1);
+        // 从左到右
+        System.out.println(3 << 0 << 1);
+        System.out.println(1 << 0 << 3);
+        System.out.println(Integer.MIN_VALUE);
+        System.out.println(Integer.toBinaryString(Integer.MIN_VALUE));
+        System.out.println(INSTANCE.divide2(Integer.MIN_VALUE,2));
+        System.out.println(Math.abs(Integer.MIN_VALUE)>0);
     }
 
 }
