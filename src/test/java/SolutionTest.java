@@ -1249,7 +1249,7 @@ public class SolutionTest {
         assert INSTANCE.getSum(623, 469) == 1092;
         assert INSTANCE.substract(10, 3) == 7;
         assert INSTANCE.multiple(-3, -5) == 15;
-   //     System.out.println(INSTANCE.divide2(25, 3));
+        //     System.out.println(INSTANCE.divide2(25, 3));
         System.out.println(1 << 31 == Integer.MIN_VALUE);
         System.out.println(3 << 0);
         System.out.println(3 << 1);
@@ -1258,8 +1258,20 @@ public class SolutionTest {
         System.out.println(1 << 0 << 3);
         System.out.println(Integer.MIN_VALUE);
         System.out.println(Integer.toBinaryString(Integer.MIN_VALUE));
-        System.out.println(INSTANCE.divide2(Integer.MIN_VALUE,2));
-        System.out.println(Math.abs(Integer.MIN_VALUE)>0);
+        System.out.println(INSTANCE.divide2(Integer.MIN_VALUE, 2));
+        System.out.println(Math.abs(Integer.MIN_VALUE) > 0);
+    }
+
+    @Test
+    public void longestCommonPrefix(){
+        String[] strs= {"follow","fox","flower"};
+        INSTANCE.longestCommonPrefix(strs);
+    }
+    @Test
+    public void mySqrt() {
+        System.out.println(INSTANCE.mySqrt(9));
+        System.out.println(INSTANCE.mySqrt(8));
+        System.out.println(INSTANCE.cubeRoot(27));
     }
 
 }

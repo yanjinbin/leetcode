@@ -3450,9 +3450,55 @@ public class Solution {
         return result;
     }
 
+    // 204 质数计数
+    public int countPrimes(int n) {
+        // 非质素素组
+        boolean[] notPrime = new boolean[n];
+        int count = 0;
+        for (int i = 2; i < n; i++) {
+            if (!notPrime[i]) {
+                count++;
+                for (int j = 2; j * i < n; j++) {
+                    notPrime[i * j] = true;
+                }
+            }
+        }
+        return count;
+    }
 
-    public List<String> fizzBuzz(int n) {
-        return null;
+    // 14 最长公共前缀
+    public String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) return "";
+        int len = strs.length;
+        int i = 0;
+        Arrays.sort(strs);
+        int range = Math.min(strs[0].length(), strs[len - 1].length());
+        while (i < range && strs[0].charAt(i) == strs[len - 1].charAt(i)) i++;
+        return strs[0].substring(0, i);
+    }
+
+    // 69 x 平方根 利用牛顿求根法来做[http://bit.ly/2ypO02m] 牛顿求根法视频讲解 https://youtu.be/VUpQwEVsyFk
+    public int mySqrt(int x) {
+        if (x <= 1) return x;
+        double last = 0;
+        double res = 1;
+        while (Math.abs(res - last) > 1e-9) {
+            last = res;
+            res = (res + x / res) / 2;
+        }
+        return (int) res;
+    }
+
+    // follow up  立方根
+    public int cubeRoot(int x) {
+        if (x <= 1) return x;
+        double last = 0;
+        double res = 1;
+        while (Math.abs(res - last) > 1e-9) {
+            last = res;
+            res = (res * 2 + x / (res * res)) / 3;
+        }
+        return (int) res;
     }
 
 }
