@@ -3501,6 +3501,28 @@ public class Solution {
         return (int) res;
     }
 
+    // 28. 实现strStr()
+    public int strStr0(String haystack, String needle) {
+        int i = 0;
+        int j = 0;
+        while (i < haystack.length() && j < needle.length()) {
+            if (haystack.charAt(i++) != needle.charAt(j++)) {
+                j = 0;
+            }
+        }
+        return j == needle.length() ? i - j : -1;
+    }
+
+    // 遍历每一个字符作为其实字符的子字符串  字符串长度计算 左闭右开 不熟悉
+    public int strStr1(String haystack, String needle) {
+        if (needle == "") return 0;
+        for (int i = 0; i <= haystack.length() - needle.length(); i++) {
+            if (haystack.substring(i, i + needle.length()).equals(needle)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }
 
 

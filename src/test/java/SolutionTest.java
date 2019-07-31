@@ -1263,15 +1263,24 @@ public class SolutionTest {
     }
 
     @Test
-    public void longestCommonPrefix(){
-        String[] strs= {"follow","fox","flower"};
+    public void longestCommonPrefix() {
+        String[] strs = {"follow", "fox", "flower"};
         INSTANCE.longestCommonPrefix(strs);
     }
+
     @Test
     public void mySqrt() {
         System.out.println(INSTANCE.mySqrt(9));
         System.out.println(INSTANCE.mySqrt(8));
         System.out.println(INSTANCE.cubeRoot(27));
+    }
+
+    @Test
+    public void strStr() {
+        System.out.println(INSTANCE.strStr0("hello", "ll"));
+        // ississ连续重复导致 无法识别
+        System.out.println(INSTANCE.strStr0("mississippi", "issip"));
+        System.out.println(INSTANCE.strStr1("mississippi","issip"));
     }
 
 }
