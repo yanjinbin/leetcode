@@ -2,6 +2,7 @@ import com.yanjinbin.leetcode.*;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class SolutionTest {
@@ -1280,7 +1281,62 @@ public class SolutionTest {
         System.out.println(INSTANCE.strStr0("hello", "ll"));
         // ississ连续重复导致 无法识别
         System.out.println(INSTANCE.strStr0("mississippi", "issip"));
-        System.out.println(INSTANCE.strStr1("mississippi","issip"));
+        System.out.println(INSTANCE.strStr1("mississippi", "issip"));
     }
+
+    @Test(timeout = 6000)
+    public void trailingZeroes() {
+        assert INSTANCE.trailingZeroes0(6) == 1;
+        // 代码有错,错在25 可以拆成5*5, 所以 5(1) 10(1) 15(1) 20(1) 25(2) 30(1)  = 7
+        assert INSTANCE.trailingZeroes1(1808548329) == 452137076; // 需要耗时3s
+        assert INSTANCE.trailingZeroes2(30) == 7;
+        assert INSTANCE.trailingZeroes0(30) == 6;
+    }
+
+    @Test
+    public void removeDuplicates() {
+        int[] nums = {0, 0, 1, 1, 1, 2, 2, 3, 3, 4};
+        System.out.println(INSTANCE.removeDuplicates(nums));
+        nums = new int[]{1, 2};
+        System.out.println(INSTANCE.removeDuplicates(nums));
+    }
+
+    @Test
+    public void hammingWeight() {
+        assert INSTANCE.hammingWeight(5) == 2;
+        assert INSTANCE.hammingWeight(-3) == 31;
+    }
+
+    @Test
+    public void plusOne() {
+        int[] nums = new int[]{9};
+        INSTANCE.plusOne0(nums);
+        INSTANCE.plusOne1(nums);
+        nums = new int[]{9, 9, 9, 9};
+        INSTANCE.plusOne0(nums);
+        INSTANCE.plusOne1(nums);
+        nums = new int[]{4, 3, 2, 9};
+        INSTANCE.plusOne0(nums);
+        INSTANCE.plusOne1(nums);
+    }
+
+    @Test
+    public void reverseBits() {
+        System.out.println(Integer.toBinaryString(13));
+        int ret = INSTANCE.reverseBits(13);
+        System.out.println(ret);
+        System.out.println(Integer.toBinaryString(ret));
+    }
+
+    @Test
+    public void isPalindromeStr() {
+        System.out.println((32&31)==0);
+        INSTANCE.isPalindrome(" ");
+        assert INSTANCE.isPalindrome("A man, a plan, a canal: Panama") == true;
+        // 特殊case 0P ASCII 0 -->48,P-->80
+        System.out.println(INSTANCE.isPalindrome("0P"));
+
+    }
+
 
 }

@@ -3523,6 +3523,169 @@ public class Solution {
         }
         return -1;
     }
+    // kmp字符串匹配的实现
+
+    // 172. 阶乘后的零
+    public int trailingZeroes0(int n) {
+        // 错误解法
+        int count = 0;
+        for (int i = 5; i <= n; i++) {
+            if ((i >= 5 && i % 5 == 0)) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public int trailingZeroes1(int n) {
+        // lowB写法哈哈 TLE了 233
+        int count = 0;
+        int i = 5;
+        while (i <= n) {
+            int dividend = i;
+            while (dividend != 0) {
+                if (dividend % 5 == 0) {
+                    count++;
+                    dividend = dividend / 5;
+                } else break;
+            }
+            i++;
+        }
+        return count;
+    }
+
+    // 连续5的前缀后数列
+    public int trailingZeroes2(int n) {
+        int count = 0;
+        while (n != 0) {
+            count += n / 5; // 算出 5倍数的个数了
+            n = n / 5;
+        }
+        return count;
+    }
+
+    // 26. 删除排序数组中的重复项
+    public int removeDuplicates(int[] nums) {
+        int i = 0;
+        int j = 0;
+        while (j < nums.length)
+            if (nums[i] == nums[j]) {
+                j++;
+            } else {
+                nums[++i] = nums[j];
+            }
+        // 返回新数组长度
+        return i + 1;
+    }
+
+    // 217. 存在重复元素
+    public boolean containsDuplicate(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for (int num : nums) {
+            if (set.contains(num)) return true;
+            else set.add(num);
+        }
+        return false;
+    }
+
+    //191. 位1的个数
+    public int hammingWeight(int n) {
+        int count = 0;
+        for (int i = 0; i < 32; i++) {
+            count += n & 1;
+            n >>= 1;
+        }
+        return count;
+
+        /**
+         *  除余运算也是不合适的
+         *  int count = 0;
+         *         while (n != 0) {
+         *             if (n % 2 == 1) {
+         *                 count++;
+         *             }
+         *             n >>= 1;
+         *         }
+         *         return count;
+         */
+    }
+
+
+    // 66. 加一
+    public int[] plusOne0(int[] digits) {
+        for (int i = digits.length - 1; i >= 0; i--) {
+            if (digits[i] == 9) {
+                digits[i] = 0;
+            }// 少了一个else  错误,容易犯的错误
+            digits[i] = digits[i] + 1;
+            return digits;
+        }
+        int[] ret = new int[digits.length + 1];
+        ret[0] = 1;
+        return ret;
+    }
+
+    public int[] plusOne1(int[] digits) {
+        for (int i = digits.length - 1; i >= 0; --i) {
+            if (digits[i] < 9) {
+                digits[i] = digits[i] + 1;
+                return digits;
+            }
+            digits[i] = 0;
+        }
+        int[] res = new int[digits.length + 1];
+        res[0] = 1;
+        return res;
+    }
+
+
+    // 190. 颠倒二进制位
+    // you need treat n as an unsigned value
+    public int reverseBits(int n) {
+        int res = 0;
+        for (int i = 0; i < 32; ++i) {
+            if ((n & 1) == 1) {
+                // 注意下运算符的优先级
+                res = (res << 1) + 1;
+            } else {
+                res = res << 1;
+            }
+            //   res= (res<<1)+(n&1);
+            n = n >> 1;
+        }
+        return res;
+    }
+
+    //
+    public boolean isPalindrome(String s) {
+        int left = 0;
+        int right = s.length() - 1;
+        while (left < right) {
+            if (!isAlphaNum(s.charAt(left))) {
+                left++;
+            } else if (!isAlphaNum(s.charAt(right))) {
+                right--;
+            } // 别忘记加else 因为 下面的和上上面的是并行关系
+            else if ((s.charAt(left) + 32 - 'a') % 32 == (s.charAt(right) + 32 - 'a') % 32) {
+                right--;
+                left++;
+            } else {
+                System.out.println("非回文字符串\t"+left + "left: " + s.charAt(left) + "\t" + right + "\tright: " + s.charAt(right));
+                return false;
+            }
+
+        }
+        return true;
+    }
+
+    public boolean isAlphaNum(char c) {
+
+        return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+    }
+
+
 }
+
+
 
 
