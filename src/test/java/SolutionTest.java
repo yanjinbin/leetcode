@@ -2,7 +2,6 @@ import com.yanjinbin.leetcode.*;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.SQLOutput;
 import java.util.*;
 
 public class SolutionTest {
@@ -993,6 +992,8 @@ public class SolutionTest {
         System.out.println(INSTANCE.findAnagrams("abab", "ab"));
 
         System.out.println(INSTANCE.findAnagrams1("acac", "ac"));
+
+        System.out.println(INSTANCE.isAnagram("rat", "tar"));
     }
 
     @Test
@@ -1330,11 +1331,56 @@ public class SolutionTest {
 
     @Test
     public void isPalindromeStr() {
-        System.out.println((32&31)==0);
+        System.out.println((32 & 31) == 0);
         INSTANCE.isPalindrome(" ");
         assert INSTANCE.isPalindrome("A man, a plan, a canal: Panama") == true;
         // 特殊case 0P ASCII 0 -->48,P-->80
         System.out.println(INSTANCE.isPalindrome("0P"));
+    }
+
+    @Test
+    public void missingNumber() {
+        int[] nums = new int[]{0, 1, 2, 4, 5, 6, 7, 3, 9};
+        assert INSTANCE.missingNumber0(nums) == 8;
+        assert INSTANCE.missingNumber1(nums) == 8;
+        System.out.println(INSTANCE.missingNumber2(nums));
+    }
+
+    @Test
+    public void firstUniqChar() {
+        System.out.println(INSTANCE.firstUniqChar("leetcode"));
+        System.out.println(INSTANCE.firstUniqChar1("bumblebuemrry"));
+    }
+
+    @Test
+    public void rotate() {
+        int[] nums = new int[]{3, 4, 5, 6, 7, 8, 9};
+        INSTANCE.shift(nums);
+        INSTANCE.rotate1(nums, 3);
+        INSTANCE.rotate(nums, 3);
+        INSTANCE.rotate2(nums, 3);
+        //
+        nums = new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+        INSTANCE.rotate3(nums, 3);
+    }
+
+
+    @Test
+    public void maxProfit() {
+        //  [一个通用方法团灭 6 道股票问题](http://bit.ly/333JDIm)
+        System.out.println("=====参考 这位大佬的  http://bit.ly/333JDIm  ====");
+
+        int[] nums = new int[]{7, 1, 3, 4, 9, 2, 6, 1, 8};
+        assert INSTANCE.maxProfit1A(nums) == 8;
+        assert INSTANCE.maxProfit1B_Good(nums) == 8;
+
+        assert INSTANCE.maxProfit2A(nums) == 19;
+        assert INSTANCE.maxProfit2B(nums) == 19;
+
+
+        assert INSTANCE.maxProfit3B(nums, 6) == 19;
+        assert INSTANCE.maxProfit4A(6, nums) == 19;
+        assert INSTANCE.maxProfit4A(2, nums) == 15;
 
     }
 

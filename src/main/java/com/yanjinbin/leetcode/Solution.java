@@ -1082,18 +1082,6 @@ public class Solution {
         return prevLen;
     }
 
-    // 121. 买卖股票的最佳时机
-    public int maxProfit(int[] prices) {
-        if (prices.length == 0) return 0;
-        int min = prices[0];
-        int gap = 0;
-        for (int i = 0; i < prices.length; i++) {
-            min = Math.min(min, prices[i]);
-            gap = Math.max(prices[i] - min, gap);
-        }
-        return gap;
-    }
-
     // 摩尔投票法 仔细想想 还是对的 因为不管如何排列,众数 频次肯定>=1阿  whatever even or odd
     // 写的还是啰嗦,主要在于初始化步骤
     // 另外一种哈希算法 就不做了
@@ -3372,7 +3360,7 @@ public class Solution {
             res = getSum(m, res);
         }
         return ((a > 0) ^ (b > 0)) ? -res : res;
-        // return ((a > 0) == (b > 0)) ? res : -res;
+        // return ((a ^b)>0)) ? res : -res;
     }
 
     //29. 两数相除
@@ -3650,13 +3638,13 @@ public class Solution {
             } else {
                 res = res << 1;
             }
-            //   res= (res<<1)+(n&1);
+            //  res= (res<<1)+(n&1);
             n = n >> 1;
         }
         return res;
     }
 
-    //
+    //  125 验证回文字符串
     public boolean isPalindrome(String s) {
         int left = 0;
         int right = s.length() - 1;
@@ -3666,11 +3654,11 @@ public class Solution {
             } else if (!isAlphaNum(s.charAt(right))) {
                 right--;
             } // 别忘记加else 因为 下面的和上上面的是并行关系
-            else if ((s.charAt(left) + 32 - 'a') % 32 == (s.charAt(right) + 32 - 'a') % 32) {
+            else if ((s.charAt(left) - 'A') % 32 == (s.charAt(right) - 'A') % 32) {
                 right--;
                 left++;
             } else {
-                System.out.println("非回文字符串\t"+left + "left: " + s.charAt(left) + "\t" + right + "\tright: " + s.charAt(right));
+                //  System.out.println("非回文字符串\t" + left + "left: " + s.charAt(left) + "\t" + right + "\tright: " + s.charAt(right));
                 return false;
             }
 
@@ -3678,11 +3666,302 @@ public class Solution {
         return true;
     }
 
-    public boolean isAlphaNum(char c) {
 
+    // 242. 有效的字母异位词
+    public boolean isAnagram(String s, String t) {
+        if (s.length() != t.length()) return false;
+        int[] m = new int[26];
+        for (char c : s.toCharArray()) {
+            m[c - 'a']++;
+        }
+        for (char c : t.toCharArray()) {
+            if (--m[c - 'a'] < 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    public boolean isAlphaNum(char c) {
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
+    // 268 缺失数字
+    public int missingNumber0(int[] nums) {
+        int sum = 0;
+        for (int num : nums) {
+            sum += num;
+        }
+        return ((nums.length * (nums.length + 1)) >> 1) - sum;
+    }
+
+    // 异或 结合律 http://bit.ly/2Kkra1B
+    public int missingNumber1(int[] nums) {
+        int miss = nums.length;
+        for (int i = 0; i < nums.length; i++) {
+            miss ^= i ^ nums[i];
+        }
+        return miss;
+    }
+
+    // 二分法 todo 二分法需要做个专题研究
+    public int missingNumber2(int[] nums) {
+        Arrays.sort(nums);
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] > mid) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
+    }
+
+    //387  字符串中的第一个唯一字符
+    public int firstUniqChar(String s) {
+        Map<Character, Integer> dict = new HashMap<>();
+        char[] chars = s.toCharArray();
+        for (char c : chars) {
+            dict.put(c, dict.getOrDefault(c, 0) + 1);
+        }
+        for (int i = 0; i < chars.length; i++) {
+            if (dict.get(s.charAt(i)) == 1) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public int firstUniqChar1(String s) {
+        int index = -1;
+        //反过来，只有26个字符
+        for (char ch = 'a'; ch <= 'z'; ch++) {
+            int beginIndex = s.indexOf(ch);
+            // 从头开始的位置是否等于结束位置，相等说明只有一个，
+            if (beginIndex != -1 && beginIndex == s.lastIndexOf(ch)) {
+                //取小的，越小代表越前。
+                index = (index == -1 || index > beginIndex) ? beginIndex : index;
+            }
+        }
+        return index;
+    }
+
+    // 189. 旋转数组
+    public void rotate(int[] nums, int k) {
+        int[] tmp = Arrays.copyOf(nums, nums.length);
+        for (int i = 0; i < tmp.length; i++) {
+            nums[i] = tmp[(i + k) % nums.length];
+        }
+        //   System.out.println(Arrays.toString(nums));
+    }
+
+    //
+    public void rotate1(int[] nums, int k) {
+        // System.out.println(Arrays.toString(nums));
+        for (int i = 0; i < k; i++) {
+            shift(nums);
+        }
+        //  System.out.println(Arrays.toString(nums));
+    }
+
+    public void shift(int[] nums) {
+        //  System.out.println(Arrays.toString(nums));
+        int prev = nums[nums.length - 1];
+        int tmp;
+        for (int i = 0; i < nums.length; i++) {
+            tmp = nums[i];
+            nums[i] = prev;
+            prev = tmp;
+        }
+        //   System.out.println(Arrays.toString(nums));
+    }
+
+    // 来自 http://bit.ly/2KkELWH  ,并不推荐 说真的  太难看了
+    public void rotate2(int[] nums, int k) {
+        if (nums == null || (k %= nums.length) == 0) return;
+        int start = 0, idx = 0, pre = 0, cur = nums[0], n = nums.length;
+        for (int i = 0; i < n; ++i) {
+            pre = cur;
+            idx = (idx + k) % n;
+            cur = nums[idx];
+            nums[idx] = pre;
+            if (idx == start) {
+                idx = ++start;
+                cur = nums[idx];
+            }
+        }
+    }
+
+    // 参考答案: http://bit.ly/332rMSi
+    // 核心思想就是从o开始  交换k次 然后在进行下一轮k次交换 [经典]
+    public void rotate3(int[] nums, int k) {
+        if (nums.length == 0) return;
+        int n = nums.length, start = 0;
+        while (n != 0 && (k %= n) != 0) {
+            for (int i = 0; i < k; ++i) {
+                swap(nums, i + start, n - k + i + start);
+            }
+            n -= k;
+            start += k;
+        }
+
+    }
+
+    // 买卖股票系列问题 参考下面这篇 Blog 属实牛逼 http://bit.ly/333JDIm
+    // 121. 买卖股票的最佳时机
+    public int maxProfit1A(int[] prices) {
+        if (prices.length == 0) return 0;
+        int min = prices[0];
+        int gap = 0;
+        for (int i = 0; i < prices.length; i++) {
+            min = Math.min(min, prices[i]);
+            gap = Math.max(prices[i] - min, gap);
+        }
+        return gap;
+    }
+
+    public int maxProfit1B_Bad(int[] prices) {
+        int k = 1;
+        int n = prices.length;
+        int[][] dp = new int[prices.length][2];
+        for (int i = 0; i < n; i++) { // 没有处理base case
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
+        }
+        return dp[n - 1][0];
+    }
+
+    public int maxProfit1B_Good(int[] prices) {
+
+        if (prices == null || prices.length == 0) return 0;
+        // int k = 1;
+        int n = prices.length;
+        int[][] dp = new int[prices.length][2];
+        for (int i = 0; i < n; i++) {
+            if (i - 1 == -1) {
+                dp[i][0] = 0;
+                // 解释：
+                //   dp[i][0]
+                // = max(dp[-1][0], dp[-1][1] + prices[i])
+                // = max(0, -infinity + prices[i]) = 0
+                dp[i][1] = -prices[i];
+                //解释：
+                //   dp[i][1]
+                // = max(dp[-1][1], dp[-1][0] - prices[i])
+                // = max(-infinity, 0 - prices[i])
+                // = -prices[i]
+                continue;
+            }
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
+        }
+        return dp[n - 1][0];
+
+
+
+
+/*
+        if (prices == null || prices.length == 0) return 0;
+        // int k = 1;
+        int n = prices.length;
+        int[][] dp = new int[prices.length][2];
+        dp[0][0] = 0;
+        dp[0][1] = -prices[0];
+        for (int i = 1; i < n; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
+        }
+        return dp[n - 1][0];*/
+    }
+
+
+    // 122. 买卖股票的最佳时机 II   逢涨必抛  贪心算法
+    public int maxProfit2A(int[] prices) {
+        int res = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] > prices[i - 1]) {
+                res += prices[i] - prices[i - 1];
+            }
+        }
+        return res;
+    }
+
+    //  股票系列通用的模版
+    public int maxProfit2B(int[] prices) {
+        if (prices == null || prices.length == 0) return 0;
+        int n = prices.length;
+        int[][] dp = new int[n][2];
+        // init
+        dp[0][0] = 0;
+        dp[0][1] = -prices[0];
+        for (int i = 1; i < n; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
+        }
+        return dp[n - 1][0];
+    }
+
+
+    // 123. 买卖股票的最佳时机 III
+    // 解法1  没看懂
+    public int maxProfit3A(int[] prices, int k) {
+        if (prices.length == 0 || prices == null) return 0;
+        int n = prices.length;
+        int[][] dpG = new int[n][k];
+        int[][] dpL = new int[n][k];
+        dpG[n][3] = 0;
+        dpL[n][3] = 0;
+        for (int i = 1; i < n; ++i) {
+            int diff = prices[i] - prices[i - 1];
+            for (int j = 1; j <= 2; ++j) {
+                dpL[i][j] = Math.max(dpG[i - 1][j - 1] + Math.max(diff, 0), dpL[i - 1][j] + diff);
+                dpG[i][j] = Math.max(dpL[i][j], dpG[i - 1][j]);
+            }
+        }
+        return dpG[n - 1][2];
+    }
+
+    // 解法2
+    //
+    public int maxProfit3B(int[] prices, int k) {
+        if (prices.length == 0 || prices == null) return 0;
+        int n = prices.length;
+        // k 代表最多可以进行的交易次数
+        int[][][] dp = new int[n][k + 1][2];
+        // init
+        for (int i = 0; i < n; i++) {
+            // j >=1 也可以 因为 j =0 代表不进行交易,那么是负无穷大
+            for (int j = 1; j <= k; j++) {
+                if (i == 0) {
+                    dp[0][j][0] = 0;
+                    dp[0][j][1] = -prices[i];
+                    continue;
+                }
+                dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i]);
+                dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i]);
+            }
+        }
+        return dp[n - 1][k][0];
+    }
+
+    // 188. 买卖股票的最佳时机 IV
+    public int maxProfit4A(int k, int[] prices) {
+        int n = prices.length;
+        if (k > n / 2) { // 一天内
+            return maxProfit2B(prices);
+        }
+        return maxProfit3B(prices, k);
+    }
+
+
+    // 309. 最佳买卖股票时机含冷冻期
+
+
+    // 901. 股票价格跨度
 
 }
 
