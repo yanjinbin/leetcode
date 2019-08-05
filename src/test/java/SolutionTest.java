@@ -986,7 +986,7 @@ public class SolutionTest {
     }
 
     @Test(timeout = 1000)
-    public void findAnagrams() {
+    public void findrams() {
         System.out.println(INSTANCE.findAnagrams1("cbaebabacd", "abc"));
         // 越界了
         System.out.println(INSTANCE.findAnagrams("abab", "ab"));
@@ -1381,6 +1381,10 @@ public class SolutionTest {
         assert INSTANCE.maxProfit3B(nums, 6) == 19;
         assert INSTANCE.maxProfit4A(6, nums) == 19;
         assert INSTANCE.maxProfit4A(2, nums) == 15;
+
+        assert INSTANCE.maxProfit5A(nums) == 15;
+        assert INSTANCE.maxProfit5B(nums) == 15;
+        assert INSTANCE.maxProfit6A(nums, 1) == 16;
 
     }
 

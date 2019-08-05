@@ -3878,6 +3878,20 @@ public class Solution {
         return dp[n - 1][0];*/
     }
 
+    public int maxProfit1C(int[] prices) {
+        int n = prices.length;
+        // base case: dp[-1][0] = 0, dp[-1][1] = -infinity
+        int dp_i_0 = 0, dp_i_1 = Integer.MIN_VALUE;
+        for (int i = 0; i < n; i++) {
+            // dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
+            dp_i_0 = Math.max(dp_i_0, dp_i_1 + prices[i]);
+            // dp[i][1] = max(dp[i-1][1], -prices[i])
+            dp_i_1 = Math.max(dp_i_1, -prices[i]);
+        }
+        return dp_i_0;
+
+    }
+
 
     // 122. 买卖股票的最佳时机 II   逢涨必抛  贪心算法
     public int maxProfit2A(int[] prices) {
@@ -3959,9 +3973,66 @@ public class Solution {
 
 
     // 309. 最佳买卖股票时机含冷冻期
+    public int maxProfit5A(int[] prices) {
+        // corner case
+        if (prices == null || prices.length <= 1) return 0;
+
+        if (prices.length == 2) {
+            return prices[1] - prices[0] > 0 ? prices[1] - prices[0] : 0;
+        }
+
+        int n = prices.length;
+        int[][] dp = new int[n][2];
+
+        // general case
+        // init
+        // k=0;
+        dp[0][0] = 0;
+        dp[0][1] = -prices[0];
+
+        // k = 1
+        dp[1][0] = Math.max(dp[0][0], dp[0][1] + prices[1]);
+        dp[1][1] = Math.max(dp[0][1], 0 - prices[1]);
+
+        for (int i = 2; i < n; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - prices[i]);
+        }
+        return dp[n - 1][0];
+    }
+
+    // 改写上面maxProfit5A方法
+
+    public int maxProfit5B(int[] prices) {
+        int n = prices.length;
+        int dp_i_0 = 0;
+        int dp_i_1 = Integer.MIN_VALUE;
+        int dp_pre_0 = 0;
+        for (int i = 0; i < n; i++) {
+            // 改写
+            int temp = dp_i_0;// 上一次的  0-->1
+            dp_i_0 = Math.max(dp_i_0, dp_i_1 + prices[i]);// 更新了一次1-->2
+            dp_i_1 = Math.max(dp_i_1, dp_pre_0 - prices[i]);//0  哲理可以看到 dp_pre_0 的使用和被赋值规律
+            dp_pre_0 = temp; // 0-->1
+        }
+        return dp_i_0;
+    }
 
 
-    // 901. 股票价格跨度
+    // 714. 买卖股票的最佳时机含手续费
+    public int maxProfit6A(int[] prices, int fee) {
+        int n = prices.length;
+        int dp_i_0 = 0, dp_i_1 = Integer.MIN_VALUE;
+        for (int i = 0; i < n; i++) {
+            int temp = dp_i_0;
+            dp_i_0 = Math.max(dp_i_0, dp_i_1 + prices[i]);
+            dp_i_1 = Math.max(dp_i_1, temp - prices[i] - fee);
+        }
+        return dp_i_0;
+    }
+
+
+    // 502. IPO
 
 }
 
