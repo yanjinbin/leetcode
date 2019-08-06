@@ -4034,6 +4034,31 @@ public class Solution {
 
     // 502. IPO
 
+    //  8  字符串转换整数 (atoi)
+    public int myAtoi(String str) {
+        int sign = 1;
+        int i = 0;
+        int n = str.length();
+        int ret = 0;
+        if (str == null || str.isEmpty()) return 0;
+
+        while (i < n && str.charAt(i) == ' ') i++;
+        // 加上逻辑或的时候 并没有注意 整体IF 条件属性改变
+        if (i < n && (str.charAt(i) == '+' || str.charAt(i) == '-')) {
+            sign = str.charAt(i) == '+' ? 1 : -1;
+            i++;
+        }
+        while (i < n && str.charAt(i) >= '0' && str.charAt(i) <= '9') {
+            // 防止int越界问题  int   [  214748364 7 ]
+            if (ret > Integer.MAX_VALUE / 10 || (ret == Integer.MAX_VALUE / 10 && str.charAt(i) - '0' > 7)) {
+                return (sign == 1) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+            }
+            ret = ret * 10 + str.charAt(i) - '0';
+            i++;
+        }
+        return sign * ret;
+    }
+
 }
 
 

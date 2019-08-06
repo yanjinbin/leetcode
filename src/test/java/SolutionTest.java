@@ -1388,5 +1388,10 @@ public class SolutionTest {
 
     }
 
+    @Test
+    public void atoi(){
+        System.out.println(INSTANCE.myAtoi("+-2"));
+    }
+
 
 }
