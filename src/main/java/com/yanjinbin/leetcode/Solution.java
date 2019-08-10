@@ -18,7 +18,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.Stack;
 import java.util.TreeMap;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * top-100-liked-questions
@@ -4058,6 +4060,140 @@ public class Solution {
         }
         return sign * ret;
     }
+
+    // 36 验证是否是有效的数独   // interview friendly
+    public boolean isValidSudoku(char[][] board) {
+        Map<String, Boolean> map = new HashMap<>();
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] >= '1' && board[i][j] <= '9') {
+                    char c = board[i][j];
+                    String rowKey = i + "row" + c;
+                    String colKey = j + "col" + c;
+                    // group key 为什么没想出来呢  是因为没想出更具坐标系(i,j) 对属于同一个小方格的元素进行归约!!!
+                    String groupKey = (i / 3 + "_" + j / 3 * 3) + "group" + c;
+                    //寻找是否有重复的数字
+                    if (map.getOrDefault(rowKey, false)
+                            || map.getOrDefault(colKey, false)
+                            || map.getOrDefault(groupKey, false)) {
+                        return false;
+                    }
+                    //更新遍历记录
+                    map.put(rowKey, true);
+                    map.put(colKey, true);
+                    map.put(groupKey, true);
+                }
+            }
+        }
+        return true;
+    }
+
+    // 50 pow(x,n) 注意这道题目 是能用基本算术运算的!!
+    public double myPow(double x, int n) {
+        if (n == 0) return 1;
+        double half = myPow(x, n / 2);
+        if (n % 2 == 0) return half * half;
+        if (n > 0) return half * half * x;
+        // 负数情况下  -5  =  -2 -2 -1  -1 看做 /x即可!
+        return half * half / x;
+    }
+
+
+    public double myPow1(double x, int n) {
+        // 比较难想 不好处理
+        // x=2 n=11  r // x = 2 n =5   // x =2  n =5/2 =2 // x =2 n =1 // x=2 n=0
+        double res = 1.0;
+        for (int i = n; i != 0; i = i / 2) {
+            if (i % 2 != 0) res = res * x;
+            x = x * x;
+
+        }
+        return n > 0 ? res : 1 / res;
+    }
+
+    // 41 缺失的第一个正整数
+    public int firstMissingPositive_0(int[] nums) {
+        // 错误 nums 可能有负数
+        Arrays.sort(nums);
+        int ret = 1;
+        for (int i = 0; i < nums.length; i++) {
+            int num = nums[i];
+            if (ret != num) {
+                return ret;
+            }
+            ret++;
+        }
+
+        return ret;
+    }
+
+    public int firstMissingPositive(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for (int i : nums) {
+            set.add(i);
+        }
+        int i = 1;
+        while (set.contains(i)) i++;
+        return i;
+    }
+
+    // 缺失的第一个征整数
+    public int firstMissingPositive_1(int[] nums) {
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            while (nums[i] > 0 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {
+                swap(nums, nums[i] - 1, i);
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return n + 1;
+    }
+
+    // 179. 最大数
+    public String largestNumber(int[] nums) {
+        String[] strs = new String[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            strs[i] = String.valueOf(nums[i]);
+        }
+        Arrays.sort(strs, (o1, o2) -> (o2 + o1).compareTo(o1 + o2));
+        String ret = "";
+        for (String item : strs) {
+            ret += item;
+        }
+        // corner case 连续0
+        return ret.charAt(0) == '0' ? "0" : ret;
+    }
+
+    // 328 奇偶链表
+    public ListNode oddEvenList(ListNode head) {
+        if (head == null || head.next == null) return head;
+        ListNode oddTail = head;
+        ListNode evenHead = head.next;
+        ListNode evenTail = head.next;
+        while (evenTail != null && evenTail.next != null) {
+            oddTail.next = oddTail.next.next;
+            oddTail = oddTail.next;
+            evenTail.next = evenTail.next.next;
+            evenTail = evenTail.next;
+        }
+        oddTail.next=evenHead;
+        return head;
+    }
+
+    // 54. 螺旋矩阵
+    public List<Integer> spiralOrder(int[][] matrix) {
+        return null;
+    }
+
+    // 59. 螺旋矩阵 II
+    public int[][] generateMatrix(int n) {
+        return null;
+    }
+
 
 }
 

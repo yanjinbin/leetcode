@@ -538,12 +538,6 @@ public class SolutionTest {
 
     }
 
-    @Test
-    public void sort() {
-        int[] nums = new int[]{7, 5, 1, 6, 4, 3, 8,};
-        System.out.println(INSTANCE.partition(nums, 0, nums.length - 1));
-        System.out.println(Arrays.toString(nums));
-    }
 
     @Test
     public void findKthLargest() {
@@ -1389,9 +1383,75 @@ public class SolutionTest {
     }
 
     @Test
-    public void atoi(){
+    public void atoi() {
         System.out.println(INSTANCE.myAtoi("+-2"));
     }
 
+    @Test
+    public void isValidSudoku() {
+
+        char[][] boards = {{'5', '3', '.', '.', '7', '.', '.', '.', '.'}, {'6', '.', '.', '1', '9', '5', '.', '.', '.'}, {'.', '9', '8', '.', '.', '.', '.', '6', '.'}, {'8', '.', '.', '.', '6', '.', '.', '.', '3'}, {'4', '.', '.', '8', '.', '3', '.', '.', '1'}, {'7', '.', '.', '.', '2', '.', '.', '.', '6'}, {'.', '6', '.', '.', '.', '.', '2', '8', '.'}, {'.', '.', '.', '4', '1', '9', '.', '.', '5'}, {'.', '.', '.', '.', '8', '.', '.', '7', '9'}};
+        INSTANCE.isValidSudoku(boards);
+    }
+
+    @Test
+    public void myPow() {
+        INSTANCE.myPow1(2.0, 11);
+    }
+
+    @Test
+    public void findMissingPositive() {
+        int[] nums = {1, 2, 0};
+        System.out.println(INSTANCE.firstMissingPositive(nums));
+        System.out.println(INSTANCE.firstMissingPositive_1(nums));
+        nums = new int[]{3, 4, -1, 1};
+        System.out.println(INSTANCE.firstMissingPositive(nums));
+        System.out.println(INSTANCE.firstMissingPositive_1(nums));
+        nums = new int[]{7, 8, 9, 11, 12};
+        System.out.println(INSTANCE.firstMissingPositive(nums));
+        System.out.println(INSTANCE.firstMissingPositive_1(nums));
+    }
+
+    @Test
+    public void sort() {
+
+
+        int[] nums = new int[]{17, 16, 14, 13, 11, 10, 7, 6, 18, 5, 2, 19, 4, 3, 8, 1, 21, 12, 15, 9, 31, 99, 65, 45, 77, 33, 29};
+        //    System.out.println(INSTANCE.partition(nums, 0, nums.length - 1));
+        System.out.println(Arrays.toString(nums));
+
+/*
+        Sort INSTANCE_SORT = new Sort();
+        INSTANCE_SORT.bucketSort(nums, 8);
+
+        System.out.println(Arrays.toString(nums));
+        Integer[] nums1 = new Integer[]{17, 16, 14, 13, 11, 10, 7, 6, 18, 28};
+        List<Integer> ints = Arrays.asList(nums1);
+        System.out.println(ints);
+        INSTANCE_SORT.insertSort(ints);
+        System.out.println(ints);*/
+
+
+    }
+
+
+    @Test
+    public void largestNumber() {
+        int[] nums = new int[]{10, 2};
+        assert INSTANCE.largestNumber(nums).equals("210");
+    }
+
+    @Test
+    public void oddEvenList() {
+        ListNode head = ListNode.builder().val(1).next(
+                ListNode.builder().val(2).next(
+                        ListNode.builder().val(3).next(
+                                ListNode.builder().val(4).next(
+                                        ListNode.builder().val(5).build()
+                                ).build()).build()).build()
+        ).build();
+
+        INSTANCE.oddEvenList(head);
+    }
 
 }
