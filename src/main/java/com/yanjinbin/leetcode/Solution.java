@@ -4180,8 +4180,26 @@ public class Solution {
             evenTail.next = evenTail.next.next;
             evenTail = evenTail.next;
         }
-        oddTail.next=evenHead;
+        oddTail.next = evenHead;
         return head;
+    }
+
+    // 329. 矩阵中的最长递增路径
+    public int longestIncreasingPath(int[][] matrix) {
+        int res = 0;
+        int[][] dp = new int[matrix.length][];
+        for (int i = 0; i < matrix.length; i++) {
+            dp[i] = new int[matrix[i].length];
+            for (int j = 0; j < matrix[i].length; j++) {
+                res = Math.max(res, dfsSearchPath(matrix, i, j, 0));
+            }
+        }
+        return res;
+    }
+
+    // 单调最长路径
+    public int dfsSearchPath(int[][] matrix, int i, int j, int res) {
+        return 1;
     }
 
     // 54. 螺旋矩阵
@@ -4194,6 +4212,116 @@ public class Solution {
         return null;
     }
 
+    // 227. 基本计算器 II
+    public int calculate0(String s) {
+        int res = 0;
+        int last = 0;
+        int pre = 0;
+        char prevOperator = '+';
+        char curOperator = '+';
+        char lastOperator = '+';
+        for (int i = 0; i < s.toCharArray().length; i++) {
+            if (s.charAt(i) >= '0' && s.charAt(i) <= '9') {
+                res = res * 10 + s.charAt(i) - '0';
+            }
+            prevOperator = curOperator;
+            curOperator = s.charAt(i);
+            // 进行规则判定
+            if ((curOperator == '*' || curOperator == '/') && (prevOperator == '-' || prevOperator == '+')) {
+                lastOperator = prevOperator;
+                last = pre;
+                pre = res;
+                res = 0;
+            } else {
+                //
+                pre = cal(pre, res, prevOperator);
+                res = 0;
+            }
+        }
+        // 行不通 太复杂了 处理的清空太复杂了 不够通用
+        return res;
+    }
+    // 计算器系列
+    // 224. 基本计算器
+
+    // 227. 基本计算器 II
+    public int calculate1(String s) {
+        // 用栈的思想来做
+        Stack<Integer> stack = new Stack<>();
+        char op = '+';
+        int n = s.length();
+        int res = 0;
+        int num = 0;
+        Set<Character> set = new HashSet<>();
+        set.add('-');
+        set.add('+');
+        set.add('*');
+        set.add('/');
+        for (int i = 0; i < n; i++) {
+            if (s.charAt(i) >= '0' && s.charAt(i) <= '9') {
+                num = num * 10 + s.charAt(i) - '0';
+            }
+
+            if (set.contains(s.charAt(i)) || i == n - 1) {
+                // 并没有让op成为前置数字的运算符?? 而是后置运算符了
+                if (op == '+') {
+                    stack.push(num);
+                }
+                if (op == '-') {
+                    stack.push(-num);
+                }
+                if (op == '*' || op == '/') {
+                    int tmp = (op == '*') ? stack.peek() * num : stack.peek() / num;
+                    stack.pop();
+                    stack.push(tmp);
+                }
+                // update
+                op = s.charAt(i);
+                num = 0;
+            }
+
+
+
+/*
+            if ((s.charAt(i) < '0' && s.charAt(i) != ' ') || i == n - 1) {
+                if (op == '+') stack.push(num);
+                if (op == '-') stack.push(-num);
+                if (op == '*' || op == '/') {
+                    int tmp = (op == '*') ? stack.peek() * num : stack.peek() / num;
+                    stack.pop();
+                    stack.push(tmp);
+                }
+                op = s.charAt(i);
+                num = 0;
+            }
+*/
+
+        }
+        while (!stack.isEmpty()) {
+            res += stack.pop();
+        }
+        return res;
+    }
+
+    //   772. 基本计算器 III
+
+
+
+
+    public int cal(int x, int y, char operator) {
+        switch (operator) {
+            case '-':
+                return x - y;
+            case '+':
+                return x + y;
+            case '/':
+                return x / y;
+            case '*':
+                return x * y;
+            default:
+                throw new IllegalStateException("非法字符");
+        }
+    }
 
 }
 

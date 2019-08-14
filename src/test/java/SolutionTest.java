@@ -1454,4 +1454,9 @@ public class SolutionTest {
         INSTANCE.oddEvenList(head);
     }
 
+    @Test
+    public void calculate() {
+        String arithmetic = " 3+5 / 2 ";
+        System.out.println(INSTANCE.calculate1(arithmetic));
+    }
 }
