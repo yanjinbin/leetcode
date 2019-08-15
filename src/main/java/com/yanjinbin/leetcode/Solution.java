@@ -1,26 +1,7 @@
 package com.yanjinbin.leetcode;
 
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Random;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeMap;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 /**
  * top-100-liked-questions
@@ -4494,6 +4475,7 @@ public class Solution {
         return res;
     }
 
+    // 54. 螺旋矩阵
     public List<Integer> spiralOrder(int[][] matrix) {
         List<Integer> res = new ArrayList();
         if (matrix.length == 0) return res;
@@ -4529,6 +4511,174 @@ public class Solution {
         }
         return res;
     }
+
+    // 解法2
+    public List<Integer> spiralOrder1(int[][] matrix) {
+        List<Integer> res = new ArrayList();
+        if (matrix.length == 0) return res;
+        int colBegin = 0, colEnd = matrix[0].length - 1, rowBegin = 0, rowEnd = matrix.length - 1;
+        while (true) {
+            // right
+            for (int j = colBegin; j <= colEnd; j++) {
+                res.add(matrix[rowBegin][j]);
+            }
+            rowBegin++;
+            if (rowBegin > rowEnd || colBegin > colEnd) break;
+            // down
+            for (int j = rowBegin; j <= rowEnd; j++) {
+                res.add(matrix[j][colEnd]);
+            }
+            colEnd--;
+            if (rowBegin > rowEnd || colBegin > colEnd) break;
+
+            // left check rowBegin<=rowEnd
+            if (rowBegin <= rowEnd) {
+                for (int j = colEnd; j >= colBegin; j--) {
+                    res.add(matrix[rowEnd][j]);
+                }
+            }
+            // break contract rowBegin > rowEnd
+            rowEnd--;
+            if (rowBegin > rowEnd || colBegin > colEnd) break;
+            // up
+            if (colBegin <= colEnd) {
+                for (int j = rowEnd; j >= rowBegin; j--) {
+                    res.add(matrix[j][colBegin]);
+                }
+            }
+            // break contract colBegin > colEnd
+            colBegin++;
+            if (rowBegin > rowEnd || colBegin > colEnd) break;
+        }
+        return res;
+    }
+
+    /*  public List<List<Integer>> getSkyline(int[][] building) {
+          throw new IllegalStateException("扫描线方法 todo 有点难啊");
+          List<List<Integer>> res = new ArrayList();
+          int n = building.length;
+          Arrays.sort(building, (a, b) -> {
+              return a[0] - b[0];
+          });
+          for (int i = 0; i < n; i++) {
+              List<Integer> sub = new ArrayList();
+              // adjacent building
+              while (building[i + 1][0] <= building[i][1]) {
+                  int[] a = building[i];
+                  int[] b = building[i + 1];
+                  int aLi = building[i][0], aHi = building[i][1], aRi = building[i][2];
+                  int bLi = building[i + 1][0], bHi = building[i + 1][1], bRi = building[i + 1][2];
+                  //  第二轮的时候 你会发现情况越来越复杂了
+                  if (bRi > aRi) {
+                      if (bHi > aHi) {
+                          aLi, bLi, bRi;
+                      } else (bHi<aHi) {
+                              aLi, aRi, bRi;
+                      }else if (bHi == aHi) {
+                          aLi, bRi;
+                      }
+                  } else {
+                      if (bHi > aHi) {
+                          aLi, bLi, bRi, aRi;
+                      } else if (bHi == aHi) {
+                          aLi, bRi
+                      } else {
+                          aLi, bRi
+                      }
+                  }
+
+              }
+              res.add(sub);
+          }
+          return res;
+      }*/
+
+    // 227 搜寻名人
+    public int findCelebrity(int n) {
+        // 这道题 的解题步骤排除法 很多地方都会用到 假定均为true,然后遍历 根据条件去除 最后返回名人i
+        boolean[] candidates = new boolean[n];
+        Arrays.fill(candidates, true);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i != j && candidates[i]) {
+                    if (knows(i, j) || !knows(j, i)) {
+                        candidates[i] = false;
+                        break;
+                    } else {
+                        candidates[j] = false;
+                    }
+                }
+            }
+            if (candidates[i]) return i;
+        }
+        return -1;
+    }
+
+    public int findCelebrity1(int n) {
+        for (int i = 0, j = 0; i < n; ++i) {
+            for (j = 0; j < n; ++j) {
+                if (i != j && (knows(i, j) || !knows(j, i))) break;
+            }
+            if (j == n) return i;
+        }
+        return -1;
+    }
+
+
+    /*
+    public int findCelebrity(int n) {
+        // 思考错了   之前想的 col(j) 均为1 就是名人是错的. All col(j)=1 and row(j,j)=1 and row(i!=j,j)均为0
+        // 看看别人的思路
+        Map<Integer, Integer> memo = new HashMap();
+        for (int j = 0; j < n; j++) {
+            if (knows(0, j)) memo.put(j, 0);
+        }
+
+        Map<Integer, Integer> map = memo;
+        for (int i = 1; i < n; i++) {
+            memo = map;
+            map = new HashMap<>();
+            for (int j = 0; j < n; j++) {
+                if (knows(i, j) && memo.containsKey(j)) {
+                    map.put(j, i);
+                    System.out.println(j + " | " + i);
+                }
+            }
+        }
+        System.out.println(map);
+        Set<Integer> set = map.keySet();
+        Integer key = -1;
+        if (set.size() == 1) {
+            for (Integer i : set) {
+                key = i;
+            }
+        }
+        return key;
+    }*/
+
+    boolean knows(int a, int b) {
+        return true;
+    }
+
+
+/*
+    public int findCelebrity(int n) {
+        int[][] people = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                // 需要辅助数组
+                aux[i][j] = pepople[j][i];
+            }
+        }
+        // 遍历一边 哪个 i下都是 know(i,j) true即可以
+        return -1;
+    }
+
+    boolean knows(a, b) {
+        return true;
+    }
+*/
+
 }
 
 

@@ -1538,4 +1538,9 @@ public class SolutionTest {
         System.out.println(3 & 1);
         System.out.println(4 & 1);
     }
+
+    @Test
+    public void findCelebrity(){
+        INSTANCE.findCelebrity(10);
+    }
 }
