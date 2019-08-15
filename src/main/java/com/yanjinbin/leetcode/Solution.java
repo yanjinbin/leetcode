@@ -4471,6 +4471,33 @@ public class Solution {
     }
 
     // K系列
+
+
+    // 149 直线上最多的点数 // https://youtu.be/bzsdelrRgNk // 对角线乘积和反对角线乘积之差/2 是 S△
+    public int maxPoints(int[][] points) {
+        int res = 0, n = points.length;
+        for (int i = 0; i < n; i++) {
+            int duplicate = 1;
+            for (int j = i + 1; j < n; j++) {
+                long x1 = points[i][0], y1 = points[i][1], x2 = points[j][0], y2 = points[j][1];
+                if (x1 == x2 && y1 == y2) {
+                    duplicate++;
+                    // 不加 就不是3点共线了 就是2点一条直线,下面的等式任何时候都能成立
+                    // 加上去 就代表3个不同点
+                    continue;
+                }
+                for (int k = 0; k < n; k++) {
+                    long x3 = points[k][0], y3 = points[k][1];
+                    if ((x1 * y2 + x2 * y3 + x3 * y1 - x1 * y3 - x2 * y1 - x3 * y2) == 0) {
+                        cnt++;
+                    }
+                }
+                res = Math.max(res, cnt);
+            }
+            res = Math.max(res, duplicate);
+        }
+        return res;
+    }
 }
 
 

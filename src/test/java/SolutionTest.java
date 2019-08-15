@@ -1471,6 +1471,14 @@ public class SolutionTest {
         matrix = new int[][]{{9, 9, 4}, {6, 6, 8}, {2, 1, 1},};
         System.out.println("===========");
         INSTANCE.longestIncreasingPath1(matrix);
+        System.out.println("=========");
+        INSTANCE.longestIncreasingPath2(matrix);
+    }
+
+    @Test
+    public void maxPointLine(){
+        int[][] points = {{1,1},{2,2},{3,3},{2,2},{4,4},{5,4}};
+        assert INSTANCE.maxPoints(points) == 5;
     }
 
     @Test
