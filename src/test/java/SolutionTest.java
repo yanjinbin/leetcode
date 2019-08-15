@@ -1456,7 +1456,33 @@ public class SolutionTest {
 
     @Test
     public void calculate() {
+        System.out.println("==计算器系列问题==");
+        // corner case  最后一个数 2 运行截止
         String arithmetic = " 3+5 / 2 ";
-        System.out.println(INSTANCE.calculate1(arithmetic));
+        System.out.println(INSTANCE.calculate227(arithmetic));
+    }
+
+    @Test
+    public void longestIncreasingPath() {
+        int[][] matrix = new int[][]{
+                {1, 2, 3}, {4, 5, 6}, {7, 8, 9},
+        };
+        INSTANCE.longestIncreasingPath(matrix);
+        matrix = new int[][]{{9, 9, 4}, {6, 6, 8}, {2, 1, 1},};
+        System.out.println("===========");
+        INSTANCE.longestIncreasingPath1(matrix);
+    }
+
+    @Test
+    public void topKSeries() {
+        System.out.println("===Top K系列问题===");
+        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        pq.add(1);
+        pq.add(10);
+        pq.add(9);
+        pq.add(8);
+        while (!pq.isEmpty()) {
+            System.out.println(pq.poll());
+        }
     }
 }

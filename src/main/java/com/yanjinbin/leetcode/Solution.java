@@ -4184,23 +4184,141 @@ public class Solution {
         return head;
     }
 
+
     // 329. 矩阵中的最长递增路径
+    /*public int longestIncreasingPath(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return 0;
+        int res = 1, m = matrix.length, n = matrix[0].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                res = Math.max(res, dfs(matrix, dp, i, j));
+            }
+        }
+        return res;
+    }
+
+    public int dfs(int[][] matrix, int[][] dp, int i, int j) {
+        if (dp[i][j] != 0) return dp[i][j];
+        int mx = 1, m = matrix.length, n = matrix[0].length;
+        for (int[] a : dirs) {
+            int x = i + a[0], y = j + a[1];
+            if (x < 0 || x >= m)
+        }
+    }*/
+   /* public int longestIncreasingPath(int[][] matrix) {
+        if (matrix == null || matrix[0].length == 0) {
+            return 0;
+        }
+        int res = 1, m = matrix.length;
+        n = matrxi[0].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                res = Math.max(res, dfsSearchPath(matrix, dp, i, j));
+            }
+        }
+        return res;
+    }
+
+    public int dfsSearchPath(int[][] matrix, int[][] dp, int i, int j) {
+        if (dp[i][j]!=0) return dp[i][j];
+        int mx = 1, m = matrix.size(), n = matrix[0].size();
+        for (auto a : dirs) {
+            int x = i + a[0], y = j + a[1];
+            if (x < 0 || x >= m || y < 0 | a | y >= n || matrix[x][y] <= matrix[i][j]) continue;
+            int len = 1 + dfs(matrix, dp, x, y);
+            mx = max(mx, len);
+        }
+        dp[i][j] = mx;
+        return mx;
+    }
+*/
+
+    private static final int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+    // 解法 1
     public int longestIncreasingPath(int[][] matrix) {
+        if (matrix.length == 0) return 0;
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][] dp = new int[m][n];
         int res = 0;
-        int[][] dp = new int[matrix.length][];
-        for (int i = 0; i < matrix.length; i++) {
-            dp[i] = new int[matrix[i].length];
-            for (int j = 0; j < matrix[i].length; j++) {
-                res = Math.max(res, dfsSearchPath(matrix, i, j, 0));
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                //  res = Math.max(res, dfsSearchPath(matrix, dp, i, j, m, n));
+                res = Math.max(res, dfsSearchPath1(matrix, dp, i, j, m, n));
             }
         }
         return res;
     }
 
     // 单调最长路径
-    public int dfsSearchPath(int[][] matrix, int i, int j, int res) {
-        return 1;
+    public int dfsSearchPath(int[][] matrix, int[][] dp, int i, int j, int m, int n) {
+        if (dp[i][j] != 0) return dp[i][j];
+        int len = 1;
+        for (int[] dir : dirs) {
+            int x = i + dir[0], y = j + dir[1];
+            if (x >= 0 && x < m && y >= 0 && y < n && matrix[i][j] < matrix[x][y]) {
+                len = Math.max(len, 1 + dfsSearchPath(matrix, dp, x, y, m, n));
+            }
+        }
+        dp[i][j] = len;
+        return len;
     }
+
+    // 这个比较易懂!!!
+    public int dfsSearchPath1(int[][] matrix, int[][] dp, int i, int j, int m, int n) {
+        if (dp[i][j] != 0) return dp[i][j];
+        int len = 1;
+        if (i - 1 >= 0 && matrix[i - 1][j] > matrix[i][j])
+            len = Math.max(len, 1 + dfsSearchPath1(matrix, dp, i - 1, j, m, n));
+        if (i + 1 < m && matrix[i + 1][j] > matrix[i][j])
+            len = Math.max(len, 1 + dfsSearchPath1(matrix, dp, i + 1, j, m, n));
+        if (j - 1 >= 0 && matrix[i][j - 1] > matrix[i][j])
+            len = Math.max(len, 1 + dfsSearchPath1(matrix, dp, i, j - 1, m, n));
+        if (j + 1 < n && matrix[i][j + 1] > matrix[i][j]) {
+            len = Math.max(len, 1 + dfsSearchPath1(matrix, dp, i, j + 1, m, n));
+        }
+        return dp[i][j] = len;
+    }
+
+    // 解法2 https://youtu.be/yKr4iyQnBpY  bottom up方法
+    public int longestIncreasingPath1(int[][] matrix) {
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0)
+            return 0;
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][] dp = new int[m][n];
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> (matrix[a[0]][a[1]] - matrix[b[0]][b[1]]));
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                minHeap.offer(new int[]{i, j});
+            }
+        }
+        int longest = 1;
+        // 最小堆  每次取最小, 有比她更小的则更新
+        while (!minHeap.isEmpty()) {
+            int[] cur = minHeap.poll();
+            int i = cur[0];
+            int j = cur[1];
+            //  System.out.println("=====:\t" + matrix[i][j]);
+            dp[i][j] = 1;
+            if (i - 1 >= 0 && matrix[i - 1][j] < matrix[i][j])
+                dp[i][j] = Math.max(dp[i][j], dp[i - 1][j] + 1);
+            if (i + 1 < m && matrix[i + 1][j] < matrix[i][j])
+                dp[i][j] = Math.max(dp[i][j], dp[i + 1][j] + 1);
+            if (j - 1 >= 0 && matrix[i][j - 1] < matrix[i][j])
+                dp[i][j] = Math.max(dp[i][j], dp[i][j - 1] + 1);
+            if (j + 1 < n && matrix[i][j + 1] < matrix[i][j])
+                dp[i][j] = Math.max(dp[i][j], dp[i][j + 1] + 1);
+            longest = Math.max(dp[i][j], longest);
+        }
+        return longest;
+    }
+
+    // 解法3 topological sort
+
 
     // 54. 螺旋矩阵
     public List<Integer> spiralOrder(int[][] matrix) {
@@ -4210,6 +4328,13 @@ public class Solution {
     // 59. 螺旋矩阵 II
     public int[][] generateMatrix(int n) {
         return null;
+    }
+
+    // 计算器系列
+    // 224. 基本计算器  没有优先级了 我真滴服了 审题要仔细哦
+    public int calculate224(String s) {
+        int n = s.length(), res = 0;
+        return 1;
     }
 
     // 227. 基本计算器 II
@@ -4238,14 +4363,12 @@ public class Solution {
                 res = 0;
             }
         }
-        // 行不通 太复杂了 处理的清空太复杂了 不够通用
+        // 行不通 太复杂了 处理的情况 太复杂了 不够通用
         return res;
     }
-    // 计算器系列
-    // 224. 基本计算器
 
     // 227. 基本计算器 II
-    public int calculate1(String s) {
+    public int calculate227(String s) {
         // 用栈的思想来做
         Stack<Integer> stack = new Stack<>();
         char op = '+';
@@ -4279,23 +4402,6 @@ public class Solution {
                 op = s.charAt(i);
                 num = 0;
             }
-
-
-
-/*
-            if ((s.charAt(i) < '0' && s.charAt(i) != ' ') || i == n - 1) {
-                if (op == '+') stack.push(num);
-                if (op == '-') stack.push(-num);
-                if (op == '*' || op == '/') {
-                    int tmp = (op == '*') ? stack.peek() * num : stack.peek() / num;
-                    stack.pop();
-                    stack.push(tmp);
-                }
-                op = s.charAt(i);
-                num = 0;
-            }
-*/
-
         }
         while (!stack.isEmpty()) {
             res += stack.pop();
@@ -4304,8 +4410,6 @@ public class Solution {
     }
 
     //   772. 基本计算器 III
-
-
 
 
     public int cal(int x, int y, char operator) {
@@ -4323,6 +4427,7 @@ public class Solution {
         }
     }
 
+    // K系列
 }
 
 
