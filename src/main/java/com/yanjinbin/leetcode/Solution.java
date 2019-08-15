@@ -4317,8 +4317,51 @@ public class Solution {
         return longest;
     }
 
-    // 解法3 topological sort
-
+    // 解法3 topological sort 构建拓扑排序, 问题转换为 有向图的中的拓扑排序下的最长路径
+    // todo  还是不会阿
+    public int longestIncreasingPath2(int[][] matrix) {
+        int[] shift = {0, 1, 0, -1, 0};
+        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+        int m = matrix.length;
+        int n = matrix[0].length;
+        int[][] indegree = new int[m][n];
+        Queue<int[]> queue = new LinkedList();
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i - 1 >= 0 && matrix[i - 1][j] < matrix[i][j])
+                    indegree[i][j] += 1;
+                if (i + 1 < m && matrix[i + 1][j] < matrix[i][j])
+                    indegree[i][j] += 1;
+                if (j - 1 >= 0 && matrix[i][j - 1] < matrix[i][j])
+                    indegree[i][j] += 1;
+                if (j + 1 < n && matrix[i][j + 1] < matrix[i][j])
+                    indegree[i][j] += 1;
+                if (indegree[i][j] == 0) queue.offer(new int[]{i, j});
+            }
+        }
+        int len = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] pos = queue.poll();
+                int x = pos[0];
+                int y = pos[1];
+                for (int k = 0; k < 4; k++) {
+                    int newX = x + shift[k];
+                    int newY = y + shift[k + 1];
+                    if (0 <= newX && newX < m && 0 <= newY && newY < n && matrix[x][y] < matrix[newX][newY]) {
+                        indegree[newX][newY]--;
+                        if (indegree[newX][newY] == 0)
+                            queue.offer(new int[]{newX, newY});
+                    }
+                }
+            }
+            len++;
+        }
+        return len;
+    }
 
     // 54. 螺旋矩阵
     public List<Integer> spiralOrder(int[][] matrix) {
