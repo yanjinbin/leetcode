@@ -1476,9 +1476,18 @@ public class SolutionTest {
     }
 
     @Test
-    public void maxPointLine(){
-        int[][] points = {{1,1},{2,2},{3,3},{2,2},{4,4},{5,4}};
+    public void maxPointLine() {
+        int[][] points = {{1, 1}, {2, 2}, {3, 3}, {2, 2}, {4, 4}, {5, 4}};
         assert INSTANCE.maxPoints(points) == 5;
+    }
+
+    @Test
+    public void spiralOrder() {
+        int[][] matrix = {{1, 2, 3, 4, 5}, {6, 7, 8, 9}, {10, 11, 12, 13}, {14, 15, 16, 17}};
+        System.out.println(INSTANCE.spiralOrder(matrix));
+        matrix = new int[][]{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12},};
+        System.out.println(INSTANCE.spiralOrder(matrix));
+
     }
 
     @Test

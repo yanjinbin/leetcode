@@ -4363,11 +4363,6 @@ public class Solution {
         return len;
     }
 
-    // 54. 螺旋矩阵
-    public List<Integer> spiralOrder(int[][] matrix) {
-        return null;
-    }
-
     // 59. 螺旋矩阵 II
     public int[][] generateMatrix(int n) {
         return null;
@@ -4495,6 +4490,42 @@ public class Solution {
                 res = Math.max(res, cnt);
             }
             res = Math.max(res, duplicate);
+        }
+        return res;
+    }
+
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> res = new ArrayList();
+        if (matrix.length == 0) return res;
+        int colBegin = 0, colEnd = matrix[0].length - 1, rowBegin = 0, rowEnd = matrix.length - 1;
+        while (rowBegin <= rowEnd && colBegin <= colEnd) {
+            // right
+            for (int j = colBegin; j <= colEnd; j++) {
+                res.add(matrix[rowBegin][j]);
+            }
+            rowBegin++;
+            // down
+            for (int j = rowBegin; j <= rowEnd; j++) {
+                res.add(matrix[j][colEnd]);
+            }
+            colEnd--;
+
+            // left check rowBegin<=rowEnd
+            if (rowBegin <= rowEnd) {
+                for (int j = colEnd; j >= colBegin; j--) {
+                    res.add(matrix[rowEnd][j]);
+                }
+            }
+            // break contract rowBegin > rowEnd
+            rowEnd--;
+            // up
+            if (colBegin <= colEnd) {
+                for (int j = rowEnd; j >= rowBegin; j--) {
+                    res.add(matrix[j][colBegin]);
+                }
+            }
+            // break contract colBegin > colEnd
+            colBegin++;
         }
         return res;
     }
