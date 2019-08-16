@@ -1483,10 +1483,10 @@ public class SolutionTest {
 
     @Test
     public void spiralOrder() {
-        int[][] matrix = {{1, 2, 3, 4, 5}, {6, 7, 8, 9}, {10, 11, 12, 13}, {14, 15, 16, 17}};
+        int[][] matrix = {{1, 2, 3, 4}, {6, 7, 8, 9}, {10, 11, 12, 13}, {14, 15, 16, 17}};
         System.out.println(INSTANCE.spiralOrder(matrix));
         matrix = new int[][]{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12},};
-        System.out.println(INSTANCE.spiralOrder(matrix));
+        System.out.println(INSTANCE.spiralOrder1(matrix));
 
     }
 
@@ -1501,5 +1501,41 @@ public class SolutionTest {
         while (!pq.isEmpty()) {
             System.out.println(pq.poll());
         }
+    }
+
+    @Test
+    public void getSkylines() {
+        int[][] building = new int[][]{};
+        // INSTANCE.getSkyline(building);
+    }
+
+    @Test
+    public void maxPQ() {
+        // 插入元素 删除最大元素 均能做到 logN级别   算法4(P358)
+        MaxPQ<Integer> pq = new MaxPQ<>();
+        pq.insert(10);
+        pq.insert(100);
+        pq.insert(99);
+        pq.insert(23);
+        pq.insert(1);
+        System.out.println(pq.max());
+        System.out.println(pq.delMax());
+        System.out.println(pq.max());
+    }
+
+
+    @Test
+    public void medianFinder() {
+        MedianFinder mf = new MedianFinder();
+        mf.addNum(11);
+        System.out.println(mf.findMedian());
+        mf.addNum(13);
+        System.out.println(mf.findMedian());
+        mf.addNum(18);
+        mf.addNum(9);
+        mf.addNum(7);
+        System.out.println(mf.findMedian());
+        System.out.println(3 & 1);
+        System.out.println(4 & 1);
     }
 }
