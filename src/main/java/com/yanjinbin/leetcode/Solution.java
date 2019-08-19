@@ -4713,18 +4713,19 @@ public class Solution {
     }
 
     // 解法2
-    public String minimumWindow(String s, String t) {     if (s == null || t == null || s.length() == 0 || t.length() == 0 || s.length() < t.length()) return "";
+    public String minimumWindow(String s, String t) {
+        if (s == null || t == null || s.length() == 0 || t.length() == 0 || s.length() < t.length()) return "";
         int[] bank = new int[27];
         int left = 0, right = 0, count = 0;
         int min = Integer.MAX_VALUE;
         String minStr = "";
         for (int i = 0; i < t.length(); i++) {
-            bank[t.charAt(i)-'A']++;
+            bank[t.charAt(i) - 'A']++;
         }
         while (right < s.length()) {
             // if = 1 then bank--, count++
             // if =0 then bank--  go next
-            if (bank[s.charAt(right++)-'A']-- > 0) {
+            if (bank[s.charAt(right++) - 'A']-- > 0) {
                 count++;
             }
             //可行解
@@ -4735,7 +4736,7 @@ public class Solution {
                 }
                 // 这里需要解释下
                 // narrow left
-                if (bank[s.charAt(left)-'A']++ == 0) {
+                if (bank[s.charAt(left) - 'A']++ == 0) {
                     count--;
                 }
                 left++;
@@ -4744,6 +4745,69 @@ public class Solution {
         return minStr;
     }
 
+    // 162 寻找峰值
+    // stack O(N)
+    public int findPeakElement1(int[] nums) {
+        Stack<Integer> s = new Stack();
+        // init
+        s.push(0);
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[s.peek()] < nums[i]) s.push(i);
+            return s.peek();
+        }
+        return nums.length - 1;
+    }
+
+    // 二分法 logN
+    public int findPeakElement0(int[] nums) {
+        return binarySearch0(nums, 0, nums.length - 1);
+    }
+
+    // 二分法错误做法
+    // 二分法推导
+    // l = l ,r =l+1, mid = l;
+    // then divided into two pieces,  binary(l,l-1)  illegal!!! , binary(l,r)  infinite loop
+    // then the right way is --->  binary(l,l)  (l+1,l+1);
+    public int binarySearch0(int[] nums, int l, int r) {
+        if (l == r) return l;
+        int mid = (r - l) / 2 + l;
+        if (nums[mid] > nums[mid - 1]) {// l=2 r=3 就会陷入无限循环
+            return binarySearch0(nums, mid, r);
+        } else {
+            return binarySearch0(nums, l, mid - 1);
+        }
+    }
+
+
+    public int findPeakElement2(int[] nums) {
+        return binarySearch2(nums, 0, nums.length - 1);
+    }
+
+    public int binarySearch2(int[] nums, int l, int r) {
+        if (l == r) return l;
+        int mid = (r - l) / 2 + l;
+        if (nums[mid] < nums[mid - 1]) { // 越界 l=0, r=1, mid=0  数组越界
+            return binarySearch2(nums, l, mid);
+        } else {
+            return binarySearch2(nums, mid + 1, l);
+        }
+    }
+
+    public int findPeakElement3(int[] nums) {
+        return binarySearch3(nums, 0, nums.length - 1);
+    }
+
+    public int binarySearch3(int[] nums, int l, int r) {
+        if (l == r) {
+            return l;
+        }
+        int mid = (r - l) / 2 + l;
+        if (nums[mid] > nums[mid + 1]) {//  保证不会越界 l=l,r=l+1,mid=l; 所以访问mid+1就是r 保证不会越界. 如果是mid-1,既l-1,如果l是0，那就越界了！
+            return binarySearch3(nums, l, mid);
+        } else {
+            return binarySearch3(nums, mid + 1, r);
+        }
+    }
 }
 
 

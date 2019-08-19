@@ -1540,14 +1540,30 @@ public class SolutionTest {
     }
 
     @Test
-    public void findCelebrity(){
+    public void findCelebrity() {
         INSTANCE.findCelebrity(10);
     }
 
     @Test
-    public void minimumSlidingWindow(){
-        String s= "EBBANCF";String t= "ABC";
+    public void minimumSlidingWindow() {
+        String s = "EBBANCF";
+        String t = "ABC";
         System.out.println(INSTANCE.minimumWindow(s, t));
-        System.out.println(INSTANCE.minimumWindow0(s,t));
+        System.out.println(INSTANCE.minimumWindow0(s, t));
+    }
+
+    @Test(timeout = 1000)
+    public void findPeekElement() {
+        int[] nums0 = {1, 2, 3, 1};
+        int[] nums1 = {1, 2};
+        int[] nums2 = {5, 4, 3, 2, 7};
+        INSTANCE.findPeakElement0(nums0);
+        // 越界
+        //  INSTANCE.findPeekElement2(nums1);
+        // 正确做法
+        INSTANCE.findPeakElement3(nums0);
+        // 无限循环
+        INSTANCE.findPeakElement2(nums0);
+
     }
 }
