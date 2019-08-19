@@ -1543,4 +1543,11 @@ public class SolutionTest {
     public void findCelebrity(){
         INSTANCE.findCelebrity(10);
     }
+
+    @Test
+    public void minimumSlidingWindow(){
+        String s= "EBBANCF";String t= "ABC";
+        System.out.println(INSTANCE.minimumWindow(s, t));
+        System.out.println(INSTANCE.minimumWindow0(s,t));
+    }
 }

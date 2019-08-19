@@ -3101,13 +3101,6 @@ public class Solution {
         return res;
     }
 
-
-    // 76. 最小覆盖子串//  滑动窗口解决问题  http://bit.ly/2LvcJLu
-    //
-    public String minWindow(String s, String t) {
-        return "";
-    }
-
     // follow up todo 590. N叉树的后序遍历
     public List<Integer> postorder(Node root) {
         return null;
@@ -4661,23 +4654,95 @@ public class Solution {
     }
 
 
-/*
-    public int findCelebrity(int n) {
-        int[][] people = new int[n][n];
-        for (int i = 0; i < n; i++) {
-            for (int j = i; j < n; j++) {
-                // 需要辅助数组
-                aux[i][j] = pepople[j][i];
+    /*
+        public int findCelebrity(int n) {
+            int[][] people = new int[n][n];
+            for (int i = 0; i < n; i++) {
+                for (int j = i; j < n; j++) {
+                    // 需要辅助数组
+                    aux[i][j] = pepople[j][i];
+                }
+            }
+            // 遍历一边 哪个 i下都是 know(i,j) true即可以
+            return -1;
+        }
+
+        boolean knows(a, b) {
+            return true;
+        }
+    */
+
+    // 76 最小覆盖子串 http://bit.ly/2LvcJLu
+    public String minimumWindow0(String s, String t) {
+        int left = 0, right = 0, n = s.length(), start = 0, minLen = Integer.MAX_VALUE;
+        Map<Character, Integer> cntTable = new HashMap();
+        for (char c : t.toCharArray()) {
+            cntTable.put(c, cntTable.getOrDefault(c, 0) + 1);
+        }
+        Map<Character, Integer> record = new HashMap();
+        int match = 0;
+        while (right < n) {
+            // expend right
+            char c1 = s.charAt(right);
+            if (cntTable.containsKey(c1)) {
+                record.put(c1, record.getOrDefault(c1, 0) + 1);
+                if (record.get(c1) == cntTable.get(c1)) {
+                    match++;
+                }
+            }
+            right++;
+
+            // find 可行解, pursue 最优解
+            while (match == cntTable.size()) {
+                // update
+                if (right - left < minLen) {
+                    start = left;
+                    minLen = right - left;
+                }
+                char c2 = s.charAt(left);
+                if (cntTable.containsKey(c2)) {
+                    record.put(c2, record.getOrDefault(c2, 0) - 1);
+                    if (record.get(c2) < cntTable.get(c2)) {
+                        match--;
+                    }
+                }
+                left++;
             }
         }
-        // 遍历一边 哪个 i下都是 know(i,j) true即可以
-        return -1;
+        return minLen == Integer.MAX_VALUE ? "" : s.substring(start, start + minLen);
     }
 
-    boolean knows(a, b) {
-        return true;
+    // 解法2
+    public String minimumWindow(String s, String t) {     if (s == null || t == null || s.length() == 0 || t.length() == 0 || s.length() < t.length()) return "";
+        int[] bank = new int[27];
+        int left = 0, right = 0, count = 0;
+        int min = Integer.MAX_VALUE;
+        String minStr = "";
+        for (int i = 0; i < t.length(); i++) {
+            bank[t.charAt(i)-'A']++;
+        }
+        while (right < s.length()) {
+            // if = 1 then bank--, count++
+            // if =0 then bank--  go next
+            if (bank[s.charAt(right++)-'A']-- > 0) {
+                count++;
+            }
+            //可行解
+            while (count == t.length()) {
+                if (min > right - left) {
+                    min = right - left;
+                    minStr = s.substring(left, right);
+                }
+                // 这里需要解释下
+                // narrow left
+                if (bank[s.charAt(left)-'A']++ == 0) {
+                    count--;
+                }
+                left++;
+            }
+        }
+        return minStr;
     }
-*/
 
 }
 
