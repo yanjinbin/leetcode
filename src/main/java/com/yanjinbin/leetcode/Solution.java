@@ -4808,6 +4808,137 @@ public class Solution {
             return binarySearch3(nums, mid + 1, r);
         }
     }
+
+
+    // 1 0的位置  两位数的范围
+    // 91 解码方法 斐波那些数列翻版
+    public int numDecodings(String s) {
+        int n = s.length();
+        if (n == 0 || s.isEmpty() || s.charAt(0) == '0') return 0;
+        if (n == 1) return 1;
+        int[] dp = new int[n + 1];
+        dp[0] = 1;
+        for (int i = 1; i < dp.length; i++) {
+            if (s.charAt(i - 1) != '0') dp[i] += dp[i - 1];
+            if (i >= 2 && s.substring(i - 2, i).compareTo("10") >= 0 && s.substring(i - 2, i).compareTo("26") <= 0) {
+                dp[i] += dp[i - 2];
+            }
+        }
+        return dp[n];
+    }
+
+    // 91 解码方法 还是有点晦涩哦
+    public int numDecodings0(String s) {
+        int n = s.length();
+        if (n == 0 || s.isEmpty() || s.charAt(0) == '0') return 0;
+        if (n == 1) return 1;
+        int w1 = 1;
+        int w2 = 1;
+        for (int i = 1; i < n; i++) {
+            int w = 0;
+            char c1 = s.charAt(i), c2 = s.charAt(i - 1);
+            boolean b1 = isValid(c1), b2 = isValid(c2, c1);
+            if (!b1 && !b2) return 0;
+            if (b1) w = w1; // w1--> dp[i-1]
+            if (b2) w += w2; //w2--> dp[i-2]
+            w2 = w1;
+            w1 = w;
+        }
+        return w1;
+    }
+
+    public boolean isValid(char c) {
+        return c != '0';
+    }
+
+    public boolean isValid(char l, char r) {
+        return l == '1' || (l == '2' && r <= '6');
+    }
+
+    // 下面都是错的
+    public int numDecodings2(String s) {
+        if (s.isEmpty() || s.charAt(0) != '0') return 0;
+        int n = s.length();
+        int[] dp = new int[n + 1];
+        return 1;
+    }
+
+
+    public int numDecodings3(String s) {
+        return numDecodeHelper(s, 0);
+    }
+
+    public int numDecodeHelper(String s, int count) {
+        if (s == null || s.length() == 0 || s.length() == 1) return count;
+        if (s.length() == 2) {
+            int res = num2num(s);
+            if (res >= 11 && res <= 26 && res != 20) {
+                return count + 2;
+            }
+            return count + 1;
+        }
+        int n = s.length();
+        if (s.charAt(0) != '0') {
+            count = numDecodeHelper(s.substring(1, n), count + 1);
+            count = numDecodeHelper(s.substring(2, n), count + 1);
+        }
+        if (s.charAt(0) == '0' && s.charAt(1) != '0') {
+            count = numDecodeHelper(s.substring(2, n), count + 1);
+        }
+        return count;
+
+    }
+
+    public int num2num(String s) {
+        int res = 0;
+        for (int i = 0; i < s.length(); i++) {
+            res = res * 10 + s.charAt(i) - '0';
+        }
+        return res;
+    }
+
+    // 130 被围绕的区域  http://bit.ly/2L0HsND
+    public void solve(char[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if ((i == 0 || i == board.length - 1 || j == 0 || j == board[i].length - 1) && board[i][j] == 'O') {
+                    // dfsSolve(board, i, j);
+                    dfsSolve1(board, i, j);
+                }
+            }
+        }
+
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (board[i][j] == 'O') board[i][j] = 'X';
+                if (board[i][j] == '@') board[i][j] = 'O';
+            }
+        }
+
+    }
+
+    public void dfsSolve1(char[][] board, int i, int j) {
+        if (board[i][j] == 'X' || board[i][j] == '@') return;
+        if (board[i][j] == 'O') {
+            board[i][j] = '@';
+        }
+        if (i < board.length - 2 && board[i + 1][j] == 'O') dfsSolve1(board, i + 1, j);
+        if (i > 1 && board[i - 1][j] == 'O') dfsSolve1(board, i - 1, j);
+        if (j > 1 && board[i][j - 1] == 'O') dfsSolve1(board, i, j - 1);
+        if (j < (board[i].length - 2) && board[i][j + 1] == 'O') dfsSolve1(board, i, j + 1);
+    }
+
+
+    public void dfsSolve(char[][] board, int i, int j) {
+        if (board[i][j] == 'X' || board[i][j] == '@') return;
+        if (board[i][j] == 'O') {
+            board[i][j] = '@';
+        }
+        if (i < board.length - 2) dfsSolve(board, i + 1, j);
+        if (i > 1) dfsSolve(board, i - 1, j);
+        if (j > 1) dfsSolve(board, i, j - 1);
+        if (j < (board[i].length - 2)) dfsSolve(board, i, j + 1);
+    }
 }
 
 

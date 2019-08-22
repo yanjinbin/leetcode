@@ -1566,4 +1566,18 @@ public class SolutionTest {
         INSTANCE.findPeakElement2(nums0);
 
     }
+
+    @Test
+    public void numDecode() {
+        System.out.println(INSTANCE.numDecodings("2300192"));
+        System.out.println(INSTANCE.numDecodings("230192"));
+        System.out.println(INSTANCE.numDecodings("10192"));
+        assert INSTANCE.numDecodings0("226") == INSTANCE.numDecodings("226");
+    }
+
+    @Test
+    public void surroundedRegions() {
+        char[][] board = new char[][]{{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
+        INSTANCE.solve(board);
+    }
 }
