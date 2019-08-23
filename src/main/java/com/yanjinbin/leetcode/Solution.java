@@ -5075,7 +5075,7 @@ public class Solution {
                 String wildWord = s.substring(0, i) + "*" + s.substring(i + 1, n);
                 List<String> matchWords = combo.getOrDefault(wildWord, new ArrayList());
                 matchWords.add(s);
-                combo.put(wildWord,matchWords);
+                combo.put(wildWord, matchWords);
             }
         }
         // double BFS init
@@ -5124,6 +5124,43 @@ public class Solution {
         }
 
         return 0;
+    }
+
+    //212 单词搜索Ⅱ
+    public Set<String> result = new HashSet();
+
+    public List<String> findWords(char[][] board, String[] words) {
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(word);
+        }
+        int m = board.length;
+        int n = board[0].length;
+        boolean[][] visited = new boolean[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                dfsFindWord(board, visited, "", i, j, trie);
+            }
+        }
+        return new ArrayList(result);
+    }
+
+    //
+    public void dfsFindWord(char[][] board, boolean[][] visited, String str, int x, int y, Trie trie) {
+        if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) return;
+        if (visited[x][y]) return;
+        str += board[x][y];
+        if (!trie.startsWith(str)) return;
+        if (trie.search(str)) {
+            result.add(str);
+        }
+        visited[x][y] = true;
+        dfsFindWord(board, visited, str, x - 1, y, trie);
+        dfsFindWord(board, visited, str, x, y - 1, trie);
+        dfsFindWord(board, visited, str, x, y + 1, trie);
+        dfsFindWord(board, visited, str, x + 1, y, trie);
+        // reset 从 i=0,j=0起点的 完成之后 重置,下一轮dfs过程.
+        visited[x][y] = false;
     }
 }
 

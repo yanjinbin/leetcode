@@ -1,8 +1,5 @@
 package com.yanjinbin.leetcode;
 
-import lombok.Getter;
-import lombok.Setter;
-
 // https://leetcode-cn.com/problems/implement-trie-prefix-tree/
 // 直接看官方题解 http://bit.ly/2YmXVnY
 public class Trie {
@@ -69,7 +66,6 @@ class TrieNode {
     private TrieNode[] links;
 
     private final int R = 26;
-
 
     private boolean isEnd;
 

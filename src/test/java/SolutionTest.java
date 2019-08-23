@@ -1612,6 +1612,17 @@ public class SolutionTest {
         beginWord = "hot";
         endWord = "dog";
         assert INSTANCE.ladderLength2(beginWord, endWord, words) == INSTANCE.ladderLength3(beginWord, endWord, words);
+    }
 
+    @Test
+    public void findWord() {
+        String[] words = {"oath", "pea", "eat", "rain"};
+        char[][] board = {
+                {'o', 'a', 'a', 'n'},
+                {'e', 't', 'a', 'e'},
+                {'i', 'h', 'k', 'r'},
+                {'i', 'f', 'l', 'v'},
+        };
+        System.out.println(INSTANCE.findWords(board, words));
     }
 }
