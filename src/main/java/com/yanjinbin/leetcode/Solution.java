@@ -6,6 +6,8 @@ import java.util.*;
 /**
  * top-100-liked-questions
  * https://leetcode.com/problemset/top-100-liked-questions/
+ * top 100 interviewed question
+ * https://leetcode-cn.com/problemset/top/
  */
 public class Solution {
 
@@ -4938,6 +4940,190 @@ public class Solution {
         if (i > 1) dfsSolve(board, i - 1, j);
         if (j > 1) dfsSolve(board, i, j - 1);
         if (j < (board[i].length - 2)) dfsSolve(board, i, j + 1);
+    }
+
+    // 131 分割回文串
+    // 验证回文串. 收集回文串
+    public List<List<String>> partition(String s) {
+        List<List<String>> res = new ArrayList<>();
+        List<String> sub = new ArrayList<>();
+        dfs(s, 0, sub, res);
+        return res;
+    }
+
+    public void dfs(String s, int pos, List<String> sub, List<List<String>> res) {
+        if (pos == s.length()) {
+            res.add(new ArrayList<>(sub));
+            return;
+        }
+        for (int i = pos; i < s.length(); i++) {
+            if (isPal(s, pos, i)) {
+                sub.add(s.substring(pos, i + 1));
+                dfs(s, i + 1, sub, res);
+                sub.remove(sub.size() - 1);
+            }
+
+        }
+    }
+
+    public boolean isPal(String s, int left, int right) {
+        while (left <= right) {
+            if (s.charAt(left++) != s.charAt(right--)) return false;
+        }
+        return true;
+    }
+
+    // 127 单词接龙 tag:BFS  邻接
+    // 这个方法 不好的一点在于,要判定 每个单词是否与单次列表相连通
+    // 这个问题 可以变成Graph 的 最短路径问题
+    //  我们需要构建邻接表
+    private int ret = Integer.MAX_VALUE;
+
+    public int ladderLength1(String beginWord, String endWord, List<String> wordList) {
+        for (int i = 0; i < wordList.size(); i++) {
+            if (wordList.get(i).equals(endWord))
+                return ladderHelper(beginWord, endWord, 1, wordList);
+            ;
+        }
+        return 0;
+    }
+
+    public int ladderHelper(String beginWord, String endWord, int res, List<String> word) {
+        if (connected(beginWord, endWord)) {
+            return res + 1;
+        }
+        if (word.isEmpty()) {
+            return Integer.MAX_VALUE;
+        }
+        for (int i = 0; i < word.size(); i++) {
+            String s = word.get(i);
+            if (connected(beginWord, s)) {
+                word.remove(i);
+                beginWord = s;
+                ret = Math.min(ret, ladderHelper(beginWord, endWord, res + 1, word));
+            }
+        }
+        return ret;
+    }
+
+    public boolean connected(String s1, String s2) {
+        if (s1.length() != s2.length()) return false;
+        Map<Character, Integer> map = new HashMap<>();
+        int res = 0;
+        for (char c : s1.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+            res++;
+        }
+        for (char c : s2.toCharArray()) {
+            if (map.containsKey(c)) {
+                res--;
+            }
+        }
+        return res == 1 ? true : false;
+    }
+
+    // 解法2 问题化为 构建邻接表  , 转变成无向图的最短路径问题。
+    public int ladderLength2(String beginWord, String endWord, List<String> words) {
+        if (!words.contains(endWord)) return 0;
+        int L = beginWord.length();
+        Map<String, List<String>> allComboDict = new HashMap();
+        // 构建 adjacent edges;
+        for (String word : words) {
+            for (int i = 0; i < L; i++) {
+                String newWord = word.substring(0, i) + "*" + word.substring(i + 1, L);
+                List<String> wildCards = allComboDict.getOrDefault(newWord, new ArrayList());
+                wildCards.add(word);
+                allComboDict.put(newWord, wildCards);
+            }
+        }
+
+        // BFS init
+        Queue<Pair<String, Integer>> queue = new LinkedList();
+        queue.add(new Pair(beginWord, 1));
+        Map<String, Boolean> visited = new HashMap();
+        visited.put(beginWord, true);
+
+        // BFS traversal
+        while (!queue.isEmpty()) {
+            Pair<String, Integer> point = queue.remove();
+            String word = point.key;
+            Integer level = point.val;
+            for (int i = 0; i < L; i++) {
+                String newWord = word.substring(0, i) + "*" + word.substring(i + 1, L);
+                for (String adjacentWord : allComboDict.getOrDefault(newWord, new ArrayList<>())) {
+                    if (adjacentWord.equals(endWord)) {
+                        return level + 1;
+                    }
+                    if (!visited.containsKey(adjacentWord)) {
+                        visited.put(adjacentWord, true);
+                        queue.add(new Pair(adjacentWord, level + 1));
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+
+
+    public int ladderLength3(String beginWord, String endWord, List<String> words) {
+        if (!words.contains(endWord)) return 0;
+        // 构建邻接表
+        Map<String, List<String>> combo = new HashMap<>();
+        int n = beginWord.length();
+        for (String s : words) {
+            for (int i = 0; i < n; i++) {
+                String wildWord = s.substring(0, i) + "*" + s.substring(i + 1, n);
+                List<String> matchWords = combo.getOrDefault(wildWord, new ArrayList());
+                matchWords.add(s);
+                combo.put(wildWord,matchWords);
+            }
+        }
+        // double BFS init
+        Queue<Pair<String, Integer>> startQueue = new LinkedList();
+        Map<String, Integer> startVisited = new HashMap();
+        startQueue.add(new Pair(beginWord, 1));
+        startVisited.put(beginWord, 1);
+
+        Queue<Pair<String, Integer>> endQueue = new LinkedList();
+        Map<String, Integer> endVisited = new HashMap();
+        endQueue.add(new Pair(endWord, 1));
+        endVisited.put(endWord, 1);
+
+        while (!startQueue.isEmpty() && !endQueue.isEmpty()) {
+            Pair<String, Integer> p1 = startQueue.remove();
+            String w1 = p1.key;
+            Integer l1 = p1.val;
+            for (int i = 0; i < n; i++) {
+                String wild1 = w1.substring(0, i) + "*" + w1.substring(i + 1, n);
+                for (String adjacentWord : combo.getOrDefault(wild1, new ArrayList<>())) {
+                    if (endVisited.containsKey(adjacentWord)) {
+                        return l1 + endVisited.get(adjacentWord);
+                    }
+                    if (!startVisited.containsKey(adjacentWord)) {
+                        startVisited.put(adjacentWord, l1 + 1);
+                        startQueue.add(new Pair(adjacentWord, l1 + 1));
+                    }
+                }
+            }
+
+            Pair<String, Integer> p2 = endQueue.remove();
+            String w2 = p2.key;
+            Integer l2 = p2.val;
+            for (int i = 0; i < n; i++) {
+                String wild2 = w2.substring(0, i) + "*" + w2.substring(i + 1, n);
+                for (String adjacentWord : combo.getOrDefault(wild2, new ArrayList<>())) {
+                    if (startVisited.containsKey(adjacentWord)) {
+                        return l2 + startVisited.get(adjacentWord);
+                    }
+                    if (!endVisited.containsKey(adjacentWord)) {
+                        endVisited.put(adjacentWord, l2 + 1);
+                        endQueue.add(new Pair(adjacentWord, l2 + 1));
+                    }
+                }
+            }
+        }
+
+        return 0;
     }
 }
 

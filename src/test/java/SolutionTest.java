@@ -1580,4 +1580,38 @@ public class SolutionTest {
         char[][] board = new char[][]{{'X', 'X', 'X', 'X'}, {'X', 'O', 'O', 'X'}, {'X', 'X', 'O', 'X'}, {'X', 'O', 'X', 'X'}};
         INSTANCE.solve(board);
     }
+
+    @Test
+    public void partitionPalindrome() {
+        System.out.println(INSTANCE.partition("aaccbd"));
+        System.out.println(INSTANCE.partition("aab"));
+    }
+
+    @Test
+    public void ladderLength() {
+        String beginWord = "hit";
+        String endWord = "cog";
+        List<String> words = new ArrayList<>();
+        words.add("hot");
+        words.add("dot");
+        words.add("dog");
+        words.add("lot");
+        words.add("log");
+        words.add("cog");
+        assert INSTANCE.ladderLength2(beginWord, endWord, words) == INSTANCE.ladderLength3(beginWord, endWord, words);
+        words.clear();
+        words.add("hot");
+        words.add("dot");
+        words.add("dog");
+        words.add("lot");
+        words.add("log");
+        assert INSTANCE.ladderLength2(beginWord, endWord, words) == INSTANCE.ladderLength3(beginWord, endWord, words);
+        words.clear();
+        words.add("hot");
+        words.add("dog");
+        beginWord = "hot";
+        endWord = "dog";
+        assert INSTANCE.ladderLength2(beginWord, endWord, words) == INSTANCE.ladderLength3(beginWord, endWord, words);
+
+    }
 }
