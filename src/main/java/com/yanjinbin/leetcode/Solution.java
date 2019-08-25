@@ -5380,6 +5380,57 @@ public class Solution {
 
     }
 */
+    //  3 4 5 7 8 9
+    //  1---> m1 =3, m2 = MAX_VALUE
+    // 2 --->  m2 = 4
+    //  3  return true;
+
+    // 6 5 4 8 7 9
+    // 1 ---> m1 = 6 m2 =MAX_VALUE
+    // 2 ---> m1 = 5 m2 =Max_VALUE
+    //  3  ----> m1 =4  m2 =MAX_VALUE
+    //  4 ---- > m1 = 4 m2 = 8
+    // 5 ---->  m1 =4 m2 = 7;
+    //  6  return true;
+    ///
+
+
+    // 334 递增的三元子序列 注意关键字 是 3哦  想想为什么呢
+    public boolean increasingTriplet1(int[] nums) {
+        int m1 = Integer.MAX_VALUE, m2 = Integer.MAX_VALUE;
+        for (int num : nums) {
+            // m1 <= m ,  m2 <= m 并且m1 <  m2
+            if (m1 > num) m1 = num;
+            else if (m2 > num) m2 = num;
+            else return true;
+        }
+        return false;
+    }
+
+    public boolean increasingTriplet(int[] nums) {
+        if (nums.length == 0 || nums == null) return false;
+        int n = nums.length;
+        int[] foward = new int[n];
+        int[] backword = new int[n];
+        int min = nums[0];
+        int max = nums[n - 1];
+        for (int i = 0; i < n; i++) {
+            if (nums[i] < min) {
+                min = nums[i];
+            }
+            foward[i] = min;
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            if (nums[i] > max) {
+                max = nums[i];
+            }
+            backword[i] = max;
+        }
+        for (int i = 0; i < n; i++) {
+            if (foward[i] < nums[i] && nums[i] < backword[i]) return true;
+        }
+        return false;
+    }
 }
 
 

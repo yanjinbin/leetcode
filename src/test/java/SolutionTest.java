@@ -1699,7 +1699,17 @@ public class SolutionTest {
     }
 
     @Test
-    public  void fractionToDecimal(){
+    public void fractionToDecimal() {
         System.out.println(INSTANCE.fractionToDecimal(-1, -2147483648));
+    }
+
+    @Test
+    public void increasingTriplet() {
+        int[] nums = new int[]{3, 4, 5, 8, 7, 6, 9};
+        assert INSTANCE.increasingTriplet(nums) == true;
+        assert INSTANCE.increasingTriplet1(nums) == true;
+        nums = new int[]{9, 8, 11, 6, 5, 4, 3};
+        assert INSTANCE.increasingTriplet(nums) == false;
+        assert INSTANCE.increasingTriplet1(nums) == false;
     }
 }
