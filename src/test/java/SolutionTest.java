@@ -1625,4 +1625,70 @@ public class SolutionTest {
         };
         System.out.println(INSTANCE.findWords(board, words));
     }
+
+    @Test
+    public void canCompleteCircuit() {
+        int[] gas = {1, 2, 3, 4, 5};
+        int[] cost = {3, 4, 5, 1, 2};
+        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
+        gas = new int[]{3, 3, 4};
+        cost = new int[]{3, 4, 4};
+        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
+
+        gas = new int[]{5, 1, 2, 3, 4};
+        cost = new int[]{4, 4, 1, 5, 1};
+        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
+        gas = new int[]{5, 8, 2, 8};
+        cost = new int[]{6, 5, 6, 6};
+        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
+
+        gas = new int[]{4, 5, 2, 6, 5, 3};
+        cost = new int[]{3, 2, 7, 3, 2, 9};
+        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
+
+        gas = new int[]{5, 5, 1, 3, 4};
+        cost = new int[]{8, 1, 7, 1, 1};
+        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
+        System.out.println(INSTANCE.canCompleteCircuitbad(gas, cost));
+    }
+
+    @Test(timeout = 2000)
+    public void nextIdx() {
+        int cursor = 0;
+        int len = 4;
+        int i = 0;
+        while (i < 50) {
+            cursor = (cursor + 1) & (len - 1);
+            System.out.println(cursor);
+            i++;
+        }
+        System.out.println("==========");
+        while (i < 100) {
+            cursor = (cursor - 1) & (len - 1);
+            System.out.println(cursor);
+            i++;
+        }
+        System.out.println("==========");
+
+        len = 5;
+        while (i < 150) {
+            cursor = (cursor + 1) & (len - 1);
+            System.out.println(cursor);
+            i++;
+        }
+        System.out.println("==========");
+
+        len = 7;
+        cursor = 7;
+        while (i < 50) {
+            cursor = (cursor + 1) % len;
+            System.out.println(cursor);
+        }
+    }
+
+    @Test
+    public void evalRPN() {
+        String[] tokens = new String[]{"10", "3", "+", "100", "*", "12", "-"};
+        INSTANCE.evalRPN(tokens);
+    }
 }

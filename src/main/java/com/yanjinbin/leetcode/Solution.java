@@ -5162,6 +5162,114 @@ public class Solution {
         // reset 从 i=0,j=0起点的 完成之后 重置,下一轮dfs过程.
         visited[x][y] = false;
     }
+
+
+    // 134 加油站⛽️  bad 错误解法
+    public int canCompleteCircuitbad(int[] gas, int[] cost) {
+        int n = gas.length;
+        int idx = 0;
+        int delta = 0;
+        for (int i = 0; i < n; i++) {
+            if (gas[i] - cost[i] >= 0) {
+                int temp = gas[i] - cost[i] + gas[(1 + i) % n];
+                if (temp > delta) {
+                    idx = i;
+                    delta = temp;
+                }
+            }
+        }
+        System.out.println(Arrays.toString(gas) + "\n" + Arrays.toString(cost));
+        System.out.println(idx + " " + delta);
+        int gi = idx;
+        int sum = gas[gi];
+        gi = (gi + 1) % n;
+        int ci = idx;
+
+        while (gi != idx) {
+            int temp = sum - cost[ci];
+            if (temp < 0) return -1;
+            sum = sum - cost[ci] + gas[gi];
+            gi = (gi + 1) % n;
+            ci = (ci + 1) % n;
+        }
+        // 缺少这个条件
+        if (sum - cost[ci] < 0) return -1;
+        return idx;
+    }
+
+    public int canCompleteCircuit1(int[] gas, int[] cost) {
+        // 遍历的时候 if sum <0 说明这段区间内 均不行, 那么再下个起点继续  下个起点 if sum < 0 那么就下个起点再继续下去哦
+        int total = 0, sum = 0, start = 0;
+        for (int i = 0; i < gas.length; i++) {
+            int tmp = gas[i] - cost[i];
+            total += tmp;
+            sum += tmp;
+            if (sum < 0) {
+                sum = 0;
+                start = i + 1;
+            }
+        }
+        return total < 0 ? -1 : start;
+    }
+
+    // 150 逆波兰表达式求值
+    public int evalRPN(String[] tokens) {
+        Stack<Integer> s = new Stack();
+        for (int i = 0; i < tokens.length; i++) {
+            String token = tokens[i];
+            if (!isOp(tokens[i])) {
+                int tmp = decodeStr(tokens[i]);
+                s.push(tmp);
+            } else {
+                int m = s.pop();
+                int n = s.pop();
+                // res = op(m, n, token);
+                // 注意左右操作数
+                res = op(n, m, token);
+                s.push(res);
+
+            }
+        }
+        return s.peek();
+
+    }
+
+    public int op(int i, int j, String op) {
+        switch (op) {
+            case "*":
+                return i * j;
+            case "/":
+                return i / j;
+            case "+":
+                return i + j;
+            case "-":
+                return i - j;
+            default:
+                throw new IllegalStateException("非法字符");
+
+        }
+    }
+
+    public boolean isOp(String s) {
+        return s.equals("*") || s.equals("/") || s.equals("+") || s.equals("-");
+    }
+
+    public int decodeStr(String s) {
+        int sign = 1;
+        if (s.charAt(0) == '-') {
+            sign = -1;
+            s = s.substring(1);
+        }
+        for (char c : s.toCharArray()) {
+            res = res * 10 + c - '0';
+        }
+        return res * sign;
+    }
+
+    public boolean isNumber(char c) {
+        return c >= '0' && c <= '9';
+    }
+
 }
 
 
