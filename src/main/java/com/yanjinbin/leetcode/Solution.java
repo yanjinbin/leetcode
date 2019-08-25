@@ -5270,6 +5270,116 @@ public class Solution {
         return c >= '0' && c <= '9';
     }
 
+    // 矩阵置零
+    public void setZeroes(int[][] matrix) {
+        int MODIFIED = -9999;
+        int row = matrix.length;
+        for (int i = 0; i < row; i++) {
+            int col = matrix[i].length;
+            for (int j = 0; j < col; j++) {
+                if (matrix[i][j] == 0) {
+                    for (int k = 0; k < row; k++) {
+                        if (matrix[k][j] != 0)
+                            matrix[k][j] = MODIFIED;
+                    }
+                    for (int k = 0; k < col; k++) {
+                        if (matrix[i][k] != 0)
+                            matrix[i][k] = MODIFIED;
+                    }
+                }
+            }
+        }
+        // 疑问 为什么统一置为 MODIFIED 呢 因为 置为0是不可以的嘛 , 那就统一置为 MODIFIED 了
+        for (int i = 0; i < row; i++) {
+            int col = matrix[i].length;
+            for (int j = 0; j < col; j++) {
+                if (matrix[i][j] == MODIFIED) {
+                    matrix[i][j] = 0;
+                }
+            }
+        }
+    }
+
+    // 166 分数到小数
+    public String fractionToDecimal(int numerator, int denominator) {
+        if (numerator == 0) {
+            return "0";
+        }
+        StringBuilder res = new StringBuilder();
+        res.append((numerator ^ denominator) > 0 ? "" : "-");
+        long num = Math.abs((long) numerator);
+        long den = Math.abs((long) denominator);
+      /*  long num = Math.abs( numerator);
+        long den = Math.abs(denominator);*/
+        // den 还是没变哦 取完绝对值还是负数
+        System.out.println(num + " " + den);
+
+        // integer part
+        res.append(num / den);
+        num = num % den;
+        if (num == 0) {
+            return res.toString();
+        }
+
+        // fraction part
+        res.append(".");
+        Map<Long, Integer> map = new HashMap();
+        map.put(num, res.length());
+        while (num != 0) {
+            num = num * 10;
+            res.append(num / den);
+            num = num % den;
+            if (map.containsKey(num)) {
+                int index = map.get(num);
+                res.insert(index, "(");
+                res.append(")");
+                break;
+            } else {
+                map.put(num, res.length());
+            }
+        }
+        return res.toString();
+    }
+
+   /* public void demo(){
+        if (numerator == 0) {
+            return "0";
+        }
+        StringBuilder res = new StringBuilder();
+        // "+" or "-"
+        res.append(((numerator > 0) ^ (denominator > 0)) ? "-" : "");
+        long num = Math.abs((long)numerator);
+        long den = Math.abs((long)denominator);
+
+        // integral part
+        res.append(num / den);
+        num %= den;
+        if (num == 0) {
+            return res.toString();
+        }
+
+        // fractional part
+        res.append(".");
+        HashMap<Long, Integer> map = new HashMap<Long, Integer>();
+        map.put(num, res.length());
+        while (num != 0) {
+            num *= 10;
+            res.append(num / den);
+            num %= den;
+            if (map.containsKey(num)) {
+                int index = map.get(num);
+                res.insert(index, "(");
+                res.append(")");
+                break;
+            }
+            else {
+                map.put(num, res.length());
+            }
+        }
+        return res.toString();
+
+    }
+*/
 }
 
 

@@ -1691,4 +1691,15 @@ public class SolutionTest {
         String[] tokens = new String[]{"10", "3", "+", "100", "*", "12", "-"};
         INSTANCE.evalRPN(tokens);
     }
+
+    @Test
+    public void setZeros() {
+        int[][] matrix = {{1, 1, 1}, {1, 0, 1}, {1, 1, 1},};
+        INSTANCE.setZeroes(matrix);
+    }
+
+    @Test
+    public  void fractionToDecimal(){
+        System.out.println(INSTANCE.fractionToDecimal(-1, -2147483648));
+    }
 }
