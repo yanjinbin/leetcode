@@ -5431,6 +5431,73 @@ public class Solution {
         }
         return false;
     }
+
+    // 138 复制带随机指针的链表
+    // http://bit.ly/2KWFfDW 解题的关键在于,访问链表节点的随机指正的时候 需要记录已经访问的节点
+
+    public Map<RandomNode, RandomNode> visitedHash = new HashMap();
+
+    public RandomNode copyRandomList(RandomNode head) {
+
+        if (head == null) {
+            return null;
+        }
+
+        if (visitedHash.containsKey(head)) {
+            return this.visitedHash.get(head);
+        }
+
+        RandomNode node = new RandomNode();
+        node.val = head.val;
+
+        visitedHash.put(head, node);
+
+        node.next = copyRandomList(node.next);
+        node.random = copyRandomList(node.random);
+        return node;
+    }
+
+    // 解法2
+    public RandomNode copyRandomList1(RandomNode head) {
+        if (head == null) {
+            return null;
+        }
+        RandomNode ptr = head;
+        // weave next link
+        // A-->B-->C
+        // A -->A'-->B-->B'--->C.....
+        while (ptr != null) {
+            RandomNode newNode = new RandomNode();
+            newNode.val = ptr.val;
+            newNode.next = ptr.next;
+            ptr.next = newNode;
+            // next iterator
+            ptr = newNode.next;
+        }
+
+        ptr = head;
+        //  weave random link
+        while (ptr != null) {
+            // 因为是备份
+            ptr.next.random = (ptr.random != null) ? ptr.random.next : null;
+            // next iterator
+            ptr = ptr.next.next;
+        }
+
+
+        RandomNode ptr_old_list = head;
+        RandomNode ptr_new_list = head.next;
+        RandomNode head_old = head.next;
+
+        // unweave
+        while (ptr_old_list != null) {
+            ptr_old_list.next = ptr_old_list.next.next;
+            ptr_new_list.next = (ptr_new_list.next != null) ? ptr_new_list.next.next : null;
+            ptr_old_list = ptr_old_list.next;
+            ptr_new_list = ptr_new_list.next;
+        }
+        return head_old;
+    }
 }
 
 

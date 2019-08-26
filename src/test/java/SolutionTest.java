@@ -1712,4 +1712,21 @@ public class SolutionTest {
         assert INSTANCE.increasingTriplet(nums) == false;
         assert INSTANCE.increasingTriplet1(nums) == false;
     }
+
+    @Test
+    public void copyRandomList() {
+        RandomNode head = RandomNode.builder().val(10).build();
+        RandomNode n1 = RandomNode.builder().val(19).build();
+        RandomNode n2 = RandomNode.builder().val(100).build();
+        head.next = n1;
+        n1.next = n2;
+        n2.next = null;
+
+        head.random = null;
+        n1.random = n2;
+        n2.random = head;
+
+        INSTANCE.copyRandomList(head);
+        INSTANCE.copyRandomList1(head);
+    }
 }
