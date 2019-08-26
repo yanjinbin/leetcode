@@ -1729,4 +1729,12 @@ public class SolutionTest {
         INSTANCE.copyRandomList(head);
         INSTANCE.copyRandomList1(head);
     }
+
+    @Test
+    public void gameOfLife() {
+        int[][] board = {{0, 1, 0}, {0, 0, 1}, {1, 1, 1}, {0, 0, 0}};
+        INSTANCE.show2DArray(board);
+        INSTANCE.gameOfLife(board);
+        INSTANCE.show2DArray(board);
+    }
 }

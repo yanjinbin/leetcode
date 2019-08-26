@@ -5498,6 +5498,60 @@ public class Solution {
         }
         return head_old;
     }
+
+    // 289 生命游戏
+    public void gameOfLife(int[][] board) {
+        // count(live) when board[i][j]
+        // if[i][j]=1, count(live) <2 DEAD  2-3 live >3 DEAD
+        // if [i][j]=0 ,  count(live)>3 LIVE or Dead
+
+        int DEAD = 0, LIVE = 1, toLive = 2, toDead = 3;
+        int n = board.length;
+        int m = board[0].length;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                int cmp = board[i][j];
+                int cnt = countLive(board, i, j);
+                if (cmp == 1 && (cnt < 2 || cnt > 3)) {
+                    board[i][j] = toDead;
+                }
+                if (cmp == 0 && cnt == 3) {
+                    board[i][j] = toLive;
+                }
+            }
+        }
+       // show2DArray(board);
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (board[i][j] == toLive) board[i][j] = LIVE;
+                if (board[i][j] == toDead) board[i][j] = DEAD;
+            }
+        }
+    }
+
+
+    public int countLive(int[][] board, int i, int j) {
+        int n = board.length, m = board[0].length;
+
+        int cnt = 0;
+        if (i < n - 1 && (board[i + 1][j] == 1 || board[i + 1][j] == 3)) cnt++;
+        if (i > 0 && (board[i - 1][j] == 1 || board[i - 1][j] == 3)) cnt++;
+        if (j > 0 && (board[i][j - 1] == 1 || board[i][j - 1] == 3)) cnt++;
+        if (j < m - 1 && (board[i][j + 1] == 1 || board[i][j + 1] == 3)) cnt++;
+        if (i > 0 && j > 0 && (board[i - 1][j - 1] == 1 || board[i - 1][j - 1] == 3)) cnt++;
+        if (i > 0 && j < m - 1 && (board[i - 1][j + 1] == 1 || board[i - 1][j + 1] == 3)) cnt++;
+        if (i < n - 1 && j > 0 && (board[i + 1][j - 1] == 1 || board[i + 1][j - 1] == 3)) cnt++;
+        if (i < n - 1 && j < m - 1 && (board[i + 1][j + 1] == 1 || board[i + 1][j + 1] == 3)) cnt++;
+        return cnt;
+    }
+
+    public void show2DArray(int[][] board) {
+        System.out.println("==============");
+        for (int i=0;i<board.length;i++){
+            System.out.println(Arrays.toString(board[i]));
+        }
+        System.out.println("==============");
+    }
 }
 
 
