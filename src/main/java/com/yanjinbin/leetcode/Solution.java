@@ -2,6 +2,7 @@ package com.yanjinbin.leetcode;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * top-100-liked-questions
@@ -5520,7 +5521,7 @@ public class Solution {
                 }
             }
         }
-       // show2DArray(board);
+        // show2DArray(board);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (board[i][j] == toLive) board[i][j] = LIVE;
@@ -5547,10 +5548,83 @@ public class Solution {
 
     public void show2DArray(int[][] board) {
         System.out.println("==============");
-        for (int i=0;i<board.length;i++){
+        for (int i = 0; i < board.length; i++) {
             System.out.println(Arrays.toString(board[i]));
         }
         System.out.println("==============");
+    }
+
+    // 315 计算右侧小于当前元素的个数  O(N²)  不符合 [2,0,1]
+    public List<Integer> countSmaller0(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = n - 1; j > i; j--) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+        }
+        return Arrays.stream(dp).boxed().collect(Collectors.toList());
+    }
+
+    // 解法1 二分法
+    public List<Integer> countSmaller(int[] nums) {
+        int n = nums.length;
+        Integer[] ans = new Integer[n];
+        List<Integer> sorted = new ArrayList();
+        // try to insert val to list, use binary search
+        for (int i = n - 1; i >= 0; i--) {
+            int index = findIndex(sorted, nums[i]);
+            ans[i] = index;
+            sorted.add(index, nums[i]);
+        }
+        return Arrays.asList(ans);
+    }
+
+    // http://bit.ly/32512ix
+    public int findIndex(List<Integer> sorted, int target) {
+        int i = 0;
+        int j = sorted.size();
+        // this is the right way to binary search ,idea from c++ lower_bound()  method
+        // range from i (inclusive) to j (exclusive)  ----->   [i,j)
+        while (i < j) {
+            int mid = i + (j - i) / 2;
+            // sorted.get(mid) <= target is wrong , when duplicate nums exist
+            if (sorted.get(mid) < target) {
+                // i is assigned to mid+1 ,prevent    infinite cycyle and out of range  error
+                i = mid + 1;
+            } else {
+                j = mid;
+            }
+        }
+        // no matter return i or j  ,  which is same value
+        return i;
+    }
+
+    // 解法2  BST 解法  只能作为参考 不能拿来当做面试用 http://bit.ly/326UjoA
+    public List<Integer> countSmaller1(int[] nums) {
+        int n = nums.length;
+        int[] ans = new int[n];
+         TreeNode root=null;
+        for (int i = n - 1; i >= 0; i--) {
+            root = insert(root, nums[i], ans, i);
+        }
+        return Arrays.stream(ans).boxed().collect(Collectors.toList());
+    }
+
+    public TreeNode insert(TreeNode root, int val, int[] ans, int i) {
+        if (root == null) {
+            root = new TreeNode(val);
+        } else if (val <= root.val) {
+            root.count += 1;
+            root.left = insert(root.left, val, ans, i);
+        } else if (val > root.val) {
+            ans[i] += root.count + 1;
+            root.right = insert(root.right, val, ans, i);
+        }
+        return root;
     }
 }
 

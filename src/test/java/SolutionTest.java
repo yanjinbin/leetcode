@@ -1737,4 +1737,61 @@ public class SolutionTest {
         INSTANCE.gameOfLife(board);
         INSTANCE.show2DArray(board);
     }
+
+    @Test
+    public void countSmaller() {
+
+        int[] nums = new int[]{5, 2, 6, 1};
+        System.out.println(INSTANCE.countSmaller1(nums));
+        System.out.println(INSTANCE.countSmaller(nums));
+        nums = new int[]{-1, -1};
+        System.out.println(INSTANCE.countSmaller(nums));
+        //BST
+        nums = new int[]{3, 2, 2, 6, 1};
+        System.out.println(INSTANCE.countSmaller1(nums));
+
+        nums = new int[]{2, 0, 1};
+        List<Integer> res = new ArrayList<>();
+        res.add(2);
+        res.add(0);
+        res.add(0);
+        assert INSTANCE.countSmaller0(nums) == res;
+    }
+
+    @Test
+    public void binarySearch() {
+        int[] arr = new int[]{8, 5, 4, 2, 3, 1, 6, 7};
+        Arrays.sort(arr);
+        System.out.println(Arrays.toString(arr));
+        int first = 0;
+        int last = arr.length;
+        // for (int i = 0; i < 50; i++) {
+        System.out.println("======A");
+
+        int res = binarySearch(arr, first, last, 9);
+        System.out.println(res);
+        //   System.out.println("======B");
+        //  res = binarySearch(arr, first, last, 11);
+        //   System.out.println(res);
+        //  System.out.println("======C");
+
+        // }
+    }
+
+    // 二分查找的标准函数 http://bit.ly/32512ix
+    public int binarySearch(int[] array, int first, int last, int value) {
+        System.out.println("first " + first + " last " + last + " value " + value);
+        while (first < last) {
+            int mid = first + (last - first) / 2;
+            if (array[mid] <= value) {
+                first = mid + 1;
+            } else {
+                last = mid;
+            }
+        }
+        System.out.println("first " + first + " last " + last + " value " + value);
+        return first;
+    }
+
+
 }
