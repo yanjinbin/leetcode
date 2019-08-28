@@ -30,10 +30,6 @@ public class SolutionTest {
                                                         .val(13).build()).build()).build()).build()).build()).build();
     }
 
-    @Test
-    public void Demo() {
-        Solution.demo();
-    }
 
     // 基础知识准备
     @Test
@@ -1760,7 +1756,7 @@ public class SolutionTest {
 
     @Test
     public void binarySearch() {
-        int[] arr = new int[]{8, 5, 4, 2, 3, 1, 6, 7};
+        int[] arr = new int[]{9, 5, 4, 2, 3, 1, 6, 7};
         Arrays.sort(arr);
         System.out.println(Arrays.toString(arr));
         int first = 0;
@@ -1768,7 +1764,7 @@ public class SolutionTest {
         // for (int i = 0; i < 50; i++) {
         System.out.println("======A");
 
-        int res = binarySearch(arr, first, last, 9);
+        int res = binarySearch(arr, first, last, 8);
         System.out.println(res);
         //   System.out.println("======B");
         //  res = binarySearch(arr, first, last, 11);
@@ -1791,6 +1787,37 @@ public class SolutionTest {
         }
         System.out.println("first " + first + " last " + last + " value " + value);
         return first;
+    }
+
+    @Test
+    public void searchMatrix() {
+        int[][] matrix = new int[][]{
+                {-1, 3},
+        };
+        int target = -1;
+        INSTANCE.show2DArray(matrix);
+        assert INSTANCE.searchMatrix(matrix, target) == true;
+        matrix = new int[][]{
+                {1}, {3}, {5},
+        };
+        target = 4;
+        INSTANCE.show2DArray(matrix);
+        assert INSTANCE.searchMatrix(matrix, target) == false;
+        matrix = new int[][]{
+                {1, 4, 7, 11, 15},
+                {2, 5, 8, 12, 19},
+                {3, 6, 9, 16, 22},
+                {10, 13, 14, 17, 24},
+                {18, 21, 23, 26, 30}};
+        INSTANCE.show2DArray(matrix);
+        target = 20;
+        assert INSTANCE.searchMatrix2(matrix, target) == false;
+
+        matrix = new int[][]{{1, 4}, {2, 5}};
+        target = 2;
+        assert INSTANCE.searchMatrix(matrix, target) == true;
+
+
     }
 
 

@@ -12,10 +12,6 @@ import java.util.stream.Collectors;
  */
 public class Solution {
 
-    public static void demo() {
-        System.out.println("测试");
-    }
-
     // #1
     public int[] twoSum(int[] nums, int target) {
         Map<Integer, Integer> map = new HashMap<>();
@@ -5607,7 +5603,7 @@ public class Solution {
     public List<Integer> countSmaller1(int[] nums) {
         int n = nums.length;
         int[] ans = new int[n];
-         TreeNode root=null;
+        TreeNode root = null;
         for (int i = n - 1; i >= 0; i--) {
             root = insert(root, nums[i], ans, i);
         }
@@ -5625,6 +5621,83 @@ public class Solution {
             root.right = insert(root.right, val, ans, i);
         }
         return root;
+    }
+
+    // 74
+    // 240 搜索二维矩阵 Ⅱ
+    // 错误思路  对角线对称部分 不能保证上半部分>下半部分  因为 是左至右递增 以及 上到下递增
+    // 正确思路应该是 先判断他在上下半部分,然后 再判断他在左右半部分.
+    public boolean searchMatrix1(int[][] matrix, int target) {
+        if (matrix.length == 0 || matrix[0].length == 0 || matrix == null) return false;
+        int m = matrix.length, n = matrix[0].length;
+        if (matrix[0][0] > target || target > matrix[m - 1][n - 1]) return false;
+        int u = 0, d = m, l = 0, r = n;
+        int cmp = 0;
+        while (u < d || l < r) {
+            int m1 = u + (d - u) / 2;
+            int m2 = l + (r - l) / 2;
+            if (m1 == m) {
+                return matrix[m - 1][m2] == target;
+            } else if (m2 == n) {
+                return matrix[m1][n - 1] == target;
+            } else cmp = matrix[m1][m2];
+
+            if (cmp == target) return true;
+            else if (cmp < target) {
+                u = m1 + 1;
+                l = m2 + 1;
+            } else if (cmp > target) {
+                d = m1;
+                r = m2;
+            }
+        }
+        return false;
+    }
+
+
+    public boolean searchMatrix2(int[][] matrix, int target) {
+        if (matrix.length == 0 || matrix[0].length == 0 || matrix == null) return false;
+        int m = matrix.length, n = matrix[0].length;
+        if (matrix[0][0] > target || matrix[m - 1][n - 1] < target) return false;
+        int u = 0, d = m;
+        while (u < d) {
+            int m1 = u + (d - u) / 2;
+            int cmp1 = matrix[m1][0];
+            if (cmp1 < target) {
+                u = m1 + 1;
+            } else if (cmp1 > target) {
+                d = m1;
+            } else return true;
+        }
+        u = u - 1;
+
+        int l = 0, r = n;
+        while (l < r) {
+            int m2 = l + (r - l) / 2;
+            int cmp2 = matrix[u][m2];
+            if (cmp2 < target) {
+                l = m2 + 1;
+            } else if (cmp2 > target) {
+                r = m2;
+            } else return true;
+        }
+        return false;
+
+    }
+
+    // 上买呢的2个方法都是异曲同工, 都是同样的错误思路!
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix.length == 0 || matrix[0].length == 0 || matrix == null) return false;
+        int m = matrix.length, n = matrix[0].length;
+        if (matrix[0][0] > target || target > matrix[m - 1][n - 1]) return false;
+        int x = matrix.length - 1, y = 0;
+        while (true) {
+            if (matrix[x][y] > target) x--;
+            else if (matrix[x][y] < target) y++;
+            else return true;
+            if (x < 0 || y > n - 1) break;
+        }
+        return false;
     }
 }
 
