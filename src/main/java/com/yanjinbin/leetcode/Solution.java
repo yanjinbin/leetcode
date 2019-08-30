@@ -5699,6 +5699,83 @@ public class Solution {
         }
         return false;
     }
+
+    //324 摆动排序Ⅱ
+    // 已经排好序的数组 前半部分和后半部分  对折之后  交替插入
+    public void wiggleSort(int[] nums) {
+        int len = nums.length;
+        int[] bak = Arrays.copyOf(nums, len);
+        Arrays.sort(bak);
+        // int sStart = (len % 2) == 0 ? len / 2 : (len / 2 + 1);
+        // 优化成如下
+        int sStart = (len + 1) / 2;
+        int bStart = len - 1;
+        sStart--;
+        for (int i = 0; i < len / 2; i++) {
+            nums[2 * i] = bak[sStart];
+            nums[2 * i + 1] = bak[bStart];
+            sStart--;
+            bStart--;
+        }
+        // 处理len(small) - len (big)=1;
+        if (len % 2 != 0) {
+            nums[len - 1] = bak[0];
+        }
+    }
+
+    // 解法1 快排最佳实践 todo
+    public void wiggleSort1(int[] nums) {
+        int n = nums.length;
+        int median = findKthLargest0(nums, (n + 1) / 2);
+        int l = 0, i = 0, r = n - 1;
+        while (i < r) {
+            if (nums[newIndex(i, n)] > median) {
+                swap(nums, newIndex(l++, n), newIndex(i++, n));
+            } else if (nums[newIndex(i, n)] < median) {
+                swap(nums, newIndex(r--, n), newIndex(i, n));
+            } else {
+                i++;
+            }
+        }
+
+    }
+
+    private int newIndex(int index, int n) {
+        return (1 + 2 * index) % (n | 1);
+    }
+
+
+    //  解法2 错误的 无法处理带有重复元素的
+    public void wiggleSort2(int[] nums) {
+        int n = nums.length;
+        if (n <= 1) return;
+        Arrays.sort(nums);
+        int i = 1;
+        while (i < nums.length) {
+            if (i < nums.length - 1) swap(nums, i, i + 1);
+            i = i + 2;
+        }
+    }
+
+    // 452 四数相加Ⅱ
+    public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
+        int res = 0;
+        Map<Integer, Integer> map = new HashMap();
+        for (int i = 0; i < A.length; i++) {
+            for (int j = 0; j < B.length; j++) {
+                int key = A[i] + B[j];
+                map.put(key, map.getOrDefault(key, 0) + 1);
+            }
+        }
+
+        for (int i = 0; i < C.length; i++) {
+            for (int j = 0; j < D.length; j++) {
+                int target = -1 * (C[i] + D[j]);
+                res += map.getOrDefault(target, 0);
+            }
+        }
+        return res;
+    }
 }
 
 

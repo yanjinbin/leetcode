@@ -1816,8 +1816,26 @@ public class SolutionTest {
         matrix = new int[][]{{1, 4}, {2, 5}};
         target = 2;
         assert INSTANCE.searchMatrix(matrix, target) == true;
+    }
 
 
+    @Test
+    public void wiggleSort() {
+        int[] nums = new int[]{1, 2, 3, 4, 5, 6};
+      //  INSTANCE.wiggleSort(nums);
+        System.out.println(Arrays.toString(nums));
+
+        // corner case
+        nums = new int[]{4, 5, 5, 6};
+     //   INSTANCE.wiggleSort(nums);
+        System.out.println(Arrays.toString(nums));
+
+        nums = new int[]{4, 5, 5, 5, 6};
+      //  INSTANCE.wiggleSort(nums);
+        System.out.println(Arrays.toString(nums));
+        nums = new int[]{1, 2, 2, 1, 2, 1, 1, 1, 2, 2, 1, 2, 1, 2, 1, 1, 2};
+        INSTANCE.wiggleSort(nums);
+        System.out.println(Arrays.toString(nums));
     }
 
 
