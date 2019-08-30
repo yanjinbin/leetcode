@@ -5776,6 +5776,67 @@ public class Solution {
         }
         return res;
     }
+
+    // 38报数
+    // for the nth number, you just need to count characters of the (n-1)th number,
+    // for the (n-1)th number, you just need to count characters of  the (n-2)th number,
+    // 解法1 递归
+    public String countAndSay(int n) {
+        if (n == 1) return "1";
+        StringBuilder res = new StringBuilder();
+        // recursively call for (n-1) th number, "0" is only for the edge case at the end of the loop with `s.charAt(i+1)`
+        String s = countAndSay(n - 1) + "0";
+        for (int i = 0, c = 1; i < s.length() - 1; i++, c++) {
+            // if next digit is different, then append the count so far `c` and the digit itself, then set count `c` to zero
+            if (s.charAt(i + 1) != s.charAt(i)) {
+                res.append(c).append(s.charAt(i));
+                c = 0;
+            }
+        }
+
+        return res.toString();
+    }
+
+    // 解法1 递归
+    public String countAndSay1(int n) {
+        if (n == 1) return "1";
+        StringBuilder res = new StringBuilder();
+        String s = countAndSay1(n - 1) + "0";// edge case   len-1  len-2
+
+        for (int i = 0, c = 1; i < s.length() - 1; i++) {
+            if (s.charAt(i) != s.charAt(i + 1)) {
+                res.append(c).append(s.charAt(i));
+                c = 1;
+            } else {
+                c++;
+            }
+        }
+        return res.toString();
+    }
+    //解法2  迭代
+    public String countAndSay2(int n) {
+        String s = "1";
+        for (int i = 1; i < n; i++) {
+            s = cntMap(s);
+        }
+        return s;
+    }
+
+    public String cntMap(String s) {
+        StringBuilder res = new StringBuilder();
+        s += "0";
+        for (int i = 0, c = 1; i < s.length() - 1; i++) {
+            if (s.charAt(i) == s.charAt(i + 1)) {
+                c++;
+            } else {
+                res.append(c).append(s.charAt(i));
+                c = 1;
+            }
+        }
+        return res.toString();
+    }
+
+
 }
 
 
