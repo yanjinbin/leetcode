@@ -1,9 +1,11 @@
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import com.yanjinbin.leetcode.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.omg.CORBA.INTERNAL;
 
 import java.util.*;
+import java.util.function.IntFunction;
 
 public class SolutionTest {
 
@@ -1410,29 +1412,6 @@ public class SolutionTest {
     }
 
     @Test
-    public void sort() {
-
-
-        int[] nums = new int[]{17, 16, 14, 13, 11, 10, 7, 6, 18, 5, 2, 19, 4, 3, 8, 1, 21, 12, 15, 9, 31, 99, 65, 45, 77, 33, 29};
-        //    System.out.println(INSTANCE.partition(nums, 0, nums.length - 1));
-        System.out.println(Arrays.toString(nums));
-
-/*
-        Sort INSTANCE_SORT = new Sort();
-        INSTANCE_SORT.bucketSort(nums, 8);
-
-        System.out.println(Arrays.toString(nums));
-        Integer[] nums1 = new Integer[]{17, 16, 14, 13, 11, 10, 7, 6, 18, 28};
-        List<Integer> ints = Arrays.asList(nums1);
-        System.out.println(ints);
-        INSTANCE_SORT.insertSort(ints);
-        System.out.println(ints);*/
-
-
-    }
-
-
-    @Test
     public void largestNumber() {
         int[] nums = new int[]{10, 2};
         assert INSTANCE.largestNumber(nums).equals("210");
@@ -1843,6 +1822,147 @@ public class SolutionTest {
     public void countAndSay() {
         assert INSTANCE.countAndSay2(5).equals(INSTANCE.countAndSay(5));
         assert INSTANCE.countAndSay2(5).equals(INSTANCE.countAndSay1(5));
+    }
+
+
+    @Test
+    public void sort() {
+        Random rand = new Random();
+        System.out.println(rand.nextInt(1));
+        System.out.println("https://zh.wikipedia.org/wiki/排序算法");
+        Sort SORT = new Sort();
+
+        int[] nums = new int[]{1, 8, 7, 5, 6, 3, 9, 4, 0, 2};
+
+        int[] ordered = Arrays.copyOf(nums, nums.length);
+        Arrays.sort(ordered);
+        System.out.println("nums升序结果：" + Arrays.toString(ordered));
+
+        int n = nums.length;
+        SORT.swap(nums, 0, 1);
+        System.out.println(Arrays.toString(nums));
+        System.out.println("=====冒泡排序 原地=====");
+        SORT.shuffle(nums, 0, n);
+        System.out.println(Arrays.toString(nums));
+        SORT.bubbleSort(nums);
+        assert Arrays.equals(nums, ordered);
+        System.out.println("======选择排序=====");
+        SORT.shuffle(nums, 0, n);
+        SORT.selectSort(nums);
+        assert Arrays.equals(nums, ordered);
+        System.out.println("======插入排序======");
+        SORT.shuffle(nums, 0, n);
+        SORT.insertSort(nums);
+        assert Arrays.equals(nums, ordered);
+        System.out.println("=====鸡尾酒排序====");
+        SORT.shuffle(nums, 0, n);
+        SORT.cocktailSort(nums);
+        assert Arrays.equals(nums, ordered);
+        System.out.println("======计数排序======");
+        SORT.shuffle(nums, 0, n);
+        SORT.countSort(nums);
+        assert Arrays.equals(nums, ordered);
+        int[] nums_bak = new int[]{-1, -3, -9, 10, 0, 0, 1, 5, 3, 2, 4, 4, 4};
+        SORT.countSort(nums_bak);
+        System.out.println(Arrays.toString(nums_bak));
+
+        System.out.println("======二叉堆API测试====");
+        System.out.println("===sink===");
+        int[] pq = new int[]{0, 8, 7, 6, 5, 10, 1}; // 7-->10 7-->1   0-->8,0--->7,不是一个BST
+        SORT.sink(pq, 0, pq.length);
+        System.out.println("下层位置0，值： " + pq[0] + " 后的结果：" + Arrays.toString(pq));
+        assert Arrays.equals(pq, new int[]{8, 6, 7, 0, 5, 10, 1});
+        System.out.println("===swim====");
+        System.out.println(Arrays.toString(pq));
+        //
+        //  SORT.swim(pq, 5, pq.length);
+        SORT.swim_recur(pq, 5, pq.length);
+        assert Arrays.equals(pq, new int[]{10, 6, 8, 0, 5, 7, 1});
+        System.out.println("上浮元素位置5， 值：" + pq[5] + " 后的结果：" + Arrays.toString(pq));
+
+        System.out.println("========堆排序0=======");
+        SORT.shuffle(nums, 0, n);
+        System.out.println(Arrays.toString(nums));
+        SORT.heapSort(nums);
+        assert Arrays.equals(nums, ordered);
+        System.out.println("========堆排序1=======");
+        SORT.shuffle(nums, 0, n);
+        System.out.println(Arrays.toString(nums));
+        nums = SORT.heapSort3(nums);
+        assert Arrays.equals(nums, ordered);
+
+        System.out.println("========堆排序2=======");
+        SORT.shuffle(nums, 0, n);
+        System.out.println(Arrays.toString(nums));
+        SORT.heapSort1(nums);
+        assert Arrays.equals(nums, ordered);
+        System.out.println("=======堆排序3======");
+        SORT.shuffle(nums, 0, n);
+        System.out.println(Arrays.toString(nums));
+        Heap HEAP = new Heap();
+        Integer[] INTS = Arrays.stream(nums).boxed().toArray(Integer[]::new);
+        HEAP.sort(INTS);
+        // SORT.heapSort2(nums); // 抛异常 太过复杂  容易犯off by one error 错误
+        System.out.println(Arrays.toString(INTS));
+
+        System.out.println("=======快速排序 切分partition API测试======");
+        SORT.shuffle(nums, 0, n);
+        nums = new int[]{3, 4, 0, 7, 2, 6, 1, 5, 9, 8};
+        int ret = SORT.partition0(nums, 0, nums.length - 1);
+        System.out.println(ret);
+        System.out.println(Arrays.toString(nums));
+        ret = SORT.partition2(nums, 0, nums.length - 1);
+        System.out.println(ret);
+        System.out.println("========快速排序=======");
+        SORT.shuffle(nums, 0, nums.length);
+        SORT.quickSort(nums);
+        assert Arrays.equals(nums, ordered);
+        System.out.println("======归并排序（top down）======");
+        SORT.shuffle(nums,0,nums.length);
+        SORT.mergeSort(nums);
+        assert Arrays.equals(nums,ordered);
+        System.out.println("=======归并排序 (bottom up)======");
+        SORT.shuffle(nums,0,nums.length);
+        SORT.mergeSortBU(nums);
+        assert Arrays.equals(nums, ordered);
+
+
+    }
+
+    @Test
+    public void math() {
+        int[] nums = new int[]{1, 8, 7, 5, 6, 3, 9, 4, 0, 2};
+        Integer[] INTS = Arrays.stream(nums).boxed().toArray(value -> new Integer[0]);
+        assert Math.floor(-0) == 0;
+        assert Math.floor(-3.5) == -4;
+        assert Math.floor(3.5) == 3;
+        assert Math.ceil(-3.5) == -3;
+        assert Math.ceil(3.5) == 4;
+    }
+
+    @Test
+    public void test() {
+        int[] nums = new int[]{9, 7, 6, 8, 5, 3, 2, 4, 1, 0};
+        int n = nums.length;
+        int[] ordered = Arrays.copyOf(nums, n);
+        Arrays.sort(ordered);
+        Sort SORT = new Sort();
+
+        SORT.shuffle(nums, 0, n);
+        System.out.println(Arrays.toString(nums));
+        SORT.heapSort(nums);
+        System.out.println(Arrays.toString(nums));
+        assert Arrays.equals(nums, ordered);
+
+        System.out.println("========堆排序1=======");
+
+        SORT.shuffle(nums, 0, n);
+        System.out.println(Arrays.toString(nums));
+        nums = SORT.heapSort3(nums);
+        System.out.println(Arrays.toString(nums));
+        assert Arrays.equals(nums, ordered);
+
+
     }
 
 }
