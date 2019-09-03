@@ -1939,9 +1939,11 @@ public class SolutionTest {
         SORT.radixSort(bigNums);
         System.out.println(Arrays.toString(bigNums));
         assert Arrays.equals(bigNums, cp);
-        int[] arr = new int[]{0, 9, 7, 6, 4, 4, 5, 3, 2, 8, 12, 22};
+        int[] arr = new int[]{0, 9, 7, 6, 4, 4, 5, 3, 2, 8, 12};
         SORT.radixSort(arr);
         System.out.println(Arrays.toString(arr));
+
+
     }
 
     @Test

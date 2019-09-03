@@ -529,12 +529,16 @@ public class Sort {
             buckets[i] = buckets[i] + buckets[i - 1];
         }
         // sort by exponent  by reverse
+        // for (int i = 0; i <= N-1; i++) {
+        //  会反过来 如果 该数的该位为0  比如 2，3，1，11，  2，3，1的 顺序在1位的时候是1，2，3 在10位的时候会变成 3，2，1
+        // exp =10 ，1-->bucketIndex = 0, bucket[bucketIndex]= 3, bucket --所以 反过来
         for (int i = N - 1; i >= 0; i--) {
             int bucketIndex = ((arr[i] - min) / exp) % radix;
             output[--buckets[bucketIndex]] = arr[i];
         }
         // update arr
         for (int i = 0; i < N; i++) arr[i] = output[i];
+
     }
 
 }
