@@ -1827,16 +1827,12 @@ public class SolutionTest {
 
     @Test
     public void sort() {
-        Random rand = new Random();
-        System.out.println(rand.nextInt(1));
-        System.out.println("https://zh.wikipedia.org/wiki/排序算法");
+        System.out.println("https://zh.wikipedia.org/wiki/排序算法  ");
         Sort SORT = new Sort();
-
-        int[] nums = new int[]{1, 8, 7, 5, 6, 3, 9, 4, 0, 2};
-
+        int[] nums = new int[]{-1, -2, 1, 8, 7, 5, 6, 3, 9, 4, 0, 2};
         int[] ordered = Arrays.copyOf(nums, nums.length);
         Arrays.sort(ordered);
-        System.out.println("nums升序结果：" + Arrays.toString(ordered));
+        System.out.println("nums升序结果： " + Arrays.toString(ordered));
 
         int n = nums.length;
         SORT.swap(nums, 0, 1);
@@ -1902,12 +1898,12 @@ public class SolutionTest {
         Heap HEAP = new Heap();
         Integer[] INTS = Arrays.stream(nums).boxed().toArray(Integer[]::new);
         HEAP.sort(INTS);
-        // SORT.heapSort2(nums); // 抛异常 太过复杂  容易犯off by one error 错误
+        //  SORT.heapSort2(nums); // 抛异常 太过复杂  容易犯off by one error 错误
         System.out.println(Arrays.toString(INTS));
 
         System.out.println("=======快速排序 切分partition API测试======");
         SORT.shuffle(nums, 0, n);
-        nums = new int[]{3, 4, 0, 7, 2, 6, 1, 5, 9, 8};
+        //  nums = new int[]{3, 4, 0, 7, 2, 6, 1, 5, 9, 8};
         int ret = SORT.partition0(nums, 0, nums.length - 1);
         System.out.println(ret);
         System.out.println(Arrays.toString(nums));
@@ -1916,17 +1912,36 @@ public class SolutionTest {
         System.out.println("========快速排序=======");
         SORT.shuffle(nums, 0, nums.length);
         SORT.quickSort(nums);
+        System.out.println(Arrays.toString(nums));
+        System.out.println(Arrays.toString(ordered));
         assert Arrays.equals(nums, ordered);
         System.out.println("======归并排序（top down）======");
-        SORT.shuffle(nums,0,nums.length);
+        SORT.shuffle(nums, 0, nums.length);
         SORT.mergeSort(nums);
-        assert Arrays.equals(nums,ordered);
+        assert Arrays.equals(nums, ordered);
         System.out.println("=======归并排序 (bottom up)======");
-        SORT.shuffle(nums,0,nums.length);
+        SORT.shuffle(nums, 0, nums.length);
         SORT.mergeSortBU(nums);
         assert Arrays.equals(nums, ordered);
+        System.out.println("======希尔排序（插入排序的变种）====");
+        SORT.shuffle(nums, 0, nums.length);
+        SORT.shellSort(nums);
+        assert Arrays.equals(nums, ordered);
+        System.out.println("=====基数排序(叫位排序更好）=====");
+        SORT.shuffle(nums, 0, nums.length);
+        SORT.radixSort(nums);
+        assert Arrays.equals(nums, ordered);
 
-
+        int[] bigNums = new int[]{90, 100, 110, -10, 0, 30, 9, -10, -100, 10, 7};
+        int[] cp = Arrays.copyOf(bigNums, bigNums.length);
+        Arrays.sort(cp);
+        SORT.shuffle(bigNums, 0, bigNums.length);
+        SORT.radixSort(bigNums);
+        System.out.println(Arrays.toString(bigNums));
+        assert Arrays.equals(bigNums, cp);
+        int[] arr = new int[]{0, 9, 7, 6, 4, 4, 5, 3, 2, 8, 12, 22};
+        SORT.radixSort(arr);
+        System.out.println(Arrays.toString(arr));
     }
 
     @Test
@@ -1942,7 +1957,7 @@ public class SolutionTest {
 
     @Test
     public void test() {
-        int[] nums = new int[]{9, 7, 6, 8, 5, 3, 2, 4, 1, 0};
+        int[] nums = new int[]{-1, -2, 9, 7, 6, 8, 5, 3, 2, 4, 1, 0};
         int n = nums.length;
         int[] ordered = Arrays.copyOf(nums, n);
         Arrays.sort(ordered);

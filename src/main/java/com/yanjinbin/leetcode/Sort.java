@@ -75,6 +75,14 @@ public class Sort {
         if (v == w) return false;
         return v.compareTo(w) < 0;
     }
+/*
+    public void bubbleSort(int[] nums) {
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = 0; j < nums.length - 1 - i; j++) {
+                if (less(nums[j], nums[j + 1])) swap(nums, j, j + 1)
+            }
+        }
+    }*/
 
 
     // 冒泡排序
@@ -89,6 +97,18 @@ public class Sort {
             }
         }
     }
+    /*
+
+    public void selectSort(int[] nums) {
+        int n = nums.length;
+        for (int i = 0; i < n - 1; i++) {
+            int min = i;
+            for (int j = i + 1; j < n; j++) {
+                if (less(nums[j], nums[min])) min = j;
+            }
+            swap(nums, min, i);
+        }
+    }*/
 
     // 选择排序 找最小值/最大值  然后交换对应坐标
     // i ∈[0,n-1), supposed i = min,  find minIdx from [i+1,n)
@@ -102,6 +122,14 @@ public class Sort {
             swap(nums, i, min);
         }
     }
+/*
+    public void insertSort(int[] nums) {
+        for (int i = 1; i < n; i++) {
+            for (int j = i; j > 0; j--) {
+                if (less(nums[j], nums[j - 1])) swap(nums, j, j - 1)
+            }
+        }
+    }*/
 
     // 插入排序  sorted[0,i-1] , insert unordered  [i,n-1]
     public void insertSort(int[] nums) {
@@ -176,8 +204,7 @@ public class Sort {
         }*/
         for (int i = n - 1; i > 0; i--) {
             swap(nums, 0, i);
-            n = n - 1;
-            sink_recursive(nums, 0, n);
+            sink_recursive(nums, 0, --n);
         }
     }
 
@@ -432,6 +459,7 @@ public class Sort {
             else nums[k] = nums[j++];
         }
     }
+
     // bottom up merge sort  比较难以抽象出来
     public void mergeSortBU(int[] nums) {
         int n = nums.length;
@@ -446,18 +474,67 @@ public class Sort {
     }
 
 
-    // 桶排序
-
-
-    // 基数排序
-
-
-    // 鸽巢排序
-
-
     // 希尔排序
-
+    public void shellSort(int[] nums) {
+        // 这个是希尔排序比较好理解的一种了
+        int N = nums.length;
+        int h = 1;
+        while (h < N / 2) h = 2 * h + 1;
+        while (h >= 1) {
+            for (int i = h; i < N; i++) {
+                for (int j = i; j >= h && less(nums[j], nums[j - h]); j = j - h) {
+                    swap(nums, j, j - h);
+                }
+            }
+            h = h / 2;
+        }
+    }
     // 二叉树排序
 
+
+    // 基数排序 （非比较排序）
+    // 基数排序  http://bit.ly/32mD3LV  O(N)  http://bit.ly/2HHKSUF
+    public void radixSort(int[] nums) {
+        radixSort(nums, 10);
+    }
+
+    public void radixSort(int[] arr, int radix) {
+        int min = arr[0], max = arr[0];
+        int N = arr.length;
+        for (int i = 1; i < N; i++) {
+            if (arr[i] > max) max = arr[i];
+            if (arr[i] < min) min = arr[i];
+        }
+        int exp = 1;
+        while ((max - min) / exp >= 1) {
+            bitSort(arr, radix, min, exp);
+            exp = exp * radix;
+        }
+    }
+
+    //按位数排列
+    public void bitSort(int[] arr, int radix, int min, int exp) {
+        int N = arr.length;
+        int[] buckets = new int[radix];
+        int[] output = new int[N];
+
+        // count frequency
+        for (int i = 0; i < N; i++) {
+            // make negative effective
+            int bucketIndex = ((arr[i] - min) / exp) % radix;
+            buckets[bucketIndex]++;
+        }
+        // cumulative sum
+        for (int i = 1; i < radix; i++) {
+            buckets[i] = buckets[i] + buckets[i - 1];
+        }
+        // sort by exponent  by reverse
+        for (int i = N - 1; i >= 0; i--) {
+            int bucketIndex = ((arr[i] - min) / exp) % radix;
+            output[--buckets[bucketIndex]] = arr[i];
+        }
+        // update arr
+        for (int i = 0; i < N; i++) arr[i] = output[i];
+    }
 
 }
