@@ -1,11 +1,8 @@
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import com.yanjinbin.leetcode.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.omg.CORBA.INTERNAL;
 
 import java.util.*;
-import java.util.function.IntFunction;
 
 public class SolutionTest {
 
@@ -1827,6 +1824,7 @@ public class SolutionTest {
 
     @Test
     public void sort() {
+        System.out.println("测试数组排序算法是否正确leetcode链接:\t\thttps://leetcode-cn.com/problems/sort-an-array/ ");
         System.out.println("https://zh.wikipedia.org/wiki/排序算法  ");
         Sort SORT = new Sort();
         int[] nums = new int[]{-1, -2, 1, 8, 7, 5, 6, 3, 9, 4, 0, 2};
@@ -1942,6 +1940,34 @@ public class SolutionTest {
         int[] arr = new int[]{0, 9, 7, 6, 4, 4, 5, 3, 2, 8, 12};
         SORT.radixSort(arr);
         System.out.println(Arrays.toString(arr));
+        System.out.println("=====二叉树排序===");
+        SORT.treeSort(nums);
+        assert Arrays.equals(nums, ordered);
+        System.out.println("=====链表排序(冒泡)=====");
+        ListNode head = ListNode.builder().val(5).build();
+        ListNode n2 = ListNode.builder().val(9).build();
+        ListNode n3 = ListNode.builder().val(7).build();
+        ListNode n4 = ListNode.builder().val(1).build();
+        ListNode n5 = ListNode.builder().val(3).build();
+        ListNode n6 = ListNode.builder().val(-1).build();
+        head.next = n2;
+        n2.next = n3;
+        n3.next = n4;
+        n4.next = n5;
+        n5.next = n6;
+        SORT.shuffle(head);
+        System.out.println(head);
+        SORT.bubbleSort(head);
+        assert SORT.isSorted(head);
+        System.out.println("=======链表排序(选择排序)======");
+        SORT.shuffle(head);
+
+        System.out.println("=======链表排序(归并排序)=====");
+        SORT.shuffle(head);
+
+
+        System.out.println("=======链表排序(快排)======");
+        SORT.shuffle(head);
 
 
     }
@@ -1978,8 +2004,6 @@ public class SolutionTest {
         nums = SORT.heapSort3(nums);
         System.out.println(Arrays.toString(nums));
         assert Arrays.equals(nums, ordered);
-
-
     }
 
 }

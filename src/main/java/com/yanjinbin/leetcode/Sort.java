@@ -1,6 +1,8 @@
 package com.yanjinbin.leetcode;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 public class Sort {
@@ -550,4 +552,35 @@ public class Sort {
         }
     }
 
+
+    public void treeSort(int[] nums) {
+        TreeNode bst = new TreeNode(nums[0]);
+        for (int i = 1; i < nums.length; i++) {
+            insert(bst, nums[i]);
+        }
+        List<Integer> res = new ArrayList();
+        inorder(bst, res);
+        for (int i = 0; i < res.size(); i++) {
+            nums[i] = res.get(i);
+        }
+    }
+
+    // 中序
+    private void inorder(TreeNode bst, List<Integer> res) {
+        if (bst == null) return;
+        inorder(bst.left, res);
+        res.add(bst.val);
+        inorder(bst.right, res);
+    }
+
+    private TreeNode insert(TreeNode bst, int val) {
+        if (bst == null) return new TreeNode(val);
+        if (val >= bst.val) {
+            bst.right = insert(bst.right, val);
+        }
+        if (val < bst.val) {
+            bst.left = insert(bst.left, val);
+        }
+        return bst;
+    }
 }
