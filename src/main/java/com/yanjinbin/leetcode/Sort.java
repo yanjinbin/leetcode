@@ -4,73 +4,59 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Sort {
-    // bucket sort
-    // 这不是真正的桶排序 wiki
-    /*private int indexFor(int a, int min, int step) {
-        return (a - min) / step;
-    }
 
-    public void bucketSort(int[] arr, int step) {
-        int max = arr[0];
-        int min = arr[0];
-        for (int a : arr) {
-            if (max < a) {
-                max = a;
-            }
-            if (min > a) {
-                min = a;
-            }
-        }
-
-        int bucketNum = max / step - min / step + 1;
-        List<List<Integer>> bucketList = new ArrayList<List<Integer>>();
-        for (int i = 1; i <= bucketNum; i++) {
-            bucketList.add(new ArrayList<Integer>());
-        }
-        for (int i = 0; i < arr.length; i++) {
-            int index = indexFor(arr[i], min, step);
-            bucketList.get(index).add(arr[i]);
-        }
-
-        List<Integer> bucket = null;
-        int index = 0;
-        for (int i = 0; i < bucketNum; i++) {
-            bucket = bucketList.get(i);
-            insertSort(bucket);
-            for (int k : bucket) {
-                arr[index++] = k;
-            }
-        }
-    }
-
-
-    // 把桶內元素插入排序
-    public void insertSort(List<Integer> bucket) {
-        for (int i = 1; i < bucket.size(); i++) {
-            int temp = bucket.get(i);
-            int j = i - 1;
-            for (; j >= 0 && bucket.get(j) > temp; j--) {
-                bucket.set(j + 1, bucket.get(j));
-            }
-            bucket.set(j + 1, temp);
-        }
-    }
-*/
-    // shuffle arr  lower bound  inclusive   upper bound exclusive
+    // shuffle array lower bound  inclusive   upper bound exclusive
     public void shuffle(int[] nums, int lower, int upper) {
         Random rand = new Random();
         for (int i = lower; i < upper; i++) {
-            int j = lower + rand.nextInt(upper - lower);
+            int j = lower + rand.nextInt(i - lower + 1);
             swap(nums, i, j);
         }
     }
 
+    public Random random = new Random();
+
+    // shuffle linkedList
+    public void shuffle(ListNode head) {
+        ListNode cur = head;
+
+        for (int i = 1; cur != null; i++) {
+            int step = random.nextInt(i);
+            // swap
+            ListNode node = head;
+            for (int j = 0; j < step; j++) {
+                node = node.next;
+            }
+            // cur node swap
+            if (node != cur) {
+                int tmp = cur.val;
+                cur.val = node.val;
+                node.val = tmp;
+            }
+            cur = cur.next;
+        }
+    }
+
+    // 判断 链表是否是升序
+    public boolean isSorted(ListNode head) {
+        if (head == null) return false;
+        if (head.next == null) return true;
+        ListNode cur = head;
+        while (cur != null && cur.next != null) {
+            if (less(cur.next.val, cur.val)) return false;
+            cur = cur.next;
+        }
+        return true;
+    }
+
+    // 交换数组值
     public void swap(int[] nums, int i, int j) {
         int tmp = nums[i];
         nums[i] = nums[j];
         nums[j] = tmp;
     }
 
+    // 判断大小
     public boolean less(Comparable v, Comparable w) {
         if (v == w) return false;
         return v.compareTo(w) < 0;
@@ -539,6 +525,29 @@ public class Sort {
         // update arr
         for (int i = 0; i < N; i++) arr[i] = output[i];
 
+    }
+
+    // 链表排序
+    // 冒泡排序  快排  归并
+    public ListNode bubbleSort(ListNode head) {
+        boolean isSwapped = true;
+        for (ListNode current = head, tail = null; isSwapped && head != null; tail = current, current = head) {
+            for (isSwapped = false; current.next != tail; current = current.next) {
+                if (current.val > current.next.val) {
+                    swap(current, current.next);
+                    isSwapped = true;
+                }
+            }
+        }
+        return head;
+    }
+
+    private void swap(ListNode n1, ListNode n2) {
+        if (n1 != n2) {
+            int tmp = n1.val;
+            n1.val = n2.val;
+            n2.val = tmp;
+        }
     }
 
 }
