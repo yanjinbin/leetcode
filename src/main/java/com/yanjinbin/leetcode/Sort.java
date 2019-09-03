@@ -1,7 +1,6 @@
 package com.yanjinbin.leetcode;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -14,41 +13,6 @@ public class Sort {
             int j = lower + rand.nextInt(i - lower + 1);
             swap(nums, i, j);
         }
-    }
-
-    public Random random = new Random();
-
-    // shuffle linkedList
-    public void shuffle(ListNode head) {
-        ListNode cur = head;
-
-        for (int i = 1; cur != null; i++) {
-            int step = random.nextInt(i);
-            // swap
-            ListNode node = head;
-            for (int j = 0; j < step; j++) {
-                node = node.next;
-            }
-            // cur node swap
-            if (node != cur) {
-                int tmp = cur.val;
-                cur.val = node.val;
-                node.val = tmp;
-            }
-            cur = cur.next;
-        }
-    }
-
-    // 判断 链表是否是升序
-    public boolean isSorted(ListNode head) {
-        if (head == null) return false;
-        if (head.next == null) return true;
-        ListNode cur = head;
-        while (cur != null && cur.next != null) {
-            if (less(cur.next.val, cur.val)) return false;
-            cur = cur.next;
-        }
-        return true;
     }
 
     // 交换数组值
@@ -528,31 +492,7 @@ public class Sort {
         for (int i = 0; i < N; i++) arr[i] = output[i];
 
     }
-
-    // 链表排序
-    // 冒泡排序  快排  归并
-    public ListNode bubbleSort(ListNode head) {
-        boolean isSwapped = true;
-        for (ListNode current = head, tail = null; isSwapped && head != null; tail = current, current = head) {
-            for (isSwapped = false; current.next != tail; current = current.next) {
-                if (current.val > current.next.val) {
-                    swap(current, current.next);
-                    isSwapped = true;
-                }
-            }
-        }
-        return head;
-    }
-
-    private void swap(ListNode n1, ListNode n2) {
-        if (n1 != n2) {
-            int tmp = n1.val;
-            n1.val = n2.val;
-            n2.val = tmp;
-        }
-    }
-
-
+    // 二叉树排序
     public void treeSort(int[] nums) {
         TreeNode bst = new TreeNode(nums[0]);
         for (int i = 1; i < nums.length; i++) {
@@ -582,5 +522,65 @@ public class Sort {
             bst.left = insert(bst.left, val);
         }
         return bst;
+    }
+
+
+    public Random random = new Random();
+
+    // shuffle linkedList
+    public void shuffle(ListNode head) {
+        ListNode cur = head;
+
+        for (int i = 1; cur != null; i++) {
+            int step = random.nextInt(i);
+            // swap
+            ListNode node = head;
+            for (int j = 0; j < step; j++) {
+                node = node.next;
+            }
+            // cur node swap
+            if (node != cur) {
+                int tmp = cur.val;
+                cur.val = node.val;
+                node.val = tmp;
+            }
+            cur = cur.next;
+        }
+    }
+
+    // 判断 链表是否是升序
+    public boolean isSorted(ListNode head) {
+        if (head == null) return false;
+        if (head.next == null) return true;
+        ListNode cur = head;
+        while (cur != null && cur.next != null) {
+            if (less(cur.next.val, cur.val)) return false;
+            cur = cur.next;
+        }
+        return true;
+    }
+
+    private void swap(ListNode n1, ListNode n2) {
+        if (n1 != n2) {
+            int tmp = n1.val;
+            n1.val = n2.val;
+            n2.val = tmp;
+        }
+    }
+
+    // 链表排序
+    // 冒泡排序  这是最容易理解的版本本了
+    public ListNode bubbleSort(ListNode head) {
+        boolean isSwapped = true;
+        for (ListNode current = head, tail = null; isSwapped && head != null; // 更新tail , current reset to head
+             tail = current, current = head) {
+            for (isSwapped = false; current.next != tail; current = current.next) {
+                if (less(current.next.val, current.val)) {
+                    swap(current, current.next);
+                    isSwapped = true;
+                }
+            }
+        }
+        return head;
     }
 }
