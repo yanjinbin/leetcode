@@ -5813,6 +5813,7 @@ public class Solution {
         }
         return res.toString();
     }
+
     //解法2  迭代
     public String countAndSay2(int n) {
         String s = "1";
@@ -5836,8 +5837,43 @@ public class Solution {
         return res.toString();
     }
 
-    //  special专题 排序
-    
+    //  special专题  top k系列问题
+    public int kthSmallest(int[][] matrix, int k) {
+        // 最大堆 max heap
+        PriorityQueue<Integer> pq = new PriorityQueue(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return o2.compareTo(o1);
+            }
+        });
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[i].length; j++) {
+                pq.add(matrix[i][j]);
+                if (pq.size() > k) pq.poll();
+            }
+        }
+        return pq.peek();
+    }
+
+    // 解法2 二分查找
+    public int kthSmallest1(int[][] matrix, int k) {
+        int n = matrix.length;
+
+    }
+
+    public int lessEqual(int[][] matrix, int target) {
+        int res = 0;
+        int n = matrix.length, i = n - 1, j = 0;
+        while (i >= 0 && j < n) {
+            if (matrix[i][j] > target) i--;
+            else {
+                res = res + i + 1;
+                j++;
+            }
+        }
+        return res;
+    }
+
 
 }
 

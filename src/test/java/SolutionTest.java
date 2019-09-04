@@ -2030,4 +2030,13 @@ public class SolutionTest {
         assert Arrays.equals(nums, ordered);
     }
 
+    @Test
+    public void kth() {
+        int[][] matrix = new int[][]{{1, 5, 7}, {10, 11, 13}, {12, 13, 15}};
+        int k = 6;
+        assert INSTANCE.kthSmallest(matrix, k) == 12;
+        INSTANCE.lessEqual(matrix, 9);
+
+    }
+
 }
