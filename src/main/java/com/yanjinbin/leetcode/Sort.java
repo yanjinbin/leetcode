@@ -392,6 +392,60 @@ public class Sort {
         }
     }
 
+    public ListNode quickSort(ListNode head) {
+        quickSort(head, null);
+        return head;
+    }
+
+    // tips: 比较难以想到  需要模拟
+    public ListNode partition(ListNode head, ListNode tail) {
+        if (head == tail) return head;
+        ListNode slow = head, fast = head.next;
+        int p = head.val;
+        while (fast != tail) {
+            if (fast.val < p) {
+                slow = slow.next;
+                swap(slow, fast);
+            }
+            fast = fast.next;
+        }
+        swap(head, slow);
+        return slow;
+    }
+
+    public void quickSort(ListNode head, ListNode tail) {
+        if (head == tail) {
+            return;
+        }
+        // slow代表小于pivot的 fast代表大于
+        ListNode slow = head, fast = head.next;
+        int p = head.val;
+        while (fast != tail) {
+            if (fast.val < p) {
+                slow = slow.next;
+                swap(slow, fast);
+            }
+            fast = fast.next;
+        }
+        swap(head, slow);
+        quickSort(head, slow);
+        quickSort(slow.next, tail);
+        /*
+        ListNode slow = head, fast = head.next;
+        int p = head.val;
+        while (fast != tail) {
+            if (fast.val < p) {
+                slow = slow.next;
+                swap(slow, fast);
+            }
+            fast = fast.next;
+        }
+
+        swap(head, slow);
+        quickSort(head, slow);
+        quickSort(slow.next, tail);*/
+    }
+
     // 快排 top down方法
     public void quickSort(int[] nums) {
         quickSort(nums, 0, nums.length - 1);

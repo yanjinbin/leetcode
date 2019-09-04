@@ -1987,7 +1987,12 @@ public class SolutionTest {
 
         System.out.println("=======链表排序(快排)======");
         SORT.shuffle(head);
-
+        System.out.println(head);
+        ListNode pivot = SORT.partition(head, null);
+        System.out.println(pivot);
+        SORT.quickSort(head);
+        System.out.println(head);
+        assert SORT.isSorted(head);
 
     }
 
