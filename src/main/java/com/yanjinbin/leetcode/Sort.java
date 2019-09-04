@@ -6,6 +6,27 @@ import java.util.Random;
 
 public class Sort {
 
+    // shuffle linkedList
+    public void shuffle(ListNode head) {
+        Random random = new Random();
+        ListNode cur = head;
+        for (int i = 1; cur != null; i++) {
+            int step = random.nextInt(i);
+            // swap
+            ListNode node = head;
+            for (int j = 0; j < step; j++) {
+                node = node.next;
+            }
+            // cur node swap
+            if (node != cur) {
+                int tmp = cur.val;
+                cur.val = node.val;
+                node.val = tmp;
+            }
+            cur = cur.next;
+        }
+    }
+
     // shuffle array lower bound  inclusive   upper bound exclusive
     public void shuffle(int[] nums, int lower, int upper) {
         Random rand = new Random();
@@ -27,15 +48,26 @@ public class Sort {
         if (v == w) return false;
         return v.compareTo(w) < 0;
     }
-/*
-    public void bubbleSort(int[] nums) {
-        for (int i = 0; i < nums.length; i++) {
-            for (int j = 0; j < nums.length - 1 - i; j++) {
-                if (less(nums[j], nums[j + 1])) swap(nums, j, j + 1)
-            }
-        }
-    }*/
 
+    // 判断 链表是否是升序
+    public boolean isSorted(ListNode head) {
+        if (head == null) return false;
+        if (head.next == null) return true;
+        ListNode cur = head;
+        while (cur != null && cur.next != null) {
+            if (less(cur.next.val, cur.val)) return false;
+            cur = cur.next;
+        }
+        return true;
+    }
+
+    public void swap(ListNode n1, ListNode n2) {
+        if (n1 != n2) {
+            int tmp = n1.val;
+            n1.val = n2.val;
+            n2.val = tmp;
+        }
+    }
 
     // 冒泡排序
     // i ∈ [0，n) , j ∈ [0，n-1-i) swap  neighbour elements  nums[j] nums[j+1]
@@ -49,18 +81,21 @@ public class Sort {
             }
         }
     }
-    /*
 
-    public void selectSort(int[] nums) {
-        int n = nums.length;
-        for (int i = 0; i < n - 1; i++) {
-            int min = i;
-            for (int j = i + 1; j < n; j++) {
-                if (less(nums[j], nums[min])) min = j;
+    // 冒泡排序  这是最容易理解的版本本了
+    public ListNode bubbleSort(ListNode head) {
+        boolean isSwapped = true;
+        for (ListNode current = head, tail = null; isSwapped && head != null; // 更新tail , current reset to head
+             tail = current, current = head) {
+            for (isSwapped = false; current.next != tail; current = current.next) {
+                if (less(current.next.val, current.val)) {
+                    swap(current, current.next);
+                    isSwapped = true;
+                }
             }
-            swap(nums, min, i);
         }
-    }*/
+        return head;
+    }
 
     // 选择排序 找最小值/最大值  然后交换对应坐标
     // i ∈[0,n-1), supposed i = min,  find minIdx from [i+1,n)
@@ -74,14 +109,18 @@ public class Sort {
             swap(nums, i, min);
         }
     }
-/*
-    public void insertSort(int[] nums) {
-        for (int i = 1; i < n; i++) {
-            for (int j = i; j > 0; j--) {
-                if (less(nums[j], nums[j - 1])) swap(nums, j, j - 1)
+
+    // 选择排序
+    public void selectSort(ListNode head) {
+        ListNode tail = null;
+        for (ListNode i = head; i != tail; i = i.next) {
+            ListNode min = i;
+            for (ListNode current = i.next; current != tail; current = current.next) {
+                if (less(current.val, min.val)) min = current;// 不要写成min.val =  current.val;
             }
+            swap(i, min);
         }
-    }*/
+    }
 
     // 插入排序  sorted[0,i-1] , insert unordered  [i,n-1]
     public void insertSort(int[] nums) {
@@ -91,6 +130,38 @@ public class Sort {
                 swap(nums, j, j - 1);
             }
         }
+    }
+
+    public ListNode insertSort(ListNode head) {
+        // Initialize partially sorted list
+        ListNode dummy = new ListNode(Integer.MIN_VALUE);
+        dummy.next = head;
+        ListNode current = head;
+        while (current != null && current.next != null) {
+            if (current.val < current.next.val) {
+                // go on
+                current = current.next;
+            } else {
+                ListNode prev = dummy;
+                ListNode target = current.next;
+
+                while (prev.next != null && prev.next.val < target.val) {
+                    prev = prev.next;
+                }
+
+                //  prev.next.val > target.val
+                // update current  target  prev
+                current.next = target.next;
+                target.next = prev.next;
+                prev.next = target;
+                // 不想选择排序 你是去更新head的val 你更新 head的引用是没用的
+/*
+                if (head.val > target.val) {
+                    head = target;
+                }*/
+            }
+        }
+        return dummy.next;
     }
 
     // 鸡尾酒🍸排序  左右两个方向进行交换   对 [2,3,4,5,1]  只需要 遍历2次即可, 数字随机排列情况下,都比较差
@@ -295,14 +366,14 @@ public class Sort {
         return arr;
     }
 
-    private void buildMaxHeap(int[] arr, int len) {
+    public void buildMaxHeap(int[] arr, int len) {
         for (int i = len / 2 - 1; i >= 0; i--) {
             heapify(arr, i, len);
         }
     }
 
     // sink 递归版本来自于https://www.runoob.com/w3cnote/heap-sort.html
-    private void heapify(int[] arr, int i, int len) {
+    public void heapify(int[] arr, int i, int len) {
         int left = 2 * i + 1;
         int right = 2 * i + 2;
         int largest = i;
@@ -379,6 +450,66 @@ public class Sort {
         }
         swap(nums, pivotIdx, index - 1);
         return index - 1;
+    }
+
+    // 返回 链表中点
+    public ListNode midNode(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
+    }
+
+    public ListNode getMid1(ListNode head) {
+        ListNode slow = head, fast = head;//区别在于fast的初始化
+        ListNode prev = slow;
+        while (fast != null && fast.next != null) {
+            prev = slow;
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return prev;
+    }
+
+    public ListNode getMid(ListNode head) { // 当 链表长度为2的时候, -1-->1 那么 永远在次循环
+        ListNode slow = head, fast = head.next;
+
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow; // 元素个数为偶数如6的时候返回2 ,本题目需要断开 所以返回slow即可  看起来是不是有点tricky呢 毕竟fast =head.next
+    }
+
+
+    public ListNode mergeSort(ListNode head) {
+        if (head == null || head.next == null) return head;
+        ListNode mid = getMid(head), secondHead = mid.next;
+        mid.next = null;
+        ListNode r1 = mergeSort(head);
+        ListNode r2 = mergeSort(secondHead);
+        return merge(r1, r2);
+    }
+
+    // merge two sorted linked list
+    public ListNode merge(ListNode n1, ListNode n2) {
+        ListNode dummy = new ListNode(Integer.MIN_VALUE);
+        ListNode current = dummy;
+        while (n1 != null && n2 != null) {
+            if (n1.val < n2.val) {
+                current.next = n1;
+                n1 = n1.next;
+            } else {
+                current.next = n2;
+                n2 = n2.next;
+            }
+            current = current.next;
+        }
+        if (n1 != null) current.next = n1;
+        if (n2 != null) current.next = n2;
+        return dummy.next;
     }
 
 
@@ -492,6 +623,7 @@ public class Sort {
         for (int i = 0; i < N; i++) arr[i] = output[i];
 
     }
+
     // 二叉树排序
     public void treeSort(int[] nums) {
         TreeNode bst = new TreeNode(nums[0]);
@@ -506,14 +638,14 @@ public class Sort {
     }
 
     // 中序
-    private void inorder(TreeNode bst, List<Integer> res) {
+    public void inorder(TreeNode bst, List<Integer> res) {
         if (bst == null) return;
         inorder(bst.left, res);
         res.add(bst.val);
         inorder(bst.right, res);
     }
 
-    private TreeNode insert(TreeNode bst, int val) {
+    public TreeNode insert(TreeNode bst, int val) {
         if (bst == null) return new TreeNode(val);
         if (val >= bst.val) {
             bst.right = insert(bst.right, val);
@@ -525,62 +657,4 @@ public class Sort {
     }
 
 
-    public Random random = new Random();
-
-    // shuffle linkedList
-    public void shuffle(ListNode head) {
-        ListNode cur = head;
-
-        for (int i = 1; cur != null; i++) {
-            int step = random.nextInt(i);
-            // swap
-            ListNode node = head;
-            for (int j = 0; j < step; j++) {
-                node = node.next;
-            }
-            // cur node swap
-            if (node != cur) {
-                int tmp = cur.val;
-                cur.val = node.val;
-                node.val = tmp;
-            }
-            cur = cur.next;
-        }
-    }
-
-    // 判断 链表是否是升序
-    public boolean isSorted(ListNode head) {
-        if (head == null) return false;
-        if (head.next == null) return true;
-        ListNode cur = head;
-        while (cur != null && cur.next != null) {
-            if (less(cur.next.val, cur.val)) return false;
-            cur = cur.next;
-        }
-        return true;
-    }
-
-    private void swap(ListNode n1, ListNode n2) {
-        if (n1 != n2) {
-            int tmp = n1.val;
-            n1.val = n2.val;
-            n2.val = tmp;
-        }
-    }
-
-    // 链表排序
-    // 冒泡排序  这是最容易理解的版本本了
-    public ListNode bubbleSort(ListNode head) {
-        boolean isSwapped = true;
-        for (ListNode current = head, tail = null; isSwapped && head != null; // 更新tail , current reset to head
-             tail = current, current = head) {
-            for (isSwapped = false; current.next != tail; current = current.next) {
-                if (less(current.next.val, current.val)) {
-                    swap(current, current.next);
-                    isSwapped = true;
-                }
-            }
-        }
-        return head;
-    }
 }

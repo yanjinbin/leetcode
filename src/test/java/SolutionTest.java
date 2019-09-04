@@ -1950,6 +1950,7 @@ public class SolutionTest {
         ListNode n4 = ListNode.builder().val(1).build();
         ListNode n5 = ListNode.builder().val(3).build();
         ListNode n6 = ListNode.builder().val(-1).build();
+        // ListNode n7 = ListNode.builder().val(11).build();
         head.next = n2;
         n2.next = n3;
         n3.next = n4;
@@ -1959,12 +1960,30 @@ public class SolutionTest {
         System.out.println(head);
         SORT.bubbleSort(head);
         assert SORT.isSorted(head);
+        System.out.println(head);
         System.out.println("=======链表排序(选择排序)======");
         SORT.shuffle(head);
-
-        System.out.println("=======链表排序(归并排序)=====");
+        System.out.println(head);
+        SORT.selectSort(head);
+        assert SORT.isSorted(head);
+        System.out.println(head);
+        System.out.println("=======链表排序(插入排序)=======");
         SORT.shuffle(head);
+        System.out.println(head);
+        head = SORT.insertSort(head);
+        assert SORT.isSorted(head);
+        System.out.println(head);
+        System.out.println("=======链表排序(归并排序)=====");
+        System.out.println(head);
+        System.out.println(SORT.midNode(head));
+        System.out.println(SORT.getMid(head));
+        System.out.println(SORT.getMid1(head));
+        head = SORT.mergeSort(head);
+        assert SORT.isSorted(head);
 
+        ListNode corner_case_node = ListNode.builder().val(-1).next(ListNode.builder().val(1).build()).build();
+        System.out.println("== corner case 长度为2的情况下 无法做切割处理了,因此需要记录中点的前置节点,getMid()和getMid1() 均可以 ==");
+        System.out.println(SORT.midNode(corner_case_node));
 
         System.out.println("=======链表排序(快排)======");
         SORT.shuffle(head);
