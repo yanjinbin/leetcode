@@ -138,7 +138,7 @@ public class Solution {
 
     // 递归方法
     // cur必须 是个成员变量阿
-    private ListNode cur;
+    public ListNode cur;
 
     public boolean isPalindrome2(ListNode head) {
         cur = head;
@@ -301,7 +301,7 @@ public class Solution {
 
     // 最长回文子串 最佳解法
     // http://bit.ly/2KMyIgk
-    private int lo, maxLen;
+    public int lo, maxLen;
 
     public String GoodLongestPalindrome(String s) {
         if (s.length() < 2) {
@@ -810,7 +810,7 @@ public class Solution {
         return exist;
     }
 
-    private boolean exist = false;
+    public boolean exist = false;
 
     // leetcode 139  单词拆分 http://bit.ly/2Ld41Bt 这是一道DP题目
     public boolean wordBreak(String s, List<String> wordDict) {
@@ -1290,7 +1290,7 @@ public class Solution {
     }
 
 
-    int[] items;
+    public int[] items;
 
     public void swap(int a, int b) {
         int tmp = this.items[a];
@@ -1413,8 +1413,8 @@ public class Solution {
     // 34. 在排序数组中查找元素的第一个和最后一个位置
     //  这个方法相当low逼阿 哈哈
     // 看别人的解题思路 有一种卧槽 还可以这样子的感觉!
-    int minIdx = Integer.MAX_VALUE;
-    int maxIdx = Integer.MIN_VALUE;
+    public int minIdx = Integer.MAX_VALUE;
+    public int maxIdx = Integer.MIN_VALUE;
 
     public int[] searchRange0(int[] nums, int target) {
         if (nums.length == 0) {
@@ -1975,7 +1975,7 @@ public class Solution {
     }
 
 
-    int counter;
+    public int counter;
 
     // 437. 路径总和 III  思路  http://bit.ly/2LukqSa
     public int pathSum1(TreeNode root, int sum) {
@@ -2013,7 +2013,7 @@ public class Solution {
     }
 
 
-    int cnt;
+    public int cnt;
 
     // 错的阿
     public int pathSum0(TreeNode root, int sum) {
@@ -2039,7 +2039,7 @@ public class Solution {
     }
 
     // 538. 把二叉搜索树转换为累加树  BST 中序遍历 满足顺序关系  先访问右子树-->root-->左子树 降序排列
-    int sum = 0;
+    public int sum = 0;
 
     public TreeNode convertBST(TreeNode root) {
         convert(root);
@@ -2128,7 +2128,7 @@ public class Solution {
 
 
     // 第二种解法 为什么更快呢 好奇怪?
-    int res = 0;
+    public int res = 0;
 
     public int diameterOfBinaryTree1(TreeNode root) {
         DFS(root);
@@ -2569,7 +2569,7 @@ public class Solution {
     }
 
     // 394. 字符串解码  递归解法 注意idx的取值阿
-    public int idx;
+    public int idx394;
 
     public String decodeString(String s) {
         return decode(s);
@@ -2579,22 +2579,22 @@ public class Solution {
     public String decode(String s) {
         String res = "";
         int n = s.length();
-        while (idx < n && s.charAt(idx) != ']') {
-            if (s.charAt(idx) > '9' || s.charAt(idx) < '0') {
-                res += s.charAt(idx);
-                idx++;
+        while (idx394 < n && s.charAt(idx394) != ']') {
+            if (s.charAt(idx394) > '9' || s.charAt(idx394) < '0') {
+                res += s.charAt(idx394);
+                idx394++;
             } else {
                 // cal numstr to cnt
                 int cnt = 0;
-                while (s.charAt(idx) >= '0' && s.charAt(idx) <= '9') {
-                    cnt = cnt * 10 + s.charAt(idx) - '0';
-                    idx++;
+                while (s.charAt(idx394) >= '0' && s.charAt(idx394) <= '9') {
+                    cnt = cnt * 10 + s.charAt(idx394) - '0';
+                    idx394++;
                 }
                 // 进入左括号后第一个
-                idx++;
+                idx394++;
                 String t = decode(s);
                 // 当进入循环的时候的s.charAt(i=6)=']'。  那么，需要跳过去， 所以idx++。
-                idx++;
+                idx394++;
                 while (cnt-- > 0) {
                     res += t;
                 }
@@ -4208,7 +4208,7 @@ public class Solution {
     }
 */
 
-    private static final int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    public static final int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 
     // 解法 1
     public int longestIncreasingPath(int[][] matrix) {
@@ -4974,7 +4974,7 @@ public class Solution {
     // 这个方法 不好的一点在于,要判定 每个单词是否与单次列表相连通
     // 这个问题 可以变成Graph 的 最短路径问题
     //  我们需要构建邻接表
-    private int ret = Integer.MAX_VALUE;
+    public int ret127 = Integer.MAX_VALUE;
 
     public int ladderLength1(String beginWord, String endWord, List<String> wordList) {
         for (int i = 0; i < wordList.size(); i++) {
@@ -4997,10 +4997,10 @@ public class Solution {
             if (connected(beginWord, s)) {
                 word.remove(i);
                 beginWord = s;
-                ret = Math.min(ret, ladderHelper(beginWord, endWord, res + 1, word));
+                ret127 = Math.min(ret127, ladderHelper(beginWord, endWord, res + 1, word));
             }
         }
-        return ret;
+        return ret127;
     }
 
     public boolean connected(String s1, String s2) {
@@ -5124,7 +5124,7 @@ public class Solution {
     }
 
     //212 单词搜索Ⅱ
-    public Set<String> result = new HashSet();
+    public Set<String> result212 = new HashSet();
 
     public List<String> findWords(char[][] board, String[] words) {
         Trie trie = new Trie();
@@ -5139,7 +5139,7 @@ public class Solution {
                 dfsFindWord(board, visited, "", i, j, trie);
             }
         }
-        return new ArrayList(result);
+        return new ArrayList(result212);
     }
 
     //
@@ -5149,7 +5149,7 @@ public class Solution {
         str += board[x][y];
         if (!trie.startsWith(str)) return;
         if (trie.search(str)) {
-            result.add(str);
+            result212.add(str);
         }
         visited[x][y] = true;
         dfsFindWord(board, visited, str, x - 1, y, trie);
@@ -5432,7 +5432,7 @@ public class Solution {
     // 138 复制带随机指针的链表
     // http://bit.ly/2KWFfDW 解题的关键在于,访问链表节点的随机指正的时候 需要记录已经访问的节点
 
-    public Map<RandomNode, RandomNode> visitedHash = new HashMap();
+    public Map<RandomNode, RandomNode> visitedHash138 = new HashMap();
 
     public RandomNode copyRandomList(RandomNode head) {
 
@@ -5440,14 +5440,14 @@ public class Solution {
             return null;
         }
 
-        if (visitedHash.containsKey(head)) {
-            return this.visitedHash.get(head);
+        if (visitedHash138.containsKey(head)) {
+            return this.visitedHash138.get(head);
         }
 
         RandomNode node = new RandomNode();
         node.val = head.val;
 
-        visitedHash.put(head, node);
+        visitedHash138.put(head, node);
 
         node.next = copyRandomList(node.next);
         node.random = copyRandomList(node.random);
@@ -5838,6 +5838,7 @@ public class Solution {
     }
 
     //  special专题  top k系列问题
+    //  378 有序矩阵中 第K小的元素
     public int kthSmallest(int[][] matrix, int k) {
         // 最大堆 max heap
         PriorityQueue<Integer> pq = new PriorityQueue(new Comparator<Integer>() {
@@ -5857,25 +5858,96 @@ public class Solution {
 
     // 解法2 二分查找
     public int kthSmallest1(int[][] matrix, int k) {
-        int n = matrix.length;
-
+        int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1];
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            int count = lessEqual(matrix, mid);
+            if (count < k) lo = mid + 1;
+                // 为什么是mid-1呢 而不是mid
+            else hi = mid;
+        }
+        return lo;
     }
 
+    //  from left-bottom or right-top can count how much numbers are less equal then target
     public int lessEqual(int[][] matrix, int target) {
-        int res = 0;
-        int n = matrix.length, i = n - 1, j = 0;
-        while (i >= 0 && j < n) {
+        int cnt = 0, N = matrix.length, i = N - 1, j = 0;
+        while (i >= 0 && j < N) {
             if (matrix[i][j] > target) i--;
             else {
-                res = res + i + 1;
+                cnt = cnt + i + 1;
                 j++;
             }
         }
-        return res;
+        return cnt;
+    }
+
+    // 230 二叉搜索树中第k小 通用方法
+    public int kthSmallest(TreeNode root, int k) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
+        traversal(root, pq, k);
+        return pq.peek();
+    }
+
+    public void traversal(TreeNode root, PriorityQueue<Integer> pq, int k) {
+        if (root == null) return;
+        pq.add(root.val);
+        if (pq.size() > k) pq.poll();
+        traversal(root.left, pq, k);
+        traversal(root.right, pq, k);
+    }
+
+    // 解法2  中序遍历
+    public int count230;
+    public int res230 = 0;
+
+    public int kthSmallest1(TreeNode root, int k) {
+        inorder(root, k);
+        return res230;
+    }
+
+    // 还是有点不太明白为什么cnt 又会变成0了？？？
+    public void inorder(TreeNode root, int k) {
+        if (root == null) {
+            return;
+        }
+        inorder(root.left, k);
+        count230 = count230 + 1;
+        if (count230 == k) {
+            res230 = root.val;
+            return;
+        }
+        inorder(root.right, k);
+    }
+
+    // 解法3 二分查找法
+    // ----------k-------------
+    // ---cnt--cnt+1---cnt+2--->
+    // ---root.left--root---root.right--->
+
+    public int kthSmallest2(TreeNode root, int k) {
+        int cnt = count(root.left);
+        if (k < cnt + 1) {
+            return kthSmallest2(root.left, k);
+        } else if (k > cnt + 1) {
+            // [error]  k 的更新哦 k-cnt-1 不是原来的k
+            return kthSmallest2(root.right, k - cnt - 1);
+        }
+        // k=cnt+1;
+        return root.val;
+    }
+
+    public int count(TreeNode root) {
+        if (root == null) return 0;
+        return 1 + count(root.left) + count(root.right);
     }
 
 
+
 }
+
+
+
 
 
 

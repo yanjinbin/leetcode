@@ -1047,7 +1047,7 @@ public class SolutionTest {
     public void decodeString() {
         INSTANCE.decodeString("3[a2[c]]").equals("accaccacc");
         // reset
-        INSTANCE.idx = 0;
+        INSTANCE.idx394 = 0;
         System.out.println(INSTANCE.decodeString("3[a]2[bc]"));
 
     }
@@ -2032,10 +2032,29 @@ public class SolutionTest {
 
     @Test
     public void kth() {
+        System.out.println("=====Top K系列问题专题=====");
+        //  378 有序矩阵中 第K小的元素
         int[][] matrix = new int[][]{{1, 5, 7}, {10, 11, 13}, {12, 13, 15}};
         int k = 6;
         assert INSTANCE.kthSmallest(matrix, k) == 12;
-        INSTANCE.lessEqual(matrix, 9);
+        assert INSTANCE.lessEqual(matrix, 9) == 3;
+        // http://bit.ly/32lXQ2e
+        assert INSTANCE.kthSmallest1(matrix, 8) == 13;
+
+
+        // 230. 二叉搜索树中第K小的元素
+        TreeNode root = TreeNode.builder().val(3).build();
+        TreeNode n1 = TreeNode.builder().val(1).build();
+        root.left = n1;
+        TreeNode n2 = TreeNode.builder().val(2).build();
+        n1.right = n2;
+        TreeNode n4 = TreeNode.builder().val(4).build();
+        root.right = n4;
+
+        assert INSTANCE.kthSmallest(root, 1) == 1;
+
+        System.out.println(INSTANCE.kthSmallest1(root, 1));
+
 
     }
 
