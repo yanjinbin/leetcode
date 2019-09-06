@@ -5951,6 +5951,74 @@ public class Solution {
         return root;
     }
 
+    // 159 最多有2个不同字符的最长子串
+    public int lengthOfLongestSubstringTwoDistinct(String s) {
+        return lengthOfLongestSubstringKDistinct(s, 2);
+    }
+
+    //  解法3 不需要额外空间的做法 参考解法4 http://bit.ly/2ZMzCws 类似于leetcode 904
+    public int lengthOfLongestSubstringTwoDistinct1(String s) {
+        int res = 0, cur = 0, cntLast = 0;
+        char first = 0, second = 0;
+        for (char c : s.toCharArray()) {
+            // 如果是first or second 字符那么 cur++ ,如果不是
+            cur = (c == first || c == second) ? cur + 1 : cntLast + 1;
+            // cntLast表示 second字符连续的个数
+            cntLast = (c == second) ? cntLast + 1 : 1;
+            // first 和 second字符
+            // 交替更换first second的值
+            if (c != second) {
+                first = second;
+                second = c;
+            }
+            res = Math.max(res, cur);
+        }
+        return res;
+    }
+
+
+    // 340 至多包含k个不同字符的最长子串
+    public int lengthOfLongestSubstringKDistinct(String s, int k) {
+        Map<Character, Integer> map = new HashMap();
+        int left = 0;
+        int res = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char key = s.charAt(i);
+            map.put(key, map.getOrDefault(key, 0) + 1);
+            while (map.size() > k) {
+                char leftKey = s.charAt(left);
+                int count = map.get(leftKey);
+                count = count - 1;
+                // 忘记更新了
+                map.put(leftKey, count);
+                if (count == 0) {
+                    map.remove(leftKey);
+                }
+                left++;
+            }
+            res = Math.max(res, i - left + 1);
+        }
+        return res;
+    }
+
+    // 解法2
+    public int lengthOfLongestSubstringKDistinct1(String s, int k) {
+        Map<Character, Integer> map = new HashMap<>();
+        int left = 0, res = 0;
+        for (int i = 0; i < s.length(); i++) {
+            map.put(s.charAt(i), i); // 赋值 or 覆盖更新
+            while (map.size() > k) {
+                char leftKey = s.charAt(left);
+                if (map.get(leftKey) == left) map.remove(leftKey);
+                left++;
+            }
+            res = Math.max(res, i - left + 1);
+        }
+        return res;
+    }
+
+    // [special专题]（二分查找）https://www.cnblogs.com/grandyang/p/6854825.html
+
 
 }
 

@@ -2055,10 +2055,14 @@ public class SolutionTest {
 
         assert INSTANCE.kthSmallest1(root, 1) == INSTANCE.kthSmallest2(root, 1);
 
+        // 340 至多包含K个不同字符的最长子串  这道题目无关乎大小
+        String s = "ececba";
+        k = 2;
+        INSTANCE.lengthOfLongestSubstringTwoDistinct1(s);
+        assert INSTANCE.lengthOfLongestSubstringKDistinct(s, k) == INSTANCE.lengthOfLongestSubstringTwoDistinct(s);
+        assert INSTANCE.lengthOfLongestSubstringTwoDistinct(s) == INSTANCE.lengthOfLongestSubstringKDistinct1(s, k);
 
-        System.out.println(root);
-        INSTANCE.count1(root);
-        System.out.println(root);
+
     }
 
 }
