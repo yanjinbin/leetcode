@@ -5942,6 +5942,14 @@ public class Solution {
         return 1 + count(root.left) + count(root.right);
     }
 
+    // follow up   每个点 记录 count信息
+    public TreeNode count1(TreeNode root) {
+        if (root == null) return null;
+        int left = root.left == null ? 0 : count1(root.left).count;
+        int right = root.right == null ? 0 : count1(root.right).count;
+        root.count = 1 + left + right;
+        return root;
+    }
 
 
 }

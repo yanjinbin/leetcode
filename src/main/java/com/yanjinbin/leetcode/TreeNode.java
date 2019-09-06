@@ -14,6 +14,7 @@ import lombok.ToString.Exclude;
 public class TreeNode {
 
     // extra
+    @Exclude
     String name;
 
     public int val;
@@ -24,7 +25,6 @@ public class TreeNode {
     public TreeNode left;
 
     public TreeNode right;
-
 
     public TreeNode(int x) {
         val = x;

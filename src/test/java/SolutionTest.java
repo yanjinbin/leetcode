@@ -2053,9 +2053,12 @@ public class SolutionTest {
 
         assert INSTANCE.kthSmallest(root, 1) == 1;
 
-        System.out.println(INSTANCE.kthSmallest1(root, 1));
+        assert INSTANCE.kthSmallest1(root, 1) == INSTANCE.kthSmallest2(root, 1);
 
 
+        System.out.println(root);
+        INSTANCE.count1(root);
+        System.out.println(root);
     }
 
 }
