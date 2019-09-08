@@ -1,7 +1,9 @@
 package com.yanjinbin.leetcode;
 
 
+// ArrayDeque（双端队列）内部实现是一个循环数组，bit 巧妙运用
 import java.util.ArrayDeque;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -3063,7 +3065,7 @@ public class Solution {
         }
         return res;
     }
-
+    // 还是很难像到的
     public int[] maxSlidingWindow1(int[] nums, int k) {
         if (nums == null || k <= 0) {
             return new int[0];
@@ -3074,9 +3076,8 @@ public class Solution {
         int retIdx = 0;
         Deque<Integer> q = new ArrayDeque<>();
         for (int i = 0; i < len; i++) {
-
             // 超过长度 无条件移除head
-            while (!q.isEmpty() && q.peek() < i - k + 1) {
+            while (!q.isEmpty() && q.peek() + k-1 < i ) {
                 q.pollFirst();
             }
             while (!q.isEmpty() && nums[q.peekLast()] < nums[i]) {
@@ -3088,15 +3089,8 @@ public class Solution {
                 // head代表 固定长度k的头部元素为最大值,赋值给ret
                 ret[retIdx++] = nums[q.peek()];
             }
-            System.out.println("i值:" + i + "长度为3的单调栈:" + q);
         }
         return ret;
-    }
-
-
-    // 399. 除法求值
-    public double[] calcEquation(List<List<String>> equations, double[] values, List<List<String>> queries) {
-        return null;
     }
 
     // 32. 最长有效括号

@@ -7,8 +7,6 @@ import java.util.*;
 public class SolutionTest {
 
     private static Solution INSTANCE = new Solution();
-    private static WeeklyContest CONTEST = new WeeklyContest();
-    private static CareerUp INSTANCEM2 = new CareerUp();
     private ListNode headNode;
     private ListNode demoNode;
 
@@ -1133,8 +1131,7 @@ public class SolutionTest {
     public void maxSlidingWindow() {
         int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
         int k = 3;
-        System.out.println(Arrays.toString(INSTANCE.maxSlidingWindow0(nums, k)));
-        System.out.println(Arrays.toString(INSTANCE.maxSlidingWindow1(nums, k)));
+        assert INSTANCE.maxSlidingWindow0(nums, k) == INSTANCE.maxSlidingWindow1(nums, k);
     }
 
     @Test
@@ -1143,7 +1140,6 @@ public class SolutionTest {
         // mask
         for (int i = 0; i < 100; i++) {
             int mask = i;
-
             mask &= (~(1 << i));
             System.out.println("mask值： " + mask + "\ti值" + i);
             mask = i;
@@ -1745,9 +1741,9 @@ public class SolutionTest {
 
     @Test
     public void binarySearch() {
-        int[] arr = new int[]{9, 5, 4, 2, 3, 1, 6, 7,2,2,2,2};
+        int[] arr = new int[]{9, 5, 4, 2, 3, 1, 6, 7, 2, 2, 2, 2};
         Arrays.sort(arr);
-      //  System.out.println(Arrays.toString(arr));
+        //  System.out.println(Arrays.toString(arr));
         int first = 0;
         int last = arr.length;
         // for (int i = 0; i < 50; i++) {
@@ -1775,7 +1771,7 @@ public class SolutionTest {
                 last = mid;
             }
         }
-       // System.out.println("first " + first + " last " + last + " value " + value);
+        // System.out.println("first " + first + " last " + last + " value " + value);
         return first;
     }
 
