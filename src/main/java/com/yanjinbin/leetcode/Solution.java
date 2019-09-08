@@ -1,7 +1,23 @@
 package com.yanjinbin.leetcode;
 
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Random;
+import java.util.Set;
+import java.util.Stack;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -6017,7 +6033,108 @@ public class Solution {
         return res;
     }
 
-    // [special专题]（二分查找）https://www.cnblogs.com/grandyang/p/6854825.html
+    // 395 至少有k个重复的字符的最长子串
+    public int longestSubstring(String s, int k) {
+        int res = 0, i = 0, N = s.length();
+        while (i + k - 1 < N) {
+            int[] m = new int[26];
+            int mask = 0;
+            int maxIdx = i;
+            for (int j = i; j < N; j++) {
+                int t = s.charAt(j) - 'a';
+                m[t]++;
+                // bit mask 操作
+                if (m[t] < k) {
+                    mask = mask | (1 << t);
+                } else {
+                    mask = mask & (~(1 << t));
+                }
+                if (mask == 0) {
+                    res = Math.max(res, j - i + 1);
+                    maxIdx = j;
+                }
+            }
+            i = maxIdx + 1;
+        }
+        return res;
+    }
+
+    // 解法2 递归
+    public int longestSubstring1(String s, int k) {
+        int len = s.length();
+        if (len == 0 || k > len) return 0;
+        if (k < 2) return len;
+        return count(s.toCharArray(), k, 0, s.length() - 1);
+    }
+
+    public int count(char[] chars, int k, int p1, int p2) {
+        if (p2 - p1 + 1 < k) return 0;
+        int[] times = new int[26];
+
+        for (int i = p1; i <= p2; i++) {
+            times[chars[i] - 'a']++;
+        }
+        while (p2 - p1 + 1 >= k && times[chars[p1] - 'a'] < k) {
+            ++p1;
+        }
+        while (p2 - p1 + 1 >= k && times[chars[p2] - 'a'] < k) {
+            --p2;
+        }
+        if (p2 - p1 + 1 < k) return 0;
+
+        for (int i = p1; i <= p2; i++) {
+            if (times[chars[i] - 'a'] < k) {
+                return Math.max(count(chars, k, p1, i - 1), count(chars, k, i + 1, p2));
+            }
+        }
+        return p2 - p1 + 1;
+    }
+
+    // 解法3 interview friendly
+    public int longestSubstring2(String s, int k) {
+        int res = 0, N = s.length(), maxIdx = 0;
+        int[] times = new int[128];
+        boolean ok = true;
+        for (int i = 0; i < N; i++) {
+            times[s.charAt(i) - 'a']++;
+        }
+        for (int i = 0; i < N; i++) {
+            if (times[s.charAt(i) - 'a'] < k) {
+                // 子递归的第一种情况
+                res = Math.max(res, longestSubstring2(s.substring(maxIdx, i), k));
+                maxIdx = i + 1;
+                ok = false;
+            }
+        }
+        // 子递归的第二种情况
+        return ok ? N : Math.max(res, longestSubstring2(s.substring(maxIdx, N), k));
+    }
+
+
+    // 207 课程表 todo
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        return false;
+    }
+
+    // 440 字典序第K小的数字 todo 10叉树
+    public int findKthSmallest(int n, int k) {
+        int cur = 1;
+        k--;
+        while (k > 0) {
+            int step = 0, first = cur, last = cur + 1;
+            while (first <= n) {
+                step += Math.min(n + 1, last) - first;
+                first *= 10;
+                last *= 10;
+            }
+            // if (step)
+        }
+        return -1;
+
+    }
+
+
+    // [special专题]（分治思想/二分查找）https://www.cnblogs.com/grandyang/p/6854825.html
 
 
 }

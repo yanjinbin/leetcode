@@ -7,6 +7,7 @@ import java.util.*;
 public class SolutionTest {
 
     private static Solution INSTANCE = new Solution();
+    private static WeeklyContest CONTEST = new WeeklyContest();
     private static CareerUp INSTANCEM2 = new CareerUp();
     private ListNode headNode;
     private ListNode demoNode;
@@ -1138,6 +1139,17 @@ public class SolutionTest {
 
     @Test
     public void bitOperation() {
+        System.out.println("1<<2" + (1 << 2));
+        // mask
+        for (int i = 0; i < 100; i++) {
+            int mask = i;
+
+            mask &= (~(1 << i));
+            System.out.println("mask值： " + mask + "\ti值" + i);
+            mask = i;
+            mask = mask | (1 << i);
+            System.out.println("mask值： " + mask + "\ti值" + i);
+        }
 
         System.out.println(Integer.toBinaryString(209));
         System.out.println(true ^ true);
@@ -1733,16 +1745,17 @@ public class SolutionTest {
 
     @Test
     public void binarySearch() {
-        int[] arr = new int[]{9, 5, 4, 2, 3, 1, 6, 7};
+        int[] arr = new int[]{9, 5, 4, 2, 3, 1, 6, 7,2,2,2,2};
         Arrays.sort(arr);
-        System.out.println(Arrays.toString(arr));
+      //  System.out.println(Arrays.toString(arr));
         int first = 0;
         int last = arr.length;
         // for (int i = 0; i < 50; i++) {
         System.out.println("======A");
 
-        int res = binarySearch(arr, first, last, 8);
+        int res = binarySearch(arr, first, last, 2);
         System.out.println(res);
+        System.out.println(arr[res]);
         //   System.out.println("======B");
         //  res = binarySearch(arr, first, last, 11);
         //   System.out.println(res);
@@ -1756,13 +1769,13 @@ public class SolutionTest {
         System.out.println("first " + first + " last " + last + " value " + value);
         while (first < last) {
             int mid = first + (last - first) / 2;
-            if (array[mid] <= value) {
+            if (array[mid] <= value) { // 返回满足 arr[i] > value的第一个位置
                 first = mid + 1;
             } else {
                 last = mid;
             }
         }
-        System.out.println("first " + first + " last " + last + " value " + value);
+       // System.out.println("first " + first + " last " + last + " value " + value);
         return first;
     }
 
@@ -2062,6 +2075,11 @@ public class SolutionTest {
         assert INSTANCE.lengthOfLongestSubstringKDistinct(s, k) == INSTANCE.lengthOfLongestSubstringTwoDistinct(s);
         assert INSTANCE.lengthOfLongestSubstringTwoDistinct(s) == INSTANCE.lengthOfLongestSubstringKDistinct1(s, k);
 
+        // leetcode 395
+        //
+        s = "aaabb";
+        k = 3;
+        System.out.println(INSTANCE.longestSubstring1(s, k));
 
     }
 
