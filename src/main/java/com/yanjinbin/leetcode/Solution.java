@@ -2,6 +2,7 @@ package com.yanjinbin.leetcode;
 
 
 // ArrayDeque（双端队列）内部实现是一个循环数组，bit 巧妙运用
+
 import java.util.ArrayDeque;
 
 import java.util.ArrayList;
@@ -535,15 +536,38 @@ public class Solution {
         ListNode prev = null;
         ListNode cursor = head;
         while (cursor != null) {
-            ListNode temp = cursor.next;
+            ListNode next = cursor.next;
             // 更新cursor.next 指向
             cursor.next = prev;
             prev = cursor;
             // iterator
             // cursor = cursor.next 为什么错了 因为cursor.next 已经换了对象了
-            cursor = temp;
+            cursor = next;
         }
         return prev;
+    }
+
+    public ListNode reverseList1(ListNode head) {
+        return help(head,null);
+    }
+
+    public ListNode help(ListNode cur,ListNode prev){
+        if(cur==null) return prev;
+        ListNode next = cur.next;
+        cur.next = prev;
+        return help(next,cur);
+    }
+
+    public ListNode reverseList2(ListNode head){
+        if(head==null||head.next==null){
+            return head;
+        }
+        ListNode reversedListHead = reverseList2(head.next);
+        // reverse next
+        ListNode  nextNode = head.next;
+        nextNode.next = head ;
+        head.next = null ;
+        return reversedListHead;
     }
 
     // 206 Leetcode 错误解答
@@ -3065,6 +3089,7 @@ public class Solution {
         }
         return res;
     }
+
     // 还是很难像到的
     public int[] maxSlidingWindow1(int[] nums, int k) {
         if (nums == null || k <= 0) {
@@ -3077,7 +3102,7 @@ public class Solution {
         Deque<Integer> q = new ArrayDeque<>();
         for (int i = 0; i < len; i++) {
             // 超过长度 无条件移除head
-            while (!q.isEmpty() && q.peek() + k-1 < i ) {
+            while (!q.isEmpty() && q.peek() + k - 1 < i) {
                 q.pollFirst();
             }
             while (!q.isEmpty() && nums[q.peekLast()] < nums[i]) {

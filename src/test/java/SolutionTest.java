@@ -20,13 +20,6 @@ public class SolutionTest {
                                                 .val(32).next(ListNode.builder()
                                                         .val(13).build()).build()).build()).build()).build()).build();
 
-        demoNode = ListNode.builder()
-                .val(9).next(ListNode.builder()
-                        .val(11).next(ListNode.builder()
-                                .val(10).next(ListNode.builder()
-                                        .val(12).next(ListNode.builder()
-                                                .val(32).next(ListNode.builder()
-                                                        .val(13).build()).build()).build()).build()).build()).build();
     }
 
 
@@ -271,9 +264,22 @@ public class SolutionTest {
 
     @Test(timeout = 200)
     public void reverseList() {
-        System.out.println(INSTANCE.reverseList(demoNode));
-        System.out.println(INSTANCE.reverseListBad1(demoNode));
-        System.out.println(INSTANCE.reverseListBad2(demoNode));
+     ListNode   demoNode = ListNode.builder()
+                .val(9).next(ListNode.builder()
+                        .val(10).next(ListNode.builder()
+                                .val(11).next(ListNode.builder()
+                                        .val(12).next(ListNode.builder()
+                                                .val(13).next(ListNode.builder()
+                                                     .val(14).build()).build()).build()).build()).build()).build();
+        demoNode= INSTANCE.reverseList2(demoNode);
+        System.out.println(demoNode);
+       demoNode = INSTANCE.reverseList(demoNode);
+        System.out.println(demoNode);
+        demoNode = INSTANCE.reverseList1(demoNode);
+        System.out.println(demoNode);
+
+      //  System.out.println(INSTANCE.reverseListBad1(demoNode));
+      //  System.out.println(INSTANCE.reverseListBad2(demoNode));
     }
 
     @Test(timeout = 1000)
