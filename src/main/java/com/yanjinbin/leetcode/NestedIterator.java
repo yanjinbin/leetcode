@@ -2,7 +2,7 @@ package com.yanjinbin.leetcode;
 
 import java.util.*;
 
-// 341 扁平化嵌套列表表达器 http://bit.ly/2L4sHus
+// 341 扁平化嵌套列表表达器 http://bit.ly/2L4sHus 这道题目 就是 hasNext() 加个判断 然后flat 之后再去 next,
 public class NestedIterator implements Iterator<Integer> {
 
     public Queue<Integer> q = new LinkedList<>();

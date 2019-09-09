@@ -2,6 +2,7 @@ package com.yanjinbin.leetcode;
 
 import java.util.PriorityQueue;
 
+// 295 数据流中的中位数 MaxHeap,MinHeap的妙用了 http://bit.ly/2HUL6aY  偶数均分,奇数个数的时候让maxHeap从minHeap取出最小的;
 public class MedianFinder {
     private int count;
     private PriorityQueue<Integer> minHeap;

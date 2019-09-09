@@ -1511,16 +1511,10 @@ public class SolutionTest {
     @Test
     public void medianFinder() {
         MedianFinder mf = new MedianFinder();
-        mf.addNum(11);
+        mf.addNum(1);
+        mf.addNum(2);
+        mf.addNum(3);
         System.out.println(mf.findMedian());
-        mf.addNum(13);
-        System.out.println(mf.findMedian());
-        mf.addNum(18);
-        mf.addNum(9);
-        mf.addNum(7);
-        System.out.println(mf.findMedian());
-        System.out.println(3 & 1);
-        System.out.println(4 & 1);
     }
 
     @Test
