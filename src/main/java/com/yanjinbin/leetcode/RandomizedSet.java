@@ -6,6 +6,8 @@ import java.util.Random;
 
 // 花花酱 视频---> https://youtu.be/y240Qh9H9uk  删除非尾部元素,需要交换数组内被删除元素和尾部元素
 public class RandomizedSet {
+    // array list 移除元素的概率是  O(N)  维护 val->index(map), index-val(arrayList)
+    // assure 移除时候, 值需要交还被删除的index 和  末尾元素
     public ArrayList<Integer> vals; // index->val
     public HashMap<Integer, Integer> map;//  val->index
     public Random random;

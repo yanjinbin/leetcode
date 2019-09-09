@@ -1370,7 +1370,6 @@ public class Solution {
             return this.items[left];  // return that element
 
         // select a random pivot_index
-        Random random_num = new Random();
         int pivot_index = left + 1;
 
         pivot_index = partition(left, right, pivot_index);
