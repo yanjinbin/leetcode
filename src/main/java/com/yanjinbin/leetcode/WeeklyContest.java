@@ -12,7 +12,7 @@ public class WeeklyContest {
         }
         if (max <= 0) return max;
         int s0 = 0;
-        int s1 = 0;// without one deletion
+        int s1 = 0;// with  one deletion （optional） with one delete optional
         int ans = 0;
         for (int num : arr) {
             s1 = Math.max(s0, s1 + num);

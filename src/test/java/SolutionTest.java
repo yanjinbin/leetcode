@@ -7,19 +7,9 @@ import java.util.*;
 public class SolutionTest {
 
     private static Solution INSTANCE = new Solution();
-    private ListNode headNode;
-    private ListNode demoNode;
-
     @Before()
     public void init() {
-        headNode = ListNode.builder()
-                .val(9).next(ListNode.builder()
-                        .val(11).next(ListNode.builder()
-                                .val(10).next(ListNode.builder()
-                                        .val(12).next(ListNode.builder()
-                                                .val(32).next(ListNode.builder()
-                                                        .val(13).build()).build()).build()).build()).build()).build();
-
+        System.out.printf("=====unit test====");
     }
 
 
@@ -149,6 +139,13 @@ public class SolutionTest {
 
     @Test
     public void ReverseSingleLinkedList() {
+        ListNode  headNode = ListNode.builder()
+                .val(9).next(ListNode.builder()
+                        .val(11).next(ListNode.builder()
+                                .val(10).next(ListNode.builder()
+                                        .val(12).next(ListNode.builder()
+                                                .val(32).next(ListNode.builder()
+                                                        .val(13).build()).build()).build()).build()).build()).build();
         System.out.println(headNode);
         ListNode listNode = INSTANCE.reverseSingleLinkedList(headNode);
         System.out.println(listNode);
@@ -2083,6 +2080,11 @@ public class SolutionTest {
         k = 3;
         System.out.println(INSTANCE.longestSubstring1(s, k));
 
+    }
+
+    @Test
+    public  void solveNQueens(){
+        System.out.println(INSTANCE.solveNQueens(4));
     }
 
 }

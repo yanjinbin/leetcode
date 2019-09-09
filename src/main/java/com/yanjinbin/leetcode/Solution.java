@@ -6151,10 +6151,61 @@ public class Solution {
         return -1;
 
     }
+    // 类似于46的全排列问题
+    // 51 N皇后问题
+    char  Queen = 'Q',Empty = '.';
+    public List<List<String>> solveNQueens(int n){
+        List<List<String>> ans = new ArrayList();
+        boolean[][] matrix = new boolean[n][n];
+        backTrack(ans,new ArrayList(),matrix,0,n);
+        return ans;
+    }
+
+    public void backTrack(List<List<String>> ans,List<String> track,boolean[][] matrix,int row,int n){
+        if(track.size()==row){
+            ans.add(new ArrayList(track));
+        }else{
+                for(int j=0;j<n;j++){
+                  if(!isValid(row,j,matrix,n)) continue;;
+                  track.add(convert(n,j));
+                  matrix[row][j]=true;
+                  backTrack(ans,track,matrix,row+1,n);// 放置Q, track.add() 撤销Q,track.remove
+                  track.remove(track.size()-1);
+                  matrix[row][j]=false;
+                }
+        }
+    }
+
+    public boolean  isValid(int row,int col,boolean[][] matrix,int n){
+        // 正上方
+        for(int i=row-1;i>=0;i--){
+            if(matrix[i][col]) return false;
+        }
+        // 左斜上方
+        for(int i=row-1,j=col-1;i>=0&&j>=0;i--,j--){
+            if (matrix[i][j]) return false;
+        }
+        // 右斜上方
+        for(int i=row-1,j=col+1;i>=0&&j<n;i--,j++){
+            if(matrix[i][j]) return false;
+        }
+        return true;
+    }
+
+    public String convert(int n,int pos){
+        StringBuilder ret = new StringBuilder();
+        for(int i=0;i<n;i++) {
+            ret.append(Empty);
+        }
+        ret.setCharAt(pos,Queen);
+        return ret.toString();
+    }
 
 
     // [special专题]（分治思想/二分查找）https://www.cnblogs.com/grandyang/p/6854825.html
 
+    //  grocery
+    //  http://bit.ly/2HVV8Zz  遍历问题 注意不要无限递归下去就行 就是要找出所有可能的base case  return
 
 }
 
