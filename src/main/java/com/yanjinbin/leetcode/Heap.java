@@ -81,13 +81,13 @@ public class Heap {
     // 二叉堆从 0开始
 
     public void sink1(Comparable[] pq, int k, int n) {
-        // 注意这里的while 条件不等式 2k+1 <=n 和  2k+2 <n的区别
-        // if n=6, k 能不能取2的问题  k应该能取2, 因为 2只有一个叶子节点就是5
-        while (2 * k + 1 <= n) {
-            int j = 2 * k + 1;
-            if (j + 1 < n && less(pq[j], pq[j + 1])) j++;
-            if (!less(pq[k], pq[j])) break;
-            swap(pq, k, j);
+                // 注意这里的while 条件不等式 2k+1 <=n 和  2k+2 <n的区别
+                // if n=6, k 能不能取2的问题  k应该能取2, 因为 2只有一个叶子节点就是5
+                while (2 * k  <= n-1) {
+                    int j = 2 * k + 1;
+                    if (j + 1 < n && less(pq[j], pq[j + 1])) j++;
+                    if (!less(pq[k], pq[j])) break;
+                    swap(pq, k, j);
             k = j;
         }
     }

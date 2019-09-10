@@ -30,6 +30,14 @@ import java.util.stream.Collectors;
  * https://leetcode-cn.com/problemset/top/
  */
 public class Solution {
+    // shuffle array lower bound  inclusive   upper bound exclusive
+    public void shuffle(int[] nums, int lower, int upper) {
+        Random rand = new Random();
+        for (int i = lower; i < upper; i++) {
+            int j = lower + rand.nextInt(i - lower + 1);
+            swap(nums, i, j);
+        }
+    }
 
     // #1
     public int[] twoSum(int[] nums, int target) {
@@ -548,25 +556,25 @@ public class Solution {
     }
 
     public ListNode reverseList1(ListNode head) {
-        return help(head,null);
+        return help(head, null);
     }
 
-    public ListNode help(ListNode cur,ListNode prev){
-        if(cur==null) return prev;
+    public ListNode help(ListNode cur, ListNode prev) {
+        if (cur == null) return prev;
         ListNode next = cur.next;
         cur.next = prev;
-        return help(next,cur);
+        return help(next, cur);
     }
 
-    public ListNode reverseList2(ListNode head){
-        if(head==null||head.next==null){
+    public ListNode reverseList2(ListNode head) {
+        if (head == null || head.next == null) {
             return head;
         }
         ListNode reversedListHead = reverseList2(head.next);
         // reverse next
-        ListNode  nextNode = head.next;
-        nextNode.next = head ;
-        head.next = null ;
+        ListNode nextNode = head.next;
+        nextNode.next = head;
+        head.next = null;
         return reversedListHead;
     }
 
@@ -812,10 +820,6 @@ public class Solution {
         res.add(subset);
         dfsAdd(level + 1, nums, res, subset);
     }
-    // 位运算法
-
-    // backtrack 回溯算法
-
 
     // leetcode 79 单次搜索
     public boolean exist(char[][] board, String word) {
@@ -3369,7 +3373,7 @@ public class Solution {
             res = getSum(m, res);
         }
         return ((a > 0) ^ (b > 0)) ? -res : res;
-        // return ((a ^b)>0)) ? res : -res;
+
     }
 
     //29. 两数相除
@@ -3708,10 +3712,35 @@ public class Solution {
     // 异或 结合律 http://bit.ly/2Kkra1B
     public int missingNumber1(int[] nums) {
         int miss = nums.length;
-        for (int i = 0; i < nums.length; i++) {
+        for (int i = nums.length - 1; i >= 0; i--) {
             miss ^= i ^ nums[i];
         }
         return miss;
+    }
+
+    // follow up  一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字？
+    public void findTwoSingleNum(int[] nums) {
+        int AXORB = 0;
+        for (int i : nums) {
+            AXORB ^= i;
+        }
+        assert AXORB != 0;
+        assert AXORB == (3 ^ 7);
+        int firstOneBit = findFirstOneBit(AXORB);
+        System.out.println(AXORB + " " + firstOneBit);
+        int a = 0;
+        int b = 0;
+        for (int i : nums) {
+            if ((i & firstOneBit) == firstOneBit) {
+                a ^= i;
+            }
+        }
+        b = AXORB ^ a;
+        System.out.println("a:" + a + "\tb:" + b);
+    }
+
+    public int findFirstOneBit(int num) {
+        return num & ~(num - 1);
     }
 
     // 二分法 todo 二分法需要做个专题研究
@@ -3729,6 +3758,58 @@ public class Solution {
         }
         return left;
     }
+
+    // leetcode 137 137. 只出现一次的数字 II
+    // 解法1 重新定义运算规则
+    public int singleNumberⅡ0(int[] nums) {
+        int ones = 0, twos = 0, threes = 0;
+        for (int num : nums) {
+            twos |= ones & num;
+            ones ^= num;
+            threes = ones & twos;
+            ones &= ~threes;
+            twos &= ~threes;
+        }
+        return ones;
+    }
+
+    // 异或的妙用 http://lijinma.com/blog/2014/05/29/amazing-xor/
+    //  彻底理解 https://www.cnblogs.com/bjwu/p/9323808.html
+    //  关键点:根据真值表,写逻辑表达式 从二进制推导出三进制
+    //
+//    current(a, b)	incoming(c)	       next(a, b)
+//        0, 0	       0	              0, 0
+//        0, 1	       0	              0, 1
+//        1, 0	       0	              1, 0
+//        0, 0	       1	              0, 1
+//        0, 1	       1	              1, 0
+//        1, 0	       1	              0, 0
+    public int singleNumberⅡ1(int[] nums) {
+        int A = 0;
+        int B = 0;
+        for (int c : nums) {
+            int tmp = (A & ~B & ~c) | (~A & B & c);
+            B = (~A & B & ~c) | (~A & ~B & c);
+            A = tmp;
+        }
+        return A | B;
+    }
+    // 解法2 易懂 但是复杂度O(N²)
+    public int singleNumberⅡ2(int[] nums) {
+        int res = 0;
+        for (int i = 0; i < 32; i++) {
+            int sum = 0;
+            for (int j = 0; j < nums.length; j++) {
+                sum += (nums[j] >> i) & 1;
+            }
+            res = res | ((sum % 3) << i);
+        }
+
+        return res;
+    }
+
+
+    // leetcode 260. 只出现一次的数字 III
 
     //387  字符串中的第一个唯一字符
     public int firstUniqChar(String s) {
@@ -6150,56 +6231,61 @@ public class Solution {
         return -1;
 
     }
+
     // 类似于46的全排列问题
     // 51 N皇后问题
-    char  Queen = 'Q',Empty = '.';
-    public List<List<String>> solveNQueens(int n){
+    char Queen = 'Q', Empty = '.';
+
+    public List<List<String>> solveNQueens(int n) {
         List<List<String>> ans = new ArrayList();
         boolean[][] matrix = new boolean[n][n];
-        backTrack(ans,new ArrayList(),matrix,0,n);
+        backTrack(ans, new ArrayList(), matrix, 0, n);
         return ans;
     }
 
-    public void backTrack(List<List<String>> ans,List<String> track,boolean[][] matrix,int row,int n){
-        if(track.size()==row){
+    public void backTrack(List<List<String>> ans, List<String> track, boolean[][] matrix, int row, int n) {
+        if (track.size() == row) {
             ans.add(new ArrayList(track));
-        }else{
-                for(int j=0;j<n;j++){
-                  if(!isValid(row,j,matrix,n)) continue;;
-                  track.add(convert(n,j));
-                  matrix[row][j]=true;
-                  backTrack(ans,track,matrix,row+1,n);// 放置Q, track.add() 撤销Q,track.remove
-                  track.remove(track.size()-1);
-                  matrix[row][j]=false;
-                }
+        } else {
+            for (int j = 0; j < n; j++) {
+                if (!isValid(row, j, matrix, n)) continue;
+                ;
+                track.add(convert(n, j));
+                matrix[row][j] = true;
+                backTrack(ans, track, matrix, row + 1, n);// 放置Q, track.add() 撤销Q,track.remove
+                track.remove(track.size() - 1);
+                matrix[row][j] = false;
+            }
         }
     }
 
-    public boolean  isValid(int row,int col,boolean[][] matrix,int n){
+    public boolean isValid(int row, int col, boolean[][] matrix, int n) {
         // 正上方
-        for(int i=row-1;i>=0;i--){
-            if(matrix[i][col]) return false;
+        for (int i = row - 1; i >= 0; i--) {
+            if (matrix[i][col]) return false;
         }
         // 左斜上方
-        for(int i=row-1,j=col-1;i>=0&&j>=0;i--,j--){
+        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
             if (matrix[i][j]) return false;
         }
         // 右斜上方
-        for(int i=row-1,j=col+1;i>=0&&j<n;i--,j++){
-            if(matrix[i][j]) return false;
+        for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
+            if (matrix[i][j]) return false;
         }
         return true;
     }
 
-    public String convert(int n,int pos){
+    public String convert(int n, int pos) {
         StringBuilder ret = new StringBuilder();
-        for(int i=0;i<n;i++) {
+        for (int i = 0; i < n; i++) {
             ret.append(Empty);
         }
-        ret.setCharAt(pos,Queen);
+        ret.setCharAt(pos, Queen);
         return ret.toString();
     }
+    // 位运算法
 
+    // backtrack 回溯算法
 
     // [special专题]（分治思想/二分查找）https://www.cnblogs.com/grandyang/p/6854825.html
 

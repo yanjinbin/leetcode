@@ -1,4 +1,5 @@
 import com.yanjinbin.leetcode.*;
+import edu.princeton.cs.algs4.In;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,7 +10,7 @@ public class SolutionTest {
     private static Solution INSTANCE = new Solution();
     @Before()
     public void init() {
-        System.out.printf("=====unit test====");
+        System.out.println("=====unit test====");
     }
 
 
@@ -1139,7 +1140,64 @@ public class SolutionTest {
 
     @Test
     public void bitOperation() {
-        System.out.println("1<<2" + (1 << 2));
+        // 感受异或的神奇 http://bit.ly/2Kkra1B
+        for(int i=0;i<10;i++){
+            System.out.println("i值:"+i+"\t"+(i^(~i))+"\t"+( (i^(-1))==(~i) ) );
+        }
+        int A  = 3;
+        int B = 4;
+        System.out.println(Integer.toBinaryString(3)+" "+Integer.toBinaryString(4)+" "+Integer.toBinaryString(A^B));
+        assert (A ^ B) == ((~A & B) | (A & (~B)));
+        System.out.println("3^(~3):\t"+(3^(~3)));
+        System.out.println((3^3)==0);
+        System.out.println((3^0)==3);
+        System.out.println(3^(-1));
+        System.out.println(3^(-1));
+        System.out.println(Integer.toBinaryString(-1));
+
+        // bit mask
+        System.out.println("===bit mask====");
+        //  0  ^ 1 = 1;
+        //  1 ^ 1 = 0;
+        //下面错的 因此就应该用1 而不是 0 来异或
+        // 0 ^ 0 =1;
+        // 1 ^ 0 = 1
+        int a=1<<6,b=1<<6,mask = 1<<6;
+        System.out.println(a+" "+b+" "+mask);
+        a = 0xB1;// 10100001
+        b = a^mask;
+        System.out.println(Integer.toBinaryString(15));
+        int ret = 15^(1<<2); // bit mask 第二位 8(3) 4(2) 2(1) 1(0)
+        System.out.println(ret==11);
+        System.out.println(15-(1<<2));
+        int n =3;
+        for(int i = 0 ;i<20;i++){
+            System.out.println(i+"值"+( (i&(1<<n))==(1<<n) ));//判断指定位是否有1
+        }
+
+        // 交换元素
+        a =1;
+        b=3 ;
+        a = a ^b;
+        b = a ^b;//b= a ^ b ^ b = a
+        a = a ^b;// a^b^a= b
+        System.out.println(a==3&&b==1);
+
+        for(int i=0;i<10;i++){
+            System.out.println("i值:"+i+" "+( i&(~(i-1)) ) );  // 找到第一个i中 第一次出现1的位置
+        }
+
+
+
+
+        System.out.println("4>>1:\t"+(4>>1));
+        System.out.println("3>>1:\t"+(3>>1));
+        System.out.println( (~15));
+        Integer i =15;
+        System.out.println(Integer.toBinaryString(i));
+
+        /*System.o
+        ]ut.println("1<<2" + (1 << 2));
         // mask
         for (int i = 0; i < 100; i++) {
             int mask = i;
@@ -1148,7 +1206,7 @@ public class SolutionTest {
             mask = i;
             mask = mask | (1 << i);
             System.out.println("mask值： " + mask + "\ti值" + i);
-        }
+        }*/
 
         System.out.println(Integer.toBinaryString(209));
         System.out.println(true ^ true);
@@ -1158,11 +1216,17 @@ public class SolutionTest {
         System.out.println(true || true);
         System.out.println(true || false);
         System.out.println(false || false);
+        System.out.println(false|true);
+        System.out.println(true|true);
+        System.out.println(false|false);
+        System.out.println(false&false);
+        System.out.println(false&true);
+        System.out.println(true&true);
 
         System.out.println("ArrayDeque函数的用到的位运算");
         int cap = 16;
         int head = 18;
-        int ret = (head + 1) & (cap - 1);
+         ret = (head + 1) & (cap - 1);
         System.out.println(ret);
         System.out.println("=====上述这些都不是问题关键关键是如何处理head从尾回到头 ===");
         // 参考链接 http://bit.ly/2YsFIpg
@@ -1171,7 +1235,8 @@ public class SolutionTest {
         System.out.println(ret);
         assert ret == 0;
         assert head++ == 15;
-
+        System.out.println(Integer.toBinaryString(8));
+        System.out.println(Integer.toBinaryString(7));
         System.out.println("8&7的值: " + (8 & 7));
         System.out.println(5 & 3);
         System.out.println(219 / 10);
@@ -1344,7 +1409,21 @@ public class SolutionTest {
         int[] nums = new int[]{0, 1, 2, 4, 5, 6, 7, 3, 9};
         assert INSTANCE.missingNumber0(nums) == 8;
         assert INSTANCE.missingNumber1(nums) == 8;
-        System.out.println(INSTANCE.missingNumber2(nums));
+       // System.out.println(INSTANCE.missingNumber2(nums));
+        nums = new int[]{1,1,2,2,4,4,5,5,6,6,7,3};
+        System.out.println(Arrays.toString(nums));
+        INSTANCE.findTwoSingleNum(nums);
+        nums=new int[]{1,1,1,2,2,2,4,4,4,6,6,6,7};
+        assert INSTANCE.singleNumberⅡ0(nums) == 7;
+       // assert INSTANCE.singleNumberⅡ1(nums) ==7;
+        assert INSTANCE.singleNumberⅡ2(nums)==7;
+
+        for (int i=0;i<5;i++){
+            nums = new int[]{11,11,11,8};
+            INSTANCE.shuffle(nums,0,nums.length);
+            System.out.println(Arrays.toString(nums));
+            assert INSTANCE.singleNumberⅡ1(nums) == 8;
+        }
     }
 
     @Test
@@ -2015,6 +2094,7 @@ public class SolutionTest {
 
     @Test
     public void test() {
+// https://leetcode.com/problems/single-number-ii/discuss/43296/An-General-Way-to-Handle-All-this-sort-of-questions.
         int[] nums = new int[]{-1, -2, 9, 7, 6, 8, 5, 3, 2, 4, 1, 0};
         int n = nums.length;
         int[] ordered = Arrays.copyOf(nums, n);
