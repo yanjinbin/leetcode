@@ -8,6 +8,7 @@ import java.util.*;
 public class SolutionTest {
 
     private static Solution INSTANCE = new Solution();
+
     @Before()
     public void init() {
         System.out.println("=====unit test====");
@@ -140,7 +141,7 @@ public class SolutionTest {
 
     @Test
     public void ReverseSingleLinkedList() {
-        ListNode  headNode = ListNode.builder()
+        ListNode headNode = ListNode.builder()
                 .val(9).next(ListNode.builder()
                         .val(11).next(ListNode.builder()
                                 .val(10).next(ListNode.builder()
@@ -262,22 +263,22 @@ public class SolutionTest {
 
     @Test(timeout = 200)
     public void reverseList() {
-     ListNode   demoNode = ListNode.builder()
+        ListNode demoNode = ListNode.builder()
                 .val(9).next(ListNode.builder()
                         .val(10).next(ListNode.builder()
                                 .val(11).next(ListNode.builder()
                                         .val(12).next(ListNode.builder()
                                                 .val(13).next(ListNode.builder()
-                                                     .val(14).build()).build()).build()).build()).build()).build();
-        demoNode= INSTANCE.reverseList2(demoNode);
+                                                        .val(14).build()).build()).build()).build()).build()).build();
+        demoNode = INSTANCE.reverseList2(demoNode);
         System.out.println(demoNode);
-       demoNode = INSTANCE.reverseList(demoNode);
+        demoNode = INSTANCE.reverseList(demoNode);
         System.out.println(demoNode);
         demoNode = INSTANCE.reverseList1(demoNode);
         System.out.println(demoNode);
 
-      //  System.out.println(INSTANCE.reverseListBad1(demoNode));
-      //  System.out.println(INSTANCE.reverseListBad2(demoNode));
+        //  System.out.println(INSTANCE.reverseListBad1(demoNode));
+        //  System.out.println(INSTANCE.reverseListBad2(demoNode));
     }
 
     @Test(timeout = 1000)
@@ -1141,18 +1142,18 @@ public class SolutionTest {
     @Test
     public void bitOperation() {
         // 感受异或的神奇 http://bit.ly/2Kkra1B
-        for(int i=0;i<10;i++){
-            System.out.println("i值:"+i+"\t"+(i^(~i))+"\t"+( (i^(-1))==(~i) ) );
+        for (int i = 0; i < 10; i++) {
+            System.out.println("i值:" + i + "\t" + (i ^ (~i)) + "\t" + ((i ^ (-1)) == (~i)));
         }
-        int A  = 3;
+        int A = 3;
         int B = 4;
-        System.out.println(Integer.toBinaryString(3)+" "+Integer.toBinaryString(4)+" "+Integer.toBinaryString(A^B));
+        System.out.println(Integer.toBinaryString(3) + " " + Integer.toBinaryString(4) + " " + Integer.toBinaryString(A ^ B));
         assert (A ^ B) == ((~A & B) | (A & (~B)));
-        System.out.println("3^(~3):\t"+(3^(~3)));
-        System.out.println((3^3)==0);
-        System.out.println((3^0)==3);
-        System.out.println(3^(-1));
-        System.out.println(3^(-1));
+        System.out.println("3^(~3):\t" + (3 ^ (~3)));
+        System.out.println((3 ^ 3) == 0);
+        System.out.println((3 ^ 0) == 3);
+        System.out.println(3 ^ (-1));
+        System.out.println(3 ^ (-1));
         System.out.println(Integer.toBinaryString(-1));
 
         // bit mask
@@ -1162,38 +1163,36 @@ public class SolutionTest {
         //下面错的 因此就应该用1 而不是 0 来异或
         // 0 ^ 0 =1;
         // 1 ^ 0 = 1
-        int a=1<<6,b=1<<6,mask = 1<<6;
-        System.out.println(a+" "+b+" "+mask);
+        int a = 1 << 6, b = 1 << 6, mask = 1 << 6;
+        System.out.println(a + " " + b + " " + mask);
         a = 0xB1;// 10100001
-        b = a^mask;
+        b = a ^ mask;
         System.out.println(Integer.toBinaryString(15));
-        int ret = 15^(1<<2); // bit mask 第二位 8(3) 4(2) 2(1) 1(0)
-        System.out.println(ret==11);
-        System.out.println(15-(1<<2));
-        int n =3;
-        for(int i = 0 ;i<20;i++){
-            System.out.println(i+"值"+( (i&(1<<n))==(1<<n) ));//判断指定位是否有1
+        int ret = 15 ^ (1 << 2); // bit mask 第二位 8(3) 4(2) 2(1) 1(0)
+        System.out.println(ret == 11);
+        System.out.println(15 - (1 << 2));
+        int n = 3;
+        for (int i = 0; i < 20; i++) {
+            System.out.println(i + "值" + ((i & (1 << n)) == (1 << n)));//判断指定位是否有1
         }
 
         // 交换元素
-        a =1;
-        b=3 ;
-        a = a ^b;
-        b = a ^b;//b= a ^ b ^ b = a
-        a = a ^b;// a^b^a= b
-        System.out.println(a==3&&b==1);
+        a = 1;
+        b = 3;
+        a = a ^ b;
+        b = a ^ b;//b= a ^ b ^ b = a
+        a = a ^ b;// a^b^a= b
+        System.out.println(a == 3 && b == 1);
 
-        for(int i=0;i<10;i++){
-            System.out.println("i值:"+i+" "+( i&(~(i-1)) ) );  // 找到第一个i中 第一次出现1的位置
+        for (int i = 0; i < 10; i++) {
+            System.out.println("i值:" + i + " " + (i & (~(i - 1))));  // 找到第一个i中 第一次出现1的位置
         }
 
 
-
-
-        System.out.println("4>>1:\t"+(4>>1));
-        System.out.println("3>>1:\t"+(3>>1));
-        System.out.println( (~15));
-        Integer i =15;
+        System.out.println("4>>1:\t" + (4 >> 1));
+        System.out.println("3>>1:\t" + (3 >> 1));
+        System.out.println((~15));
+        Integer i = 15;
         System.out.println(Integer.toBinaryString(i));
 
         /*System.o
@@ -1216,17 +1215,17 @@ public class SolutionTest {
         System.out.println(true || true);
         System.out.println(true || false);
         System.out.println(false || false);
-        System.out.println(false|true);
-        System.out.println(true|true);
-        System.out.println(false|false);
-        System.out.println(false&false);
-        System.out.println(false&true);
-        System.out.println(true&true);
+        System.out.println(false | true);
+        System.out.println(true | true);
+        System.out.println(false | false);
+        System.out.println(false & false);
+        System.out.println(false & true);
+        System.out.println(true & true);
 
         System.out.println("ArrayDeque函数的用到的位运算");
         int cap = 16;
         int head = 18;
-         ret = (head + 1) & (cap - 1);
+        ret = (head + 1) & (cap - 1);
         System.out.println(ret);
         System.out.println("=====上述这些都不是问题关键关键是如何处理head从尾回到头 ===");
         // 参考链接 http://bit.ly/2YsFIpg
@@ -1341,6 +1340,7 @@ public class SolutionTest {
         System.out.println(INSTANCE.mySqrt(9));
         System.out.println(INSTANCE.mySqrt(8));
         System.out.println(INSTANCE.cubeRoot(27));
+        assert INSTANCE.mySqrt1(8) == 2;
     }
 
     @Test
@@ -1409,18 +1409,18 @@ public class SolutionTest {
         int[] nums = new int[]{0, 1, 2, 4, 5, 6, 7, 3, 9};
         assert INSTANCE.missingNumber0(nums) == 8;
         assert INSTANCE.missingNumber1(nums) == 8;
-       // System.out.println(INSTANCE.missingNumber2(nums));
-        nums = new int[]{1,1,2,2,4,4,5,5,6,6,7,3};
+        // System.out.println(INSTANCE.missingNumber2(nums));
+        nums = new int[]{1, 1, 2, 2, 4, 4, 5, 5, 6, 6, 7, 3};
         System.out.println(Arrays.toString(nums));
         INSTANCE.findTwoSingleNum(nums);
-        nums=new int[]{1,1,1,2,2,2,4,4,4,6,6,6,7};
+        nums = new int[]{1, 1, 1, 2, 2, 2, 4, 4, 4, 6, 6, 6, 7};
         assert INSTANCE.singleNumberⅡ0(nums) == 7;
-       // assert INSTANCE.singleNumberⅡ1(nums) ==7;
-        assert INSTANCE.singleNumberⅡ2(nums)==7;
+        // assert INSTANCE.singleNumberⅡ1(nums) ==7;
+        assert INSTANCE.singleNumberⅡ2(nums) == 7;
 
-        for (int i=0;i<5;i++){
-            nums = new int[]{11,11,11,8};
-            INSTANCE.shuffle(nums,0,nums.length);
+        for (int i = 0; i < 5; i++) {
+            nums = new int[]{11, 11, 11, 8};
+            INSTANCE.shuffle(nums, 0, nums.length);
             System.out.println(Arrays.toString(nums));
             assert INSTANCE.singleNumberⅡ1(nums) == 8;
         }
@@ -2157,7 +2157,7 @@ public class SolutionTest {
     }
 
     @Test
-    public  void solveNQueens(){
+    public void solveNQueens() {
         System.out.println(INSTANCE.solveNQueens(4));
     }
 

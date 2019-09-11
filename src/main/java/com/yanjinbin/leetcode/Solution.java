@@ -3377,7 +3377,7 @@ public class Solution {
     }
 
     //29. 两数相除
-    // 这个方法是最好的
+    // 这个方法是最好的  但是也是听难理解的 放弃
     public int divide2(int dividend, int divisor) {
         if (dividend == 1 << 31 && divisor == -1) return (1 << 31) - 1;
         int a = Math.abs(dividend), b = Math.abs(divisor), res = 0, x = 0;
@@ -3479,6 +3479,7 @@ public class Solution {
     }
 
     // 69 x 平方根 利用牛顿求根法来做[http://bit.ly/2ypO02m] 牛顿求根法视频讲解 https://youtu.be/VUpQwEVsyFk
+    // f(x1)-f(x2) / x1-x2 = f'(x1) 令 f(x2)=0 即可求出
     public int mySqrt(int x) {
         if (x <= 1) return x;
         double last = 0;
@@ -3488,6 +3489,24 @@ public class Solution {
             res = (res + x / res) / 2;
         }
         return (int) res;
+    }
+
+    //解乏2 二分法求值
+    public int mySqrt1(int x) {
+        long i = 0;
+        long j = x / 2 + 1;
+        while (i <= j) {
+            long mid = i + (j - i) / 2;
+            long sq = mid * mid;
+            if (sq == x) {
+                return (int) mid;
+            } else if (sq < x) {
+                i = mid + 1;
+            } else {
+                j = mid - 1;
+            }
+        }
+        return (int) j + 1;
     }
 
     // follow up  立方根
@@ -3794,6 +3813,7 @@ public class Solution {
         }
         return A | B;
     }
+
     // 解法2 易懂 但是复杂度O(N²)
     public int singleNumberⅡ2(int[] nums) {
         int res = 0;
