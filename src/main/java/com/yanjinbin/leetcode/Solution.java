@@ -3,6 +3,8 @@ package com.yanjinbin.leetcode;
 
 // ArrayDeque（双端队列）内部实现是一个循环数组，bit 巧妙运用
 
+import edu.princeton.cs.algs4.In;
+
 import java.util.ArrayDeque;
 
 import java.util.ArrayList;
@@ -172,7 +174,7 @@ public class Solution {
         return helper(head);
     }
 
-    boolean helper(ListNode node) {
+    public boolean helper(ListNode node) {
         if (node == null) return true;
         boolean res = helper(node.next) && (node.val == cur.val);
         if (res) cur = cur.next;
@@ -273,7 +275,7 @@ public class Solution {
         // return head; 错误的原因在于head 节点也有可能Update 为Null阿  在更新code---> " delayNode.next = delayNode.next.next; "
         return dummyNode.next;
     }
-
+    // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     //  TODO 需要深刻理解 [LeetCode] 4. Median of Two Sorted Arrays 两个有序数组的中位数 http://bit.ly/2ROgk7B
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         int m = nums1.length, n = nums2.length;
@@ -317,7 +319,7 @@ public class Solution {
         return s.substring(start, end + 1);
     }
 
-    private int expandAroundCenter(String s, int left, int right) {
+    public int expandAroundCenter(String s, int left, int right) {
         int L = left, R = right;
         while (L >= 0 && R < s.length() && s.charAt(L) == s.charAt(R)) {
             L--;
@@ -408,9 +410,9 @@ public class Solution {
             return l2;
         }
     }
+    // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // 23. 合并K个排序链表 Merge k Sorted Lists
     // http://bit.ly/2LtXUbI
-
     public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) return null;
         return mergeKLists(lists, 0, lists.length - 1);
@@ -453,7 +455,7 @@ public class Solution {
             backtrack(ans, cur + "(", open + 1, close, max);
     }
 
-    // 11. 盛最多水的容器 双指针法，左右移动时候，选择移动 高度短的 可能能增加面积 如果是盛水最少的容器呢
+    //[tag: 面筋 http://bit.ly/2Na3nW1] 11. 盛最多水的容器 双指针法，左右移动时候，选择移动 高度短的 可能能增加面积 如果是盛水最少的容器呢
     public int maxArea(int[] height) {
         int left = 0, right = height.length - 1;
         int maxArea = 0;
@@ -635,7 +637,7 @@ public class Solution {
             swap(nums, i++, j--);
         }
     }
-
+    // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-542957-1-1.html
     // 48 旋转图像 todo 这道题目 需要观察下规律
     //  http://bit.ly/2RNX8a6
     //  http://bit.ly/2JmVgB7
@@ -651,7 +653,6 @@ public class Solution {
                 matrix[n - j - 1][i] = matrix[n - i - 1][n - j - 1];
                 matrix[n - i - 1][n - j - 1] = matrix[j][n - i - 1];
                 matrix[j][n - i - 1] = tmp;
-
             }
         }
 
@@ -712,7 +713,7 @@ public class Solution {
         return climbHelper(n, memo);
     }
 
-    private int climbHelper(int n, int[] memo) {
+    public int climbHelper(int n, int[] memo) {
         if (n <= 1) return 1;
         if (memo[n] > 0) {
             //  System.out.println("n:" + n + "memo:" + memo[n]);
@@ -1001,7 +1002,7 @@ public class Solution {
         return slow;
     }
 
-    private ListNode getIntersect(ListNode head) {
+    public ListNode getIntersect(ListNode head) {
         ListNode tortoise = head;
         ListNode hare = head;
 
@@ -1071,6 +1072,7 @@ public class Solution {
 
     // 300. 最长上升子序列
     // http://bit.ly/2S18Z4A 看动画就能理解为什么了 哈哈
+    //  [tag:面筋  很容易会被问到]
     public int lengthOfLIS(int[] nums) {
         if (nums.length == 0) {
             return 0;
@@ -1201,7 +1203,7 @@ public class Solution {
             if (mx > nums[i]) end = i;
             if (mn < nums[n - 1 - i]) start = n - 1 - i;
         }
-        System.out.println("end" + end + "start" + start);
+       // System.out.println("end" + end + "start" + start);
         return end - start + 1;
     }
 
@@ -1246,6 +1248,8 @@ public class Solution {
 
     //  215. 数组中的第K个最大元素
     // quick sort思想
+
+
     public int findKthLargest0(int[] nums, int k) {
         int left = 0, right = nums.length - 1;
         while (true) {
@@ -1266,20 +1270,21 @@ public class Solution {
             if (nums[l] < pivot && pivot < nums[r]) {
                 swap(nums, l++, r--);
             }
-            if (nums[l] > pivot) l++;
-            if (nums[r] < pivot) r--;
+            if (nums[l] >= pivot) l++;
+            if (nums[r] <= pivot) r--;
         }
+        // l-r=1
         swap(nums, lo, r);
         return r;
     }
 
 
-    private static boolean less(int v, int w) {
+    public static boolean less(int v, int w) {
         if (v == w) return false;   // optimization when reference equals
         return v - w < 0;
     }
 
-    private static void exch(int[] nums, int i, int j) {
+    public static void exch(int[] nums, int i, int j) {
         System.out.println("i " + i + " j " + j);
         int swap = nums[i];
         nums[i] = nums[j];
@@ -1398,7 +1403,7 @@ public class Solution {
     //  大小堆来做
     public int findKthLargest2(int[] nums, int k) {
         // init heap 'the smallest element first'
-        PriorityQueue<Integer> heap = new PriorityQueue<Integer>(Comparator.comparingInt(n -> n));
+        PriorityQueue<Integer> heap = new PriorityQueue<Integer>(((o1, o2) -> o1-o2 ));
 
         // keep k largest elements in the heap
         for (int n : nums) {
@@ -1406,9 +1411,8 @@ public class Solution {
             if (heap.size() > k)
                 heap.poll();
         }
-
         // output
-        return heap.poll();
+        return heap.peek();
     }
 
     //  238. 除自身以外数组的乘积 至少需要2次遍历来
@@ -1549,7 +1553,7 @@ public class Solution {
         return res;
     }
 
-    private void backtrack(int[] candidates, int target, List<List<Integer>> res, int i, ArrayList<Integer> tmp_list) {
+    public void backtrack(int[] candidates, int target, List<List<Integer>> res, int i, ArrayList<Integer> tmp_list) {
         if (target < 0) return;
         if (target == 0) {
             res.add(tmp_list);
@@ -1699,8 +1703,8 @@ public class Solution {
         // todo 哈
         return 1;
     }
-
-    //128. 最长连续序列 map set solve
+    // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
+    // 128. 最长连续序列 map set solve
 
     public int longestConsecutive(int[] nums) {
         int res = 0;
@@ -1740,7 +1744,7 @@ public class Solution {
         return ret;
     }
 
-    private void inorderHelper(TreeNode root, List<String> ret) {
+    public void inorderHelper(TreeNode root, List<String> ret) {
         if (root == null) return;
         inorderHelper(root.left, ret);
         ret.add(root.name);
@@ -1766,26 +1770,29 @@ public class Solution {
 
     // 解法 3 Morris遍历算法 todo 有点绕 ,  理解起来很麻烦 http://bit.ly/2jXmyW5
     public List<Integer> inorderTraversal2(TreeNode root) {
-        List<Integer> ret = new ArrayList<>();
-        while (root != null) {
-            if (root.left == null) {
+        // morris 遍历 核心 就是简历  root和 左子树 最右边节点的关系 pre = root.left; pre.right = root;
+        List<Integer> ret  = new ArrayList();
+        while(root!=null){
+            if(root.left==null){
                 ret.add(root.val);
                 root = root.right;
-            } else {
+            }else{
                 TreeNode pre = root.left;
-                while (pre.right != null && pre.right != root) {
+                while(pre.right!=null && pre.right!=root){
                     pre = pre.right;
                 }
-                if (pre.right == null) {
+
+                if(pre.right==null){
+                    // 建立morris 关键步骤
                     pre.right = root;
                     root = root.left;
-                } else {
+                }else{
+                    // 断开 morris 关系
                     pre.right = null;
                     ret.add(root.val);
                     root = root.right;
                 }
             }
-
         }
         return ret;
     }
@@ -1847,6 +1854,34 @@ public class Solution {
         preorderHelper(root.right, ret);
     }
 
+    // morris 前序遍历
+    public  List<Integer> morrisPreorder(TreeNode root){
+        List<Integer> ret = new ArrayList<>();
+        while (root!=null){
+            if(root.left==null){
+                ret.add(root.val);
+                root = root.right;
+            }else {
+                TreeNode pre =root.left;
+                while (pre.right!=null && pre.right!=root){
+                    pre = pre.right;
+                }
+                if (pre.right==null){
+                    // 建立morris 关系
+                    pre.right = root;
+                    // 先访问 root
+                    ret.add(root.val);
+                    root  = root.left;
+                }else {
+                    // 断开
+                    pre.right=null;
+                    root =root.right;
+                }
+            }
+        }
+        return ret;
+    }
+
     // 144. 二叉树的前序遍历 栈的做法
     public List<Integer> preorderTraversal1(TreeNode root) {
         if (root == null) return Collections.EMPTY_LIST;
@@ -1902,6 +1937,68 @@ public class Solution {
         return ret;
     }
 
+
+    // time complexity O(2N)
+    public List<Integer> postorderTraversal2(TreeNode root) {
+        List<Integer> ret = new ArrayList<>();
+        if (root==null) return ret;
+        Stack<TreeNode> s1=new Stack();
+        Stack<TreeNode> s2=new Stack();
+        s1.push(root);
+        while(!s1.isEmpty()){
+            TreeNode cur = s1.pop();
+            s2.push(cur);
+            if(cur.left!=null) s1.push(cur.left);
+            if(cur.right!=null) s1.push(cur.right);
+        }
+        // 和 下面的add First 异曲同工
+        while(!s2.isEmpty()){
+            ret.add(s2.pop().val);
+        }
+        return ret;
+    }
+
+    public List<Integer> postorderTraversal3(TreeNode root){
+        LinkedList<Integer> ret  = new LinkedList();
+        if (root == null) return ret;
+        Stack<TreeNode> s  = new Stack();
+        s.push(root);
+        while(!s.isEmpty()){
+            TreeNode cur = s.pop();
+            // addFirst 关键
+            ret.addFirst(cur.val);
+            if(cur.right!=null) s.push(cur.right);
+            if(cur.left!=null) s.push(cur.left);
+        }
+        return ret;
+    }
+    // 后续遍历 这是最好的 也是最棒的
+    public List<Integer> postorderTraversal4(TreeNode root) {
+        List<Integer> ret = new LinkedList<>();
+        if(root == null) return ret;
+        Stack<TreeNode> s = new Stack<>();
+
+        TreeNode cur = null;
+     //   s.push(root);
+        s.push(root);
+        while(!s.isEmpty()) {
+            cur = s.pop();
+            if( s.isEmpty()||cur != s.peek()) {
+                ret.add(cur.val);
+            } else {
+                if(cur.right != null) {
+                //    s.push(cur.right);
+                    s.push(cur.right);
+                }
+                if(cur.left != null) {
+                //    s.push(cur.left);
+                    s.push(cur.left);
+                }
+            }
+        }
+        return ret;
+    }
+
     //96. 不同的二叉搜索树 卡塔兰数的运用
     // 真的不太会做这种题目阿 mmp 好难
     // http://bit.ly/2LqUWVL
@@ -1917,7 +2014,7 @@ public class Solution {
     }
 
     // 104. 二叉树的最大深度
-    //
+    // 解法1
     public int maxDepth0(TreeNode root) {
         int level = 0;
         return dfsHeightHelper(root, level);
@@ -1930,7 +2027,7 @@ public class Solution {
         return Math.max(dfsHeightHelper(root.left, level), dfsHeightHelper(root.right, level));
     }
 
-    //
+    // 解法2
     public int maxDepth1(TreeNode root) {
         if (root == null) return 0;
         return 1 + Math.max(maxDepth1(root.left), maxDepth1(root.right));
@@ -1947,7 +2044,7 @@ public class Solution {
         return validateTreeNode(root) ? (isValidBSTBad(root.left) && isValidBSTBad(root.right)) : false;
     }
 
-    private static boolean validateTreeNode(TreeNode node) {
+    public  static boolean validateTreeNode(TreeNode node) {
         if (node.right == null && node.left == null) return true;
         if (node.right == null) {
             return node.val > node.left.val;
@@ -2208,7 +2305,7 @@ public class Solution {
         return buildTrePreIn(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
     }
 
-    TreeNode buildTrePreIn(int[] preOrder, int pLeft, int pRight, int[] inorder, int iLeft, int iRight) {
+    public TreeNode buildTrePreIn(int[] preOrder, int pLeft, int pRight, int[] inorder, int iLeft, int iRight) {
         if (pLeft > pRight || iLeft > iRight) {
             return null;
         }
@@ -2387,7 +2484,7 @@ public class Solution {
     }
 
     // 状态转移方程 dp[i,j]=dp[i+1,j-1]+(dp[i]==dp[j]  逆向化--->init i+1 == j-1
-    int dfsCountSubHelper(String s, int i, int j) {
+   public int dfsCountSubHelper(String s, int i, int j) {
         int res = 0;
         while (i >= 0 && j < s.length() && s.charAt(i) == s.charAt(j)) {
             i--;
@@ -2481,7 +2578,7 @@ public class Solution {
         return dfsTargetSumHelper(nums, S, 0, res);
     }
 
-    int dfsTargetSumHelper(int[] nums, int S, int start, int res) {
+    public int dfsTargetSumHelper(int[] nums, int S, int start, int res) {
         if (start >= nums.length) {
             if (S == 0) res++;
             return res;
@@ -2698,7 +2795,7 @@ public class Solution {
 
     }
 
-    private String repeatStr(String s, int num) {
+    public String repeatStr(String s, int num) {
         StringBuilder sb = new StringBuilder();
         if (num <= 0) return "";
         for (int i = 0; i < num; i++) {
@@ -3137,21 +3234,6 @@ public class Solution {
         }
         return res;
     }
-
-    // follow up todo 590. N叉树的后序遍历
-    public List<Integer> postorder(Node root) {
-        return null;
-    }
-
-    // 207. 课程表 拓扑排序
-
-    // 124. 二叉树中的最大路径和
-    public int maxPathSum(TreeNode root) {
-        return 1;
-    }
-
-    // https://leetcode-cn.com/problems/add-strings/
-    // 415. 字符串相加
 
     // 7. 整数反转
     // 无法处理负数问题阿
@@ -4141,10 +4223,8 @@ public class Solution {
         return dp_i_0;
     }
 
-
-    // 502. IPO
-
-    //  8  字符串转换整数 (atoi)
+    // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
+    // leetcode 8  字符串转换整数 (atoi)
     public int myAtoi(String str) {
         int sign = 1;
         int i = 0;
@@ -4292,7 +4372,7 @@ public class Solution {
         return head;
     }
 
-
+    // [tag:微软面经] https://www.1point3acres.com/bbs/thread-506842-1-1.html
     // 329. 矩阵中的最长递增路径
     /*public int longestIncreasingPath(int[][] matrix) {
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return 0;
@@ -4783,7 +4863,7 @@ public class Solution {
         return key;
     }*/
 
-    boolean knows(int a, int b) {
+    public  boolean knows(int a, int b) {
         return true;
     }
 
@@ -5875,7 +5955,7 @@ public class Solution {
 
     }
 
-    private int newIndex(int index, int n) {
+    public int newIndex(int index, int n) {
         return (1 + 2 * index) % (n | 1);
     }
 
@@ -6019,7 +6099,9 @@ public class Solution {
 
     // 230 二叉搜索树中第k小 通用方法
     public int kthSmallest(TreeNode root, int k) {
-        PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
+        PriorityQueue<Integer> pq = new PriorityQueue<Integer>((o1,o2)->{
+            return o2.compareTo(o1);
+        });
         traversal(root, pq, k);
         return pq.peek();
     }
@@ -6111,7 +6193,7 @@ public class Solution {
         return res;
     }
 
-
+    // [tag: 微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // 340 至多包含k个不同字符的最长子串
     public int lengthOfLongestSubstringKDistinct(String s, int k) {
         Map<Character, Integer> map = new HashMap();
@@ -6311,6 +6393,107 @@ public class Solution {
 
     //  grocery
     //  http://bit.ly/2HVV8Zz  遍历问题 注意不要无限递归下去就行 就是要找出所有可能的base case  return
+
+
+    // 面筋题目
+    //  http://bit.ly/32H6YPn
+    // leetcode 664
+    public int strangePrinter(String s){
+        return  -1;
+    }
+
+    // leetcode 415
+    // https://leetcode-cn.com/problems/add-strings/
+    // 415. 字符串相加
+
+    // follow up todo 590. N叉树的后序遍历
+    public List<Integer> postorder(Node root) {
+        return null;
+    }
+
+    // 207. 课程表 拓扑排序
+
+    // 124. 二叉树中的最大路径和
+    public int maxPathSum(TreeNode root) {
+        return 1;
+    }
+
+    // [tag:微软实习面筋] https://www.1point3acres.com/bbs/thread-540776-1-1.html
+    // 验证是否是一棵二叉树
+    public boolean validBST(TreeNode root){
+        int min =Integer.MIN_VALUE, max = Integer.MAX_VALUE;
+        return help(root,min,max);
+    }
+
+    public boolean help(TreeNode root,int min,int max){
+        int left = root.left.val;
+        int val = root.val;
+        int right = root.right.val;
+        if (min<=left && left<=val && val<=right && right<=max) {
+            help(root.left,min,val);
+            help(root.right,val,max);
+        }
+            return false;
+    }
+    // leetcode 516  [tag:微软面筋]  https://www.1point3acres.com/bbs/thread-541121-1-1.html
+
+    // [tag:微软面筋] 求M的N次方的后3位
+    public int getLastThreeNum(int m,int n){
+        int res = 1;
+        for (int i = 0; i < n; i++) {
+            res  = (res * (m % 1000))%1000;
+        }
+        return res;
+    }
+    // follow up
+   //  数2012的M次方与数2012的N次方的最后三位数相同,求正整数M和N,使M+N最小
+    /*public int resMinMN = 0;
+    public int MinMN(int m,int n){
+       int r1 = getLastThreeNum(2012,m);
+       int r2 = getLastThreeNum(2012,n);
+       if (r1==r2){
+          res = Math.min(m+n,res);
+       }else {
+
+       }
+
+    }
+    */
+    //[tag:微软面经] https://www.1point3acres.com/bbs/thread-506842-1-1.html
+    // leetcode 415
+    public String addStrings(String num1, String num2) {
+        return "";
+    }
+
+    //[tag:微软面经] leetcode 419 https://www.1point3acres.com/bbs/thread-506842-1-1.html
+    public int countBattleships(char[][] board) {
+        return -1;
+    }
+
+    // [tag:微软面经] https://www.1point3acres.com/bbs/thread-535401-1-1.html
+    // https://www.geeksforgeeks.org/k-th-element-two-sorted-arrays/
+    int kth(int arr1[], int arr2[], int m, int n, int k){
+        return -1;
+    }
+
+    //  [tag:微软面经] https://www.1point3acres.com/bbs/thread-535401-1-1.html
+    // https://www.geeksforgeeks.org/array-rotation/
+
+
+    // [tag:微软面经] https://www.1point3acres.com/bbs/thread-535401-1-1.html
+    // leetcode 716
+    // [tag:微软面经] https://www.1point3acres.com/bbs/thread-529016-1-1.html
+    // https://www.hackerrank.com/challenges/almost-sorted/problem
+    // leetcode 969 https://leetcode.com/problems/pancake-sorting/
+
+    // 字节
+    // https://blog.csdn.net/kuangsonghan/article/details/82767363
+
+    // airbnb 面筋
+    // leetcode 316. 去除重复字母
+
+    // https://www.1point3acres.com/bbs/thread-532266-1-1.html
+    // http://www.voidcn.com/article/p-srkptnpu-bnt.html
 
 }
 

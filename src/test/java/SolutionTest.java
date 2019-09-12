@@ -541,10 +541,10 @@ public class SolutionTest {
 
     @Test
     public void findKthLargest() {
-        int[] nums = new int[]{7, 5, 1, 6, 4, 3, 8,};
-        System.out.println(INSTANCE.findKthLargest0(nums, 3));
-        System.out.println(INSTANCE.findKthLargest1(nums, 5));
-        System.out.println(INSTANCE.findKthLargest2(nums, 4));
+        int[] nums = new int[]{3,2,3,1,2,4,5,5,6};
+        int k = 4;
+       assert  INSTANCE.findKthLargest0(nums, k)== INSTANCE.findKthLargest1(nums,k);
+       assert  INSTANCE.findKthLargest1(nums,k) == INSTANCE.findKthLargest2(nums,k);
     }
 
     @Test
@@ -635,15 +635,15 @@ public class SolutionTest {
         node2.setLeft(node3);
 
 
-        TreeNode F = TreeNode.builder().name("F").build();
-        TreeNode B = TreeNode.builder().name("B").build();
-        TreeNode G = TreeNode.builder().name("G").build();
-        TreeNode A = TreeNode.builder().name("A").build();
-        TreeNode D = TreeNode.builder().name("D").build();
-        TreeNode I = TreeNode.builder().name("I").build();
-        TreeNode C = TreeNode.builder().name("C").build();
-        TreeNode E = TreeNode.builder().name("E").build();
-        TreeNode H = TreeNode.builder().name("H").build();
+        TreeNode F = TreeNode.builder().name("F").val(6).build();
+        TreeNode B = TreeNode.builder().name("B").val(2).build();
+        TreeNode G = TreeNode.builder().name("G").val(7).build();
+        TreeNode A = TreeNode.builder().name("A").val(1).build();
+        TreeNode D = TreeNode.builder().name("D").val(4).build();
+        TreeNode I = TreeNode.builder().name("I").val(9).build();
+        TreeNode C = TreeNode.builder().name("C").val(3).build();
+        TreeNode E = TreeNode.builder().name("E").val(5).build();
+        TreeNode H = TreeNode.builder().name("H").val(8).build();
 
         F.setLeft(B);
         F.setRight(G);
@@ -654,10 +654,21 @@ public class SolutionTest {
         G.setRight(I);
         I.setLeft(H);
 
+
+        System.out.println("====前序遍历===");
+        System.out.println(INSTANCE.preorderTraversal0(F));
+        System.out.println(INSTANCE.preorderTraversal1(F));
+        System.out.println(INSTANCE.morrisPreorder(F));
+
         System.out.println("====中序遍历=====");
         System.out.println(INSTANCE.inorderTraversal0(F));
-        System.out.println(INSTANCE.inorderTraversal1(root));
-        System.out.println(INSTANCE.inorderTraversal2(F));
+        TreeNode root1 = TreeNode.builder().val(1).build();
+        TreeNode n2 = TreeNode.builder().val(2).build();
+        TreeNode n3 = TreeNode.builder().val(3).build();
+        root1.setRight(n2);n2.setLeft(n3);
+        INSTANCE.inorderTraversal1(root1);
+
+        INSTANCE.inorderTraversal2(F);
 
 
         TreeNode a = TreeNode.builder().name("a").val(3).build();
@@ -727,9 +738,19 @@ public class SolutionTest {
         D.setRight(E);
         G.setRight(I);
         I.setLeft(H);
+
+        TreeNode root1 = TreeNode.builder().val(1).build();
+        TreeNode n2 = TreeNode.builder().val(2).build();
+        TreeNode n3 = TreeNode.builder().val(3).build();
+        root1.setRight(n2);n2.setLeft(n3);
+
         System.out.println("===后续遍历===");
+        System.out.println(INSTANCE.postorderTraversal4(root1));// 这是最好的解释  
+        System.out.println(INSTANCE.postorderTraversal3(F));
         System.out.println(INSTANCE.postorderTraversal0(F));
         System.out.println(INSTANCE.postorderTraversal1(F));
+        System.out.println(INSTANCE.postorderTraversal2(F));
+        System.out.println(INSTANCE.postorderTraversal4(F));
     }
 
     @Test
@@ -2161,4 +2182,10 @@ public class SolutionTest {
         System.out.println(INSTANCE.solveNQueens(4));
     }
 
+    @Test
+    public void getLastThreeNum(){
+        System.out.println(INSTANCE.getLastThreeNum(9, 3));
+        System.out.println(9*9*9);
+       // INSTANCE.getLastThreeNum(2012,m)==INSTANCE.getLastThreeNum(2012,n);
+    }
 }

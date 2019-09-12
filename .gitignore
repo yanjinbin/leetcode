@@ -2,3 +2,4 @@ leetcode.iml
 .idea/**
 target/**
 # Created by .ignore support plugin (hsz.mobi)
+/src/test/java/ya.md

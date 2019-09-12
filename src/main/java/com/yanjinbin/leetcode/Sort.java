@@ -404,8 +404,8 @@ public class Sort {
         int p = head.val;
         while (fast != tail) {
             if (fast.val < p) {
-                slow = slow.next;
                 swap(slow, fast);
+                slow = slow.next;
             }
             fast = fast.next;
         }
@@ -572,8 +572,8 @@ public class Sort {
         // 需要辅助数组的原因是因为不像更新的时候被覆盖
         int[] aux = new int[nums.length];
         mergeSort(nums, aux, 0, nums.length - 1);
-    }
 
+    }
     // 递归版本
     public void mergeSort(int[] nums, int[] aux, int l, int r) {
         if (l >= r) return;
