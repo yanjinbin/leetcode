@@ -74,4 +74,22 @@ public class Pack {
         return Math.max(maxs, L + R);
     }
 
+
+    // chapter 8.2 P442
+    // 这个问题 网上也已经有很多人分析过如何写出正确的二分查找了
+    //  8.2章节  也给出标准示范了 , 以及几个细节的分析
+    // 二分查找的标准函数 http://bit.ly/32512ix
+    public int binarySearch(int[] array, int first, int last, int value) {
+      //  System.out.println("first " + first + " last " + last + " value " + value);
+        while (first < last) {
+            int mid = first + (last - first) / 2;
+            if (array[mid] <= value) { // 返回满足 arr[i] > value的第一个位置
+                first = mid + 1;
+            } else {
+                last = mid;
+            }
+        }
+        // System.out.println("first " + first + " last " + last + " value " + value);
+        return first;
+    }
 }

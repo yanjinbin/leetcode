@@ -541,10 +541,10 @@ public class SolutionTest {
 
     @Test
     public void findKthLargest() {
-        int[] nums = new int[]{3,2,3,1,2,4,5,5,6};
+        int[] nums = new int[]{3, 2, 3, 1, 2, 4, 5, 5, 6};
         int k = 4;
-       assert  INSTANCE.findKthLargest0(nums, k)== INSTANCE.findKthLargest1(nums,k);
-       assert  INSTANCE.findKthLargest1(nums,k) == INSTANCE.findKthLargest2(nums,k);
+        assert INSTANCE.findKthLargest0(nums, k) == INSTANCE.findKthLargest1(nums, k);
+        assert INSTANCE.findKthLargest1(nums, k) == INSTANCE.findKthLargest2(nums, k);
     }
 
     @Test
@@ -665,7 +665,8 @@ public class SolutionTest {
         TreeNode root1 = TreeNode.builder().val(1).build();
         TreeNode n2 = TreeNode.builder().val(2).build();
         TreeNode n3 = TreeNode.builder().val(3).build();
-        root1.setRight(n2);n2.setLeft(n3);
+        root1.setRight(n2);
+        n2.setLeft(n3);
         INSTANCE.inorderTraversal1(root1);
 
         INSTANCE.inorderTraversal2(F);
@@ -742,10 +743,11 @@ public class SolutionTest {
         TreeNode root1 = TreeNode.builder().val(1).build();
         TreeNode n2 = TreeNode.builder().val(2).build();
         TreeNode n3 = TreeNode.builder().val(3).build();
-        root1.setRight(n2);n2.setLeft(n3);
+        root1.setRight(n2);
+        n2.setLeft(n3);
 
         System.out.println("===后续遍历===");
-        System.out.println(INSTANCE.postorderTraversal4(root1));// 这是最好的解释  
+        System.out.println(INSTANCE.postorderTraversal4(root1));// 这是最好的解释
         System.out.println(INSTANCE.postorderTraversal3(F));
         System.out.println(INSTANCE.postorderTraversal0(F));
         System.out.println(INSTANCE.postorderTraversal1(F));
@@ -1840,7 +1842,7 @@ public class SolutionTest {
     public void binarySearch() {
         int[] arr = new int[]{9, 5, 4, 2, 3, 1, 6, 7, 2, 2, 2, 2};
         Arrays.sort(arr);
-        //  System.out.println(Arrays.toString(arr));
+        System.out.println(Arrays.toString(arr));
         int first = 0;
         int last = arr.length;
         // for (int i = 0; i < 50; i++) {
@@ -1849,12 +1851,10 @@ public class SolutionTest {
         int res = binarySearch(arr, first, last, 2);
         System.out.println(res);
         System.out.println(arr[res]);
-        //   System.out.println("======B");
-        //  res = binarySearch(arr, first, last, 11);
-        //   System.out.println(res);
-        //  System.out.println("======C");
+        System.out.println("======B");
+        res = binarySearch(arr, first, last, 11);
+        System.out.println(res);
 
-        // }
     }
 
     // 二分查找的标准函数 http://bit.ly/32512ix
@@ -2183,9 +2183,9 @@ public class SolutionTest {
     }
 
     @Test
-    public void getLastThreeNum(){
+    public void getLastThreeNum() {
         System.out.println(INSTANCE.getLastThreeNum(9, 3));
-        System.out.println(9*9*9);
-       // INSTANCE.getLastThreeNum(2012,m)==INSTANCE.getLastThreeNum(2012,n);
+        System.out.println(9 * 9 * 9);
+        // INSTANCE.getLastThreeNum(2012,m)==INSTANCE.getLastThreeNum(2012,n);
     }
 }
