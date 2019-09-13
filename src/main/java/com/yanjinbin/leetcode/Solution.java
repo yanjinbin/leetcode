@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  */
 public class Solution {
     // shuffle array lower bound  inclusive   upper bound exclusive
-    public void shuffle(int[] nums, int lower, int upper) {
+    public static void shuffle(int[] nums, int lower, int upper) {
         Random rand = new Random();
         for (int i = lower; i < upper; i++) {
             int j = lower + rand.nextInt(i - lower + 1);
@@ -625,7 +625,7 @@ public class Solution {
 
     }
 
-    public void swap(int[] nums, int i, int j) {
+    public static void swap(int[] nums, int i, int j) {
         if (i == j) return;
         int tmp = nums[i];
         nums[i] = nums[j];
