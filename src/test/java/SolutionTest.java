@@ -106,7 +106,10 @@ public class SolutionTest {
                                 build())
                 .build();
 
-        ListNode listNode = INSTANCE.addTwoNumbers(l1, l2);
+        ListNode head = INSTANCE.addTwoNumbers(l1, l2);
+        System.out.println(head);
+        ListNode ret = INSTANCE.addTwoNumber(l1, l2);
+        System.out.println(ret);
     }
 
     @Test
@@ -753,6 +756,31 @@ public class SolutionTest {
         System.out.println(INSTANCE.postorderTraversal1(F));
         System.out.println(INSTANCE.postorderTraversal2(F));
         System.out.println(INSTANCE.postorderTraversal4(F));
+    }
+
+    @Test
+    public void zigzagTraversal(){
+
+        TreeNode F = TreeNode.builder().name("F").val(6).build(); // ROOT
+        TreeNode B = TreeNode.builder().name("B").val(2).build();
+        TreeNode G = TreeNode.builder().name("G").val(7).build();
+        TreeNode A = TreeNode.builder().name("A").val(1).build();
+        TreeNode D = TreeNode.builder().name("D").val(4).build();
+        TreeNode I = TreeNode.builder().name("I").val(9).build();
+        TreeNode C = TreeNode.builder().name("C").val(3).build();
+        TreeNode E = TreeNode.builder().name("E").val(5).build();
+        TreeNode H = TreeNode.builder().name("H").val(8).build();
+
+        F.setLeft(B);
+        F.setRight(G);
+        B.setLeft(A);
+        B.setRight(D);
+        D.setLeft(C);
+        D.setRight(E);
+        G.setRight(I);
+        I.setLeft(H);
+        System.out.println(INSTANCE.zigzagLevelOrder0(F));
+        System.out.println(INSTANCE.zigzagLevelOrder1(F));
     }
 
     @Test

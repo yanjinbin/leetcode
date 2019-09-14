@@ -32,6 +32,14 @@ import java.util.stream.Collectors;
  * https://leetcode-cn.com/problemset/top/
  */
 public class Solution {
+
+    public static void swap(int[] nums, int i, int j) {
+        if (i == j) return;
+        int tmp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = tmp;
+    }
+
     // shuffle array lower bound  inclusive   upper bound exclusive
     public static void shuffle(int[] nums, int lower, int upper) {
         Random rand = new Random();
@@ -60,7 +68,7 @@ public class Solution {
         ListNode dummyHead = new ListNode(0);
         ListNode p = l1;
         ListNode q = l2;
-        ListNode curr = dummyHead;
+        ListNode cur = dummyHead;
         int carry = 0;
         while (p != null || q != null) {
             int x = p != null ? p.val : 0;
@@ -69,9 +77,9 @@ public class Solution {
             // 更新carry
             carry = sum / 10;
 
-            curr.next = new ListNode(sum % 10);
+            cur.next = new ListNode(sum % 10);
             // self update
-            curr = curr.next;
+            cur = cur.next;
             if (p != null) {
                 p = p.next;
             }
@@ -82,10 +90,39 @@ public class Solution {
 
         // 某位如果超过10 需要在循环外 更新一次
         if (carry > 0) {
-            curr.next = new ListNode(carry);
+            cur.next = new ListNode(carry);
         }
         // dummyhead 是0 所以是返回他的下一个节点,作为头部节点
         return dummyHead.next;
+    }
+
+    // bad
+    public ListNode addTwoNumber(ListNode l1, ListNode l2) {
+        // 这种方法有个缺陷是无法处理 111  88999999 这样的
+        ListNode dummy = new ListNode(0);
+        ListNode cur = dummy;
+        int sum = 0, carry = 0;
+        while (l1 != null && l2 != null) {
+            sum = l1.val + l2.val + carry;
+            carry = sum >= 10 ? 1 : 0;
+            int newVal = sum % 10;
+            cur.next = new ListNode(newVal);
+            cur = cur.next;
+            l1 = l1.next;
+            l2 = l2.next;
+        }
+        if (l1 == null && l2 == null && carry == 1) {
+            cur.next = new ListNode(carry);
+        }
+        if (l1 == null && l2 != null) {
+            l2.val += carry;
+            cur.next = l2;
+        }
+        if (l1 != null && l2 == null) {
+            l1.val += carry;
+            cur.next = l1;
+        }
+        return dummy.next;
     }
 
 
@@ -275,6 +312,7 @@ public class Solution {
         // return head; 错误的原因在于head 节点也有可能Update 为Null阿  在更新code---> " delayNode.next = delayNode.next.next; "
         return dummyNode.next;
     }
+
     // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     //  TODO 需要深刻理解 [LeetCode] 4. Median of Two Sorted Arrays 两个有序数组的中位数 http://bit.ly/2ROgk7B
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
@@ -410,6 +448,7 @@ public class Solution {
             return l2;
         }
     }
+
     // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // 23. 合并K个排序链表 Merge k Sorted Lists
     // http://bit.ly/2LtXUbI
@@ -610,7 +649,6 @@ public class Solution {
 
     //  31. 下一个排列 首先理解字典序  找下一个字典序更大的 如果最大了 就全局升序排列了
     //  题解连接 http://bit.ly/2RS8Wbd
-    //  总结 这道底模本身不难
     public void nextPermutation(int[] nums) {
         if (nums == null || nums.length == 0) return;
 
@@ -622,14 +660,6 @@ public class Solution {
             swap(nums, i, j); //
         }
         reverse0(nums, i + 1, nums.length - 1);
-
-    }
-
-    public static void swap(int[] nums, int i, int j) {
-        if (i == j) return;
-        int tmp = nums[i];
-        nums[i] = nums[j];
-        nums[j] = tmp;
     }
 
     public void reverse0(int[] nums, int i, int j) {
@@ -637,6 +667,7 @@ public class Solution {
             swap(nums, i++, j--);
         }
     }
+
     // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-542957-1-1.html
     // 48 旋转图像 todo 这道题目 需要观察下规律
     //  http://bit.ly/2RNX8a6
@@ -1203,7 +1234,7 @@ public class Solution {
             if (mx > nums[i]) end = i;
             if (mn < nums[n - 1 - i]) start = n - 1 - i;
         }
-       // System.out.println("end" + end + "start" + start);
+        // System.out.println("end" + end + "start" + start);
         return end - start + 1;
     }
 
@@ -1403,7 +1434,7 @@ public class Solution {
     //  大小堆来做
     public int findKthLargest2(int[] nums, int k) {
         // init heap 'the smallest element first'
-        PriorityQueue<Integer> heap = new PriorityQueue<Integer>(((o1, o2) -> o1-o2 ));
+        PriorityQueue<Integer> heap = new PriorityQueue<Integer>(((o1, o2) -> o1 - o2));
 
         // keep k largest elements in the heap
         for (int n : nums) {
@@ -1568,9 +1599,29 @@ public class Solution {
     }
 
 
-    // 77  组合
+    // 77  组合 todo
     public List<List<Integer>> combine(int n, int k) {
-        return null;
+        List<List<Integer>> ret = new ArrayList<>();
+        Map<Integer, Boolean> dict = new HashMap();
+        for (int i = 1; i <= n; i++) {
+            dict.put(i, false);
+        }
+        return ret;
+    }
+
+    public void backTrackCombine(List<List<Integer>> ret, LinkedList<Integer> sub, int level, int k, Map<Integer, Boolean> dict) {
+        if (level == k) {
+            ret.add(new ArrayList(sub));
+            return;
+        }
+        for (int i = 1; i <= dict.size(); i++) {
+            if (dict.get(i)) continue;
+            dict.put(i, true);
+            sub.add(i);
+            //backTrackCombine();
+            dict.put(i, false);
+            sub.pollLast();
+        }
     }
 
     // follow up https://www.cnblogs.com/grandyang/p/4358831.html
@@ -1771,22 +1822,22 @@ public class Solution {
     // 解法 3 Morris遍历算法 todo 有点绕 ,  理解起来很麻烦 http://bit.ly/2jXmyW5
     public List<Integer> inorderTraversal2(TreeNode root) {
         // morris 遍历 核心 就是简历  root和 左子树 最右边节点的关系 pre = root.left; pre.right = root;
-        List<Integer> ret  = new ArrayList();
-        while(root!=null){
-            if(root.left==null){
+        List<Integer> ret = new ArrayList();
+        while (root != null) {
+            if (root.left == null) {
                 ret.add(root.val);
                 root = root.right;
-            }else{
+            } else {
                 TreeNode pre = root.left;
-                while(pre.right!=null && pre.right!=root){
+                while (pre.right != null && pre.right != root) {
                     pre = pre.right;
                 }
 
-                if(pre.right==null){
+                if (pre.right == null) {
                     // 建立morris 关键步骤
                     pre.right = root;
                     root = root.left;
-                }else{
+                } else {
                     // 断开 morris 关系
                     pre.right = null;
                     ret.add(root.val);
@@ -1855,27 +1906,27 @@ public class Solution {
     }
 
     // morris 前序遍历
-    public  List<Integer> morrisPreorder(TreeNode root){
+    public List<Integer> morrisPreorder(TreeNode root) {
         List<Integer> ret = new ArrayList<>();
-        while (root!=null){
-            if(root.left==null){
+        while (root != null) {
+            if (root.left == null) {
                 ret.add(root.val);
                 root = root.right;
-            }else {
-                TreeNode pre =root.left;
-                while (pre.right!=null && pre.right!=root){
+            } else {
+                TreeNode pre = root.left;
+                while (pre.right != null && pre.right != root) {
                     pre = pre.right;
                 }
-                if (pre.right==null){
+                if (pre.right == null) {
                     // 建立morris 关系
                     pre.right = root;
                     // 先访问 root
                     ret.add(root.val);
-                    root  = root.left;
-                }else {
+                    root = root.left;
+                } else {
                     // 断开
-                    pre.right=null;
-                    root =root.right;
+                    pre.right = null;
+                    root = root.right;
                 }
             }
         }
@@ -1941,57 +1992,58 @@ public class Solution {
     // time complexity O(2N)
     public List<Integer> postorderTraversal2(TreeNode root) {
         List<Integer> ret = new ArrayList<>();
-        if (root==null) return ret;
-        Stack<TreeNode> s1=new Stack();
-        Stack<TreeNode> s2=new Stack();
+        if (root == null) return ret;
+        Stack<TreeNode> s1 = new Stack();
+        Stack<TreeNode> s2 = new Stack();
         s1.push(root);
-        while(!s1.isEmpty()){
+        while (!s1.isEmpty()) {
             TreeNode cur = s1.pop();
             s2.push(cur);
-            if(cur.left!=null) s1.push(cur.left);
-            if(cur.right!=null) s1.push(cur.right);
+            if (cur.left != null) s1.push(cur.left);
+            if (cur.right != null) s1.push(cur.right);
         }
         // 和 下面的add First 异曲同工
-        while(!s2.isEmpty()){
+        while (!s2.isEmpty()) {
             ret.add(s2.pop().val);
         }
         return ret;
     }
 
-    public List<Integer> postorderTraversal3(TreeNode root){
-        LinkedList<Integer> ret  = new LinkedList();
+    public List<Integer> postorderTraversal3(TreeNode root) {
+        LinkedList<Integer> ret = new LinkedList();
         if (root == null) return ret;
-        Stack<TreeNode> s  = new Stack();
+        Stack<TreeNode> s = new Stack();
         s.push(root);
-        while(!s.isEmpty()){
+        while (!s.isEmpty()) {
             TreeNode cur = s.pop();
             // addFirst 关键
             ret.addFirst(cur.val);
-            if(cur.right!=null) s.push(cur.right);
-            if(cur.left!=null) s.push(cur.left);
+            if (cur.right != null) s.push(cur.right);
+            if (cur.left != null) s.push(cur.left);
         }
         return ret;
     }
+
     // 后续遍历 这是最好的 也是最棒的
     public List<Integer> postorderTraversal4(TreeNode root) {
         List<Integer> ret = new LinkedList<>();
-        if(root == null) return ret;
+        if (root == null) return ret;
         Stack<TreeNode> s = new Stack<>();
 
         TreeNode cur = null;
-     //   s.push(root);
         s.push(root);
-        while(!s.isEmpty()) {
+        s.push(root);
+        while (!s.isEmpty()) {
             cur = s.pop();
-            if( s.isEmpty()||cur != s.peek()) {
+            if (s.isEmpty() || cur != s.peek()) {
                 ret.add(cur.val);
             } else {
-                if(cur.right != null) {
-                //    s.push(cur.right);
+                if (cur.right != null) {
+                    s.push(cur.right);
                     s.push(cur.right);
                 }
-                if(cur.left != null) {
-                //    s.push(cur.left);
+                if (cur.left != null) {
+                    s.push(cur.left);
                     s.push(cur.left);
                 }
             }
@@ -2044,7 +2096,7 @@ public class Solution {
         return validateTreeNode(root) ? (isValidBSTBad(root.left) && isValidBSTBad(root.right)) : false;
     }
 
-    public  static boolean validateTreeNode(TreeNode node) {
+    public static boolean validateTreeNode(TreeNode node) {
         if (node.right == null && node.left == null) return true;
         if (node.right == null) {
             return node.val > node.left.val;
@@ -2484,7 +2536,7 @@ public class Solution {
     }
 
     // 状态转移方程 dp[i,j]=dp[i+1,j-1]+(dp[i]==dp[j]  逆向化--->init i+1 == j-1
-   public int dfsCountSubHelper(String s, int i, int j) {
+    public int dfsCountSubHelper(String s, int i, int j) {
         int res = 0;
         while (i >= 0 && j < s.length() && s.charAt(i) == s.charAt(j)) {
             i--;
@@ -4863,7 +4915,7 @@ public class Solution {
         return key;
     }*/
 
-    public  boolean knows(int a, int b) {
+    public boolean knows(int a, int b) {
         return true;
     }
 
@@ -6099,7 +6151,7 @@ public class Solution {
 
     // 230 二叉搜索树中第k小 通用方法
     public int kthSmallest(TreeNode root, int k) {
-        PriorityQueue<Integer> pq = new PriorityQueue<Integer>((o1,o2)->{
+        PriorityQueue<Integer> pq = new PriorityQueue<Integer>((o1, o2) -> {
             return o2.compareTo(o1);
         });
         traversal(root, pq, k);
@@ -6398,8 +6450,8 @@ public class Solution {
     // 面筋题目
     //  http://bit.ly/32H6YPn
     // leetcode 664
-    public int strangePrinter(String s){
-        return  -1;
+    public int strangePrinter(String s) {
+        return -1;
     }
 
     // leetcode 415
@@ -6420,33 +6472,84 @@ public class Solution {
 
     // [tag:微软实习面筋] https://www.1point3acres.com/bbs/thread-540776-1-1.html
     // 验证是否是一棵二叉树
-    public boolean validBST(TreeNode root){
-        int min =Integer.MIN_VALUE, max = Integer.MAX_VALUE;
-        return help(root,min,max);
+    public boolean validBST(TreeNode root) {
+        int min = Integer.MIN_VALUE, max = Integer.MAX_VALUE;
+        return help(root, min, max);
     }
 
-    public boolean help(TreeNode root,int min,int max){
+    public boolean help(TreeNode root, int min, int max) {
         int left = root.left.val;
         int val = root.val;
         int right = root.right.val;
-        if (min<=left && left<=val && val<=right && right<=max) {
-            help(root.left,min,val);
-            help(root.right,val,max);
+        if (min <= left && left <= val && val <= right && right <= max) {
+            help(root.left, min, val);
+            help(root.right, val, max);
         }
-            return false;
+        return false;
     }
     // leetcode 516  [tag:微软面筋]  https://www.1point3acres.com/bbs/thread-541121-1-1.html
 
     // [tag:微软面筋] 求M的N次方的后3位
-    public int getLastThreeNum(int m,int n){
+    public int getLastThreeNum(int m, int n) {
         int res = 1;
         for (int i = 0; i < n; i++) {
-            res  = (res * (m % 1000))%1000;
+            res = (res * (m % 1000)) % 1000;
         }
         return res;
     }
+
+    // leetcode 103 二叉树的锯齿形层遍历
+    public List<List<Integer>> zigzagLevelOrder0(TreeNode root) {
+        List<List<Integer>> ret = new ArrayList<>();
+        if (root == null) return ret;
+        Queue<TreeNode> s = new LinkedList<>();
+        s.add(root);
+        boolean lToR = true;
+        while (!s.isEmpty()) {
+            int len = s.size();
+            LinkedList<Integer> sub = new LinkedList<>();
+            for (int i = 0; i < len; i++) {
+                TreeNode cur = s.poll();
+                if (lToR) {
+                    sub.addLast(cur.val);
+                } else {
+                    sub.addFirst(cur.val);
+                }
+                if (cur.left != null) s.add(cur.left);
+                if (cur.right != null) s.add(cur.right);
+            }
+            lToR = !lToR;
+            ret.add(sub);
+        }
+        return ret;
+    }
+
+    public List<List<Integer>> zigzagLevelOrder1(TreeNode root) {
+        List<List<Integer>> ret = new ArrayList();
+        dfsZigzag(root, 0, ret);
+        return ret;
+    }
+
+    public void dfsZigzag(TreeNode root, int level, List<List<Integer>> ret) {
+        if (root == null) return;
+        if (ret.size() <= level) { // 这里比较trick 什么时候new 一个List
+            List<Integer> newLevel = new LinkedList<>();
+            ret.add(newLevel);
+        }
+        List<Integer> sub = ret.get(level);
+        if ((level & 1) == 0) {
+            sub.add(root.val);
+        } else {
+            sub.add(0, root.val);
+        }
+        dfsZigzag(root.left, level + 1, ret);
+        dfsZigzag(root.right, level + 1, ret);
+
+    }
+
+
     // follow up
-   //  数2012的M次方与数2012的N次方的最后三位数相同,求正整数M和N,使M+N最小
+    //  数2012的M次方与数2012的N次方的最后三位数相同,求正整数M和N,使M+N最小
     /*public int resMinMN = 0;
     public int MinMN(int m,int n){
        int r1 = getLastThreeNum(2012,m);
@@ -6472,7 +6575,7 @@ public class Solution {
 
     // [tag:微软面经] https://www.1point3acres.com/bbs/thread-535401-1-1.html
     // https://www.geeksforgeeks.org/k-th-element-two-sorted-arrays/
-    int kth(int arr1[], int arr2[], int m, int n, int k){
+    int kth(int arr1[], int arr2[], int m, int n, int k) {
         return -1;
     }
 
