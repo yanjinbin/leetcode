@@ -5,18 +5,39 @@ public class Main {
     // 落谷OI提交用的模版
     public static void main(String args[]) {
         Scanner cin = new Scanner(System.in);
-        int N = cin.nextInt(), V = cin.nextInt();
-        int[] C = new int[N];
-        int[] W = new int[N];
-        int[] M = new int[N];
-        for (int i = 0; i < N; i++) {
-            W[i] = cin.nextInt();
-            C[i] = cin.nextInt();
-            M[i] = cin.nextInt();
-        }
-        int ret = MultiPack(N, V, C, W, M);
-        System.out.println(ret);
+        int N = cin.nextInt();
+        int M = cin.nextInt();
+
+
     }
+
+
+    // 分组背包问题
+    public static int GroupPack(int N, int V, int[] C, int[] W, int[] G) {
+        int K = Integer.MIN_VALUE;
+        int[][] memo = new int[N + 1][N + 1];// memo和cnt 均+1的原因是因为 需要处理所有元素都属于同一组的情况
+        int[] cnt = new int[N + 1];
+        int[] dp = new int[V + 1];
+        for (int i = 0; i < N; i++) {
+            int gi = G[i];
+            cnt[gi]++; // 1 based
+            memo[gi][cnt[gi]] = i; // 1 based
+            K = Math.max(K, gi);
+        }
+        for (int k = 1; k <= K; k++) {
+            for (int v = V; v >= 0; v--) {
+                for (int i = 1; i <= cnt[k]; i++) {
+                    int px = memo[k][i];
+                    if (v >= C[px]) {
+                        dp[v] = Math.max(dp[v], dp[v - C[px]] + W[px]);
+                    }
+                }
+            }
+        }
+        return dp[V];
+    }
+
+
     // 多重背包问题 多重背包问题建立在01背包和完全背包问题问题基础上
     public static int MultiPack(int N, int V, int[] C, int[] W, int[] M) {
         int[] dp = new int[V + 1];

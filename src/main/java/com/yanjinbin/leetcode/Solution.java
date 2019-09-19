@@ -2587,7 +2587,7 @@ public class Solution {
         return res;
     }
 
-
+    // 背包问题
     // 322. 零钱兑换  ★ 经典题目阿
     public int coinChange(int[] coins, int amount) {
         Arrays.sort(coins);
@@ -6546,6 +6546,7 @@ public class Solution {
         dfsZigzag(root.right, level + 1, ret);
 
     }
+    // 共同祖先问题
 
 
     // follow up

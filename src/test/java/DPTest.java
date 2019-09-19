@@ -36,18 +36,6 @@ public class DPTest {
     }
 
     @Test
-    public void MultiplePack() {
-        int m = new Random().nextInt(40);
-        int k = 1;
-        while (k < m) {
-            System.out.println("k值:\t" + k + "\tm值\t" + m);
-            m = m - k;
-            k = 2 * k;
-        }
-        System.out.println("k值:\t" + k + "\tm值\t" + m);
-    }
-
-    @Test
     public void ZeroOnePack() {
         int N = 4, V = 6;
         int[] C = new int[]{1, 2, 3, 2};
@@ -73,11 +61,46 @@ public class DPTest {
     }
 
     @Test
+    public void MultiplePack() {
+        int m = new Random().nextInt(40);
+        int k = 1;
+        while (k < m) {
+            System.out.println("k值:\t" + k + "\tm值\t" + m);
+            m = m - k;
+            k = 2 * k;
+        }
+        System.out.println("k值:\t" + k + "\tm值\t" + m);
+    }
+
+    @Test
     public void MultiPack() {
         int N = 4, V = 20;
         int[] W = new int[]{3, 5, 9, 8};
         int[] C = new int[]{9, 9, 4, 1};
         int[] M = new int[]{3, 1, 2, 3};
         assert PACK.MultiPack(N, V, C, W, M) == 47;
+    }
+
+    @Test
+    public void _2DPack() {
+        // PACK._2DPack()d
+    }
+
+    @Test
+    public void GroupPack() {
+        int N = 3, V = 45;
+        int[] C = new int[]{10, 10, 50};
+        int[] W = new int[]{10, 5, 400};
+        int[] G = new int[]{1, 1, 2};
+        assert PACK.GroupPack(N, V, C, W, G) == 10;
+    }
+
+    @Test
+    public void TopologyPack() {
+        int N = 5, V = 100;
+        int[] C = new int[]{800, 400, 300, 400, 500,};
+        int[] P = new int[]{2, 5, 5, 3, 2};
+        int[] Q = new int[]{0, 1, 1, 0, 0};
+      //  assert PACK.TopologyPack(V, N, C, P, Q) == 2200;
     }
 }
