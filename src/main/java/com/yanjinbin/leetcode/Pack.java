@@ -1,8 +1,11 @@
 package com.yanjinbin.leetcode;
 
 import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import edu.princeton.cs.algs4.In;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 // https://oi-wiki.org/dp dp大纲
@@ -237,6 +240,7 @@ public class Pack {
         return dp[V];
     }
 
+    // 错误的!!!
     // https://www.cnblogs.com/five20/p/7806278.html#commentform
     // https://www.luogu.org/problemnew/solution/P1064
     // 有依赖的背包问题
@@ -270,6 +274,88 @@ public class Pack {
             }
         }
         return dp[N];
-
     }
+
+    // 区间DP https://oi-wiki.org/dp/interval/
+    // 石子合并 https://www.luogu.org/problem/P1880
+    public int[] mergeStone(int N, int[] stones) {
+        int[] sum = new int[2 * N];
+        int[] s = new int[2 * N];
+        for (int i = 0; i < N; i++) s[i + N] = s[i] = stones[i];
+        sum[0] = stones[0];
+        int[][] minDp = new int[2 * N][2 * N];
+        int[][] maxDp = new int[2 * N][2 * N];
+        for (int i = 1; i < 2 * N; i++) sum[i] = sum[i - 1] + s[i];
+        for (int len = 1; len < N; len++) {// len 为何不取0 呢呢 todo
+            for (int i = 1, j = i + len; i < 2 * N && j < 2 * N; i++, j = i + len) {
+                minDp[i][j] = Integer.MAX_VALUE;
+                maxDp[i][j] = Integer.MIN_VALUE;
+                for (int k = i; k < j; k++) { // 假设len =0; 则不进行下列循环
+                    minDp[i][j] = Math.min(minDp[i][j], minDp[i][k] + minDp[k + 1][j] + sum[j] - sum[i - 1]);
+                    maxDp[i][j] = Math.max(maxDp[i][j], maxDp[i][k] + maxDp[k + 1][j] + sum[j] - sum[i - 1]);
+                }
+            }
+        }
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int i = 1; i < N; i++) {
+            min = Math.min(min, minDp[i][i + N - 1]);
+            max = Math.max(max, maxDp[i][i + N - 1]);
+        }
+        System.out.printf("%d\n%d", min, max);
+        return new int[]{min, max};
+    }
+
+
+    // 树形DP https://oi-wiki.org/dp/tree/
+    // 没有上司的舞会 https://www.luogu.org/problem/P1352
+    // https://www.cnblogs.com/hanruyun/p/9788170.html
+    // 树形DP 是一种思想,解决有依赖型背包问题的好方法
+    //
+    public int DanceParty() {/*
+        List<List<Integer>> tree = new ArrayList<List<Integer>>();
+        int[] flag = new int[L.length];
+        for (int i = 0; i < L.length + 1; i++) {
+            int l = L[i];
+            // int ri = R[i];
+            tree.get(l).add(i);
+            flag[l] = 1;
+        }*/
+        Scanner cin = new Scanner(System.in);
+        int N = cin.nextInt();
+        int[] R = new int[N + 1];
+        for (int i = 1; i <= N; i++) {
+            R[i] = cin.nextInt();
+        }
+        int[] flag = new int[N];
+        List<List<Integer>> tree = new ArrayList<List<Integer>>();
+        for (int i = 1; i <= N - 1; i++) {
+            int k = cin.nextInt();
+            int l = cin.nextInt();
+            tree.get(l).add(k);
+            flag[k] = 1;
+        }
+        int root = -1;
+        for (int i = 0; i < N; i++) {
+            if (flag[i] != 1) {
+                root = i;
+                break;
+            }
+        }
+        int[][] dp = new int[N][N];
+        return Math.max(dp[root][0], dp[root][1]);
+    }
+
+    public void dp(int root, int[][] dp, List<List<Integer>> tree, int[] R) {
+        dp[root][0] = 0;
+        dp[root][1] = R[root];
+        for (int i = 0; i < tree.get(root).size(); i++) {
+            int son = tree.get(root).get(i);
+            dp(son, dp, tree, R);
+            dp[root][0] += Math.max(dp[son][0], dp[son][1]);
+            dp[root][1] += dp[son][0];
+        }
+    }
+
+
 }

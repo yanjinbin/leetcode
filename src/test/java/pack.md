@@ -31,7 +31,8 @@ https://www.cnblogs.com/en-heng/p/7257071.html
 DAG DP
 354[http://bit.ly/2LyVM1f] 329[http://bit.ly/32H2Nms][!] 
 802[http://bit.ly/2LAn4Eo] 207 [http://bit.ly/32JlndB]
-拓扑排序
+
+拓扑排序 链式前向星
 207 210 1048[http://bit.ly/32L41NG] 
 
 树形DP [https://copyfuture.com/blogs-details/8cd66ceb5beb157c706b8c99d84e0b2c]
@@ -41,3 +42,10 @@ DAG DP
 42 496  503 739
 https://blog.csdn.net/qq_17550379/article/details/86519771
 https://zhuanlan.zhihu.com/p/26465701
+经典问题
+1143 最长公共子序列 LCS
+300  最长上升子序列 LIC 
+674  最长连续递增序列
+516  最长回文子序列 
+5 最长回文子串
+72 编辑距离

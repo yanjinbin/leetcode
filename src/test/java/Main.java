@@ -6,9 +6,48 @@ public class Main {
     public static void main(String args[]) {
         Scanner cin = new Scanner(System.in);
         int N = cin.nextInt();
-        int M = cin.nextInt();
+        int[] stone = new int[N];
+        for (int i = 0; i < N; i++) {
+            stone[i] = cin.nextInt();
+        }
+        mergeStone(N,stone);
 
+    }
 
+    // 区间DP https://oi-wiki.org/dp/interval/
+    // 石子合并 https://www.luogu.org/problem/P1880
+    public static int[] mergeStone(int N, int[] stones) {
+        int[] _2Stone = new int[2 * N];
+        int[] prefixSum = new int[2 * N];
+        for (int i = 0; i < N; i++) {
+            _2Stone[i] = stones[i];
+            _2Stone[i + N] = stones[i];
+        }
+        prefixSum[0] = _2Stone[0];
+        for (int i = 1; i < _2Stone.length; i++) {
+            prefixSum[i] = prefixSum[i - 1] + _2Stone[i];
+        }
+
+        int[][] f1 = new int[2 * N][2 * N];
+        int[][] f2 = new int[2 * N][2 * N];
+        for (int p = 1; p < N; p++) {
+            for (int i = 1, j = i + p; (j < 2 * N) && (i < 2 * N); i++, j = i + p) {
+                f2[i][j] = Integer.MAX_VALUE;
+                f1[i][j] = Integer.MIN_VALUE;
+                for (int k = i; k < j; k++) {
+                    f1[i][j] = Math.max(f1[i][j], f1[i][k] + f1[k + 1][j] + prefixSum[j] - prefixSum[i - 1]);
+                    f2[i][j] = Math.min(f2[i][j], f2[i][k] + f2[k + 1][j] + prefixSum[j] - prefixSum[i - 1]);
+                }
+            }
+        }
+        int minl = Integer.MAX_VALUE;
+        int maxl = Integer.MIN_VALUE;
+        for (int i = 1; i <= N; i++) {
+            maxl = Math.max(maxl, f1[i][i + N - 1]);
+            minl = Math.min(minl, f2[i][i + N - 1]);
+        }
+        System.out.printf("%d\n%d\n", minl, maxl);
+        return new int[]{minl, maxl};
     }
 
 

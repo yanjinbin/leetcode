@@ -101,6 +101,19 @@ public class DPTest {
         int[] C = new int[]{800, 400, 300, 400, 500,};
         int[] P = new int[]{2, 5, 5, 3, 2};
         int[] Q = new int[]{0, 1, 1, 0, 0};
-      //  assert PACK.TopologyPack(V, N, C, P, Q) == 2200;
+        //  assert PACK.TopologyPack(V, N, C, P, Q) == 2200;
+    }
+
+    @Test
+    public void IntervalDP() {
+        int n = 4;
+        int[] stones = new int[]{4, 5, 9, 4};
+        assert Arrays.equals(PACK.mergeStone(n, stones), new int[]{43, 54});
+    }
+
+    @Test
+    public void TreeDP() {
+        System.out.println("测试数据 https://www.luogu.org/problem/P1352");
+        PACK.DanceParty();
     }
 }
