@@ -5,7 +5,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.omg.PortableInterceptor.INACTIVE;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.BitSet;
+import java.util.List;
 import java.util.Random;
 
 public class DPTest {
@@ -115,5 +118,50 @@ public class DPTest {
     public void TreeDP() {
         System.out.println("测试数据 https://www.luogu.org/problem/P1352");
         PACK.DanceParty();
+    }
+
+    @Test
+    public void ZeroOnePackSeries() {
+        int[] nums = new int[]{1, 5, 11, 5};
+        assert PACK.canPartition(nums) == true;
+        String[] strs = new String[]{"10", "0001", "111001", "1", "0"};
+        int m = 5, n = 3;
+        assert PACK.findMaxForm(strs, m, n) == 4;
+
+        assert PACK.lastStoneWeightII(new int[]{2, 7, 4, 1, 8, 1}) == 1;
+
+
+    }
+
+    @Test
+    public void CompletePackSeries() {
+        int amount = 11;
+        int[] coins = new int[]{1, 2, 5};
+        PACK.coinChange(amount, coins);
+        amount = 3;
+        coins = new int[]{2};
+        PACK.coinChange(amount, coins);
+
+        amount = 5;
+        coins = new int[]{1, 2, 5};
+
+        assert PACK.change(amount, coins) == 4;
+
+        assert PACK.combinationSum4(new int[]{1, 2, 3}, 4) == 7;
+
+        System.out.println("leetcode 698 分隔为k个等和子集 这道题 只是一道回溯法而已");
+        int[] nums = {4, 3, 2, 3, 5, 2, 1};
+        int k = 4;
+        assert PACK.canPartitionKSubsets(nums, k) == true;
+
+    }
+
+    @Test
+    public void DivideAndConquer() {
+        String s = "applepenapple";
+        List<String> wordDict = new ArrayList<>();
+        wordDict.add("apple");
+        wordDict.add("pen");
+        assert SOLUTION.wordBreak(s, wordDict) == true;
     }
 }

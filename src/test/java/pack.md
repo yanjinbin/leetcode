@@ -3,23 +3,27 @@
 背包九讲问题 前面1-6讲还是不错的 7讲 可以树形DP解决  8讲 看不透 9讲讲的是问题的变形
 
 01背包讲解:
-https://www.bilibili.com/video/av53043938/
-https://www.youtube.com/watch?v=CO0r6kcwHUU
 
 待定视频:
 https://www.cnblogs.com/en-heng/p/7257071.html
 
-背包类型待定: 58  712 746 802 207 
+背包类型待定: 58  712 746 802 207   
+-[X]  139 这是一道普通的DP题目,分治思想状态转移方程式: S[0,i) = S[0,j) || S[j,i)  , 0 <= j < i <= len(s);
 
 01背包
-518 416 1049 416  474
-[416 322(complete pack) 377 139  140 494] (https://www.liwei.party/2018/09/21/leetcode-solution/dynamic-programming-7/)
+- [X] 416 
+- [x] 474
+- [X] 1049
+- [x] 377
+   140 494] 
 
 计数DP
 115
 
 完全背包
-322 39  960[?] 
+- [x] 322 
+- [x] 518
+39  960[?] 
 
 多重背包
 798 799 1059 

@@ -357,5 +357,132 @@ public class Pack {
         }
     }
 
+    // 416 01 背包问题
+    public boolean canPartition(int[] nums) {
+        int total = 0;
+        for (int i : nums) {
+            total += i;
+        }
+        if ((total & 1) == 1) return false;
+        int ret = total >> 1;
+        int[] dp = new int[ret + 1];
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = ret; j >= 0 && j >= nums[i]; j--) {
+                dp[j] = Math.max(dp[j], dp[j - nums[i]] + nums[i]);
+            }
+        }
+        return dp[ret] == ret;
+    }
+
+    // follow up 698. 划分为k个相等的子集
+    // 答案来自于 http://bit.ly/32YpVNg  ,
+    // 更好奇的是 为什么不能用01背包DP来做了,只能用backtrack来做了 据说是NP问题? 有待考证
+    public boolean canPartitionKSubsets(int[] nums, int k) {
+        int sum = 0;
+        for (int num : nums) sum += num;
+        if (k < 0 || sum % k != 0) return false;
+        boolean[] visited = new boolean[nums.length];
+        return canPartition(nums, visited, 0, k, 0, 0, sum / k);
+    }
+
+    public boolean canPartition(int[] nums, boolean[] visited, int start_index, int k, int cur_sum, int cur_num, int target) {
+        if (k == 1) return true; // 划分为1个相等的子集
+        if (cur_sum == target && cur_num > 0) return canPartition(nums, visited, 0, k - 1, 0, 0, target);
+        for (int i = start_index; i < nums.length; i++) {
+            if (!visited[i]) {
+                visited[i] = true;
+                if (canPartition(nums, visited, i + 1, k, cur_num + nums[i], cur_num++, target)) return true;
+                visited[i] = false;
+            }
+        }
+        return false;
+    }
+
+
+    // leetcode  474 01背包问题
+    public int findMaxForm(String[] strs, int m, int n) {
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 0; i < strs.length; i++) {
+            char[] arr = strs[i].toCharArray();
+            int zeros = 0;
+            int ones = 0;
+            for (char c : arr)
+                if (c == '0') zeros++;
+                else ones++;
+            for (int j1 = m; j1 >= zeros; j1--) {
+                for (int j2 = n; j2 >= ones; j2--) {
+                    dp[j1][j2] = Math.max(dp[j1][j2], dp[j1 - zeros][j2 - ones] + 1);
+                }
+            }
+        }
+        return dp[m][n];
+    }
+
+    // 322 完全背包问题 恰好背包?
+    public int coinChange(int amount, int[] coins) {
+        int[] dp = new int[amount + 1];
+        Arrays.fill(dp, Integer.MAX_VALUE); // 背包类问题的初始化 参见背包九讲
+        dp[0] = 0;
+        for (int i = 0; i < coins.length; i++) {
+            for (int j = 0; j <= amount; j++) {
+                if (j >= coins[i] && dp[j - coins[i]] != Integer.MAX_VALUE)
+                    dp[j] = Math.min(dp[j], dp[j - coins[i]] + 1);
+            }
+        }
+        return dp[amount] == Integer.MAX_VALUE ? -1 : dp[amount];
+    }
+
+    // 518 零钱兑换 完全背包问题  不过问法变成了,求组合数(非排列总数)
+    public int change(int amount, int[] coins) {
+        int[] dp = new int[amount + 1];
+        dp[0] = 1;// 容量为0的时候,什么也不装是一种方案,所以为1
+        for (int i = 0; i < coins.length; i++) {
+            for (int j = 0; j <= amount; j++) {
+                if (j >= coins[i]) {
+                    // 采用coins[i]方案
+                    // 参考这里的解释 https://blog.csdn.net/wumuzi520/article/details/7021210
+                    // ；当j >= C[i]时， F[i][j] = F[i][j-C[i]] + F[i-1][j],为什么是两者的和，
+                    // 因为F[i][j-C[i]]和F[i-1][j]都是[i][j]状态时把背包装满的方案，且两者互斥。
+                    dp[j] = dp[j] + dp[j - coins[i]];
+                }
+            }
+        }
+        return dp[amount];
+    }
+
+    // 1049 最后一块石头重量
+    // 看成是两堆石头，用动态规划来求，
+    // 当其中一堆重量最接近sum/2时碰撞后消耗的重量最多，
+    // 剩下重量最少，即求sum/2的背包里最多能装多少重量的物品
+    public int lastStoneWeightII(int[] stones) {
+        int sum = 0;
+        for (int i : stones) sum += i;
+        int[] dp = new int[sum / 2 + 1];
+        for (int i = 0; i < stones.length; i++) {
+            for (int j = sum / 2; j >= stones[i]; j--) {
+                dp[j] = Math.max(dp[j], dp[j - stones[i]] + stones[i]);
+            }
+        }
+        return sum - 2 * dp[sum / 2];
+    }
+
+    // 377 组合总和Ⅳ  ,这个 应该叫做排列 而非组合  也可以自己画个数, 可以观察出来 就是如下分解
+    // dp[4] = dp[4-1]+dp[4-2]+dp[4-3] = dp[3]+dp[2]+dp[1]
+    //
+    //dp[1] = dp[0] = 1;
+    //dp[2] = dp[1]+dp[0] = 2;
+    //dp[3] = dp[2]+dp[1]+dp[0] = 4;
+    //dp[4] = dp[4-1]+dp[4-2]+dp[4-3] = dp[3]+dp[2]+dp[1] = 7
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        int sum = 0;
+        for (int i = 1; i <= target; i++) {
+            for (int j = 0; j < nums.length; j++) {
+                if (i >= nums[j]) dp[i] += dp[i - nums[j]];
+            }
+        }
+        return dp[target];
+    }
 
 }

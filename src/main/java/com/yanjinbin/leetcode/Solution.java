@@ -891,8 +891,9 @@ public class Solution {
     public boolean exist = false;
 
     // leetcode 139  单词拆分 http://bit.ly/2Ld41Bt 这是一道DP题目
+    // 分治思想 DP
+    // S[0,i)= S[0,j) || S[j,i)  0 <= j < i <= s.length()
     public boolean wordBreak(String s, List<String> wordDict) {
-        // 为什么要加1呢,因为要避免空数组, 这和哑节点类似(避免长度1的链表)
         boolean[] dp = new boolean[s.length() + 1];
         dp[0] = true;
         // 关于对下面dp 状态转移方程的一点思考, 那就是 状态转移条件(内循环的if更新)和状态转移的更新迭代器(dict.contain(s.substring(j,i)---->dp[i]=true)
@@ -907,6 +908,7 @@ public class Solution {
         }
         return dp[s.length()];
     }
+
 
 
     // leetcode 139 错误做法
@@ -1089,16 +1091,10 @@ public class Solution {
         for (int num : nums) {
             // 为什么递减不是递增呢 因为递增的化 都为true了阿
             for (int i = target; i >= num; i--) {
-                //  System.out.println(i + "\t" + num);
                 dp[i] = dp[i] || dp[i - num];
             }
         }
         return dp[target];
-    }
-
-    public boolean canPartition1(int[] nums) {
-        // todo DP之外 还可以用bitset来解 真滴有意思
-        return false;
     }
 
     // 300. 最长上升子序列
@@ -2604,7 +2600,6 @@ public class Solution {
         }
         return f[amount] == Integer.MAX_VALUE ? -1 : f[amount];
     }
-    //  518. 零钱兑换 II
 
 
     // 160. 相交链表
