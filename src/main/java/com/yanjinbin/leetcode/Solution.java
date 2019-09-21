@@ -2644,12 +2644,6 @@ public class Solution {
         return res.toArray(new int[res.size()][]);
     }
 
-    // 解法2
-    public int[][] reconstructQueue1(int[][] people) {
-        return null;
-    }
-
-
     // 岛屿系列 todo
     // 200. 岛屿数量
     public int numIslands(char[][] grid) {

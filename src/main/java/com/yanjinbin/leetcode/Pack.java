@@ -418,6 +418,44 @@ public class Pack {
         return dp[m][n];
     }
 
+    // leetcode 494 01背包问题
+    public int findTargetSum0(int[] nums, int target) {
+        int total = 0;
+        for (int i : nums) total += i;
+        if (total < target || total < -target) return 0;
+        int offset = total;
+        int[][] dp = new int[nums.length][2 * total + 1];
+        dp[0][offset] = 1;
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = nums[i]; j + nums[j] < 2 * total + 1; j++) {
+                // 方法来源于 花花酱的视频 https://zxi.mytechroad.com/blog/dynamic-programming/leetcode-494-target-sum/
+                // 这个方法 并不好
+                dp[i + 1][j + nums[i]] += dp[i][j];
+                dp[i + 1][j - nums[i]] += dp[i][j];
+            }
+        }
+        return dp[nums.length - 1][offset + total];
+    }
+
+    public int findTargetSum(int[] nums, int target) {
+        int sum = 0;
+        for (int num : nums) sum += num;
+        // P-N=target
+        // P+N+P-N=target+sum
+        // 2*P =(target+sum)
+        // target+sum 必须是even
+        if (sum < target || ((sum + target) & 1) == 1) return 0;
+        int V = (target + sum) >> 1;
+        int[] dp = new int[V + 1];
+        dp[0] = 1;
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = V; j >= nums[i]; j--) {
+                dp[j] = dp[j] + dp[j - nums[i]];
+            }
+        }
+        return dp[V];
+    }
+
     // 322 完全背包问题 恰好背包?
     public int coinChange(int amount, int[] coins) {
         int[] dp = new int[amount + 1];

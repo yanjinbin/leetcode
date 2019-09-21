@@ -2,6 +2,9 @@
 [背包九讲读后总结](https://drive.google.com/drive/folders/1gMiJgnOQLcntvPrQXHJehiIuuEuTPBGx): 
 背包九讲问题 前面1-6讲还是不错的 7讲 可以树形DP解决  8讲 看不透 9讲讲的是问题的变形
 
+[完全背包状态转移方程式 为何是 i 而不是 i-1](http://bit.ly/2NqGWMG)
+这个推理还是挺棒棒的  也感谢之前大佬 关于 完全背包状态转移方程式 为何是 i 而不是 i-1  
+
 01背包讲解:
 
 待定视频:
@@ -53,3 +56,7 @@ https://zhuanlan.zhihu.com/p/26465701
 516  最长回文子序列 
 5 最长回文子串
 72 编辑距离
+
+常用行业俗语:
+
+剪枝==相当于求DP重叠子问题时候记忆化搜索

@@ -130,6 +130,7 @@ public class DPTest {
 
         assert PACK.lastStoneWeightII(new int[]{2, 7, 4, 1, 8, 1}) == 1;
 
+        assert PACK.findTargetSum(new int[]{1, 1, 1, 1, 1}, 3) == 5;
 
     }
 
