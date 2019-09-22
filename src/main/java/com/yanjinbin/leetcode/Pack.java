@@ -428,7 +428,7 @@ public class Pack {
         dp[0][offset] = 1;
         for (int i = 0; i < nums.length; i++) {
             for (int j = nums[i]; j + nums[j] < 2 * total + 1; j++) {
-                // 方法来源于 花花酱的视频 https://zxi.mytechroad.com/blog/dynamic-programming/leetcode-494-target-sum/
+                // 方法来源于 花花酱的视频 http://bit.ly/2LFcdcs
                 // 这个方法 并不好
                 dp[i + 1][j + nums[i]] += dp[i][j];
                 dp[i + 1][j - nums[i]] += dp[i][j];
@@ -522,5 +522,7 @@ public class Pack {
         }
         return dp[target];
     }
+
+    // leetcode 39 完全背包问题 求路径问题
 
 }

@@ -910,7 +910,6 @@ public class Solution {
     }
 
 
-
     // leetcode 139 错误做法
     public boolean wordBreakbad(String s, List<String> wordDict) {
         splitHelper(s, s.length(), 0, wordDict);
@@ -1571,7 +1570,6 @@ public class Solution {
 
 
     //39. 组合总和
-
     // http://bit.ly/2XHHBi2  这个方法感觉还是不够优雅阿
     public List<List<Integer>> combinationSum1(int[] candidates, int target) {
         List<List<Integer>> res = new ArrayList<>();
@@ -1580,17 +1578,16 @@ public class Solution {
         return res;
     }
 
-    public void backtrack(int[] candidates, int target, List<List<Integer>> res, int i, ArrayList<Integer> tmp_list) {
+    public void backtrack(int[] candidates, int target, List<List<Integer>> res, int start, ArrayList<Integer> tmpList) {
         if (target < 0) return;
         if (target == 0) {
-            res.add(tmp_list);
+            res.add(new ArrayList(tmpList));
+            return;
         }
-        for (int start = i; start < candidates.length; start++) {
-            target = target - candidates[i];
-            tmp_list.add(candidates[i]);
-            backtrack(candidates, target, res, start, tmp_list);
-            // 这个方法难看懂  很容易出错阿
-            tmp_list.remove(tmp_list.size() - 1);
+        for (int i = start; i < candidates.length; i++) {
+            tmpList.add(candidates[i]);
+            backtrack(candidates, target - candidates[i], res, i, tmpList);
+            tmpList.remove(tmpList.size() - 1);
         }
     }
 
@@ -1619,12 +1616,6 @@ public class Solution {
             sub.pollLast();
         }
     }
-
-    // follow up https://www.cnblogs.com/grandyang/p/4358831.html
-    public List<List<Integer>> combine1(int n, int k) {
-        return null;
-    }
-
 
     // 46. 全排列
     public List<List<Integer>> permute(int[] nums) {

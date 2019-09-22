@@ -588,7 +588,7 @@ public class SolutionTest {
         System.out.println(list.remove(list.size() - 1));
 
         int[] nums = {2, 3, 5};
-        int target = 7;
+        int target = 8;
         System.out.println(INSTANCE.combinationSum1(nums, target));
     }
 
