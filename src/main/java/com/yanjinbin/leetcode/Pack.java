@@ -1,6 +1,7 @@
 package com.yanjinbin.leetcode;
 
 import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
+import edu.princeton.cs.algs4.BTree;
 import edu.princeton.cs.algs4.In;
 
 import java.util.ArrayList;
@@ -307,6 +308,30 @@ public class Pack {
         return new int[]{min, max};
     }
 
+    // leetcode 546 移除盒子 区间dP  http://bit.ly/2OgJson
+    public int removeBoxes(int[] boxes) {
+        int N = boxes.length;
+        int[][][] dp = new int[N][N][N];
+        return intervalDpDFS(dp, boxes, 0, N - 1, 0);
+    }
+
+    public int intervalDpDFS(int[][][] dp, int[] boxes, int l, int r, int k) {
+        if (l > r) return 0;
+        if (dp[l][r][k] > 0) return dp[l][r][k];
+        dp[l][r][k] = intervalDpDFS(dp, boxes, l, r - 1, 0) + (k + 1) * (k + 1); // case 1
+        for (int p = l; p < r; p++) {
+            if (boxes[p] == boxes[r]) {
+                // case 2
+                dp[l][r][k] = Math.max(dp[l][r][k],
+                        // p 取代 r  成为分割点,则分解成2个子问题, 其中 k --->  k+1,
+                        intervalDpDFS(dp, boxes, l, p, k + 1) + intervalDpDFS(dp, boxes, p + 1, r - 1, 0));
+            }
+        }
+        return dp[l][r][k];
+    }
+
+    // leetcode 312  488
+
 
     // 树形DP https://oi-wiki.org/dp/tree/
     // 没有上司的舞会 https://www.luogu.org/problem/P1352
@@ -523,5 +548,157 @@ public class Pack {
         }
         return dp[target];
     }
+
+    // 经典DP问题
+
+    // leetcode 1143  最长公共子序列
+    // LCS https://leetcode.com/problems/longest-common-subsequence/ https://oi-wiki.org/dp/#_7
+    // dp[i][j] denote LCS between  s1[0:i] and s2[0,j], then
+    // dp[i][j] = dp[i-1][j-1]+1 if s1[i] == s2[j], else dp[i][j] = Max(dp[i-1][j],dp[i][j-1])
+    public int longestCommonSubsequence(String s1, String s2) {
+        int N1 = s1.length();
+        int N2 = s2.length();
+        int[][] dp = new int[N1 + 1][N2 + 1];
+        for (int i = 0; i < N1; i++) {
+            for (int j = 0; j < N2; j++) {
+                if (s1.charAt(i) == s2.charAt(j)) dp[i + 1][j + 1] = 1 + dp[i][j];
+                else dp[i + 1][j + 1] = Math.max(dp[i][j + 1], dp[i + 1][j]);
+            }
+        }
+        return dp[N1][N2];
+    }
+
+    // follow up 优化
+
+
+    //  leetcode 300 最长上升子序列 复杂度 O(N²)
+    //  花花讲解 http://bit.ly/2Oga3BP
+    public int lengthOfLIS(int[] nums) {
+        int N = nums.length;
+        if (N == 0 || N == 1) return N;
+        int[] dp = new int[N];
+        // init
+        Arrays.fill(dp, 1);
+
+        for (int i = 1; i < N; i++) {
+            for (int j = 0; j < i; j++)
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+        }
+        int ans = Integer.MIN_VALUE;
+        for (int i : dp) {
+            ans = Math.max(ans, i);
+        }
+        return ans;
+    }
+
+    //  divide and conquer  分治法求 复杂度 O(NlgN) 二分法解决
+    //  参考如下  http://bit.ly/2kSr74M
+    public int lengthOfLIS01(int[] nums) {
+        int N = nums.length;
+        int[] top = new int[N];
+        int piles = 0;
+        for (int i = 0; i < N; i++) {
+            int poker = nums[i];
+            int l = 0, r = piles;
+            while (l < r) {
+                int mid = (r - l) / 2 + l;
+                if (top[mid] < poker) {
+                    l = mid + 1;
+                } else {
+                    r = mid;
+                }
+            }
+            if (l == piles) piles++;
+            top[l] = poker;
+        }
+        return piles;
+
+    }
+
+
+    // leetcode 674  最长连续递增序列
+    public int findLengthOfLCIS(int[] nums) {
+        int ans = Integer.MIN_VALUE;
+        int len = 0;
+        int cur = Integer.MIN_VALUE;
+        for (int num : nums) {
+            if (num > cur) {
+                len++;
+            } else {
+                ans = Math.max(ans, len);
+                len = 1;
+            }
+            cur = num;
+        }
+        ans = Math.max(ans, len);
+        return ans;
+    }
+
+    // 解法2 滑动窗口解决
+    public int findLengthOfLCIS01(int[] nums) {
+        int N = nums.length;
+        int ans = 0, anchor = 0;
+        for (int i = 0; i < N; i++) {
+            if (i > 0 && nums[i - 1] >= nums[i]) anchor = i;
+            ans = Math.max(ans, i - anchor + 1);
+        }
+        return ans;
+    }
+
+    //leetcode 516 最长回文子序列 不是子串哦! a+bbb+b   b+bbb+a
+    // dp[i][j]=dp[i+1][j-1] +2 if(s[i]==s[j]]) else dp [i][j]= max(dp[i+1][j],dp[i][j-1]);
+    public int longestPalindromeSubseq(String s) {
+        int N = s.length();
+        int[][] dp = new int[N][N];
+        for (int len = 1; len <= N; len++) {
+            for (int i = 0; i <= N - len; i++) {
+                int j = len + i - 1;
+                if (i == j) {
+                    dp[i][j] = 1;
+                    continue;
+                }
+                if (s.charAt(i) == s.charAt(j)) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                } else {
+                    dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+                }
+            }
+        }
+        return dp[0][N - 1];
+    }
+
+    // leetcode 5 最长回文子串  DP O(N²)
+    public String longestPalindrome(String s) {
+        if (s.length() < 2 || s == null) return s;
+        int N = s.length();
+        boolean[][] dp = new boolean[N][N];
+        int start = 0;
+        int maxLen = 1;
+        for (int i = 0; i < N; i++) {
+            dp[i][i] = true;
+            for (int j = 0; j < i; j++) {
+                // 处理偶数 & dp状态转移
+                dp[j][i] = (s.charAt(i) == s.charAt(j)) && (dp[j + 1][i - 1] || (i - j) < 2);
+                if (dp[j][i] && maxLen < i - j + 1) {
+                    maxLen = i - j + 1;
+                    start = j;
+                }
+            }
+        }
+        return s.substring(start, start + maxLen);
+    }
+
+    //leetcode 5 最长回文子串  著名的马拉车算法 O(n)
+    public String longestPalindrome01(String s) {
+        throw new IllegalStateException("马拉车算法放弃 有规律 写出来 还是i太难了 ");
+    }
+
+
+    // leetcode 39 完全背包问题 求路径问题  这道题目还是通过回溯法去解决
+
+    // 多重背包问题
+
 
 }

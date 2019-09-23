@@ -1868,6 +1868,7 @@ public class SolutionTest {
 
     @Test
     public void binarySearch() {
+        System.out.println("===展示下二分法 上界 和 下界 以及java自带的二分搜索====");
         int[] arr = new int[]{9, 5, 4, 2, 3, 1, 6, 7, 2, 2, 2, 2};
         Arrays.sort(arr);
         System.out.println(Arrays.toString(arr));
@@ -1879,30 +1880,39 @@ public class SolutionTest {
         System.out.println(res);
         res = binarySearch01(arr, first, last, -1);
         System.out.println(res);
+        res = Arrays.binarySearch(arr, first, last, -1);
+        System.out.println(res);
         System.out.println("======B");
         res = binarySearch(arr, first, last, 11);
         System.out.println(res);
         res = binarySearch01(arr, first, last, 11);
         System.out.println(res);
-        System.out.println("======C");
-        res = binarySearch(arr,first,last,2);
+        res = Arrays.binarySearch(arr, first, last, 11);
         System.out.println(res);
-        res = binarySearch01(arr,first,last,2);
+        System.out.println("======C");
+        res = binarySearch(arr, first, last, 2);
+        System.out.println(res);
+        res = binarySearch01(arr, first, last, 2);
+        System.out.println(res);
+        res = Arrays.binarySearch(arr, first, last, 2);
         System.out.println(res);
         System.out.println("======D");
-        res = binarySearch(arr,first,last,6);
+        res = binarySearch(arr, first, last, 6);
         System.out.println(res);
-        res = binarySearch01(arr,first,last,6);
+        res = binarySearch01(arr, first, last, 6);
+        System.out.println(res);
+        res = Arrays.binarySearch(arr, first, last, 6);
         System.out.println(res);
 
     }
 
+    // 下界函数
     // 二分查找的标准函数 http://bit.ly/32512ix  返回大于value的第一个位置
     public int binarySearch(int[] array, int first, int last, int value) {
         System.out.println("first " + first + " last " + last + " value " + value);
         while (first < last) {
             int mid = first + (last - first) / 2;
-            if (array[mid] < value) { // 返回满足 arr[i] > value的第一个位置
+            if (array[mid] < value) { // 返回满足 arr[i] >= value的第一个位置
                 first = mid + 1;
             } else {
                 last = mid;
@@ -1912,17 +1922,18 @@ public class SolutionTest {
         return first;
     }
 
+    // 下界函数
     public int binarySearch01(int[] array, int first, int last, int value) {
-       // System.out.println("first " + first + " last " + last + " value " + value);
+        // System.out.println("first " + first + " last " + last + " value " + value);
         while (first < last) {
             int mid = first + (last - first) / 2;
-            if (array[mid] >= value) { // 返回满足 arr[i] > value的第一个位置
+            if (array[mid] >= value) { // 返回满足 arr[i] >= value的第一个位置
                 last = mid;
             } else {
-                first = mid+1;
+                first = mid + 1;
             }
         }
-      //  System.out.println("first " + first + " last " + last + " value " + value);
+        //  System.out.println("first " + first + " last " + last + " value " + value);
         return first;
     }
 

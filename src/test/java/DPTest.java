@@ -166,4 +166,22 @@ public class DPTest {
         wordDict.add("pen");
         assert SOLUTION.wordBreak(s, wordDict) == true;
     }
+
+    @Test
+    public void ClassicDP(){
+        assert PACK.longestPalindromeSubseq("bbbab") == 4;
+        assert PACK.longestPalindrome("abbcbb").equalsIgnoreCase("bbcbb");
+     //   PACK.longestPalindrome01("abbcbb");
+        assert PACK.longestCommonSubsequence("abcdegf", "acedf")==4;
+
+        int[] nums = {6, 3, 5, 10, 2, 9, 7, 4, 8};
+        assert PACK.lengthOfLIS(nums) == 4;
+        assert PACK.lengthOfLIS01(nums)==4;
+        nums=new int[]{2,3,4,1,5,7,2,4,6,8,11,9};
+        assert PACK.findLengthOfLCIS(nums)==5;
+        assert PACK.findLengthOfLCIS01(nums)==5;
+
+
+
+    }
 }

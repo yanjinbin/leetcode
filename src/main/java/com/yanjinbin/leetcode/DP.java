@@ -80,7 +80,7 @@ public class DP {
     //  8.2章节  也给出标准示范了 , 以及几个细节的分析
     // 二分查找的标准函数 http://bit.ly/32512ix
     public int binarySearch(int[] array, int first, int last, int value) {
-      //  System.out.println("first " + first + " last " + last + " value " + value);
+        //  System.out.println("first " + first + " last " + last + " value " + value);
         while (first < last) {
             int mid = first + (last - first) / 2;
             if (array[mid] <= value) { // 返回满足 arr[i] > value的第一个位置
@@ -93,6 +93,17 @@ public class DP {
         return first;
     }
 
+    public int binarySearch01(int[] arr, int l, int r, int val) {
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (arr[mid] >= val) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
     // chapter 8.3  递归与分治
 
 
