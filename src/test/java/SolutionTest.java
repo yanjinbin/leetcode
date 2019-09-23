@@ -759,7 +759,7 @@ public class SolutionTest {
     }
 
     @Test
-    public void zigzagTraversal(){
+    public void zigzagTraversal() {
 
         TreeNode F = TreeNode.builder().name("F").val(6).build(); // ROOT
         TreeNode B = TreeNode.builder().name("B").val(2).build();
@@ -1875,30 +1875,57 @@ public class SolutionTest {
         int last = arr.length;
         // for (int i = 0; i < 50; i++) {
         System.out.println("======A");
-
-        int res = binarySearch(arr, first, last, 2);
+        int res = binarySearch(arr, first, last, -1);
         System.out.println(res);
-        System.out.println(arr[res]);
+        res = binarySearch01(arr, first, last, -1);
+        System.out.println(res);
         System.out.println("======B");
         res = binarySearch(arr, first, last, 11);
+        System.out.println(res);
+        res = binarySearch01(arr, first, last, 11);
+        System.out.println(res);
+        System.out.println("======C");
+        res = binarySearch(arr,first,last,2);
+        System.out.println(res);
+        res = binarySearch01(arr,first,last,2);
+        System.out.println(res);
+        System.out.println("======D");
+        res = binarySearch(arr,first,last,6);
+        System.out.println(res);
+        res = binarySearch01(arr,first,last,6);
         System.out.println(res);
 
     }
 
-    // 二分查找的标准函数 http://bit.ly/32512ix
+    // 二分查找的标准函数 http://bit.ly/32512ix  返回大于value的第一个位置
     public int binarySearch(int[] array, int first, int last, int value) {
         System.out.println("first " + first + " last " + last + " value " + value);
         while (first < last) {
             int mid = first + (last - first) / 2;
-            if (array[mid] <= value) { // 返回满足 arr[i] > value的第一个位置
+            if (array[mid] < value) { // 返回满足 arr[i] > value的第一个位置
                 first = mid + 1;
             } else {
                 last = mid;
             }
         }
-        // System.out.println("first " + first + " last " + last + " value " + value);
+        System.out.println("first " + first + " last " + last + " value " + value);
         return first;
     }
+
+    public int binarySearch01(int[] array, int first, int last, int value) {
+       // System.out.println("first " + first + " last " + last + " value " + value);
+        while (first < last) {
+            int mid = first + (last - first) / 2;
+            if (array[mid] >= value) { // 返回满足 arr[i] > value的第一个位置
+                last = mid;
+            } else {
+                first = mid+1;
+            }
+        }
+      //  System.out.println("first " + first + " last " + last + " value " + value);
+        return first;
+    }
+
 
     @Test
     public void searchMatrix() {
