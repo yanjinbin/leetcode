@@ -77,6 +77,7 @@ public class DPTest {
 
     @Test
     public void MultiPack() {
+        // https://www.luogu.org/record/24015733
         int N = 4, V = 20;
         int[] W = new int[]{3, 5, 9, 8};
         int[] C = new int[]{9, 9, 4, 1};

@@ -151,7 +151,8 @@ public class Pack {
     // 抽象话 一维维度
     public int MultiplePack(int ci, int wi, int mi, int[] dp, int V) {
         if (ci * mi >= V) {
-            CompletePack(ci * mi, wi * mi, dp, V);
+            // https://www.luogu.org/recordnew/show/24249357
+            CompletePack(ci, wi, dp, V);
             return dp[V];
         }
         int k = 1;
@@ -522,7 +523,5 @@ public class Pack {
         }
         return dp[target];
     }
-
-    // leetcode 39 完全背包问题 求路径问题
 
 }
