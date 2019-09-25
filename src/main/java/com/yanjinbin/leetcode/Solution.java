@@ -2506,32 +2506,6 @@ public class Solution {
         return val;
     }
 
-    // 647. 回文子串 http://bit.ly/2LugfFU
-    public int countSubstrings(String s) {
-        if (s.isEmpty()) {
-            return 0;
-        }
-        int len = s.length();
-        int res = 0;
-        for (int i = 0; i < len; i++) {
-            // 还是要遍历阿 从字符串中找到一个回文子串
-            // 考虑对称的奇偶性状况
-            res += dfsCountSubHelper(s, i, i) + dfsCountSubHelper(s, i, i + 1);
-        }
-        return res;
-
-    }
-
-    // 状态转移方程 dp[i,j]=dp[i+1,j-1]+(dp[i]==dp[j]  逆向化--->init i+1 == j-1
-    public int dfsCountSubHelper(String s, int i, int j) {
-        int res = 0;
-        while (i >= 0 && j < s.length() && s.charAt(i) == s.charAt(j)) {
-            i--;
-            j++;
-            res++;
-        }
-        return res;
-    }
 
     // 解法2 错误的双层for循环 越界了
     // 解法2 并不太推崇 如果 i j的初始化方向不一样的话 还是有越界问题
@@ -2845,8 +2819,8 @@ public class Solution {
     }
 
     public int dfsMinDistanceHelper(String word1, int i, String word2, int j, int[][] memo) {
-        if (i == word1.length()) return word2.length() - j;
         if (j == word2.length()) return word1.length() - i;
+        if (i == word1.length()) return word2.length() - j;
         if (memo[i][j] > 0) return memo[i][j];
         int res = 0;
         if (word1.charAt(i) == word2.charAt(j)) {
@@ -2929,32 +2903,6 @@ public class Solution {
         return count == 0;
     }
 
-    // 312. 戳气球 DP思想 迭代 http://bit.ly/2K4T01Z dp[i,j]
-    public int maxCoins(int[] nums) {
-        // ready data
-        int n = nums.length;
-        int[] numbers = new int[n + 2];
-        numbers[0] = numbers[numbers.length - 1] = 1;
-        for (int i = 0; i < n; i++) {
-            numbers[i + 1] = nums[i];
-        }
-        int[][] dp = new int[n + 2][n + 2];
-
-        for (int len = 1; len <= n; len++) {
-            for (int i = 1; i <= n - len + 1; i++) {
-                int j = i + len - 1;
-                for (int k = i; k <= j; k++) {
-                    // 求出dp[i,j]区间 第k个气球被打破时候的最大值Max(dp[i,j])
-                    // k 的遍历区间 [i,i+len-1]
-                    dp[i][j] = Math.max(dp[i][j], numbers[i - 1] * numbers[k] * numbers[j + 1] + dp[i][k - 1] + dp[k + 1][j]);
-                }
-            }
-        }
-
-        return dp[1][n];
-    }
-
-    // 解法2 递归 todo
 
     // http://bit.ly/2LvcJLu
     // 438. 找到字符串中所有字母异位词

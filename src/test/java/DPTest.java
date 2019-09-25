@@ -113,6 +113,27 @@ public class DPTest {
         int n = 4;
         int[] stones = new int[]{4, 5, 9, 4};
         assert Arrays.equals(PACK.mergeStone(n, stones), new int[]{43, 54});
+        assert PACK.isScramble("great", "rgeat") == true;
+
+        int[] nums = new int[]{9,1,2,3,9};
+        int k =3;
+        assert PACK.largestSumOfAverages(nums, k) == 20;
+        int[] boxes = new int[]{1, 3, 2, 2, 2, 3, 4, 3, 1};
+        assert PACK.removeBoxes(boxes) == 23;
+
+        String data = "aaa";
+        assert PACK.countSubstrings(data) == 6;
+
+        int[] piles= new int[]{5,3,4,5};
+        assert PACK.stoneGame(piles) == true;
+
+        stones = new int[]{3,2,4,1};
+        k = 2;
+        assert PACK.mergeStone(stones, k) == 20;
+
+        stones = new int[] {3,5,1,2,6};
+        k = 3;
+        assert  PACK.mergeStone(stones,k)==25;
     }
 
     @Test

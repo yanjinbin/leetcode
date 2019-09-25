@@ -7,6 +7,8 @@ import java.util.*;
 
 public class SolutionTest {
 
+    private static Pack PACK = new Pack();
+
     private static Solution INSTANCE = new Solution();
 
     @Before()
@@ -995,9 +997,9 @@ public class SolutionTest {
     @Test(timeout = 2000)
     public void countSubstrings() {
         String data = "abdccdbbdca";
-        System.out.println(INSTANCE.countSubstrings(data));
+        System.out.println(PACK.countSubstrings(data));
         data = "aaa";
-        assert INSTANCE.countSubstrings(data) == 6;
+        assert PACK.countSubstrings(data) == 6;
 
 
         //   INSTANCE.countSubstrings1("fdsklf");
@@ -1137,7 +1139,7 @@ public class SolutionTest {
     @Test
     public void maxCoins() {
         int[] nums = {3, 1, 5, 8};
-        assert INSTANCE.maxCoins(nums) == 167;
+        assert PACK.maxCoins(nums) == 167;
     }
 
     @Test
