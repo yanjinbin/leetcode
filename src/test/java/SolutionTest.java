@@ -1,5 +1,4 @@
 import com.yanjinbin.leetcode.*;
-import edu.princeton.cs.algs4.In;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -10,6 +9,8 @@ public class SolutionTest {
     private static Pack PACK = new Pack();
 
     private static Solution INSTANCE = new Solution();
+
+    private static MonotoneStack MONOTONESTACK =  new MonotoneStack();
 
     @Before()
     public void init() {
@@ -40,7 +41,7 @@ public class SolutionTest {
     }
 
     @Test
-    public void whileFor() {
+    public void _whileFor() {
         int i = 3;
         for (; i < 5; ++i) {
             System.out.println("i值: " + i);
@@ -257,13 +258,13 @@ public class SolutionTest {
     @Test
     public void trapRainWater() {
         int[] height = {0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
-        for (int i = 0; i < height.length; i++) {
-            System.out.println("i:" + i + "height:" + height[i]);
-        }
-        System.out.println("trap1:\t" + INSTANCE.trap1(height));
-        System.out.println("trap2:\t" + INSTANCE.trap2(height));
-        System.out.println("trap3:\t" + INSTANCE.trap3(height));
-        System.out.println("trap4:\t" + INSTANCE.trap4(height));
+//        for (int i = 0; i < height.length; i++) {
+//            System.out.println("i:" + i + "height:" + height[i]);
+//        }
+        System.out.println("trap1:\t" + MONOTONESTACK.trap1(height));
+        System.out.println("trap2:\t" + MONOTONESTACK.trap2(height));
+        System.out.println("trap3:\t" + MONOTONESTACK.trap3(height));
+        System.out.println("trap4:\t" + MONOTONESTACK.trap4(new int[]{4,2,0,3,2,5}));
     }
 
     @Test(timeout = 200)
@@ -594,34 +595,6 @@ public class SolutionTest {
         System.out.println(INSTANCE.combinationSum1(nums, target));
     }
 
-    @Test
-    public void dailyTemperature() {
-        int[] T = {73, 74, 75, 71, 69, 72, 76, 73};
-        System.out.println(Arrays.toString(T));
-        String ret = Arrays.toString(INSTANCE.dailyTemperatures(T));
-        System.out.println(ret);
-
-    }
-
-    @Test
-    public void largestRectangleArea() {
-        int[] heights = new int[]{2, 1, 5, 6, 2, 3};
-        System.out.println(INSTANCE.largestRectangleArea0(heights));
-        System.out.println(INSTANCE.largestRectangleArea1(heights));
-    }
-
-    @Test
-    public void maximalRectangle() {
-        char[][] matrix = new char[][]{
-                {'0', '1', '0', '1', '1'},
-                {'0', '1', '1', '1', '0'},
-                {'0', '0', '1', '1', '1'},
-                {'0', '1', '1', '1', '1'},
-                {'0', '1', '1', '1', '0'},
-        };
-        // System.out.println(INSTANCE.maximalRectangle0(matrix));
-        assert INSTANCE.maximalRectangle0(matrix) == 8;
-    }
 
     @Test
     public void longestConsecutive() {
@@ -2255,5 +2228,93 @@ public class SolutionTest {
         System.out.println(INSTANCE.getLastThreeNum(9, 3));
         System.out.println(9 * 9 * 9);
         // INSTANCE.getLastThreeNum(2012,m)==INSTANCE.getLastThreeNum(2012,n);
+    }
+
+    @Test
+    public void MonotoneStack() {
+        int[] T = {73, 74, 75, 71, 69, 72, 76, 73};
+        assert Arrays.equals(MONOTONESTACK.dailyTemperatures(T), new int[]{1, 1, 4, 2, 1, 1, 0, 0});
+
+        int[] nums1 = new int[]{4,1,2};
+        int[] nums2 = new int[]{1,3,4,2};
+        assert Arrays.equals(MONOTONESTACK.nextGreaterElement01(nums1, nums2),
+                MONOTONESTACK.nextGreaterElements02(nums1, nums2));
+
+        int[] nums = new int[]{1,2,1};
+        assert  Arrays.equals(MONOTONESTACK.nextGreaterElements01(nums),new int[]{2,-1,2});
+
+
+    }
+
+
+    @Test
+    public void MonostoneStackAnalyse(){
+        int[]  nums = new int[]{1,2,3,4,5,6,7,8,9};
+        Solution.shuffle(nums,0,nums.length);
+
+        Stack<Integer> s=new Stack<>();
+
+        System.out.println("==单调递减栈==");
+        System.out.println(Arrays.toString(nums));
+        for (int i=0;i<nums.length;i++){
+            while (!s.isEmpty()&&s.peek()<nums[i]) {
+                s.pop();// pop小的元素,放入大的元素
+            }
+            s.push(nums[i]);
+            System.out.println(s);
+        }
+        s.clear();
+        System.out.println("====");
+        System.out.println(Arrays.toString(nums));
+        for (int i =nums.length-1;i>=0;i--){
+            while (!s.isEmpty()&&s.peek()<nums[i]){
+                s.pop();
+            }
+            s.push(nums[i]);
+            System.out.println(s);
+        }
+        s.clear();
+
+        System.out.println("===单调递增栈===="); // 好像可以拿来解决最长递增序列啊
+        System.out.println(Arrays.toString(nums));
+        for(int i=0;i<nums.length;i++){
+            while (!s.isEmpty()&&s.peek()>nums[i]){
+                s.pop();
+            }
+            s.push(nums[i]);
+            System.out.println(s);
+        }
+        s.clear();
+        System.out.println("====");
+        System.out.println(Arrays.toString(nums));
+        for (int i =nums.length-1;i>=0;i--){
+            while (!s.isEmpty()&&s.peek()>nums[i]){
+                s.pop();
+            }
+            s.push(nums[i]);
+            System.out.println(s);
+        }
+        s.clear();
+    }
+
+
+    @Test
+    public void largestRectangleArea() {
+        int[] heights = new int[]{2, 1, 5, 6, 2, 3};
+        System.out.println(MONOTONESTACK.largestRectangleArea0(heights));
+        System.out.println(MONOTONESTACK.largestRectangleArea1(heights));
+    }
+
+    @Test
+    public void maximalRectangle() {
+        char[][] matrix = new char[][]{
+                {'0', '1', '0', '1', '1'},
+                {'0', '1', '1', '1', '0'},
+                {'0', '0', '1', '1', '1'},
+                {'0', '1', '1', '1', '1'},
+                {'0', '1', '1', '1', '0'},
+        };
+        // System.out.println(INSTANCE.maximalRectangle0(matrix));
+        assert MONOTONESTACK.maximalRectangle0(matrix) == 8;
     }
 }

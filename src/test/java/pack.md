@@ -47,7 +47,7 @@ https://www.cnblogs.com/en-heng/p/7257071.html
 - [] 488 暂定 看起来挺复杂的啊
 - [X] 877 解决 这是移到区间DP题目 idea参见:http://bit.ly/2lBsaX1
 - [X] 1000
-  [ ] 1039
+  [ ] 1039 不想做了 区间DP 以后再来做
 
 DAG DP
 354[http://bit.ly/2LyVM1f] 329[http://bit.ly/32H2Nms][!] 
@@ -63,6 +63,11 @@ DAG DP
 42 496  503 739
 https://blog.csdn.net/qq_17550379/article/details/86519771
 https://zhuanlan.zhihu.com/p/26465701
+https://www.cnblogs.com/grandyang/p/8887985.html
+
+单调队列 
+https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/discuss/204290/Monotonic-Queue-Summary
+
 经典问题
 -[X] 1143 最长公共子序列 LCS 
 -[x] 300  最长上升子序列 LIC 
@@ -73,3 +78,9 @@ https://zhuanlan.zhihu.com/p/26465701
 
 常用行业俗语:
 剪枝==相当于求DP重叠子问题时候记忆化搜索
+
+补充:
+https://oi-wiki.org/ds/dsu/
+https://leetcode-cn.com/tag/union-find/
+
+并查集 
