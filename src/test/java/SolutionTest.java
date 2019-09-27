@@ -1162,7 +1162,7 @@ public class SolutionTest {
     public void maxSlidingWindow() {
         int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
         int k = 3;
-        assert INSTANCE.maxSlidingWindow0(nums, k) == INSTANCE.maxSlidingWindow1(nums, k);
+        assert Arrays.equals(MONOTONESTACK.maxSlidingWindow0(nums, k), MONOTONESTACK.maxSlidingWindow1(nums, k));
     }
 
     @Test

@@ -511,75 +511,6 @@ public class Solution {
         return maxArea;
     }
 
-    // 42. 接雨水 trap rain water  http://bit.ly/2RKoy0k
-    public int trap1(int[] height) {
-        // 遍历一次，找左边最大值，然后遍历一次，找右边最大值，选个最大的dp[i],if dp[i] > height[i],则add
-        int res = 0, mx = 0, n = height.length;
-        int[] dp = new int[n];
-        for (int i = 0; i < n; ++i) {
-            dp[i] = mx;
-            mx = Math.max(mx, height[i]);
-        }
-        // reset
-        mx = 0;
-        for (int i = n - 1; i >= 0; i--) {
-            dp[i] = Math.min(dp[i], mx);
-            mx = Math.max(mx, height[i]);
-            if (dp[i] - height[i] > 0) res = res + dp[i] - height[i];
-        }
-        return res;
-    }
-
-    //  42. 接雨水 trap rain water 双指针法
-    public int trap2(int[] height) {
-        int res = 0, l = 0, r = height.length - 1;
-        while (l < r) {
-            int min = Math.min(height[l], height[r]);
-            if (min == height[l]) {
-                l++;
-                while (l < r && height[l] < min) {
-                    System.out.println("l:" + l + "r:" + r);
-                    res = res + min - height[l++];
-                }
-            } else {
-                r--;
-                while (l < r && height[r] < min) {
-                    System.out.println("l:" + l + "r:" + r);
-                    res = res + min - height[r--];
-                }
-            }
-
-        }
-        return res;
-    }
-
-    // 更简洁写法
-    public int trap3(int[] height) {
-        int res = 0, l = 0, r = height.length - 1, level = 0;
-        while (l < r) {
-            int lower = height[height[l] < height[r] ? l++ : r--];
-            level = Math.max(level, lower);
-            System.out.println("l:" + l + "r:" + r);
-            res = res + level - lower;
-        }
-        return res;
-    }
-
-    public int trap4(int[] height) {
-        Stack<Integer> s = new Stack<>();
-        int i = 0, n = height.length, res = 0;
-        while (i < n) {
-            if (s.isEmpty() || height[i] <= height[s.peek()]) {
-                s.push(i++);
-            } else {
-                int t = s.pop();
-                if (s.isEmpty()) continue;
-                res += (Math.min(height[i], height[s.peek()]) - height[t]) * (i - s.peek() - 1);
-            }
-        }
-        return res;
-    }
-
     // 206 反转链表 todo 递归解法 需要crack
     public ListNode reverseList(ListNode head) {
         ListNode prev = null;
@@ -1643,107 +1574,8 @@ public class Solution {
         }
     }
 
-    // 739. 每日温度  递增栈
-    public int[] dailyTemperatures(int[] temperatures) {
-        Stack<Integer> stack = new Stack<>();
-        int[] ret = new int[temperatures.length];
-        for (int i = 0; i < temperatures.length; i++) {
-            // 维护一个有序的栈,仔细观察可以 发现 ret[idx]不是按顺序计算出她的等待天数的哦!!
-            while (!stack.isEmpty() && temperatures[i] > temperatures[stack.peek()]) {
-                Integer idx = stack.pop();
-                // 不是ret[i]哦
-                ret[idx] = i - idx;
-            }
-            stack.push(i);
-        }
-        return ret;
-    }
-
-    // 84. 柱状图中最大的矩形  局部峰值 选取第一个转折点(从大变小的那个点)  O(N²)
-    public int largestRectangleArea0(int[] heights) {
-        int maxArea = 0;
-        for (int i = 0; i < heights.length; i++) {
-            if (i + 1 < heights.length && heights[i] <= heights[i + 1]) continue;
-            int minV = heights[i];
-            for (int j = i; j >= 0; j--) {
-                minV = Math.min(minV, heights[j]);
-                int tmpArea = minV * (i - j + 1);
-                maxArea = Math.max(tmpArea, maxArea);
-            }
-        }
-        return maxArea;
-    }
-
-    // 和解法1 局部峰值思想类似
-    // 优化点在于 内层for循环的时候 j-- 应该在哪里停止的问题 ?
-    //解法2 给出了
-    //输入数组是[2,1,5,6,2,3],
-    //当 j 回退到 值 1 指向的idx 为1 的时候，
-    //就应该停止 比较 面积大小 。因为值1 < 值2
-    //紧接着 idx=5的值2 压入栈
-    // 表现在 stack.pop()和 stack.peek()操作
-    //可以结合博主提供的那篇博文 阅读思考或者debug下
-    //
-    //第二个疑点 为什么h长度 要多+1. 因为， 数组最后一个值 3 右边的值永远是0。这个是必定要进行面积大小比较的。
-    //时间复杂度应该还是O(N²)
-    public int largestRectangleArea1(int[] heights) {
-        Stack<Integer> stack = new Stack<>();
-        int i = 0;
-        int maxArea = 0;
-        int[] h;
-        h = Arrays.copyOf(heights, heights.length + 1);
-        while (i < h.length) {
-            if (stack.isEmpty() || h[stack.peek()] <= h[i]) {
-                stack.push(i);
-                i++;
-            } else {
-                int t = stack.pop();
-                maxArea = Math.max(maxArea, h[t] * (stack.isEmpty() ? i : i - stack.peek() - 1));
-            }
-        }
-        return maxArea;
-    }
-
-    // 85. 最大矩形
-    public int maximalRectangle0(char[][] matrix) {
-        int res = 0;
-        int length = 0;
-        int[] height = new int[length];
-        for (int i = 0; i < matrix.length; i++) {
-            // reset
-            height = Arrays.copyOf(height, Math.max(length, matrix[i].length));
-            for (int j = 0; j < matrix[i].length; j++) {
-                height[j] = (matrix[i][j] == '0' ? 0 : (height[j] + 1));
-            }
-            res = Math.max(res, largestRectangleArea1(height));
-        }
-        return res;
-    }
-
-    //todo 其他解法待做 http://bit.ly/2Ga4HmE
-    public int maximalRectangle(char[][] matrix) {
-        if (matrix.length == 0 || matrix[0].length == 0) {
-            return 0;
-        }
-        int res = 0;
-        int[][] hMax = new int[matrix.length][];
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                if (matrix[i][j] == '0') continue;
-                if (j > 0) {
-                    hMax[i][j] = hMax[i][j - 1] + 1;
-                } else {
-                    hMax[i][0] = 1;
-                }
-
-            }
-        }
-        // todo 哈
-        return 1;
-    }
     // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // 128. 最长连续序列 map set solve
-
     public int longestConsecutive(int[] nums) {
         int res = 0;
         Set<Integer> set = new HashSet<>(nums.length);
@@ -3150,52 +2982,6 @@ public class Solution {
             }
         }
         return dp[n];
-    }
-
-    // 239. 滑动窗口最大值 这道题目也是考察数据结构的熟悉程度了 大堆 优先队列
-    public int[] maxSlidingWindow0(int[] nums, int k) {
-        int[] res = new int[nums.length - k + 1];
-        if (nums.length == 0 || nums == null) return new int[0];
-        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> (o2 - o1));
-        // init
-        for (int i = 0; i < k; i++) {
-            pq.add(nums[i]);
-        }
-        res[0] = pq.peek();
-        for (int i = k; i < nums.length; i++) {
-            pq.remove(nums[i - k]);
-            pq.add(nums[i]);
-            res[i - k + 1] = pq.peek();
-        }
-        return res;
-    }
-
-    // 还是很难像到的
-    public int[] maxSlidingWindow1(int[] nums, int k) {
-        if (nums == null || k <= 0) {
-            return new int[0];
-        }
-        int len = nums.length;
-        int[] ret = new int[len - k + 1];
-
-        int retIdx = 0;
-        Deque<Integer> q = new ArrayDeque<>();
-        for (int i = 0; i < len; i++) {
-            // 超过长度 无条件移除head
-            while (!q.isEmpty() && q.peek() + k - 1 < i) {
-                q.pollFirst();
-            }
-            while (!q.isEmpty() && nums[q.peekLast()] < nums[i]) {
-                // 入列的时候 从尾部剔除小于nums[i]元素
-                q.pollLast();
-            }
-            q.offer(i);
-            if (i >= k - 1) {// 表示 i可以赋值了，因为i必须到k-1时候，获取到第一个滑动窗口。
-                // head代表 固定长度k的头部元素为最大值,赋值给ret
-                ret[retIdx++] = nums[q.peek()];
-            }
-        }
-        return ret;
     }
 
     // 32. 最长有效括号
@@ -6526,6 +6312,8 @@ public class Solution {
 
     // https://www.1point3acres.com/bbs/thread-532266-1-1.html
     // http://www.voidcn.com/article/p-srkptnpu-bnt.html
+
+    //654 RMQ
 
 }
 

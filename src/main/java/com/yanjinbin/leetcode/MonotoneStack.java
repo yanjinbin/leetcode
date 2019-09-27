@@ -1,8 +1,11 @@
 package com.yanjinbin.leetcode;
 
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.Stack;
 
 public class MonotoneStack {
@@ -273,4 +276,43 @@ public class MonotoneStack {
         return -1;
     }
 
+    // 单调队列 http://poj.org/problem?id=2823
+    // 239. 滑动窗口最大值 这道题目也是考察数据结构的熟悉程度了 大堆 优先队列
+    public int[] maxSlidingWindow0(int[] nums, int k) {
+        int[] res = new int[nums.length - k + 1];
+        if (nums.length == 0 || nums == null) return new int[0];
+        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> (o2 - o1));
+        // init
+        for (int i = 0; i < k; i++) {
+            pq.add(nums[i]);
+        }
+        res[0] = pq.peek();
+        for (int i = k; i < nums.length; i++) {
+            pq.remove(nums[i - k]);
+            pq.add(nums[i]);
+            res[i - k + 1] = pq.peek();
+        }
+        return res;
+    }
+
+    // 单调递减队列 用这个比较好
+    public int[] maxSlidingWindow1(int[] nums, int k) {
+        if(nums==null||k<=0) return new int[0];
+        int N = nums.length;
+        int[] ans  = new int[N-k+1];
+        Deque<Integer> q = new LinkedList();
+
+        for(int i=0;i<N;i++){
+            while(!q.isEmpty()&& i-q.peekFirst()+1>k) q.pollFirst();
+            while(!q.isEmpty()&& nums[q.peekLast()]<nums[i]){
+                q.pollLast();
+            }
+            q.addLast(i);
+            if(i>=k-1){
+                ans[i+1-k]=nums[q.peekFirst()];
+            }
+        }
+        return ans;
+    }
+    // 155 minStack
 }
