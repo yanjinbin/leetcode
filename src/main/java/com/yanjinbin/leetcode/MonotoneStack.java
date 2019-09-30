@@ -64,6 +64,7 @@ public class MonotoneStack {
         }
         return res;
     }
+
     // 单调递减栈
     public int trap4(int[] height) {
         Stack<Integer> s = new Stack<>();
@@ -74,57 +75,57 @@ public class MonotoneStack {
             } else {
                 int t = s.pop();
                 if (s.isEmpty()) continue;
-             //   int v1 = Math.min(height[i], height[s.peek()]) - height[t];
-              //  int v2 = i-t;
-               // int v3 = i-s.peek()-1;
-               // System.out.println("v1: "+v1+" v2: "+v2+" v3: "+v3);
-                res +=Math.min(height[i],height[s.peek()]-height[t])*(i-s.peek()-1);
+                //   int v1 = Math.min(height[i], height[s.peek()]) - height[t];
+                //  int v2 = i-t;
+                // int v3 = i-s.peek()-1;
+                // System.out.println("v1: "+v1+" v2: "+v2+" v3: "+v3);
+                res += Math.min(height[i], height[s.peek()] - height[t]) * (i - s.peek() - 1);
             }
         }
         return res;
     }
 
     // 496 单调
-    public int[] nextGreaterElement01(int[] nums1, int[] nums2){
+    public int[] nextGreaterElement01(int[] nums1, int[] nums2) {
         int[] ans = new int[nums1.length];
         Stack<Integer> s = new Stack<>();
-        Map<Integer,Integer> map = new HashMap<>();
-        for (int i:nums2){
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i : nums2) {
             // 单调栈,栈顶元素最小 单调递减栈
-            while (!s.isEmpty()&&s.peek()<i){
-                map.put(s.peek(),i);
+            while (!s.isEmpty() && s.peek() < i) {
+                map.put(s.peek(), i);
                 s.pop();
             }
             s.push(i);
         }
-        for (int i=0;i<nums1.length;i++){
-            if (map.containsKey(nums1[i])){
-                ans[i]=map.get(nums1[i]);
-            }
-            else {
-                ans[i]=-1;
+        for (int i = 0; i < nums1.length; i++) {
+            if (map.containsKey(nums1[i])) {
+                ans[i] = map.get(nums1[i]);
+            } else {
+                ans[i] = -1;
             }
         }
         return ans;
     }
+
     // 解法2 类似
-    public int[] nextGreaterElements02(int[] sub,int[] all){
+    public int[] nextGreaterElements02(int[] sub, int[] all) {
         int[] ans = new int[sub.length];
         Stack<Integer> s = new Stack<>();
-        Map<Integer,Integer> map = new HashMap<>();
+        Map<Integer, Integer> map = new HashMap<>();
         int N = all.length;
-        for(int i= N-1;i>=0;i--){
+        for (int i = N - 1; i >= 0; i--) {
             // 如果栈顶数  小于 待入栈数 那么 我一直削栈顶元素,知道 大于待入栈元素位置 ,然后入栈 所以是单调递减栈
-            while (!s.isEmpty()&&s.peek()<all[i]){// 维护单调性
+            while (!s.isEmpty() && s.peek() < all[i]) {// 维护单调性
                 s.pop();
             }
-            if (!s.isEmpty()) map.put(all[i],s.peek());
+            if (!s.isEmpty()) map.put(all[i], s.peek());
             s.push(all[i]);// 维护递增还是递减属性
         }
-        for (int i=0;i<sub.length;i++){
-            if (map.containsKey(sub[i])){
-                ans[i]=map.get(sub[i]);
-            }else ans[i]=-1;
+        for (int i = 0; i < sub.length; i++) {
+            if (map.containsKey(sub[i])) {
+                ans[i] = map.get(sub[i]);
+            } else ans[i] = -1;
         }
         return ans;
     }
@@ -143,16 +144,16 @@ public class MonotoneStack {
         return res;
     }
 
-    public int[] nextGreaterElements02(int[] nums){
+    public int[] nextGreaterElements02(int[] nums) {
         int N = nums.length;
         int[] ans = new int[N];
         Stack<Integer> s = new Stack<>();
-        for(int i= 2*N-1;i>=0;i--){
-            while (!s.isEmpty()&&s.peek()<=nums[i%N]){
+        for (int i = 2 * N - 1; i >= 0; i--) {
+            while (!s.isEmpty() && s.peek() <= nums[i % N]) {
                 s.pop();
             }
-            ans[i%N] = s.isEmpty()?-1:s.peek();
-            s.push(nums[i%N]);
+            ans[i % N] = s.isEmpty() ? -1 : s.peek();
+            s.push(nums[i % N]);
         }
         return ans;
     }
@@ -165,7 +166,7 @@ public class MonotoneStack {
             int num = nums[i % n];
             while (!stack.isEmpty() && nums[stack.peek()] < num)
                 next[stack.pop()] = num;
-             stack.push(i%n);
+            stack.push(i % n);
         }
         return next;
     }
@@ -177,60 +178,63 @@ public class MonotoneStack {
         Stack<Integer> s = new Stack<>();
         int N = T.length;
         int[] ans = new int[N];
-        for (int i=0;i<N;i++){
-            while (!s.isEmpty()&&T[s.peek()]<T[i]){
+        for (int i = 0; i < N; i++) {
+            while (!s.isEmpty() && T[s.peek()] < T[i]) {
                 int idx = s.pop();
-                ans[idx]=i-idx;
+                ans[idx] = i - idx;
             }
             s.push(i);
         }
         return ans;
-     }
+    }
 
-    // 84. 柱状图中最大的矩形  局部峰值 选取第一个转折点(从大变小的那个点)  O(N²)
-    public int largestRectangleArea0(int[] heights) {
+    // 用分治 也可以实现
+    // 84 最大柱形图面积 单调递减栈的运用
+    public int largestRectangleArea01(int[] heights) {
+        Stack<Integer> s = new Stack<>();
         int maxArea = 0;
         for (int i = 0; i < heights.length; i++) {
-            if (i + 1 < heights.length && heights[i] <= heights[i + 1]) continue;
-            int minV = heights[i];
-            for (int j = i; j >= 0; j--) {
-                minV = Math.min(minV, heights[j]);
-                int tmpArea = minV * (i - j + 1);
-                maxArea = Math.max(tmpArea, maxArea);
+            while (!s.isEmpty() && heights[s.peek()] > heights[i]) {
+                //http://bit.ly/2m5KpEo
+                maxArea = Math.max(maxArea, heights[s.pop()] * (i - (s.isEmpty() ? 0 : s.peek() + 1)));
             }
+            s.push(i);
+        }
+        // finally pop out any bar left in the stack and calculate the area based on it
+        while (!s.isEmpty()) {
+            //                                                相当于i= len
+            maxArea = Math.max(maxArea, heights[s.pop()] * (heights.length - (s.isEmpty() ? 0 : s.peek() + 1)));
         }
         return maxArea;
     }
 
-    // 和解法1 局部峰值思想类似
-    // 优化点在于 内层for循环的时候 j-- 应该在哪里停止的问题 ?
-    //解法2 给出了
-    //输入数组是[2,1,5,6,2,3],
-    //当 j 回退到 值 1 指向的idx 为1 的时候，
-    //就应该停止 比较 面积大小 。因为值1 < 值2
-    //紧接着 idx=5的值2 压入栈
-    // 表现在 stack.pop()和 stack.peek()操作
-    //可以结合博主提供的那篇博文 阅读思考或者debug下
-    //
-    //第二个疑点 为什么h长度 要多+1. 因为， 数组最后一个值 3 右边的值永远是0。这个是必定要进行面积大小比较的。
-    //时间复杂度应该还是O(N²)
-    public int largestRectangleArea1(int[] heights) {
-        Stack<Integer> stack = new Stack<>();
-        int i = 0;
+    public int largestRectangleArea02(int[] heights) {
+        Stack<Integer> s = new Stack<>();
         int maxArea = 0;
-        int[] h;
-        h = Arrays.copyOf(heights, heights.length + 1);
-        while (i < h.length) {
-            if (stack.isEmpty() || h[stack.peek()] <= h[i]) {
-                stack.push(i);
-                i++;
-            } else {
-                int t = stack.pop();
-                maxArea = Math.max(maxArea, h[t] * (stack.isEmpty() ? i : i - stack.peek() - 1));
+        int[] h = Arrays.copyOf(heights, heights.length + 1);
+        for (int i = 0; i < h.length; i++) {
+            while (!s.isEmpty() && h[s.peek()] > h[i]) {
+                int idx = s.pop();
+                System.out.println(h[idx] + " " + (i - (s.isEmpty() ? 0 : (s.peek() + 1))));
+                maxArea = Math.max(maxArea, h[idx] * (i - (s.isEmpty() ? 0 : s.peek() + 1)));
             }
+            s.push(i);
         }
         return maxArea;
     }
+    /*
+    public int largestRectangleArea03(int[] heights) {
+        if (heights.length==1) return heights[0];// 错误 ,如果输入数据是[2,2]
+        Stack<Integer> s = new Stack<>();
+        int maxArea = 0;
+        for (int i=0;i<heights.length;i++){
+            while (!s.isEmpty()&&heights[s.peek()]>heights[i]){
+                maxArea = Math.max(maxArea,heights[s.pop()]*(i-(s.isEmpty()? 0:s.peek()+1)));
+            }
+            s.push(i);
+        }
+        return maxArea;
+    }*/
 
     // 85. 最大矩形
     public int maximalRectangle0(char[][] matrix) {
@@ -243,7 +247,7 @@ public class MonotoneStack {
             for (int j = 0; j < matrix[i].length; j++) {
                 height[j] = (matrix[i][j] == '0' ? 0 : (height[j] + 1));
             }
-            res = Math.max(res, largestRectangleArea1(height));
+            res = Math.max(res, largestRectangleArea01(height));
         }
         return res;
     }
@@ -270,12 +274,6 @@ public class MonotoneStack {
         return 1;
     }
 
-    // 456
-
-    public int find132pattern(int[] nums){
-        return -1;
-    }
-
     // 单调队列 http://poj.org/problem?id=2823
     // 239. 滑动窗口最大值 这道题目也是考察数据结构的熟悉程度了 大堆 优先队列
     public int[] maxSlidingWindow0(int[] nums, int k) {
@@ -297,22 +295,65 @@ public class MonotoneStack {
 
     // 单调递减队列 用这个比较好
     public int[] maxSlidingWindow1(int[] nums, int k) {
-        if(nums==null||k<=0) return new int[0];
+        if (nums == null || k <= 0) return new int[0];
         int N = nums.length;
-        int[] ans  = new int[N-k+1];
+        int[] ans = new int[N - k + 1];
         Deque<Integer> q = new LinkedList();
 
-        for(int i=0;i<N;i++){
-            while(!q.isEmpty()&& i-q.peekFirst()+1>k) q.pollFirst();
-            while(!q.isEmpty()&& nums[q.peekLast()]<nums[i]){
+        for (int i = 0; i < N; i++) {
+            while (!q.isEmpty() && i - q.peekFirst() + 1 > k) q.pollFirst();
+            while (!q.isEmpty() && nums[q.peekLast()] < nums[i]) {
                 q.pollLast();
             }
             q.addLast(i);
-            if(i>=k-1){
-                ans[i+1-k]=nums[q.peekFirst()];
+            if (i >= k - 1) {
+                ans[i + 1 - k] = nums[q.peekFirst()];
             }
         }
         return ans;
     }
-    // 155 minStack
+
+    // 456
+    // 给定一个整数序列：a1, a2, ..., an，一个132模式的子序列 ai, aj, ak 被定义为：
+    // 当 i < j < k 时，ai < ak < aj。设计一个算法，
+    // 当给定有 n 个数字的序列时，验证这个序列中是否含有132模式的子序列。
+
+
+    public boolean find132pattern(int[] nums) {
+        int N = nums.length;
+        if (N < 3) return false;
+        int ak = Integer.MIN_VALUE;// 次大  第二大
+        Stack<Integer> s = new Stack<>();
+        for (int i = N - 1; i >= 0; i--) { // ai,aj  -->nums[i]   ak-->flag
+            if (nums[i] < ak) {
+                return true;
+            } else {
+                while (!s.isEmpty() && s.peek() < nums[i]) {
+                    ak = Math.max(ak, s.pop());
+                }
+                s.push(nums[i]);
+            }
+        }
+        return false;
+    }
+
+    // 解法2  还是错的  无法处理  边界情况 [-1,3,2]  这种从
+    public boolean find132pattern01(int[] nums) {
+        int N = nums.length;
+        if (N < 3) return false;
+        int flag = Integer.MAX_VALUE;
+        Stack<Integer> s = new Stack<>();
+        s.add(nums[0]);
+        for (int i = 1; i < N; i++) {
+            if (nums[i] > flag) {
+                return true;
+            } else {
+                while (!s.isEmpty() && nums[i] < s.peek()) {
+                    flag = Math.min(flag, s.pop());
+                }
+                s.push(nums[i]);
+            }
+        }
+        return false;
+    }
 }

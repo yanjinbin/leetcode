@@ -12,9 +12,10 @@ public class SolutionTest {
 
     private static MonotoneStack MONOTONESTACK =  new MonotoneStack();
 
+    private static TreeSP TreeSP = new TreeSP();
     @Before()
     public void init() {
-        System.out.println("=====unit test====");
+
     }
 
 
@@ -776,8 +777,7 @@ public class SolutionTest {
         b.setRight(null);
         c.setLeft(d);
         c.setRight(e);
-        assert INSTANCE.maxDepth0(a) == 3;
-        assert INSTANCE.maxDepth1(a) == 3;
+        assert TreeSP.maxDepth0(a) == 3;
     }
 
 
@@ -2300,9 +2300,11 @@ public class SolutionTest {
 
     @Test
     public void largestRectangleArea() {
-        int[] heights = new int[]{2, 1, 5, 6, 2, 3};
-        System.out.println(MONOTONESTACK.largestRectangleArea0(heights));
-        System.out.println(MONOTONESTACK.largestRectangleArea1(heights));
+        int[] heights = new int[]{2, 1, 5, 6, 4, 3};
+        assert MONOTONESTACK.largestRectangleArea01(heights) == MONOTONESTACK.largestRectangleArea02(heights);
+        // corner case
+        heights = new int[]{1};
+        assert MONOTONESTACK.largestRectangleArea01(heights) == MONOTONESTACK.largestRectangleArea02(heights);
     }
 
     @Test
@@ -2317,4 +2319,70 @@ public class SolutionTest {
         // System.out.println(INSTANCE.maximalRectangle0(matrix));
         assert MONOTONESTACK.maximalRectangle0(matrix) == 8;
     }
+
+    @Test
+    public  void findLHS(){
+        INSTANCE.findLHS(new int[]{1,2,3,3,5,5,5,4,5,6,4,4});
+    }
+
+    @Test
+    public void maxAncestorDiff(){
+        TreeNode root = TreeNode.builder().val(8).build();
+        TreeNode n1 = TreeNode.builder().val(9).build();
+        TreeNode n2 = TreeNode.builder().val(7).build();
+        TreeNode n3 = TreeNode.builder().val(1).build();
+        TreeNode n4 = TreeNode.builder().val(6).build();
+        root.setLeft(n1); //
+        root.setRight(n2);
+        n1.setLeft(n3);
+        n1.setRight(n4);
+        TreeSP.maxAncestorDiff(root);
+    }
+
+    @Test
+    public void isBalanced(){
+
+        TreeNode root = TreeNode.builder().val(8).build();
+        TreeNode n1 = TreeNode.builder().val(9).build();
+        TreeNode n2 = TreeNode.builder().val(7).build();
+        TreeNode n3 = TreeNode.builder().val(1).build();
+        TreeNode n4 = TreeNode.builder().val(6).build();
+        root.setLeft(n1); //
+        root.setRight(n2);
+        n1.setLeft(n3);
+        n1.setRight(n4);
+
+        System.out.println(TreeSP.dfsHeight(root));
+    }
+
+    @Test
+    public void widthOfBinaryTree(){
+        TreeNode root = TreeNode.builder().val(8).build();
+        TreeNode n1 = TreeNode.builder().val(9).build();
+        TreeNode n2 = TreeNode.builder().val(7).build();
+        TreeNode n3 = TreeNode.builder().val(1).build();
+        TreeNode n4 = TreeNode.builder().val(6).build();
+        root.setLeft(n1); //
+        root.setRight(n2);
+        n1.setLeft(n3);
+        n2.setRight(n4);
+        assert TreeSP.widthOfBinaryTree(root) == 4;
+    }
+
+    @Test
+    public void find132pattern(){
+        int[] nums = new int[]{3,5,0,3,4};
+        assert MONOTONESTACK.find132pattern(nums);
+       assert MONOTONESTACK.find132pattern01(nums)==true;
+
+        // corner case
+        nums = new int[]{-1,3,2,0};
+        assert MONOTONESTACK.find132pattern(nums)==true;
+        assert MONOTONESTACK.find132pattern01(nums) == false;
+        nums = new int[]{4,1,3,2};
+        assert MONOTONESTACK.find132pattern(nums)==true;
+        assert MONOTONESTACK.find132pattern01(nums)==false;
+    }
+
+
 }
