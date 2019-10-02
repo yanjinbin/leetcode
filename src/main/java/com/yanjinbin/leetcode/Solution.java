@@ -3,10 +3,6 @@ package com.yanjinbin.leetcode;
 
 // ArrayDeque（双端队列）内部实现是一个循环数组，bit 巧妙运用
 
-import edu.princeton.cs.algs4.In;
-
-import java.util.ArrayDeque;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -136,7 +132,6 @@ public class Solution {
     }
 
     // 141. Linked List Cycle
-    // todo 如何证明呢
     public boolean hasCycle(ListNode head) {
         if (head == null) {
             return false;
@@ -1884,48 +1879,7 @@ public class Solution {
         return dp[n];
     }
 
-    // 104. 二叉树的最大深度
-    // 解法1
-    public int maxDepth0(TreeNode root) {
-        int level = 0;
-        return dfsHeightHelper(root, level);
-    }
-
-    public int dfsHeightHelper(TreeNode root, int level) {
-        if (root == null) return level;
-        level++;
-        // 写错递归入参了 写了两个root.left
-        return Math.max(dfsHeightHelper(root.left, level), dfsHeightHelper(root.right, level));
-    }
-
-    // 解法2
-    public int maxDepth1(TreeNode root) {
-        if (root == null) return 0;
-        return 1 + Math.max(maxDepth1(root.left), maxDepth1(root.right));
-    }
-
-
     // 98. 验证二叉搜索树
-    // 没做约束
-    //  http://bit.ly/2Sq9V2U
-    // 这道题目的基础是理解用递归 栈 以及Morris方法来做 可以参考上述链接
-    // 不过更推荐下面这种做法 dfs递归 确定左右边界.
-    public boolean isValidBSTBad(TreeNode root) {
-        if (root == null) return true;
-        return validateTreeNode(root) ? (isValidBSTBad(root.left) && isValidBSTBad(root.right)) : false;
-    }
-
-    public static boolean validateTreeNode(TreeNode node) {
-        if (node.right == null && node.left == null) return true;
-        if (node.right == null) {
-            return node.val > node.left.val;
-        }
-        if (node.left == null) {
-            return node.val < node.right.val;
-        }
-        return node.val > node.left.val && node.val < node.right.val;
-    }
-
     // 用Long 代替int 就是为了满足边界条件 if root.val= Integer.MAX_VALUE
     public boolean isValidBST0(TreeNode root) {
         long right = Long.MAX_VALUE;
@@ -3651,6 +3605,10 @@ public class Solution {
 //        0, 0	       1	              0, 1
 //        0, 1	       1	              1, 0
 //        1, 0	       1	              0, 0
+
+    // (其实不难：对于a，把next中a=1对应的行组合选出来，
+    // 对于每一个组合，凡取值为1的变量写成原变量，取值为0的变量写成反变量，
+    // 各变量相乘后得到一个乘积项；最后，把各个组合对应的乘积项相加，就得到了相应的逻辑表达式。对于b同理)
     public int singleNumberⅡ1(int[] nums) {
         int A = 0;
         int B = 0;
@@ -4091,7 +4049,7 @@ public class Solution {
         return i;
     }
 
-    // 缺失的第一个征整数
+    // 缺失的第一个征整数 union find
     public int firstMissingPositive_1(int[] nums) {
         int n = nums.length;
         for (int i = 0; i < n; i++) {
@@ -5907,7 +5865,6 @@ public class Solution {
     // ----------k-------------
     // ---cnt--cnt+1---cnt+2--->
     // ---root.left--root---root.right--->
-
     public int kthSmallest2(TreeNode root, int k) {
         int cnt = count(root.left);
         if (k < cnt + 1) {
@@ -5939,7 +5896,7 @@ public class Solution {
         return lengthOfLongestSubstringKDistinct(s, 2);
     }
 
-    //  解法3 不需要额外空间的做法 参考解法4 http://bit.ly/2ZMzCws 类似于leetcode 904
+    // 解法3 不需要额外空间的做法 参考解法4 http://bit.ly/2ZMzCws 类似于leetcode 904
     public int lengthOfLongestSubstringTwoDistinct1(String s) {
         int res = 0, cur = 0, cntLast = 0;
         char first = 0, second = 0;
@@ -6077,33 +6034,45 @@ public class Solution {
         return ok ? N : Math.max(res, longestSubstring2(s.substring(maxIdx, N), k));
     }
 
-
-    // 207 课程表 todo
-    public boolean canFinish(int numCourses, int[][] prerequisites) {
-        return false;
-    }
-
-    // 440 字典序第K小的数字 todo 10叉树
-    public int findKthSmallest(int n, int k) {
-        int cur = 1;
-        k--;
-        while (k > 0) {
-            int step = 0, first = cur, last = cur + 1;
-            while (first <= n) {
-                step += Math.min(n + 1, last) - first;
-                first *= 10;
-                last *= 10;
+    // 440 字典序第K小的数字 http://bit.ly/2nKscwE https://youtu.be/yMnR63e3KLo
+    public int findKthNumber(int n, int k) {
+        int curr =1;
+        k = k -1;
+        while (k>0){ // if n=1;k=1;
+            int gap = findGap(n,curr,curr+1);
+            if (gap<=k){// 在隔壁子树节点下
+                curr = curr+1;
+                k = k-gap;
+            }else {// 在当前节点子树下
+                curr = curr *10;
+                k = k-1;
             }
-            // if (step)
         }
-        return -1;
-
+        return  curr;
+    }
+    public int findGap(int n,long cur,long neighbour){  // [cur,neighbour)或者说(cur,Neighbour] 之间的距离
+        int gap = 0;
+        while (cur<=n){
+            gap +=Math.min(n+1,neighbour)-cur;
+            cur = cur *10;
+            neighbour = neighbour*10;
+        }
+        return  gap;
+    }
+    //use long in case of overflow
+    public int calSteps(int n, long n1, long n2) { //计算curr开头和curr+1开头之间的字符串数量
+        int steps = 0;
+        while (n1 <= n) {
+            steps += Math.min(n + 1, n2) - n1;  //每次加上当前的字符串数量
+            n1 *= 10;       //每次均扩大10倍
+            n2 *= 10;
+        }
+        return steps;
     }
 
     // 类似于46的全排列问题
     // 51 N皇后问题
     char Queen = 'Q', Empty = '.';
-
     public List<List<String>> solveNQueens(int n) {
         List<List<String>> ans = new ArrayList();
         boolean[][] matrix = new boolean[n][n];
@@ -6117,7 +6086,6 @@ public class Solution {
         } else {
             for (int j = 0; j < n; j++) {
                 if (!isValid(row, j, matrix, n)) continue;
-                ;
                 track.add(convert(n, j));
                 matrix[row][j] = true;
                 backTrack(ans, track, matrix, row + 1, n);// 放置Q, track.add() 撤销Q,track.remove
@@ -6151,58 +6119,8 @@ public class Solution {
         ret.setCharAt(pos, Queen);
         return ret.toString();
     }
-    // 位运算法
 
-    // backtrack 回溯算法
-
-    // [special专题]（分治思想/二分查找）https://www.cnblogs.com/grandyang/p/6854825.html
-
-    //  grocery
-    //  http://bit.ly/2HVV8Zz  遍历问题 注意不要无限递归下去就行 就是要找出所有可能的base case  return
-
-
-    // 面筋题目
-    //  http://bit.ly/32H6YPn
-    // leetcode 664
-    public int strangePrinter(String s) {
-        return -1;
-    }
-
-    // leetcode 415
-    // https://leetcode-cn.com/problems/add-strings/
-    // 415. 字符串相加
-
-    // follow up todo 590. N叉树的后序遍历
-    public List<Integer> postorder(Node root) {
-        return null;
-    }
-
-    // 207. 课程表 拓扑排序
-
-    // 124. 二叉树中的最大路径和
-    public int maxPathSum(TreeNode root) {
-        return 1;
-    }
-
-    // [tag:微软实习面筋] https://www.1point3acres.com/bbs/thread-540776-1-1.html
-    // 验证是否是一棵二叉树
-    public boolean validBST(TreeNode root) {
-        int min = Integer.MIN_VALUE, max = Integer.MAX_VALUE;
-        return help(root, min, max);
-    }
-
-    public boolean help(TreeNode root, int min, int max) {
-        int left = root.left.val;
-        int val = root.val;
-        int right = root.right.val;
-        if (min <= left && left <= val && val <= right && right <= max) {
-            help(root.left, min, val);
-            help(root.right, val, max);
-        }
-        return false;
-    }
     // leetcode 516  [tag:微软面筋]  https://www.1point3acres.com/bbs/thread-541121-1-1.html
-
     // [tag:微软面筋] 求M的N次方的后3位
     public int getLastThreeNum(int m, int n) {
         int res = 1;
@@ -6212,7 +6130,7 @@ public class Solution {
         return res;
     }
 
-    // leetcode 103 二叉树的锯齿形层遍历
+    // 103 二叉树的锯齿形层遍历
     public List<List<Integer>> zigzagLevelOrder0(TreeNode root) {
         List<List<Integer>> ret = new ArrayList<>();
         if (root == null) return ret;
@@ -6237,7 +6155,7 @@ public class Solution {
         }
         return ret;
     }
-
+    // 解法2
     public List<List<Integer>> zigzagLevelOrder1(TreeNode root) {
         List<List<Integer>> ret = new ArrayList();
         dfsZigzag(root, 0, ret);
@@ -6260,8 +6178,54 @@ public class Solution {
         dfsZigzag(root.right, level + 1, ret);
 
     }
-    // 共同祖先问题
 
+    // 594 最长和谐子序列
+    public int findLHS(int[] nums) {
+        Map<Integer, Integer> map = new HashMap();
+        for (int i : nums) {
+            map.put(i, map.getOrDefault(i, 0) + 1);
+        }
+        int ans = 0;
+        for (int key : map.keySet()) { // keyset用法了解下  java还是麻烦啊
+            if (map.containsKey(key + 1)) {
+                ans = Math.max(ans, map.get(key) + map.get(key + 1));
+            }
+        }
+        return ans;
+    }
+
+    // 1027. 最长等差数列
+    // dp[i][step]=dp[j][step]+1;
+    public int longestArithSeqLength(int[] A) {
+        int res = 2, n = A.length;
+        Map<Integer, Integer>[] dp = new HashMap[n];
+        for (int j = 0; j < A.length; j++) {
+            dp[j] = new HashMap<>();
+            for (int i = 0; i < j; i++) {
+                int d = A[j] - A[i];
+                dp[j].put(d, dp[i].getOrDefault(d, 1) + 1);
+                res = Math.max(res, dp[j].get(d));
+            }
+        }
+        return res;
+    }
+
+
+    // 403 青蛙过河
+
+    //  464 我能赢吗
+
+    // 1092. 最短公共超序列
+
+    // 718. 最长重复子数组
+
+
+    // 873
+
+    // 673. 最长递增子序列的个数
+
+    // 915. 分割数组
+    //
 
     // follow up
     //  数2012的M次方与数2012的N次方的最后三位数相同,求正整数M和N,使M+N最小
@@ -6314,6 +6278,39 @@ public class Solution {
     // http://www.voidcn.com/article/p-srkptnpu-bnt.html
 
     //654 RMQ
+
+    // 位运算法
+
+    // backtrack 回溯算法
+
+    // [special专题]（分治思想/二分查找）https://www.cnblogs.com/grandyang/p/6854825.html
+
+    //  grocery
+    //  http://bit.ly/2HVV8Zz  遍历问题 注意不要无限递归下去就行 就是要找出所有可能的base case  return
+
+
+    // 面筋题目
+    //  http://bit.ly/32H6YPn
+    // leetcode 664
+    public int strangePrinter(String s) {
+        return -1;
+    }
+
+    // leetcode 415
+    // https://leetcode-cn.com/problems/add-strings/
+    // 415. 字符串相加
+
+    // follow up todo 590. N叉树的后序遍历
+    public List<Integer> postorder(Node root) {
+        return null;
+    }
+
+    // 207. 课程表 拓扑排序
+
+    // 124. 二叉树中的最大路径和
+    public int maxPathSum(TreeNode root) {
+        return 1;
+    }
 
 }
 

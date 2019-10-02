@@ -10,9 +10,10 @@ public class SolutionTest {
 
     private static Solution INSTANCE = new Solution();
 
-    private static MonotoneStack MONOTONESTACK =  new MonotoneStack();
+    private static MonotoneStack MONOTONESTACK = new MonotoneStack();
 
     private static TreeSP TreeSP = new TreeSP();
+
     @Before()
     public void init() {
 
@@ -76,6 +77,10 @@ public class SolutionTest {
         Arrays.sort(nums, Collections.reverseOrder());
         List<Integer> integers = Arrays.asList(1, 2, 3);
         System.out.println(integers);
+
+        int[] arr = new int[]{1, 2, 3, 4, 5, 5, 1};
+        assert Arrays.stream(arr).min().getAsInt() == 1;
+        assert Arrays.stream(arr).max().getAsInt() == 5;
     }
 
 
@@ -265,7 +270,7 @@ public class SolutionTest {
         System.out.println("trap1:\t" + MONOTONESTACK.trap1(height));
         System.out.println("trap2:\t" + MONOTONESTACK.trap2(height));
         System.out.println("trap3:\t" + MONOTONESTACK.trap3(height));
-        System.out.println("trap4:\t" + MONOTONESTACK.trap4(new int[]{4,2,0,3,2,5}));
+        System.out.println("trap4:\t" + MONOTONESTACK.trap4(new int[]{4, 2, 0, 3, 2, 5}));
     }
 
     @Test(timeout = 200)
@@ -1581,7 +1586,7 @@ public class SolutionTest {
 
     @Test
     public void topKSeries() {
-        System.out.println("===Top K系列问题===");
+        System.out.println("===Top K系列问题===");/*
         PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
         pq.add(1);
         pq.add(10);
@@ -1589,7 +1594,10 @@ public class SolutionTest {
         pq.add(8);
         while (!pq.isEmpty()) {
             System.out.println(pq.poll());
-        }
+        }*/
+     //   assert INSTANCE.findKthNumber(13, 2) == 10;
+
+        assert  INSTANCE.findKthNumber(198,113)==21;
     }
 
     @Test
@@ -2235,29 +2243,29 @@ public class SolutionTest {
         int[] T = {73, 74, 75, 71, 69, 72, 76, 73};
         assert Arrays.equals(MONOTONESTACK.dailyTemperatures(T), new int[]{1, 1, 4, 2, 1, 1, 0, 0});
 
-        int[] nums1 = new int[]{4,1,2};
-        int[] nums2 = new int[]{1,3,4,2};
+        int[] nums1 = new int[]{4, 1, 2};
+        int[] nums2 = new int[]{1, 3, 4, 2};
         assert Arrays.equals(MONOTONESTACK.nextGreaterElement01(nums1, nums2),
                 MONOTONESTACK.nextGreaterElements02(nums1, nums2));
 
-        int[] nums = new int[]{1,2,1};
-        assert  Arrays.equals(MONOTONESTACK.nextGreaterElements01(nums),new int[]{2,-1,2});
+        int[] nums = new int[]{1, 2, 1};
+        assert Arrays.equals(MONOTONESTACK.nextGreaterElements01(nums), new int[]{2, -1, 2});
 
 
     }
 
 
     @Test
-    public void MonostoneStackAnalyse(){
-        int[]  nums = new int[]{1,2,3,4,5,6,7,8,9};
-        Solution.shuffle(nums,0,nums.length);
+    public void MonostoneStackAnalyse() {
+        int[] nums = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9};
+        Solution.shuffle(nums, 0, nums.length);
 
-        Stack<Integer> s=new Stack<>();
+        Stack<Integer> s = new Stack<>();
 
         System.out.println("==单调递减栈==");
         System.out.println(Arrays.toString(nums));
-        for (int i=0;i<nums.length;i++){
-            while (!s.isEmpty()&&s.peek()<nums[i]) {
+        for (int i = 0; i < nums.length; i++) {
+            while (!s.isEmpty() && s.peek() < nums[i]) {
                 s.pop();// pop小的元素,放入大的元素
             }
             s.push(nums[i]);
@@ -2266,8 +2274,8 @@ public class SolutionTest {
         s.clear();
         System.out.println("====");
         System.out.println(Arrays.toString(nums));
-        for (int i =nums.length-1;i>=0;i--){
-            while (!s.isEmpty()&&s.peek()<nums[i]){
+        for (int i = nums.length - 1; i >= 0; i--) {
+            while (!s.isEmpty() && s.peek() < nums[i]) {
                 s.pop();
             }
             s.push(nums[i]);
@@ -2277,8 +2285,8 @@ public class SolutionTest {
 
         System.out.println("===单调递增栈===="); // 好像可以拿来解决最长递增序列啊
         System.out.println(Arrays.toString(nums));
-        for(int i=0;i<nums.length;i++){
-            while (!s.isEmpty()&&s.peek()>nums[i]){
+        for (int i = 0; i < nums.length; i++) {
+            while (!s.isEmpty() && s.peek() > nums[i]) {
                 s.pop();
             }
             s.push(nums[i]);
@@ -2287,8 +2295,8 @@ public class SolutionTest {
         s.clear();
         System.out.println("====");
         System.out.println(Arrays.toString(nums));
-        for (int i =nums.length-1;i>=0;i--){
-            while (!s.isEmpty()&&s.peek()>nums[i]){
+        for (int i = nums.length - 1; i >= 0; i--) {
+            while (!s.isEmpty() && s.peek() > nums[i]) {
                 s.pop();
             }
             s.push(nums[i]);
@@ -2321,12 +2329,12 @@ public class SolutionTest {
     }
 
     @Test
-    public  void findLHS(){
-        INSTANCE.findLHS(new int[]{1,2,3,3,5,5,5,4,5,6,4,4});
+    public void findLHS() {
+        INSTANCE.findLHS(new int[]{1, 2, 3, 3, 5, 5, 5, 4, 5, 6, 4, 4});
     }
 
     @Test
-    public void maxAncestorDiff(){
+    public void maxAncestorDiff() {
         TreeNode root = TreeNode.builder().val(8).build();
         TreeNode n1 = TreeNode.builder().val(9).build();
         TreeNode n2 = TreeNode.builder().val(7).build();
@@ -2340,7 +2348,7 @@ public class SolutionTest {
     }
 
     @Test
-    public void isBalanced(){
+    public void isBalanced() {
 
         TreeNode root = TreeNode.builder().val(8).build();
         TreeNode n1 = TreeNode.builder().val(9).build();
@@ -2356,7 +2364,7 @@ public class SolutionTest {
     }
 
     @Test
-    public void widthOfBinaryTree(){
+    public void widthOfBinaryTree() {
         TreeNode root = TreeNode.builder().val(8).build();
         TreeNode n1 = TreeNode.builder().val(9).build();
         TreeNode n2 = TreeNode.builder().val(7).build();
@@ -2370,18 +2378,20 @@ public class SolutionTest {
     }
 
     @Test
-    public void find132pattern(){
-        int[] nums = new int[]{3,5,0,3,4};
+    public void find132pattern() {
+        int[] nums = new int[]{3, 5, 0, 3, 4};
         assert MONOTONESTACK.find132pattern(nums);
-       assert MONOTONESTACK.find132pattern01(nums)==true;
+        assert MONOTONESTACK.find132pattern01(nums) == true;
 
         // corner case
-        nums = new int[]{-1,3,2,0};
-        assert MONOTONESTACK.find132pattern(nums)==true;
+        nums = new int[]{-1, 3, 2, 0};
+        assert MONOTONESTACK.find132pattern(nums) == true;
         assert MONOTONESTACK.find132pattern01(nums) == false;
-        nums = new int[]{4,1,3,2};
-        assert MONOTONESTACK.find132pattern(nums)==true;
-        assert MONOTONESTACK.find132pattern01(nums)==false;
+        nums = new int[]{4, 1, 3, 2};
+        assert MONOTONESTACK.find132pattern(nums) == true;
+        assert MONOTONESTACK.find132pattern01(nums) == false;
+        nums = new int[]{9, 3, 8, 7, 5, 6, 2, 2, 9};
+
     }
 
 
