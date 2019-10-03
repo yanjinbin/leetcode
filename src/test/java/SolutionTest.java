@@ -14,6 +14,8 @@ public class SolutionTest {
 
     private static TreeSP TreeSP = new TreeSP();
 
+    private static DivideConquer DC = new DivideConquer();
+
     @Before()
     public void init() {
 
@@ -1584,21 +1586,6 @@ public class SolutionTest {
 
     }
 
-    @Test
-    public void topKSeries() {
-        System.out.println("===Top K系列问题===");/*
-        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
-        pq.add(1);
-        pq.add(10);
-        pq.add(9);
-        pq.add(8);
-        while (!pq.isEmpty()) {
-            System.out.println(pq.poll());
-        }*/
-     //   assert INSTANCE.findKthNumber(13, 2) == 10;
-
-        assert  INSTANCE.findKthNumber(198,113)==21;
-    }
 
     @Test
     public void getSkylines() {
@@ -1853,6 +1840,7 @@ public class SolutionTest {
     public void binarySearch() {
         System.out.println("===展示下二分法 上界 和 下界 以及java自带的二分搜索====");
         int[] arr = new int[]{9, 5, 4, 2, 3, 1, 6, 7, 2, 2, 2, 2};
+        System.out.println(arr.length);
         Arrays.sort(arr);
         System.out.println(Arrays.toString(arr));
         int first = 0;
@@ -1865,12 +1853,16 @@ public class SolutionTest {
         System.out.println(res);
         res = Arrays.binarySearch(arr, first, last, -1);
         System.out.println(res);
+        res = countSmallerOrEqual(arr,-1);
+        System.out.println(res);
         System.out.println("======B");
         res = binarySearch(arr, first, last, 11);
         System.out.println(res);
         res = binarySearch01(arr, first, last, 11);
         System.out.println(res);
         res = Arrays.binarySearch(arr, first, last, 11);
+        System.out.println(res);
+        res = countSmallerOrEqual(arr,11);
         System.out.println(res);
         System.out.println("======C");
         res = binarySearch(arr, first, last, 2);
@@ -1879,6 +1871,8 @@ public class SolutionTest {
         System.out.println(res);
         res = Arrays.binarySearch(arr, first, last, 2);
         System.out.println(res);
+        res = countSmallerOrEqual(arr,2);
+        System.out.println(res);
         System.out.println("======D");
         res = binarySearch(arr, first, last, 6);
         System.out.println(res);
@@ -1886,7 +1880,30 @@ public class SolutionTest {
         System.out.println(res);
         res = Arrays.binarySearch(arr, first, last, 6);
         System.out.println(res);
+        res = countSmallerOrEqual(arr,6);
+        System.out.println(res);
+    }
 
+    private int countSmallerOrEqual(int[] arr, int number) {
+        int start = 0, end = arr.length - 1;
+
+        // find first index that arr[index] > number;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (arr[mid] <= number) {
+                start = mid;
+            } else {
+                end = mid;
+            }
+        }
+        if (arr[start] > number) {
+            return start;
+        }
+        if (arr[end] > number) {
+            return end;
+        }
+
+        return arr.length;
     }
 
     // 下界函数
@@ -1905,19 +1922,19 @@ public class SolutionTest {
         return first;
     }
 
-    // 下界函数
+    // >=value第一个位置  这个更好记
     public int binarySearch01(int[] array, int first, int last, int value) {
-        // System.out.println("first " + first + " last " + last + " value " + value);
-        while (first < last) {
-            int mid = first + (last - first) / 2;
-            if (array[mid] >= value) { // 返回满足 arr[i] >= value的第一个位置
-                last = mid;
-            } else {
-                first = mid + 1;
+        while (first<last){
+            int mid = first+(last-first)/2;
+            if(array[mid] >= value){
+                last=mid;
+            }else {
+                first=mid+1;
             }
         }
-        //  System.out.println("first " + first + " last " + last + " value " + value);
+        assert first==last;
         return first;
+
     }
 
 
@@ -2224,6 +2241,19 @@ public class SolutionTest {
         k = 3;
         System.out.println(INSTANCE.longestSubstring1(s, k));
 
+
+        System.out.println("===Top K系列问题===");/*
+        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        pq.add(1);
+        pq.add(10);
+        pq.add(9);
+        pq.add(8);
+        while (!pq.isEmpty()) {
+            System.out.println(pq.poll());
+        }*/
+        //   assert INSTANCE.findKthNumber(13, 2) == 10;
+
+        assert  INSTANCE.findKthNumber(198,113)==21;
     }
 
     @Test
@@ -2394,5 +2424,12 @@ public class SolutionTest {
 
     }
 
+    @Test
+    public void DivideAndConquer(){
+        int[] s = new int[]{-1,1,3,5,7,9};
+        int[] l = new int[]{2,4,6,8,10,12,14,16};
+        assert DC.findMedianSortedArrays(s, l) == 6.5;
+
+    }
 
 }
