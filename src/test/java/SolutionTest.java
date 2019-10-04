@@ -325,8 +325,12 @@ public class SolutionTest {
 
     @Test
     public void sortColor() {
-        int[] sums = {0};
-        INSTANCE.sortColors(sums);
+        int[] colors = {0,1,2,2,0,1};
+        INSTANCE.sortColors(colors);
+        assert Arrays.equals(colors,new int[]{0,0,1,1,2,2});
+        int[] cornercase = {1,2,0};
+        INSTANCE.sortColors(cornercase);
+
     }
 
     @Test
@@ -555,10 +559,20 @@ public class SolutionTest {
 
     @Test
     public void findKthLargest() {
-        int[] nums = new int[]{3, 2, 3, 1, 2, 4, 5, 5, 6};
+        int[] nums = new int[]{4,5,6,2,3};
         int k = 4;
+        INSTANCE.shuffle(nums,0,nums.length);
+        System.out.println(Arrays.toString(nums));
+        INSTANCE.partition(nums,0,nums.length-1);
+        System.out.println(Arrays.toString(nums));
+        System.out.println("=========");
+        INSTANCE.shuffle(nums,0,nums.length);
+        System.out.println(Arrays.toString(nums));
+        INSTANCE.partition01(nums,0,nums.length-1);
+        System.out.println(Arrays.toString(nums));
         assert INSTANCE.findKthLargest0(nums, k) == INSTANCE.findKthLargest1(nums, k);
         assert INSTANCE.findKthLargest1(nums, k) == INSTANCE.findKthLargest2(nums, k);
+
     }
 
     @Test
@@ -2085,6 +2099,13 @@ public class SolutionTest {
         System.out.println(Arrays.toString(nums));
         System.out.println(Arrays.toString(ordered));
         assert Arrays.equals(nums, ordered);
+        System.out.println("=====3向快速排序======");
+        int[] caseNums = new int[]{4,2,3,3,1,4,4,5,6,4,3};
+     //   SORT.shuffle(caseNums,0,caseNums.length);
+        System.out.println(Arrays.toString(caseNums));
+        SORT._3waySort(caseNums,0,caseNums.length-1);
+        System.out.println(Arrays.toString(caseNums));
+
         System.out.println("======归并排序（top down）======");
         SORT.shuffle(nums, 0, nums.length);
         SORT.mergeSort(nums);
@@ -2166,6 +2187,8 @@ public class SolutionTest {
         System.out.println(head);
         assert SORT.isSorted(head);
 
+
+
     }
 
     @Test
@@ -2236,13 +2259,19 @@ public class SolutionTest {
         assert INSTANCE.lengthOfLongestSubstringTwoDistinct(s) == INSTANCE.lengthOfLongestSubstringKDistinct1(s, k);
 
         // leetcode 395
-        //
-        s = "aaabb";
+        s = "aaabbbcc";
         k = 3;
-        System.out.println(INSTANCE.longestSubstring1(s, k));
+        //assert  INSTANCE.longestSubstring2(s, k)==3;
+        assert INSTANCE.longestSubstring(s,k)==3;
+        s = "eceba";
+        k = 2;
+        assert INSTANCE.longestSubstring(s,k)==0;
+        assert INSTANCE.longestSubstring2(s, k) == 0;
 
 
-        System.out.println("===Top K系列问题===");/*
+
+
+        /*
         PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
         pq.add(1);
         pq.add(10);

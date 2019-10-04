@@ -308,28 +308,6 @@ public class Solution {
         return dummyNode.next;
     }
 
-    // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
-    //  TODO 需要深刻理解 [LeetCode] 4. Median of Two Sorted Arrays 两个有序数组的中位数 http://bit.ly/2ROgk7B
-    public double findMedianSortedArrays(int[] nums1, int[] nums2) {
-        int m = nums1.length, n = nums2.length;
-        int left = (m + n + 1) / 2;
-        int right = (m + n + 2) / 2;
-        return (findKth(nums1, 0, nums2, 0, left) + findKth(nums1, 0, nums2, 0, right)) / 2.0;
-    }
-
-    public int findKth(int[] nums1, int i, int[] nums2, int j, int k) {
-        if (i >= nums1.length) return nums2[j + k - 1];
-        if (j >= nums2.length) return nums1[i + k - 1];
-        if (k == 1) return Math.min(nums1[i], nums2[j]);
-        int midVal1 = (i + k / 2 - 1 < nums1.length) ? nums1[i + k / 2 - 1] : Integer.MAX_VALUE;
-        int midVal2 = (j + k / 2 - 1 < nums2.length) ? nums2[j + k / 2 - 1] : Integer.MAX_VALUE;
-        if (midVal1 < midVal2) {
-            return findKth(nums1, i + k / 2, nums2, j, k - k / 2);
-        } else {
-            return findKth(nums1, i, nums2, j + k / 2, k - k / 2);
-        }
-    }
-
     //  #5 最长回文字符串 5. Longest Palindromic Substring 官方题解垃圾的一点就是 start 和 end的更新问题 有问题
     public String longestPalindrome(String s) {
         if (s == null || s.length() < 1) {
@@ -726,7 +704,7 @@ public class Solution {
         return memo[i][j] = Math.min(routerHelper(i - 1, j, grid, memo), routerHelper(i, j - 1, grid, memo)) + grid[i][j];
     }
 
-    // 75. 颜色分类  只要遇到 0和2 就进行交换即可
+    // ② 75. 颜色分类  只要遇到 0和2 就进行交换即可
     public void sortColors(int[] nums) {
         // 双指针法 移动
         int red = 0, blue = nums.length - 1;
@@ -740,7 +718,7 @@ public class Solution {
         }
     }
 
-    // leetcode 78 子集和
+    // 78 子集和
     public List<List<Integer>> subsets1(int[] nums) {
         Arrays.sort(nums);
         List<List<Integer>> res = new ArrayList<>();
@@ -1198,10 +1176,8 @@ public class Solution {
         return ret.toArray(new int[ret.size()][]);
     }
 
-    //  215. 数组中的第K个最大元素
+    // ② 215. 数组中的第K个最大元素
     // quick sort思想
-
-
     public int findKthLargest0(int[] nums, int k) {
         int left = 0, right = nums.length - 1;
         while (true) {
@@ -1226,6 +1202,25 @@ public class Solution {
             if (nums[r] <= pivot) r--;
         }
         // l-r=1
+        //为什么必须要 交还的是R呢
+        // 分三种情况
+        // l=r的时候 nums[l]>=pivot 或者 nums[r]<=pivot
+        // l+1=r的时候 l++,r--此时 此时l = r ,r = l,那么 此时需要交交还的依旧是因为nums[r]>nums[l]
+        swap(nums, lo, r);
+        return r;
+    }
+
+
+    public int partition01(int[] nums, int lo, int hi) {
+        int pivot = nums[lo];
+        int l = lo + 1, r = hi;
+        while (l <= r) {
+            if (nums[l] > pivot && pivot > nums[r]) {
+                swap(nums, l++, r--);
+            }
+            if (nums[l] <= pivot) l++;
+            if (nums[r] >= pivot) r--;
+        }
         swap(nums, lo, r);
         return r;
     }
@@ -3280,7 +3275,7 @@ public class Solution {
         return strs[0].substring(0, i);
     }
 
-    // 69 x 平方根 利用牛顿求根法来做[http://bit.ly/2ypO02m] 牛顿求根法视频讲解 https://youtu.be/VUpQwEVsyFk
+    // ② 69 x 平方根 利用牛顿求根法来做[http://bit.ly/2ypO02m] 牛顿求根法视频讲解 https://youtu.be/VUpQwEVsyFk
     // f(x1)-f(x2) / x1-x2 = f'(x1) 令 f(x2)=0 即可求出
     public int mySqrt(int x) {
         if (x <= 1) return x;
@@ -3289,26 +3284,45 @@ public class Solution {
         while (Math.abs(res - last) > 1e-9) {
             last = res;
             res = (res + x / res) / 2;
+            // res = (res*res+x)/(2*res)
         }
-        return (int) res;
+        return (int)res;
     }
 
-    //解乏2 二分法求值
+    //② 解乏2 二分法求
     public int mySqrt1(int x) {
-        long i = 0;
-        long j = x / 2 + 1;
-        while (i <= j) {
-            long mid = i + (j - i) / 2;
-            long sq = mid * mid;
-            if (sq == x) {
-                return (int) mid;
-            } else if (sq < x) {
-                i = mid + 1;
-            } else {
-                j = mid - 1;
+        // 无法处理x= Integer.MAX_VALUE;
+        long l = 1;
+        long  r = x+1;
+        while (l<r){
+            long mid = l+(r-l)/2;
+            if (mid>x/mid){
+                r=mid;
+            }else {
+                l = mid+1;
             }
         }
-        return (int) j + 1;
+        return  (int)(l-1);
+
+        /*
+        *
+        *  if(x<=0) return 0;
+        int res =1;
+        int   l = 1;
+        int   r = x;
+        while (l<r){
+            int mid = l+(r-l)/2;
+            if (mid>x/mid){ // 避免溢出
+                r=mid;
+            }else {
+                res = mid;
+                l = mid+1;
+
+            }
+        }
+        return  res;
+        *
+        * */
     }
 
     // follow up  立方根
@@ -3501,7 +3515,7 @@ public class Solution {
     }
 
 
-    // 242. 有效的字母异位词
+    // ② 242. 有效的字母异位词
     public boolean isAnagram(String s, String t) {
         if (s.length() != t.length()) return false;
         int[] m = new int[26];
@@ -3521,7 +3535,7 @@ public class Solution {
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
-    // 268 缺失数字
+    //268 缺失数字
     public int missingNumber0(int[] nums) {
         int sum = 0;
         for (int num : nums) {
@@ -3530,7 +3544,7 @@ public class Solution {
         return ((nums.length * (nums.length + 1)) >> 1) - sum;
     }
 
-    // 异或 结合律 http://bit.ly/2Kkra1B
+    // 异或 结合律 http://bit.ly/2Kkra1B  这个最好了
     public int missingNumber1(int[] nums) {
         int miss = nums.length;
         for (int i = nums.length - 1; i >= 0; i--) {
@@ -3580,7 +3594,7 @@ public class Solution {
         return left;
     }
 
-    // leetcode 137 137. 只出现一次的数字 II
+    // ② leetcode 137 137. 只出现一次的数字 II
     // 解法1 重新定义运算规则
     public int singleNumberⅡ0(int[] nums) {
         int ones = 0, twos = 0, threes = 0;
@@ -3609,6 +3623,7 @@ public class Solution {
     // (其实不难：对于a，把next中a=1对应的行组合选出来，
     // 对于每一个组合，凡取值为1的变量写成原变量，取值为0的变量写成反变量，
     // 各变量相乘后得到一个乘积项；最后，把各个组合对应的乘积项相加，就得到了相应的逻辑表达式。对于b同理)
+    // ②
     public int singleNumberⅡ1(int[] nums) {
         int A = 0;
         int B = 0;
@@ -3918,7 +3933,6 @@ public class Solution {
     }
 
     // 改写上面maxProfit5A方法
-
     public int maxProfit5B(int[] prices) {
         int n = prices.length;
         int dp_i_0 = 0;
@@ -4275,11 +4289,6 @@ public class Solution {
         return len;
     }
 
-    // 59. 螺旋矩阵 II
-    public int[][] generateMatrix(int n) {
-        return null;
-    }
-
     // 计算器系列
     // 224. 基本计算器  没有优先级了 我真滴服了 审题要仔细哦
     public int calculate224(String s) {
@@ -4358,10 +4367,8 @@ public class Solution {
         }
         return res;
     }
-
+    //   -------------------------
     //   772. 基本计算器 III
-
-
     public int cal(int x, int y, char operator) {
         switch (operator) {
             case '-':
@@ -4376,8 +4383,6 @@ public class Solution {
                 throw new IllegalStateException("非法字符");
         }
     }
-
-    // K系列
 
 
     // 149 直线上最多的点数 // https://youtu.be/bzsdelrRgNk // 对角线乘积和反对角线乘积之差/2 是 S△
@@ -4483,6 +4488,8 @@ public class Solution {
         }
         return res;
     }
+
+    // todo 59 螺旋矩阵2
 
     /*  public List<List<Integer>> getSkyline(int[][] building) {
           throw new IllegalStateException("扫描线方法 todo 有点难啊");
@@ -4717,6 +4724,8 @@ public class Solution {
     }
 
 
+
+
     public int findPeakElement2(int[] nums) {
         return binarySearch2(nums, 0, nums.length - 1);
     }
@@ -4909,7 +4918,7 @@ public class Solution {
         return true;
     }
 
-    // 127 单词接龙 tag:BFS  邻接
+    // 127 单词接龙  BFS  邻接
     // 这个方法 不好的一点在于,要判定 每个单词是否与单次列表相连通
     // 这个问题 可以变成Graph 的 最短路径问题
     //  我们需要构建邻接表
@@ -5639,7 +5648,7 @@ public class Solution {
         return false;
     }
 
-    //324 摆动排序Ⅱ
+    // 324 摆动排序Ⅱ
     // 已经排好序的数组 前半部分和后半部分  对折之后  交替插入
     public void wiggleSort(int[] nums) {
         int len = nums.length;
@@ -5662,7 +5671,7 @@ public class Solution {
         }
     }
 
-    // 解法1 快排最佳实践 todo
+    // 解法1 快排最佳实践 http://bit.ly/353KVnO todo
     public void wiggleSort1(int[] nums) {
         int n = nums.length;
         int median = findKthLargest0(nums, (n + 1) / 2);
@@ -5696,7 +5705,7 @@ public class Solution {
         }
     }
 
-    // 452 四数相加Ⅱ
+    // ② 454  四数相加Ⅱ
     public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
         int res = 0;
         Map<Integer, Integer> map = new HashMap();
@@ -5716,7 +5725,7 @@ public class Solution {
         return res;
     }
 
-    // 38报数
+    // ② 38报数
     // for the nth number, you just need to count characters of the (n-1)th number,
     // for the (n-1)th number, you just need to count characters of  the (n-2)th number,
     // 解法1 递归
@@ -5764,8 +5773,8 @@ public class Solution {
 
     public String cntMap(String s) {
         StringBuilder res = new StringBuilder();
-        s += "0";
-        for (int i = 0, c = 1; i < s.length() - 1; i++) {
+        s += "0";// 因为corner case 1的原因啊
+        for (int i = 0, c = 1; i < s.length()-1; i++) {
             if (s.charAt(i) == s.charAt(i + 1)) {
                 c++;
             } else {
@@ -5777,7 +5786,7 @@ public class Solution {
     }
 
     //  special专题  top k系列问题
-    //  378 有序矩阵中 第K小的元素
+    //②  378 有序矩阵中 第K小的元素
     public int kthSmallest(int[][] matrix, int k) {
         // 最大堆 max heap
         PriorityQueue<Integer> pq = new PriorityQueue(new Comparator<Integer>() {
@@ -5797,7 +5806,7 @@ public class Solution {
 
     // 解法2 二分查找
     public int kthSmallest1(int[][] matrix, int k) {
-        int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1];
+        int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1]+1;
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
             int count = lessEqual(matrix, mid);
@@ -5805,7 +5814,7 @@ public class Solution {
                 // 为什么是mid-1呢 而不是mid
             else hi = mid;
         }
-        return lo;
+        return hi;
     }
 
     //  from left-bottom or right-top can count how much numbers are less equal then target
@@ -5821,7 +5830,7 @@ public class Solution {
         return cnt;
     }
 
-    // 230 二叉搜索树中第k小 通用方法
+    // ② 230 二叉搜索树中第k小 通用方法
     public int kthSmallest(TreeNode root, int k) {
         PriorityQueue<Integer> pq = new PriorityQueue<Integer>((o1, o2) -> {
             return o2.compareTo(o1);
@@ -5838,7 +5847,7 @@ public class Solution {
         traversal(root.right, pq, k);
     }
 
-    // 解法2  中序遍历
+    //② 解法2  中序遍历  也是B+数range查询的基本原理了
     public int count230;
     public int res230 = 0;
 
@@ -5847,7 +5856,6 @@ public class Solution {
         return res230;
     }
 
-    // 还是有点不太明白为什么cnt 又会变成0了？？？
     public void inorder(TreeNode root, int k) {
         if (root == null) {
             return;
@@ -5861,7 +5869,7 @@ public class Solution {
         inorder(root.right, k);
     }
 
-    // 解法3 二分查找法
+    // ② 解法3 二分查找法 tips:  左半右半部分
     // ----------k-------------
     // ---cnt--cnt+1---cnt+2--->
     // ---root.left--root---root.right--->
@@ -5891,7 +5899,7 @@ public class Solution {
         return root;
     }
 
-    // 159 最多有2个不同字符的最长子串
+    // ② 159 最多有2个不同字符的最长子串
     public int lengthOfLongestSubstringTwoDistinct(String s) {
         return lengthOfLongestSubstringKDistinct(s, 2);
     }
@@ -5917,7 +5925,7 @@ public class Solution {
     }
 
     // [tag: 微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
-    // 340 至多包含k个不同字符的最长子串
+    // ② 340 至多包含k个不同字符的最长子串
     public int lengthOfLongestSubstringKDistinct(String s, int k) {
         Map<Character, Integer> map = new HashMap();
         int left = 0;
@@ -5927,11 +5935,8 @@ public class Solution {
             map.put(key, map.getOrDefault(key, 0) + 1);
             while (map.size() > k) {
                 char leftKey = s.charAt(left);
-                int count = map.get(leftKey);
-                count = count - 1;
-                // 忘记更新了
-                map.put(leftKey, count);
-                if (count == 0) {
+                map.put(leftKey,map.get(leftKey)-1);
+                if (map.get(leftKey) == 0) {
                     map.remove(leftKey);
                 }
                 left++;
@@ -5957,7 +5962,7 @@ public class Solution {
         return res;
     }
 
-    // 395 至少有k个重复的字符的最长子串
+    // ② 395 至少有k个重复的字符的最长子串
     public int longestSubstring(String s, int k) {
         int res = 0, i = 0, N = s.length();
         while (i + k - 1 < N) {
@@ -5965,13 +5970,12 @@ public class Solution {
             int mask = 0;
             int maxIdx = i;
             for (int j = i; j < N; j++) {
-                int t = s.charAt(j) - 'a';
-                m[t]++;
-                // bit mask 操作
-                if (m[t] < k) {
-                    mask = mask | (1 << t);
+                int idx = s.charAt(j) - 'a';
+                m[idx]++;
+                if (m[idx] < k) {
+                    mask = mask | (1 << idx);
                 } else {
-                    mask = mask & (~(1 << t));
+                    mask = mask & (~(1 << idx));
                 }
                 if (mask == 0) {
                     res = Math.max(res, j - i + 1);
@@ -5983,7 +5987,7 @@ public class Solution {
         return res;
     }
 
-    // 解法2 递归
+    // ② 解法2 递归迭代解法
     public int longestSubstring1(String s, int k) {
         int len = s.length();
         if (len == 0 || k > len) return 0;
@@ -6014,7 +6018,7 @@ public class Solution {
         return p2 - p1 + 1;
     }
 
-    // 解法3 interview friendly
+    //②  解法3 DP 解法interview friendly
     public int longestSubstring2(String s, int k) {
         int res = 0, N = s.length(), maxIdx = 0;
         int[] times = new int[128];
@@ -6034,7 +6038,7 @@ public class Solution {
         return ok ? N : Math.max(res, longestSubstring2(s.substring(maxIdx, N), k));
     }
 
-    // 440 字典序第K小的数字 http://bit.ly/2nKscwE https://youtu.be/yMnR63e3KLo
+    // ② 440 字典序第K小的数字 http://bit.ly/2nKscwE https://youtu.be/yMnR63e3KLo
     public int findKthNumber(int n, int k) {
         int curr =1;
         k = k -1;
@@ -6130,7 +6134,7 @@ public class Solution {
         return res;
     }
 
-    // 103 二叉树的锯齿形层遍历
+    //② 103 二叉树的锯齿形层遍历
     public List<List<Integer>> zigzagLevelOrder0(TreeNode root) {
         List<List<Integer>> ret = new ArrayList<>();
         if (root == null) return ret;
@@ -6179,7 +6183,7 @@ public class Solution {
 
     }
 
-    // 594 最长和谐子序列
+    // ② 594 最长和谐子序列
     public int findLHS(int[] nums) {
         Map<Integer, Integer> map = new HashMap();
         for (int i : nums) {
@@ -6194,8 +6198,8 @@ public class Solution {
         return ans;
     }
 
-    // 1027. 最长等差数列
-    // dp[i][step]=dp[j][step]+1;
+    // ② 1027. 最长等差数列
+    //  dp[i][step]=dp[j][step]+1;  j < i
     public int longestArithSeqLength(int[] A) {
         int res = 2, n = A.length;
         Map<Integer, Integer>[] dp = new HashMap[n];
