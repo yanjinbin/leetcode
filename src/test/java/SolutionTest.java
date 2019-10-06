@@ -325,10 +325,10 @@ public class SolutionTest {
 
     @Test
     public void sortColor() {
-        int[] colors = {0,1,2,2,0,1};
+        int[] colors = {0, 1, 2, 2, 0, 1};
         INSTANCE.sortColors(colors);
-        assert Arrays.equals(colors,new int[]{0,0,1,1,2,2});
-        int[] cornercase = {1,2,0};
+        assert Arrays.equals(colors, new int[]{0, 0, 1, 1, 2, 2});
+        int[] cornercase = {1, 2, 0};
         INSTANCE.sortColors(cornercase);
 
     }
@@ -559,16 +559,16 @@ public class SolutionTest {
 
     @Test
     public void findKthLargest() {
-        int[] nums = new int[]{4,5,6,2,3};
+        int[] nums = new int[]{4, 5, 6, 2, 3};
         int k = 4;
-        INSTANCE.shuffle(nums,0,nums.length);
+        INSTANCE.shuffle(nums, 0, nums.length);
         System.out.println(Arrays.toString(nums));
-        INSTANCE.partition(nums,0,nums.length-1);
+        INSTANCE.partition(nums, 0, nums.length - 1);
         System.out.println(Arrays.toString(nums));
         System.out.println("=========");
-        INSTANCE.shuffle(nums,0,nums.length);
+        INSTANCE.shuffle(nums, 0, nums.length);
         System.out.println(Arrays.toString(nums));
-        INSTANCE.partition01(nums,0,nums.length-1);
+        INSTANCE.partition01(nums, 0, nums.length - 1);
         System.out.println(Arrays.toString(nums));
         assert INSTANCE.findKthLargest0(nums, k) == INSTANCE.findKthLargest1(nums, k);
         assert INSTANCE.findKthLargest1(nums, k) == INSTANCE.findKthLargest2(nums, k);
@@ -1569,7 +1569,10 @@ public class SolutionTest {
         System.out.println("==计算器系列问题==");
         // corner case  最后一个数 2 运行截止
         String arithmetic = " 3+5 / 2 ";
-        System.out.println(INSTANCE.calculate227(arithmetic));
+        assert INSTANCE.calculate227(arithmetic) == 5;
+
+        arithmetic = "(3+2+(5-2+1)+1)";
+        assert INSTANCE.calculate224(arithmetic) == 10;
     }
 
     @Test
@@ -1595,8 +1598,6 @@ public class SolutionTest {
     public void spiralOrder() {
         int[][] matrix = {{1, 2, 3, 4}, {6, 7, 8, 9}, {10, 11, 12, 13}, {14, 15, 16, 17}};
         System.out.println(INSTANCE.spiralOrder(matrix));
-        matrix = new int[][]{{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 10, 11, 12},};
-        System.out.println(INSTANCE.spiralOrder1(matrix));
 
     }
 
@@ -1649,22 +1650,17 @@ public class SolutionTest {
         int[] nums0 = {1, 2, 3, 1};
         int[] nums1 = {1, 2};
         int[] nums2 = {5, 4, 3, 2, 7};
-        INSTANCE.findPeakElement0(nums0);
-        // 越界
-        //  INSTANCE.findPeekElement2(nums1);
-        // 正确做法
-        INSTANCE.findPeakElement3(nums0);
+        INSTANCE.findPeakElement1(nums0);
+        INSTANCE.findPeakElement0(nums1);
         // 无限循环
         INSTANCE.findPeakElement2(nums0);
-
     }
 
     @Test
     public void numDecode() {
-        System.out.println(INSTANCE.numDecodings("2300192"));
-        System.out.println(INSTANCE.numDecodings("230192"));
-        System.out.println(INSTANCE.numDecodings("10192"));
-        assert INSTANCE.numDecodings0("226") == INSTANCE.numDecodings("226");
+        assert INSTANCE.numDecodings("2300192") == 0;
+        assert INSTANCE.numDecodings("230192") == 0;
+        assert INSTANCE.numDecodings("10192") == 2;
     }
 
     @Test
@@ -1675,8 +1671,8 @@ public class SolutionTest {
 
     @Test
     public void partitionPalindrome() {
-        System.out.println(INSTANCE.partition("aaccbd"));
-        System.out.println(INSTANCE.partition("aab"));
+        //   System.out.println(INSTANCE.partition("aab"));
+        System.out.println(INSTANCE.partition("cdd"));
     }
 
     @Test
@@ -1722,26 +1718,25 @@ public class SolutionTest {
     public void canCompleteCircuit() {
         int[] gas = {1, 2, 3, 4, 5};
         int[] cost = {3, 4, 5, 1, 2};
-        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
+        System.out.println(INSTANCE.canCompleteCircuit(gas, cost));
         gas = new int[]{3, 3, 4};
         cost = new int[]{3, 4, 4};
-        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
+        System.out.println(INSTANCE.canCompleteCircuit(gas, cost));
 
         gas = new int[]{5, 1, 2, 3, 4};
         cost = new int[]{4, 4, 1, 5, 1};
-        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
+        System.out.println(INSTANCE.canCompleteCircuit(gas, cost));
         gas = new int[]{5, 8, 2, 8};
         cost = new int[]{6, 5, 6, 6};
-        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
+        System.out.println(INSTANCE.canCompleteCircuit(gas, cost));
 
         gas = new int[]{4, 5, 2, 6, 5, 3};
         cost = new int[]{3, 2, 7, 3, 2, 9};
-        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
+        System.out.println(INSTANCE.canCompleteCircuit(gas, cost));
 
         gas = new int[]{5, 5, 1, 3, 4};
         cost = new int[]{8, 1, 7, 1, 1};
-        System.out.println(INSTANCE.canCompleteCircuit1(gas, cost));
-        System.out.println(INSTANCE.canCompleteCircuitbad(gas, cost));
+        System.out.println(INSTANCE.canCompleteCircuit(gas, cost));
     }
 
     @Test(timeout = 2000)
@@ -1797,12 +1792,11 @@ public class SolutionTest {
 
     @Test
     public void increasingTriplet() {
-        int[] nums = new int[]{3, 4, 5, 8, 7, 6, 9};
+        int[] nums = new int[]{3, 4, 1, 2, 1, 6, 9};
         assert INSTANCE.increasingTriplet(nums) == true;
-        assert INSTANCE.increasingTriplet1(nums) == true;
+        // assert INSTANCE.increasingTriplet1(nums) == true;
         nums = new int[]{9, 8, 11, 6, 5, 4, 3};
-        assert INSTANCE.increasingTriplet(nums) == false;
-        assert INSTANCE.increasingTriplet1(nums) == false;
+        assert INSTANCE.increasingTriplet01(nums) == false;
     }
 
     @Test
@@ -1842,12 +1836,6 @@ public class SolutionTest {
         nums = new int[]{3, 2, 2, 6, 1};
         System.out.println(INSTANCE.countSmaller1(nums));
 
-        nums = new int[]{2, 0, 1};
-        List<Integer> res = new ArrayList<>();
-        res.add(2);
-        res.add(0);
-        res.add(0);
-        assert INSTANCE.countSmaller0(nums) == res;
     }
 
     @Test
@@ -1867,7 +1855,7 @@ public class SolutionTest {
         System.out.println(res);
         res = Arrays.binarySearch(arr, first, last, -1);
         System.out.println(res);
-        res = countSmallerOrEqual(arr,-1);
+        res = countSmallerOrEqual(arr, -1);
         System.out.println(res);
         System.out.println("======B");
         res = binarySearch(arr, first, last, 11);
@@ -1876,7 +1864,7 @@ public class SolutionTest {
         System.out.println(res);
         res = Arrays.binarySearch(arr, first, last, 11);
         System.out.println(res);
-        res = countSmallerOrEqual(arr,11);
+        res = countSmallerOrEqual(arr, 11);
         System.out.println(res);
         System.out.println("======C");
         res = binarySearch(arr, first, last, 2);
@@ -1885,7 +1873,7 @@ public class SolutionTest {
         System.out.println(res);
         res = Arrays.binarySearch(arr, first, last, 2);
         System.out.println(res);
-        res = countSmallerOrEqual(arr,2);
+        res = countSmallerOrEqual(arr, 2);
         System.out.println(res);
         System.out.println("======D");
         res = binarySearch(arr, first, last, 6);
@@ -1894,7 +1882,7 @@ public class SolutionTest {
         System.out.println(res);
         res = Arrays.binarySearch(arr, first, last, 6);
         System.out.println(res);
-        res = countSmallerOrEqual(arr,6);
+        res = countSmallerOrEqual(arr, 6);
         System.out.println(res);
     }
 
@@ -1938,15 +1926,15 @@ public class SolutionTest {
 
     // >=value第一个位置  这个更好记
     public int binarySearch01(int[] array, int first, int last, int value) {
-        while (first<last){
-            int mid = first+(last-first)/2;
-            if(array[mid] >= value){
-                last=mid;
-            }else {
-                first=mid+1;
+        while (first < last) {
+            int mid = first + (last - first) / 2;
+            if (array[mid] >= value) {
+                last = mid;
+            } else {
+                first = mid + 1;
             }
         }
-        assert first==last;
+        assert first == last;
         return first;
 
     }
@@ -1984,21 +1972,13 @@ public class SolutionTest {
 
     @Test
     public void wiggleSort() {
-        int[] nums = new int[]{1, 2, 3, 4, 5, 6};
-        //  INSTANCE.wiggleSort(nums);
-        System.out.println(Arrays.toString(nums));
+        System.out.println(Arrays.toString(new int[]{0, 1, 2, 3, 4, 5}));
+        int[] test = new int[]{10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
+        test = new int[]{1, 5, 1, 1, 6, 4};
+        INSTANCE.wiggleSort01(test);
+        assert Arrays.equals(test, new int[]{1, 6, 1, 5, 1, 4});
 
-        // corner case
-        nums = new int[]{4, 5, 5, 6};
-        //   INSTANCE.wiggleSort(nums);
-        System.out.println(Arrays.toString(nums));
 
-        nums = new int[]{4, 5, 5, 5, 6};
-        //  INSTANCE.wiggleSort(nums);
-        System.out.println(Arrays.toString(nums));
-        nums = new int[]{1, 2, 2, 1, 2, 1, 1, 1, 2, 2, 1, 2, 1, 2, 1, 1, 2};
-        INSTANCE.wiggleSort(nums);
-        System.out.println(Arrays.toString(nums));
     }
 
     @Test
@@ -2100,10 +2080,10 @@ public class SolutionTest {
         System.out.println(Arrays.toString(ordered));
         assert Arrays.equals(nums, ordered);
         System.out.println("=====3向快速排序======");
-        int[] caseNums = new int[]{4,2,3,3,1,4,4,5,6,4,3};
-     //   SORT.shuffle(caseNums,0,caseNums.length);
+        int[] caseNums = new int[]{4, 2, 3, 3, 1, 4, 4, 5, 6, 4, 3};
+        //   SORT.shuffle(caseNums,0,caseNums.length);
         System.out.println(Arrays.toString(caseNums));
-        SORT._3waySort(caseNums,0,caseNums.length-1);
+        SORT._3waySort(caseNums, 0, caseNums.length - 1);
         System.out.println(Arrays.toString(caseNums));
 
         System.out.println("======归并排序（top down）======");
@@ -2188,7 +2168,6 @@ public class SolutionTest {
         assert SORT.isSorted(head);
 
 
-
     }
 
     @Test
@@ -2262,10 +2241,10 @@ public class SolutionTest {
         s = "aaabbbcc";
         k = 3;
         //assert  INSTANCE.longestSubstring2(s, k)==3;
-        assert INSTANCE.longestSubstring(s,k)==3;
+        assert INSTANCE.longestSubstring(s, k) == 3;
         s = "eceba";
         k = 2;
-        assert INSTANCE.longestSubstring(s,k)==0;
+        assert INSTANCE.longestSubstring(s, k) == 0;
         assert INSTANCE.longestSubstring2(s, k) == 0;
 
 
@@ -2282,7 +2261,7 @@ public class SolutionTest {
         }*/
         //   assert INSTANCE.findKthNumber(13, 2) == 10;
 
-        assert  INSTANCE.findKthNumber(198,113)==21;
+        assert INSTANCE.findKthNumber(198, 113) == 21;
     }
 
     @Test
@@ -2454,11 +2433,10 @@ public class SolutionTest {
     }
 
     @Test
-    public void DivideAndConquer(){
-        int[] s = new int[]{-1,1,3,5,7,9};
-        int[] l = new int[]{2,4,6,8,10,12,14,16};
+    public void DivideAndConquer() {
+        int[] s = new int[]{-1, 1, 3, 5, 7, 9};
+        int[] l = new int[]{2, 4, 6, 8, 10, 12, 14, 16};
         assert DC.findMedianSortedArrays(s, l) == 6.5;
-
     }
 
 }

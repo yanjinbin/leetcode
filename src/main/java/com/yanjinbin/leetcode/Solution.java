@@ -1191,6 +1191,20 @@ public class Solution {
         }
     }
 
+  /*  public int partition(int[] nums,int lo, int hi){
+        int pivot = nums[lo];
+        int l = lo+1, r = hi;
+        while(l<=r){
+            if(nums[l] < pivot && pivot < nums[r]){
+                swap(nums,l++,r--);
+            }
+            if(nums[l]>=pivot)l++;
+            if(nums[r]<=pivot)r--;
+        }
+        swap(nums,lo,r);
+        return r;
+    }*/
+
     public int partition(int[] nums, int lo, int hi) {
         int pivot = nums[lo];
         int l = lo + 1, r = hi;
@@ -3286,23 +3300,23 @@ public class Solution {
             res = (res + x / res) / 2;
             // res = (res*res+x)/(2*res)
         }
-        return (int)res;
+        return (int) res;
     }
 
     //② 解乏2 二分法求
     public int mySqrt1(int x) {
         // 无法处理x= Integer.MAX_VALUE;
         long l = 1;
-        long  r = x+1;
-        while (l<r){
-            long mid = l+(r-l)/2;
-            if (mid>x/mid){
-                r=mid;
-            }else {
-                l = mid+1;
+        long r = x + 1;
+        while (l < r) {
+            long mid = l + (r - l) / 2;
+            if (mid > x / mid) {
+                r = mid;
+            } else {
+                l = mid + 1;
             }
         }
-        return  (int)(l-1);
+        return (int) (l - 1);
 
         /*
         *
@@ -4290,43 +4304,38 @@ public class Solution {
     }
 
     // 计算器系列
-    // 224. 基本计算器  没有优先级了 我真滴服了 审题要仔细哦
-    public int calculate224(String s) {
-        int n = s.length(), res = 0;
-        return 1;
-    }
-
-    // 227. 基本计算器 II
-    public int calculate0(String s) {
-        int res = 0;
-        int last = 0;
-        int pre = 0;
-        char prevOperator = '+';
-        char curOperator = '+';
-        char lastOperator = '+';
-        for (int i = 0; i < s.toCharArray().length; i++) {
-            if (s.charAt(i) >= '0' && s.charAt(i) <= '9') {
-                res = res * 10 + s.charAt(i) - '0';
+    //② 224. 基本计算器  没有优先级了 我真滴服了 审题要仔细哦
+    public int calculate224(String str) {
+        int res = 0, sign = 1, num = 0, n = str.length();
+        Stack<Integer> s = new Stack();
+        for (int i = 0; i < n; i++) {
+            char c = str.charAt(i);
+            if (c >= '0' && c <= '9') {
+                num = num * 10 + c - '0';
             }
-            prevOperator = curOperator;
-            curOperator = s.charAt(i);
-            // 进行规则判定
-            if ((curOperator == '*' || curOperator == '/') && (prevOperator == '-' || prevOperator == '+')) {
-                lastOperator = prevOperator;
-                last = pre;
-                pre = res;
+            if (c == '+' || c == '-') {
+                res += sign * num;
+                num = 0;
+                sign = (c == '+') ? 1 : -1;
+            }
+            if (c == '(') {
+                s.push(res); // 左括号外的res 压入
+                s.push(sign); // 左括号外的+还是-sign 压入
                 res = 0;
-            } else {
-                //
-                pre = cal(pre, res, prevOperator);
-                res = 0;
+                sign = 1;
+            }
+            if (c == ')') {
+                res += sign * num;
+                num = 0;
+                res *= s.pop();// sign
+                res += s.pop(); // 左括号外的res
             }
         }
-        // 行不通 太复杂了 处理的情况 太复杂了 不够通用
+        res += sign * num;
         return res;
     }
 
-    // 227. 基本计算器 II
+    // ② 227. 基本计算器 II
     public int calculate227(String s) {
         // 用栈的思想来做
         Stack<Integer> stack = new Stack<>();
@@ -4334,17 +4343,14 @@ public class Solution {
         int n = s.length();
         int res = 0;
         int num = 0;
-        Set<Character> set = new HashSet<>();
-        set.add('-');
-        set.add('+');
-        set.add('*');
-        set.add('/');
+        Set<Character> ops = new HashSet<>();
+        ops.add('-');ops.add('+');ops.add('*');ops.add('/');
         for (int i = 0; i < n; i++) {
             if (s.charAt(i) >= '0' && s.charAt(i) <= '9') {
                 num = num * 10 + s.charAt(i) - '0';
             }
 
-            if (set.contains(s.charAt(i)) || i == n - 1) {
+            if (ops.contains(s.charAt(i)) || i == n - 1) {
                 // 并没有让op成为前置数字的运算符?? 而是后置运算符了
                 if (op == '+') {
                     stack.push(num);
@@ -4367,25 +4373,9 @@ public class Solution {
         }
         return res;
     }
-    //   -------------------------
-    //   772. 基本计算器 III
-    public int cal(int x, int y, char operator) {
-        switch (operator) {
-            case '-':
-                return x - y;
-            case '+':
-                return x + y;
-            case '/':
-                return x / y;
-            case '*':
-                return x * y;
-            default:
-                throw new IllegalStateException("非法字符");
-        }
-    }
 
 
-    // 149 直线上最多的点数 // https://youtu.be/bzsdelrRgNk // 对角线乘积和反对角线乘积之差/2 是 S△
+    // ❌放弃 //数学 行列式的运用   149 直线上最多的点数   // https://youtu.be/bzsdelrRgNk // 对角线乘积和反对角线乘积之差/2 是 S△
     public int maxPoints(int[][] points) {
         int res = 0, n = points.length;
         for (int i = 0; i < n; i++) {
@@ -4411,7 +4401,7 @@ public class Solution {
         return res;
     }
 
-    // 54. 螺旋矩阵
+    // ② 54. 螺旋矩阵
     public List<Integer> spiralOrder(int[][] matrix) {
         List<Integer> res = new ArrayList();
         if (matrix.length == 0) return res;
@@ -4447,49 +4437,7 @@ public class Solution {
         }
         return res;
     }
-
-    // 解法2
-    public List<Integer> spiralOrder1(int[][] matrix) {
-        List<Integer> res = new ArrayList();
-        if (matrix.length == 0) return res;
-        int colBegin = 0, colEnd = matrix[0].length - 1, rowBegin = 0, rowEnd = matrix.length - 1;
-        while (true) {
-            // right
-            for (int j = colBegin; j <= colEnd; j++) {
-                res.add(matrix[rowBegin][j]);
-            }
-            rowBegin++;
-            if (rowBegin > rowEnd || colBegin > colEnd) break;
-            // down
-            for (int j = rowBegin; j <= rowEnd; j++) {
-                res.add(matrix[j][colEnd]);
-            }
-            colEnd--;
-            if (rowBegin > rowEnd || colBegin > colEnd) break;
-
-            // left check rowBegin<=rowEnd
-            if (rowBegin <= rowEnd) {
-                for (int j = colEnd; j >= colBegin; j--) {
-                    res.add(matrix[rowEnd][j]);
-                }
-            }
-            // break contract rowBegin > rowEnd
-            rowEnd--;
-            if (rowBegin > rowEnd || colBegin > colEnd) break;
-            // up
-            if (colBegin <= colEnd) {
-                for (int j = rowEnd; j >= rowBegin; j--) {
-                    res.add(matrix[j][colBegin]);
-                }
-            }
-            // break contract colBegin > colEnd
-            colBegin++;
-            if (rowBegin > rowEnd || colBegin > colEnd) break;
-        }
-        return res;
-    }
-
-    // todo 59 螺旋矩阵2
+    // folllow up 59 螺旋矩阵2
 
     /*  public List<List<Integer>> getSkyline(int[][] building) {
           throw new IllegalStateException("扫描线方法 todo 有点难啊");
@@ -4617,7 +4565,7 @@ public class Solution {
         }
     */
 
-    // 76 最小覆盖子串 http://bit.ly/2LvcJLu
+    // ② 76 最小覆盖子串 http://bit.ly/2LvcJLu  双指针 滑动窗口方法  ✅  经典方法
     public String minimumWindow0(String s, String t) {
         int left = 0, right = 0, n = s.length(), start = 0, minLen = Integer.MAX_VALUE;
         Map<Character, Integer> cntTable = new HashMap();
@@ -4690,17 +4638,18 @@ public class Solution {
         return minStr;
     }
 
-    // 162 寻找峰值
-    // stack O(N)
+    //②  162 寻找峰值
     public int findPeakElement1(int[] nums) {
-        Stack<Integer> s = new Stack();
-        // init
-        s.push(0);
-        for (int i = 1; i < nums.length; i++) {
-            if (nums[s.peek()] < nums[i]) s.push(i);
-            return s.peek();
+        int l = 0, r = nums.length - 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] < nums[mid + 1]) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
         }
-        return nums.length - 1;
+        return l;
     }
 
     // 二分法 logN
@@ -4724,12 +4673,11 @@ public class Solution {
     }
 
 
-
-
     public int findPeakElement2(int[] nums) {
         return binarySearch2(nums, 0, nums.length - 1);
     }
 
+    // 递归版本
     public int binarySearch2(int[] nums, int l, int r) {
         if (l == r) return l;
         int mid = (r - l) / 2 + l;
@@ -4740,111 +4688,29 @@ public class Solution {
         }
     }
 
-    public int findPeakElement3(int[] nums) {
-        return binarySearch3(nums, 0, nums.length - 1);
-    }
-
-    public int binarySearch3(int[] nums, int l, int r) {
-        if (l == r) {
-            return l;
-        }
-        int mid = (r - l) / 2 + l;
-        if (nums[mid] > nums[mid + 1]) {//  保证不会越界 l=l,r=l+1,mid=l; 所以访问mid+1就是r 保证不会越界. 如果是mid-1,既l-1,如果l是0，那就越界了！
-            return binarySearch3(nums, l, mid);
-        } else {
-            return binarySearch3(nums, mid + 1, r);
-        }
-    }
-
-
-    // 1 0的位置  两位数的范围
-    // 91 解码方法 斐波那些数列翻版
+    // 91 解码方法 ✅ DP  斐波那些数列翻版  dp[i] 表示 前I个表示方法;
+    // dp解决  状态转移方程式: if s[i-1,i)!=0, dp[i]+=dp[i-1],if 10<=s[i-2:i)<=26 dp[i] +=dp[i-2]
     public int numDecodings(String s) {
-        int n = s.length();
-        if (n == 0 || s.isEmpty() || s.charAt(0) == '0') return 0;
-        if (n == 1) return 1;
-        int[] dp = new int[n + 1];
+        if (s == null || s.length() == 0) return 0;
+        int N = s.length();
+        int[] dp = new int[N + 1];
         dp[0] = 1;
-        for (int i = 1; i < dp.length; i++) {
-            if (s.charAt(i - 1) != '0') dp[i] += dp[i - 1];
-            if (i >= 2 && s.substring(i - 2, i).compareTo("10") >= 0 && s.substring(i - 2, i).compareTo("26") <= 0) {
+        dp[1] = (s.charAt(0) == '0' ? 0 : 1);
+        for (int i = 2; i <= N; i++) {
+            int first = Integer.valueOf(s.substring(i - 1, i));
+            int second = Integer.valueOf(s.substring(i - 2, i));
+            if (first >= 1 && first <= 9) {
+                dp[i] += dp[i - 1];
+            }
+            if (second >= 10 && second <= 26) {
                 dp[i] += dp[i - 2];
             }
         }
-        return dp[n];
-    }
-
-    // 91 解码方法 还是有点晦涩哦
-    public int numDecodings0(String s) {
-        int n = s.length();
-        if (n == 0 || s.isEmpty() || s.charAt(0) == '0') return 0;
-        if (n == 1) return 1;
-        int w1 = 1;
-        int w2 = 1;
-        for (int i = 1; i < n; i++) {
-            int w = 0;
-            char c1 = s.charAt(i), c2 = s.charAt(i - 1);
-            boolean b1 = isValid(c1), b2 = isValid(c2, c1);
-            if (!b1 && !b2) return 0;
-            if (b1) w = w1; // w1--> dp[i-1]
-            if (b2) w += w2; //w2--> dp[i-2]
-            w2 = w1;
-            w1 = w;
-        }
-        return w1;
-    }
-
-    public boolean isValid(char c) {
-        return c != '0';
-    }
-
-    public boolean isValid(char l, char r) {
-        return l == '1' || (l == '2' && r <= '6');
-    }
-
-    // 下面都是错的
-    public int numDecodings2(String s) {
-        if (s.isEmpty() || s.charAt(0) != '0') return 0;
-        int n = s.length();
-        int[] dp = new int[n + 1];
-        return 1;
+        return dp[N];
     }
 
 
-    public int numDecodings3(String s) {
-        return numDecodeHelper(s, 0);
-    }
-
-    public int numDecodeHelper(String s, int count) {
-        if (s == null || s.length() == 0 || s.length() == 1) return count;
-        if (s.length() == 2) {
-            int res = num2num(s);
-            if (res >= 11 && res <= 26 && res != 20) {
-                return count + 2;
-            }
-            return count + 1;
-        }
-        int n = s.length();
-        if (s.charAt(0) != '0') {
-            count = numDecodeHelper(s.substring(1, n), count + 1);
-            count = numDecodeHelper(s.substring(2, n), count + 1);
-        }
-        if (s.charAt(0) == '0' && s.charAt(1) != '0') {
-            count = numDecodeHelper(s.substring(2, n), count + 1);
-        }
-        return count;
-
-    }
-
-    public int num2num(String s) {
-        int res = 0;
-        for (int i = 0; i < s.length(); i++) {
-            res = res * 10 + s.charAt(i) - '0';
-        }
-        return res;
-    }
-
-    // 130 被围绕的区域  http://bit.ly/2L0HsND
+    // ②  用@字符暂时替代下 130 被围绕的区域  http://bit.ly/2L0HsND
     public void solve(char[][] board) {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
@@ -4887,7 +4753,7 @@ public class Solution {
         if (j < (board[i].length - 2)) dfsSolve(board, i, j + 1);
     }
 
-    // 131 分割回文串
+    // ② 131 分割回文串
     // 验证回文串. 收集回文串
     public List<List<String>> partition(String s) {
         List<List<String>> res = new ArrayList<>();
@@ -4899,13 +4765,14 @@ public class Solution {
     public void dfs(String s, int pos, List<String> sub, List<List<String>> res) {
         if (pos == s.length()) {
             res.add(new ArrayList<>(sub));
+            sub.clear();
             return;
         }
         for (int i = pos; i < s.length(); i++) {
             if (isPal(s, pos, i)) {
                 sub.add(s.substring(pos, i + 1));
                 dfs(s, i + 1, sub, res);
-                sub.remove(sub.size() - 1);
+                // sub.remove(sub.size() - 1); // TODO  移除之后,
             }
 
         }
@@ -4918,7 +4785,7 @@ public class Solution {
         return true;
     }
 
-    // 127 单词接龙  BFS  邻接
+    // todo 127 单词接龙  BFS  邻接
     // 这个方法 不好的一点在于,要判定 每个单词是否与单次列表相连通
     // 这个问题 可以变成Graph 的 最短路径问题
     //  我们需要构建邻接表
@@ -5071,11 +4938,12 @@ public class Solution {
         return 0;
     }
 
-    //212 单词搜索Ⅱ
+    //212 单词搜索Ⅱ 构造单词表, 并通过前缀树 及时停止无效DFS.
     public Set<String> result212 = new HashSet();
 
     public List<String> findWords(char[][] board, String[] words) {
         Trie trie = new Trie();
+        // 构造单词树
         for (String word : words) {
             trie.insert(word);
         }
@@ -5084,13 +4952,13 @@ public class Solution {
         boolean[][] visited = new boolean[m][n];
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
+                // 穷举搜索,并通过前缀树及时返回
                 dfsFindWord(board, visited, "", i, j, trie);
             }
         }
         return new ArrayList(result212);
     }
 
-    //
     public void dfsFindWord(char[][] board, boolean[][] visited, String str, int x, int y, Trie trie) {
         if (x < 0 || x >= board.length || y < 0 || y >= board[0].length) return;
         if (visited[x][y]) return;
@@ -5110,39 +4978,8 @@ public class Solution {
 
 
     // 134 加油站⛽️  bad 错误解法
-    public int canCompleteCircuitbad(int[] gas, int[] cost) {
-        int n = gas.length;
-        int idx = 0;
-        int delta = 0;
-        for (int i = 0; i < n; i++) {
-            if (gas[i] - cost[i] >= 0) {
-                int temp = gas[i] - cost[i] + gas[(1 + i) % n];
-                if (temp > delta) {
-                    idx = i;
-                    delta = temp;
-                }
-            }
-        }
-        System.out.println(Arrays.toString(gas) + "\n" + Arrays.toString(cost));
-        System.out.println(idx + " " + delta);
-        int gi = idx;
-        int sum = gas[gi];
-        gi = (gi + 1) % n;
-        int ci = idx;
-
-        while (gi != idx) {
-            int temp = sum - cost[ci];
-            if (temp < 0) return -1;
-            sum = sum - cost[ci] + gas[gi];
-            gi = (gi + 1) % n;
-            ci = (ci + 1) % n;
-        }
-        // 缺少这个条件
-        if (sum - cost[ci] < 0) return -1;
-        return idx;
-    }
-
-    public int canCompleteCircuit1(int[] gas, int[] cost) {
+    // 解法 ①
+    public int canCompleteCircuit(int[] gas, int[] cost) {
         // 遍历的时候 if sum <0 说明这段区间内 均不行, 那么再下个起点继续  下个起点 if sum < 0 那么就下个起点再继续下去哦
         int total = 0, sum = 0, start = 0;
         for (int i = 0; i < gas.length; i++) {
@@ -5157,7 +4994,8 @@ public class Solution {
         return total < 0 ? -1 : start;
     }
 
-    // 150 逆波兰表达式求值
+
+    //② 150 逆波兰表达式求值
     public int evalRPN(String[] tokens) {
         Stack<Integer> s = new Stack();
         for (int i = 0; i < tokens.length; i++) {
@@ -5205,6 +5043,7 @@ public class Solution {
             sign = -1;
             s = s.substring(1);
         }
+        int res = 0;
         for (char c : s.toCharArray()) {
             res = res * 10 + c - '0';
         }
@@ -5215,7 +5054,7 @@ public class Solution {
         return c >= '0' && c <= '9';
     }
 
-    // 矩阵置零
+    // ②  73 矩阵置零
     public void setZeroes(int[][] matrix) {
         int MODIFIED = -9999;
         int row = matrix.length;
@@ -5245,19 +5084,17 @@ public class Solution {
         }
     }
 
-    // 166 分数到小数
+    // ② 166 分数到小数
     public String fractionToDecimal(int numerator, int denominator) {
         if (numerator == 0) {
             return "0";
         }
         StringBuilder res = new StringBuilder();
         res.append((numerator ^ denominator) > 0 ? "" : "-");
+        // 为什么要加(long)呢
         long num = Math.abs((long) numerator);
-        long den = Math.abs((long) denominator);
-      /*  long num = Math.abs( numerator);
-        long den = Math.abs(denominator);*/
-        // den 还是没变哦 取完绝对值还是负数
-        System.out.println(num + " " + den);
+        long den = Math.abs((long) denominator);// denominator  取  Integer.MIN_VALUE abs之后还是负的
+
 
         // integer part
         res.append(num / den);
@@ -5286,98 +5123,36 @@ public class Solution {
         return res.toString();
     }
 
-   /* public void demo(){
-        if (numerator == 0) {
-            return "0";
-        }
-        StringBuilder res = new StringBuilder();
-        // "+" or "-"
-        res.append(((numerator > 0) ^ (denominator > 0)) ? "-" : "");
-        long num = Math.abs((long)numerator);
-        long den = Math.abs((long)denominator);
-
-        // integral part
-        res.append(num / den);
-        num %= den;
-        if (num == 0) {
-            return res.toString();
-        }
-
-        // fractional part
-        res.append(".");
-        HashMap<Long, Integer> map = new HashMap<Long, Integer>();
-        map.put(num, res.length());
-        while (num != 0) {
-            num *= 10;
-            res.append(num / den);
-            num %= den;
-            if (map.containsKey(num)) {
-                int index = map.get(num);
-                res.insert(index, "(");
-                res.append(")");
-                break;
-            }
-            else {
-                map.put(num, res.length());
-            }
-        }
-        return res.toString();
-
-    }
-*/
-    //  3 4 5 7 8 9
-    //  1---> m1 =3, m2 = MAX_VALUE
-    // 2 --->  m2 = 4
-    //  3  return true;
-
-    // 6 5 4 8 7 9
-    // 1 ---> m1 = 6 m2 =MAX_VALUE
-    // 2 ---> m1 = 5 m2 =Max_VALUE
-    //  3  ----> m1 =4  m2 =MAX_VALUE
-    //  4 ---- > m1 = 4 m2 = 8
-    // 5 ---->  m1 =4 m2 = 7;
-    //  6  return true;
-    ///
-
-
-    // 334 递增的三元子序列 注意关键字 是 3哦  想想为什么呢
-    public boolean increasingTriplet1(int[] nums) {
-        int m1 = Integer.MAX_VALUE, m2 = Integer.MAX_VALUE;
-        for (int num : nums) {
-            // m1 <= m ,  m2 <= m 并且m1 <  m2
-            if (m1 > num) m1 = num;
-            else if (m2 > num) m2 = num;
-            else return true;
-        }
-        return false;
-    }
-
+    //② 334 递增的三元子序列 注意关键字 是 3哦  想想为什么呢
     public boolean increasingTriplet(int[] nums) {
-        if (nums.length == 0 || nums == null) return false;
-        int n = nums.length;
-        int[] foward = new int[n];
-        int[] backword = new int[n];
-        int min = nums[0];
-        int max = nums[n - 1];
-        for (int i = 0; i < n; i++) {
-            if (nums[i] < min) {
-                min = nums[i];
-            }
-            foward[i] = min;
-        }
-        for (int i = n - 1; i >= 0; i--) {
-            if (nums[i] > max) {
-                max = nums[i];
-            }
-            backword[i] = max;
-        }
-        for (int i = 0; i < n; i++) {
-            if (foward[i] < nums[i] && nums[i] < backword[i]) return true;
+        // start with two largest values, as soon as we find a number bigger than both, while both have been updated, return true.
+        int small = Integer.MAX_VALUE, big = Integer.MAX_VALUE;
+        for (int n : nums) {
+            if (n <= small) small = n;// update small if n is smaller than both
+            else if (n <= big) big = n; // update big only if greater than small but smaller than big
+            else return true; // return if you find a number bigger than both
         }
         return false;
     }
 
-    // 138 复制带随机指针的链表
+    // dp 解决
+    public boolean increasingTriplet01(int[] nums) {
+        int N = nums.length;
+        int[] dp = new int[N];
+        Arrays.fill(dp, 1);
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+                if (dp[i] >= 3) return true;
+            }
+        }
+        return false;
+    }
+
+
+    //②  138 复制带随机指针的链表
     // http://bit.ly/2KWFfDW 解题的关键在于,访问链表节点的随机指正的时候 需要记录已经访问的节点
 
     public Map<RandomNode, RandomNode> visitedHash138 = new HashMap();
@@ -5388,7 +5163,7 @@ public class Solution {
             return null;
         }
 
-        if (visitedHash138.containsKey(head)) {
+        if (visitedHash138.containsKey(head)) {// avoid cycle
             return this.visitedHash138.get(head);
         }
 
@@ -5402,7 +5177,7 @@ public class Solution {
         return node;
     }
 
-    // 解法2
+    // 解法2  不好想出来啊
     public RandomNode copyRandomList1(RandomNode head) {
         if (head == null) {
             return null;
@@ -5444,7 +5219,7 @@ public class Solution {
         return head_old;
     }
 
-    // 289 生命游戏
+    // ②  289 生命游戏
     public void gameOfLife(int[][] board) {
         // count(live) when board[i][j]
         // if[i][j]=1, count(live) <2 DEAD  2-3 live >3 DEAD
@@ -5465,7 +5240,6 @@ public class Solution {
                 }
             }
         }
-        // show2DArray(board);
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (board[i][j] == toLive) board[i][j] = LIVE;
@@ -5499,19 +5273,19 @@ public class Solution {
     }
 
     // 315 计算右侧小于当前元素的个数  O(N²)  不符合 [2,0,1]
-    public List<Integer> countSmaller0(int[] nums) {
+    /*public List<Integer> countSmaller0(int[] nums) {
         int n = nums.length;
         int[] dp = new int[n];
-
         for (int i = n - 1; i >= 0; i--) {
             for (int j = n - 1; j > i; j--) {
                 if (nums[i] > nums[j]) {
+                    // 错误的 状态转移方程不成立
                     dp[i] = Math.max(dp[i], dp[j] + 1);
                 }
             }
         }
         return Arrays.stream(dp).boxed().collect(Collectors.toList());
-    }
+    }*/
 
     // 解法1 二分法
     public List<Integer> countSmaller(int[] nums) {
@@ -5528,6 +5302,7 @@ public class Solution {
     }
 
     // http://bit.ly/32512ix
+    // ②  二分查找小于target的个数 即是 index  ✅interview friendly
     public int findIndex(List<Integer> sorted, int target) {
         int i = 0;
         int j = sorted.size();
@@ -5537,7 +5312,7 @@ public class Solution {
             int mid = i + (j - i) / 2;
             // sorted.get(mid) <= target is wrong , when duplicate nums exist
             if (sorted.get(mid) < target) {
-                // i is assigned to mid+1 ,prevent    infinite cycyle and out of range  error
+                // i is assigned to mid+1 ,prevent  infinite cycle and out of range  error
                 i = mid + 1;
             } else {
                 j = mid;
@@ -5572,7 +5347,7 @@ public class Solution {
     }
 
     // 74
-    // 240 搜索二维矩阵 Ⅱ
+    // ② 240 搜索二维矩阵 Ⅱ
     // 错误思路  对角线对称部分 不能保证上半部分>下半部分  因为 是左至右递增 以及 上到下递增
     // 正确思路应该是 先判断他在上下半部分,然后 再判断他在左右半部分.
     public boolean searchMatrix1(int[][] matrix, int target) {
@@ -5633,7 +5408,7 @@ public class Solution {
 
     }
 
-    // 上买呢的2个方法都是异曲同工, 都是同样的错误思路!
+    // ② 上买呢的2个方法都是异曲同工, 都是同样的错误思路!
     public boolean searchMatrix(int[][] matrix, int target) {
         if (matrix.length == 0 || matrix[0].length == 0 || matrix == null) return false;
         int m = matrix.length, n = matrix[0].length;
@@ -5671,27 +5446,33 @@ public class Solution {
         }
     }
 
-    // 解法1 快排最佳实践 http://bit.ly/353KVnO todo
-    public void wiggleSort1(int[] nums) {
+    //② 解法1 快排最佳实践 http://bit.ly/353KVnO  http://bit.ly/354yckZ  三项快速排序 需要构造newIdx, 需要一次中值切分
+    public void wiggleSort01(int[] nums) {
+        int median = findKthLargest0(nums, (nums.length + 1) / 2);
         int n = nums.length;
-        int median = findKthLargest0(nums, (n + 1) / 2);
-        int l = 0, i = 0, r = n - 1;
-        while (i < r) {
-            if (nums[newIndex(i, n)] > median) {
-                swap(nums, newIndex(l++, n), newIndex(i++, n));
-            } else if (nums[newIndex(i, n)] < median) {
-                swap(nums, newIndex(r--, n), newIndex(i, n));
+        int lt = 0, i = 0, gt = n - 1;
+        while (i <= gt) {
+            int idx = newIndex(i, n);
+            if (nums[idx] > median) {
+                int leftIdx = newIndex(lt, n);
+                swap(nums, leftIdx, idx);
+                lt++;
+                i++;
+            } else if (nums[idx] < median) {
+                int rightIdx = newIndex(gt, n);
+                swap(nums, rightIdx, idx);
+                gt--;
             } else {
                 i++;
             }
         }
-
     }
 
-    public int newIndex(int index, int n) {
-        return (1 + 2 * index) % (n | 1);
-    }
+    private int newIndex(int index, int n) {
 
+        int var = (1 + 2 * index) % (n | 1);
+        return var;
+    }
 
     //  解法2 错误的 无法处理带有重复元素的
     public void wiggleSort2(int[] nums) {
@@ -5725,7 +5506,7 @@ public class Solution {
         return res;
     }
 
-    // ② 38报数
+    // ② 38报数  关键点:尾部加个字母"0";
     // for the nth number, you just need to count characters of the (n-1)th number,
     // for the (n-1)th number, you just need to count characters of  the (n-2)th number,
     // 解法1 递归
@@ -5774,7 +5555,7 @@ public class Solution {
     public String cntMap(String s) {
         StringBuilder res = new StringBuilder();
         s += "0";// 因为corner case 1的原因啊
-        for (int i = 0, c = 1; i < s.length()-1; i++) {
+        for (int i = 0, c = 1; i < s.length() - 1; i++) {
             if (s.charAt(i) == s.charAt(i + 1)) {
                 c++;
             } else {
@@ -5806,7 +5587,7 @@ public class Solution {
 
     // 解法2 二分查找
     public int kthSmallest1(int[][] matrix, int k) {
-        int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1]+1;
+        int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1] + 1;
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
             int count = lessEqual(matrix, mid);
@@ -5935,7 +5716,7 @@ public class Solution {
             map.put(key, map.getOrDefault(key, 0) + 1);
             while (map.size() > k) {
                 char leftKey = s.charAt(left);
-                map.put(leftKey,map.get(leftKey)-1);
+                map.put(leftKey, map.get(leftKey) - 1);
                 if (map.get(leftKey) == 0) {
                     map.remove(leftKey);
                 }
@@ -6040,29 +5821,31 @@ public class Solution {
 
     // ② 440 字典序第K小的数字 http://bit.ly/2nKscwE https://youtu.be/yMnR63e3KLo
     public int findKthNumber(int n, int k) {
-        int curr =1;
-        k = k -1;
-        while (k>0){ // if n=1;k=1;
-            int gap = findGap(n,curr,curr+1);
-            if (gap<=k){// 在隔壁子树节点下
-                curr = curr+1;
-                k = k-gap;
-            }else {// 在当前节点子树下
-                curr = curr *10;
-                k = k-1;
+        int curr = 1;
+        k = k - 1;
+        while (k > 0) { // if n=1;k=1;
+            int gap = findGap(n, curr, curr + 1);
+            if (gap <= k) {// 在隔壁子树节点下
+                curr = curr + 1;
+                k = k - gap;
+            } else {// 在当前节点子树下
+                curr = curr * 10;
+                k = k - 1;
             }
         }
-        return  curr;
+        return curr;
     }
-    public int findGap(int n,long cur,long neighbour){  // [cur,neighbour)或者说(cur,Neighbour] 之间的距离
+
+    public int findGap(int n, long cur, long neighbour) {  // [cur,neighbour)或者说(cur,Neighbour] 之间的距离
         int gap = 0;
-        while (cur<=n){
-            gap +=Math.min(n+1,neighbour)-cur;
-            cur = cur *10;
-            neighbour = neighbour*10;
+        while (cur <= n) {
+            gap += Math.min(n + 1, neighbour) - cur;
+            cur = cur * 10;
+            neighbour = neighbour * 10;
         }
-        return  gap;
+        return gap;
     }
+
     //use long in case of overflow
     public int calSteps(int n, long n1, long n2) { //计算curr开头和curr+1开头之间的字符串数量
         int steps = 0;
@@ -6077,6 +5860,7 @@ public class Solution {
     // 类似于46的全排列问题
     // 51 N皇后问题
     char Queen = 'Q', Empty = '.';
+
     public List<List<String>> solveNQueens(int n) {
         List<List<String>> ans = new ArrayList();
         boolean[][] matrix = new boolean[n][n];
@@ -6159,6 +5943,7 @@ public class Solution {
         }
         return ret;
     }
+
     // 解法2
     public List<List<Integer>> zigzagLevelOrder1(TreeNode root) {
         List<List<Integer>> ret = new ArrayList();
