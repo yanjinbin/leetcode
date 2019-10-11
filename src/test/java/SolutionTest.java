@@ -1295,16 +1295,37 @@ public class SolutionTest {
 
     @Test
     public void longestValidParentheses() {
-        assert INSTANCE.longestValidParentheses(")(()()()(") == 6;
+        assert INSTANCE.longestValidParentheses01(")(()()()(") == 6;
+        assert INSTANCE.longestValidParentheses02(")(()()()(") == 6;
     }
 
     @Test
     public void reverse() {
-        assert INSTANCE.reverse0(543) == 345;
-        assert INSTANCE.reverse0(-543) == -345;
         // int overflow
         System.out.println(INSTANCE.reverse(1534236469));
         assert INSTANCE.reverse(-543) == -345;
+    }
+
+    @Test
+    public void mergeSortedArray() {
+        int[] nums1 = new int[]{1, 2, 3, 0, 0, 0};
+        int m = 3;
+        int[] nums2 = new int[]{2, 5, 6};
+        int n = 3;
+        INSTANCE.merge(nums1, m, nums2, n);
+        System.out.println(Arrays.toString(nums1));
+
+    }
+
+    @Test
+    public void deleteNode() {
+        ListNode node = ListNode.builder().val(5).build();
+        ListNode head = ListNode.builder().val(4).next(node.builder().next(
+                ListNode.builder().val(1).next(
+                        ListNode.builder().val(9).build()).build()).build()).build();
+
+        INSTANCE.deleteNode(node);
+        System.out.println(head);
     }
 
     @Test
@@ -1392,19 +1413,17 @@ public class SolutionTest {
 
     @Test
     public void strStr() {
-        System.out.println(INSTANCE.strStr0("hello", "ll"));
         // ississ连续重复导致 无法识别
-        System.out.println(INSTANCE.strStr0("mississippi", "issip"));
-        System.out.println(INSTANCE.strStr1("mississippi", "issip"));
+        assert INSTANCE.strStr_bad("mississippi", "issip")
+                != INSTANCE.strStr1("mississippi", "issip");
     }
 
     @Test(timeout = 6000)
     public void trailingZeroes() {
-        assert INSTANCE.trailingZeroes0(6) == 1;
+
         // 代码有错,错在25 可以拆成5*5, 所以 5(1) 10(1) 15(1) 20(1) 25(2) 30(1)  = 7
-        assert INSTANCE.trailingZeroes1(1808548329) == 452137076; // 需要耗时3s
-        assert INSTANCE.trailingZeroes2(30) == 7;
-        assert INSTANCE.trailingZeroes0(30) == 6;
+        assert INSTANCE.trailingZeroes2(27) == 7;
+
     }
 
     @Test
@@ -1454,9 +1473,9 @@ public class SolutionTest {
     @Test
     public void missingNumber() {
         int[] nums = new int[]{0, 1, 2, 4, 5, 6, 7, 3, 9};
-        assert INSTANCE.missingNumber0(nums) == 8;
         assert INSTANCE.missingNumber1(nums) == 8;
-        // System.out.println(INSTANCE.missingNumber2(nums));
+        assert INSTANCE.missingNumber1(nums) == INSTANCE.missingNumber2(nums);
+
         nums = new int[]{1, 1, 2, 2, 4, 4, 5, 5, 6, 6, 7, 3};
         System.out.println(Arrays.toString(nums));
         INSTANCE.findTwoSingleNum(nums);
@@ -1535,14 +1554,14 @@ public class SolutionTest {
     @Test
     public void findMissingPositive() {
         int[] nums = {1, 2, 0};
-        System.out.println(INSTANCE.firstMissingPositive(nums));
         System.out.println(INSTANCE.firstMissingPositive_1(nums));
+        System.out.println(INSTANCE.firstMissingPositive(nums));
         nums = new int[]{3, 4, -1, 1};
-        System.out.println(INSTANCE.firstMissingPositive(nums));
         System.out.println(INSTANCE.firstMissingPositive_1(nums));
+        System.out.println(INSTANCE.firstMissingPositive(nums));
         nums = new int[]{7, 8, 9, 11, 12};
-        System.out.println(INSTANCE.firstMissingPositive(nums));
         System.out.println(INSTANCE.firstMissingPositive_1(nums));
+        System.out.println(INSTANCE.firstMissingPositive(nums));
     }
 
     @Test

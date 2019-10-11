@@ -2605,7 +2605,7 @@ public class Solution {
         return sb.toString();
     }
 
-    // 72. 编辑距离 DP的递归做法
+    // ② 72. 编辑距离 DP的递归做法
     public int minDistance(String word1, String word2) {
         int m = word1.length();
         int n = word2.length();
@@ -2947,8 +2947,28 @@ public class Solution {
         return dp[n];
     }
 
-    // 32. 最长有效括号
-    public int longestValidParentheses(String s) {
+    // ② 32. 最长有效括号
+    // dp解决 存在2种状态转移方程式哦!! 参考官方题解http://bit.ly/2VvELbE
+    public int longestValidParentheses01(String str) {
+        int ans = 0;
+        int[] dp = new int[str.length()];
+        for (int i = 1; i < str.length(); i++) {
+            if (str.charAt(i) == ')') {
+                if (str.charAt(i - 1) == '(') {
+                    dp[i]=(i-2>=0?dp[i-2]:0)+2;
+                }
+                if((i-dp[i-1]-1>=0)&&str.charAt(i-dp[i-1]-1)=='('){
+                    // 就是这个状态转移方程比较难推到了...
+                    dp[i]=dp[i-1]+((i - dp[i - 1]) >= 2 ? dp[i - dp[i - 1] - 2] : 0) + 2;
+                }
+            }
+            ans = Math.max(ans,dp[i]);
+        }
+        return  ans;
+    }
+
+    // 这个各种条件处理起来比较复杂
+    public int longestValidParentheses02(String s) {
         int res = 0, start = 0;
         Stack<Integer> m = new Stack<>();
         for (int i = 0; i < s.length(); ++i) {
@@ -2964,26 +2984,9 @@ public class Solution {
         return res;
     }
 
-    // 7. 整数反转
-    // 无法处理负数问题阿
-    public int reverse0(int x) {
-        Queue<Integer> s = new LinkedList<>();
-        int i = x;
-        while (i != 0) { // i !=0
-            int mod = i % 10;
-            s.add(mod);
-            i = i / 10;
-        }
-        int res = 0;
-        while (!s.isEmpty()) {
-            if (Math.abs(res) > Integer.MAX_VALUE / 10) {
-                return 0;
-            }
-            res = res * 10 + s.poll();
-        }
-        return res;
-    }
 
+
+    // 7. 整数反转  ② 注意下边界条件即可
     public int reverse(int x) {
         int res = 0;
         while (x != 0) {
@@ -2994,7 +2997,7 @@ public class Solution {
         return res;
     }
 
-    // 88. 合并两个有序数组
+    // ② 88. 合并两个有序数组
     public void merge(int[] nums1, int m, int[] nums2, int n) {
         int i1 = m - 1;
         int i2 = n - 1;
@@ -3017,7 +3020,7 @@ public class Solution {
         while (i2 >= 0) nums1[k--] = (i1 >= 0 && nums1[i1] > nums2[i2]) ? nums1[i1--] : nums2[i2--];
     }
 
-    // 237. 删除链表中的节点
+    // ② 237. 删除链表中的节点
     public void deleteNode(ListNode node) {
         node.val = node.next.val;
         ListNode tmp = node.next;
@@ -3025,7 +3028,7 @@ public class Solution {
         tmp.next = null;
     }
 
-    // 326. 3的幂
+    // ② 326. 3的幂
     public boolean isPowerOfThree0(int n) {
         // 1162261467 is 3^19,  3^20 is bigger than int
         return (n > 0 && 1162261467 % n == 0);
@@ -3059,7 +3062,7 @@ public class Solution {
         return res;
     }
 
-    // 13. 罗马数字转整数
+    //② 13. 罗马数字转整数
     public int romanToInt(String s) {
         Map<Character, Integer> dict = new HashMap<>();
         dict.put('I', 1);
@@ -3077,38 +3080,14 @@ public class Solution {
             if (cur <= before) {
                 res += cur;
             } else {
+                // 减去之前增加的
                 res += cur - 2 * before;
             }
         }
         return res;
     }
 
-
-    /*public int romanToInt1(String s) {
-
-        Map<Character, Integer> dict = new HashMap<>();
-        dict.put('I', 1);
-        dict.put('V', 5);
-        dict.put('X', 10);
-        dict.put('L', 50);
-        dict.put('C', 100);
-        dict.put('D', 500);
-        dict.put('M', 1000);
-        int res = 0;
-        for (int i = 1; i < s.length(); i++) {
-            int val = dict.get(s.charAt(i));
-
-            if (i == s.length() - 1 || dict.get(s.charAt(i + 1)) <= val) {
-                res += val;
-            } else {
-                res -= val;
-            }
-        }
-        return res;
-    }
-*/
-
-    // 118. 杨辉三角
+    //② 118. 杨辉三角
     public List<List<Integer>> generate(int numRows) {
         List<Integer>[] ret = new List[numRows];
         for (int i = 0; i < numRows; i++) {
@@ -3126,7 +3105,7 @@ public class Solution {
         return Arrays.asList(ret);
     }
 
-    // 202 快乐数
+    //② 202 快乐数
     public boolean isHappy(int n) {
         Set<Integer> set = new HashSet<>();
         int ret = n;
@@ -3155,12 +3134,13 @@ public class Solution {
         while (true) {
             slow = square(slow);
             fast = square(square(fast));
-            if (slow == fast) break;
+            if (slow == 1) return true;
+            if (slow == fast) return false;
         }
-        return slow == 1;
+
     }
 
-    // 371. 两整数之和  [和的位运算实现] http://bit.ly/2MpSWN0  求和运算 sum=2*C(进位)+S(本位), 李永乐老师 本位 进位 https://youtu.be/pUwYvJtfbsY
+    //② 371. 两整数之和  [和的位运算实现] http://bit.ly/2MpSWN0  求和运算 sum=2*C(进位)+S(本位), 李永乐老师 本位 进位 https://youtu.be/pUwYvJtfbsY
     public int getSum(int a, int b) {
         if (b == 0) return a;
         // 本位
@@ -3187,7 +3167,7 @@ public class Solution {
 
     }
 
-    //29. 两数相除
+    // 29. 两数相除 这个放弃 太难了
     // 这个方法是最好的  但是也是听难理解的 放弃
     public int divide2(int dividend, int divisor) {
         if (dividend == 1 << 31 && divisor == -1) return (1 << 31) - 1;
@@ -3246,7 +3226,6 @@ public class Solution {
         }
 
         int result = 0;
-        System.out.println("=====split====");
         while (count > 0) {
 
             count--;
@@ -3256,13 +3235,14 @@ public class Solution {
                 result = result + 1 << count;
                 dividend = dividend - divisor;
             }
-            System.out.println("count: " + count + "\tdivisor: " + divisor + "\t before: " + temp + "\tdividend: " + dividend + "\tresult: " + result);
         }
         if (sign) result = -result;
         return result;
     }
 
-    // 204 质数计数
+    // ② 204 质数计数
+    // 质数是指在大于1的自然数中，除了1和它本身以外不再有其他因数的自然数
+    // 2是最小的质数,质数乘以任何数的积 就不是质数
     public int countPrimes(int n) {
         // 非质素素组
         boolean[] notPrime = new boolean[n];
@@ -3278,16 +3258,19 @@ public class Solution {
         return count;
     }
 
-    // 14 最长公共前缀
+    // ② 14 最长公共前缀
     public String longestCommonPrefix(String[] strs) {
-        if (strs == null || strs.length == 0) return "";
-        int len = strs.length;
-        int i = 0;
-        Arrays.sort(strs);
-        int range = Math.min(strs[0].length(), strs[len - 1].length());
-        while (i < range && strs[0].charAt(i) == strs[len - 1].charAt(i)) i++;
-        return strs[0].substring(0, i);
+        if (strs.length == 0) return "";
+        String prefix = strs[0];
+        for (int i = 1; i < strs.length; i++) {
+            while (strs[i].indexOf(prefix) != 0) {
+                prefix = prefix.substring(0, prefix.length() - 1);
+                if (prefix == "") return "";
+            }
+        }
+        return prefix;
     }
+
 
     // ② 69 x 平方根 利用牛顿求根法来做[http://bit.ly/2ypO02m] 牛顿求根法视频讲解 https://youtu.be/VUpQwEVsyFk
     // f(x1)-f(x2) / x1-x2 = f'(x1) 令 f(x2)=0 即可求出
@@ -3339,7 +3322,7 @@ public class Solution {
         * */
     }
 
-    // follow up  立方根
+    // follow up  立方根  牛顿求根法解决
     public int cubeRoot(int x) {
         if (x <= 1) return x;
         double last = 0;
@@ -3351,8 +3334,20 @@ public class Solution {
         return (int) res;
     }
 
-    // 28. 实现strStr()
-    public int strStr0(String haystack, String needle) {
+    // ② 28. 实现strStr()
+    // 遍历每一个字符作为子字符串  字符串长度计算 左闭右开 不熟悉
+    public int strStr1(String haystack, String needle) {
+        if (needle == "") return 0;
+        for (int i = 0; i <= haystack.length() - needle.length(); i++) {
+            if (haystack.substring(i, i + needle.length()).equals(needle)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    // 错误哎
+    public int strStr_bad(String haystack, String needle) {
         int i = 0;
         int j = 0;
         while (i < haystack.length() && j < needle.length()) {
@@ -3363,48 +3358,8 @@ public class Solution {
         return j == needle.length() ? i - j : -1;
     }
 
-    // 遍历每一个字符作为其实字符的子字符串  字符串长度计算 左闭右开 不熟悉
-    public int strStr1(String haystack, String needle) {
-        if (needle == "") return 0;
-        for (int i = 0; i <= haystack.length() - needle.length(); i++) {
-            if (haystack.substring(i, i + needle.length()).equals(needle)) {
-                return i;
-            }
-        }
-        return -1;
-    }
-    // kmp字符串匹配的实现
 
-    // 172. 阶乘后的零
-    public int trailingZeroes0(int n) {
-        // 错误解法
-        int count = 0;
-        for (int i = 5; i <= n; i++) {
-            if ((i >= 5 && i % 5 == 0)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public int trailingZeroes1(int n) {
-        // lowB写法哈哈 TLE了 233
-        int count = 0;
-        int i = 5;
-        while (i <= n) {
-            int dividend = i;
-            while (dividend != 0) {
-                if (dividend % 5 == 0) {
-                    count++;
-                    dividend = dividend / 5;
-                } else break;
-            }
-            i++;
-        }
-        return count;
-    }
-
-    // 连续5的前缀后数列
+    // ② 172. 阶乘后的零  tips:连续5的前缀后数列
     public int trailingZeroes2(int n) {
         int count = 0;
         while (n != 0) {
@@ -3414,7 +3369,7 @@ public class Solution {
         return count;
     }
 
-    // 26. 删除排序数组中的重复项
+    // ② 26. 删除排序数组中的重复项
     public int removeDuplicates(int[] nums) {
         int i = 0;
         int j = 0;
@@ -3428,7 +3383,7 @@ public class Solution {
         return i + 1;
     }
 
-    // 217. 存在重复元素
+    // ② 217. 存在重复元素
     public boolean containsDuplicate(int[] nums) {
         Set<Integer> set = new HashSet<>();
         for (int num : nums) {
@@ -3438,7 +3393,7 @@ public class Solution {
         return false;
     }
 
-    //191. 位1的个数
+    //② 191. 位1的个数
     public int hammingWeight(int n) {
         int count = 0;
         for (int i = 0; i < 32; i++) {
@@ -3446,18 +3401,6 @@ public class Solution {
             n >>= 1;
         }
         return count;
-
-        /**
-         *  除余运算也是不合适的
-         *  int count = 0;
-         *         while (n != 0) {
-         *             if (n % 2 == 1) {
-         *                 count++;
-         *             }
-         *             n >>= 1;
-         *         }
-         *         return count;
-         */
     }
 
 
@@ -3489,7 +3432,7 @@ public class Solution {
     }
 
 
-    // 190. 颠倒二进制位
+    // ② 190. 颠倒二进制位
     // you need treat n as an unsigned value
     public int reverseBits(int n) {
         int res = 0;
@@ -3506,7 +3449,7 @@ public class Solution {
         return res;
     }
 
-    //  125 验证回文字符串
+    // ② 125 验证回文字符串
     public boolean isPalindrome(String s) {
         int left = 0;
         int right = s.length() - 1;
@@ -3520,10 +3463,8 @@ public class Solution {
                 right--;
                 left++;
             } else {
-                //  System.out.println("非回文字符串\t" + left + "left: " + s.charAt(left) + "\t" + right + "\tright: " + s.charAt(right));
                 return false;
             }
-
         }
         return true;
     }
@@ -3549,22 +3490,30 @@ public class Solution {
         return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
-    //268 缺失数字
-    public int missingNumber0(int[] nums) {
-        int sum = 0;
-        for (int num : nums) {
-            sum += num;
-        }
-        return ((nums.length * (nums.length + 1)) >> 1) - sum;
-    }
-
-    // 异或 结合律 http://bit.ly/2Kkra1B  这个最好了
+    //② 268 缺失数字
+    //解法1  ② 异或 结合律 http://bit.ly/2Kkra1B  这个最好了
     public int missingNumber1(int[] nums) {
         int miss = nums.length;
         for (int i = nums.length - 1; i >= 0; i--) {
             miss ^= i ^ nums[i];
         }
         return miss;
+    }
+
+    // ② 解法2
+    public int missingNumber2(int[] nums) {
+        Arrays.sort(nums);
+        int left = 0;
+        int right = nums.length - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] > mid) {
+                right = mid;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return left;
     }
 
     // follow up  一个整型数组里除了两个数字之外，其他的数字都出现了两次。请写程序找出这两个只出现一次的数字？
@@ -3592,21 +3541,6 @@ public class Solution {
         return num & ~(num - 1);
     }
 
-    // 二分法 todo 二分法需要做个专题研究
-    public int missingNumber2(int[] nums) {
-        Arrays.sort(nums);
-        int left = 0;
-        int right = nums.length - 1;
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] > mid) {
-                right = mid;
-            } else {
-                left = mid + 1;
-            }
-        }
-        return left;
-    }
 
     // ② leetcode 137 137. 只出现一次的数字 II
     // 解法1 重新定义运算规则
@@ -3637,7 +3571,7 @@ public class Solution {
     // (其实不难：对于a，把next中a=1对应的行组合选出来，
     // 对于每一个组合，凡取值为1的变量写成原变量，取值为0的变量写成反变量，
     // 各变量相乘后得到一个乘积项；最后，把各个组合对应的乘积项相加，就得到了相应的逻辑表达式。对于b同理)
-    // ②
+    //✅  ②  最佳实践  interview friendlY
     public int singleNumberⅡ1(int[] nums) {
         int A = 0;
         int B = 0;
@@ -3649,7 +3583,7 @@ public class Solution {
         return A | B;
     }
 
-    // 解法2 易懂 但是复杂度O(N²)
+    // 解法2 有点玄学了 但是复杂度O(N²)
     public int singleNumberⅡ2(int[] nums) {
         int res = 0;
         for (int i = 0; i < 32; i++) {
@@ -3663,10 +3597,7 @@ public class Solution {
         return res;
     }
 
-
-    // leetcode 260. 只出现一次的数字 III
-
-    //387  字符串中的第一个唯一字符
+    //② 387  字符串中的第一个唯一字符 // 一次遍历构建cnt,另一次遍历查找count=1即可
     public int firstUniqChar(String s) {
         Map<Character, Integer> dict = new HashMap<>();
         char[] chars = s.toCharArray();
@@ -3695,26 +3626,21 @@ public class Solution {
         return index;
     }
 
-    // 189. 旋转数组
+    // ② 189. 旋转数组
     public void rotate(int[] nums, int k) {
         int[] tmp = Arrays.copyOf(nums, nums.length);
         for (int i = 0; i < tmp.length; i++) {
             nums[i] = tmp[(i + k) % nums.length];
         }
-        //   System.out.println(Arrays.toString(nums));
     }
 
-    //
     public void rotate1(int[] nums, int k) {
-        // System.out.println(Arrays.toString(nums));
         for (int i = 0; i < k; i++) {
             shift(nums);
         }
-        //  System.out.println(Arrays.toString(nums));
     }
 
     public void shift(int[] nums) {
-        //  System.out.println(Arrays.toString(nums));
         int prev = nums[nums.length - 1];
         int tmp;
         for (int i = 0; i < nums.length; i++) {
@@ -3722,7 +3648,6 @@ public class Solution {
             nums[i] = prev;
             prev = tmp;
         }
-        //   System.out.println(Arrays.toString(nums));
     }
 
     // 来自 http://bit.ly/2KkELWH  ,并不推荐 说真的  太难看了
@@ -3756,7 +3681,7 @@ public class Solution {
 
     }
 
-    // 买卖股票系列问题 参考下面这篇 Blog 属实牛逼 http://bit.ly/333JDIm
+    // ✅ 买卖股票系列问题 参考下面这篇 Blog 属实牛逼 http://bit.ly/333JDIm
     // 121. 买卖股票的最佳时机
     public int maxProfit1A(int[] prices) {
         if (prices.length == 0) return 0;
@@ -3838,7 +3763,7 @@ public class Solution {
     }
 
 
-    // 122. 买卖股票的最佳时机 II   逢涨必抛  贪心算法
+    // ✅122. 买卖股票的最佳时机 II   逢涨必抛  贪心算法
     public int maxProfit2A(int[] prices) {
         int res = 0;
         for (int i = 1; i < prices.length; i++) {
@@ -3865,7 +3790,7 @@ public class Solution {
     }
 
 
-    // 123. 买卖股票的最佳时机 III
+    // ✅ 123. 买卖股票的最佳时机 III
     // 解法1  没看懂
     public int maxProfit3A(int[] prices, int k) {
         if (prices.length == 0 || prices == null) return 0;
@@ -3907,7 +3832,7 @@ public class Solution {
         return dp[n - 1][k][0];
     }
 
-    // 188. 买卖股票的最佳时机 IV
+    //✅ 188. 买卖股票的最佳时机 IV
     public int maxProfit4A(int k, int[] prices) {
         int n = prices.length;
         if (k > n / 2) { // 一天内
@@ -3917,7 +3842,7 @@ public class Solution {
     }
 
 
-    // 309. 最佳买卖股票时机含冷冻期
+    //✅ 309. 最佳买卖股票时机含冷冻期
     public int maxProfit5A(int[] prices) {
         // corner case
         if (prices == null || prices.length <= 1) return 0;
@@ -3963,7 +3888,7 @@ public class Solution {
     }
 
 
-    // 714. 买卖股票的最佳时机含手续费
+    //✅ 714. 买卖股票的最佳时机含手续费
     public int maxProfit6A(int[] prices, int fee) {
         int n = prices.length;
         int dp_i_0 = 0, dp_i_1 = Integer.MIN_VALUE;
@@ -3975,7 +3900,7 @@ public class Solution {
         return dp_i_0;
     }
 
-    // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
+    // ② [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // leetcode 8  字符串转换整数 (atoi)
     public int myAtoi(String str) {
         int sign = 1;
@@ -4001,7 +3926,7 @@ public class Solution {
         return sign * ret;
     }
 
-    // 36 验证是否是有效的数独   // interview friendly
+    //② 36 验证是否是有效的数独   // interview friendly  构建 col row group坐标系即可
     public boolean isValidSudoku(char[][] board) {
         Map<String, Boolean> map = new HashMap<>();
         for (int i = 0; i < board.length; i++) {
@@ -4028,7 +3953,7 @@ public class Solution {
         return true;
     }
 
-    // 50 pow(x,n) 注意这道题目 是能用基本算术运算的!!
+    // ② 50 pow(x,n) 注意这道题目 是能用基本算术运算的!!
     public double myPow(double x, int n) {
         if (n == 0) return 1;
         double half = myPow(x, n / 2);
@@ -4038,7 +3963,7 @@ public class Solution {
         return half * half / x;
     }
 
-
+    // 想不出来啊
     public double myPow1(double x, int n) {
         // 比较难想 不好处理
         // x=2 n=11  r // x = 2 n =5   // x =2  n =5/2 =2 // x =2 n =1 // x=2 n=0
@@ -4051,34 +3976,8 @@ public class Solution {
         return n > 0 ? res : 1 / res;
     }
 
-    // 41 缺失的第一个正整数
-    public int firstMissingPositive_0(int[] nums) {
-        // 错误 nums 可能有负数
-        Arrays.sort(nums);
-        int ret = 1;
-        for (int i = 0; i < nums.length; i++) {
-            int num = nums[i];
-            if (ret != num) {
-                return ret;
-            }
-            ret++;
-        }
-
-        return ret;
-    }
-
+    // 41 缺失的第一个正整数 union find
     public int firstMissingPositive(int[] nums) {
-        Set<Integer> set = new HashSet<>();
-        for (int i : nums) {
-            set.add(i);
-        }
-        int i = 1;
-        while (set.contains(i)) i++;
-        return i;
-    }
-
-    // 缺失的第一个征整数 union find
-    public int firstMissingPositive_1(int[] nums) {
         int n = nums.length;
         for (int i = 0; i < n; i++) {
             while (nums[i] > 0 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {
@@ -4093,7 +3992,17 @@ public class Solution {
         return n + 1;
     }
 
-    // 179. 最大数
+    public int firstMissingPositive_1(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for (int i : nums) {
+            set.add(i);
+        }
+        int i = 1;
+        while (set.contains(i)) i++;
+        return i;
+    }
+
+    //② 179. 最大 int数组编程字符串数组 然后从大到下排列
     public String largestNumber(int[] nums) {
         String[] strs = new String[nums.length];
         for (int i = 0; i < nums.length; i++) {
@@ -4108,7 +4017,7 @@ public class Solution {
         return ret.charAt(0) == '0' ? "0" : ret;
     }
 
-    // 328 奇偶链表
+    //② 328 奇偶链表
     public ListNode oddEvenList(ListNode head) {
         if (head == null || head.next == null) return head;
         ListNode oddTail = head;
@@ -4344,7 +4253,10 @@ public class Solution {
         int res = 0;
         int num = 0;
         Set<Character> ops = new HashSet<>();
-        ops.add('-');ops.add('+');ops.add('*');ops.add('/');
+        ops.add('-');
+        ops.add('+');
+        ops.add('*');
+        ops.add('/');
         for (int i = 0; i < n; i++) {
             if (s.charAt(i) >= '0' && s.charAt(i) <= '9') {
                 num = num * 10 + s.charAt(i) - '0';
@@ -4546,24 +4458,6 @@ public class Solution {
         return true;
     }
 
-
-    /*
-        public int findCelebrity(int n) {
-            int[][] people = new int[n][n];
-            for (int i = 0; i < n; i++) {
-                for (int j = i; j < n; j++) {
-                    // 需要辅助数组
-                    aux[i][j] = pepople[j][i];
-                }
-            }
-            // 遍历一边 哪个 i下都是 know(i,j) true即可以
-            return -1;
-        }
-
-        boolean knows(a, b) {
-            return true;
-        }
-    */
 
     // ② 76 最小覆盖子串 http://bit.ly/2LvcJLu  双指针 滑动窗口方法  ✅  经典方法
     public String minimumWindow0(String s, String t) {
@@ -4977,8 +4871,7 @@ public class Solution {
     }
 
 
-    // 134 加油站⛽️  bad 错误解法
-    // 解法 ①
+    // ② 134 加油站⛽
     public int canCompleteCircuit(int[] gas, int[] cost) {
         // 遍历的时候 if sum <0 说明这段区间内 均不行, 那么再下个起点继续  下个起点 if sum < 0 那么就下个起点再继续下去哦
         int total = 0, sum = 0, start = 0;
@@ -6101,6 +5994,13 @@ public class Solution {
         return 1;
     }
 
+
+    // kmp字符串匹配的实现
+    // leetcode 260. 只出现一次的数字 III
+
+    // leetcode 178
+
+    // 80
 }
 
 
