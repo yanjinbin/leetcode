@@ -3,6 +3,7 @@ package com.yanjinbin.leetcode;
 
 // ArrayDeque（双端队列）内部实现是一个循环数组，bit 巧妙运用
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -10,6 +11,7 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -2511,99 +2513,65 @@ public class Solution {
         return dp[s.length()][p.length()];
     }
 
-    // 394. 字符串解码  递归解法 注意idx的取值阿
-    public int idx394;
+    // ② 394. 字符串解码 用栈存储结果
+    //  字符+数字+[+字母+] 的 模型 http://bit.ly/2qdR2WP
 
-    public String decodeString(String s) {
-        return decode(s);
-    }
-
-    //  字符+数字+[+字母+] 的 模型
-    public String decode(String s) {
-        String res = "";
-        int n = s.length();
-        while (idx394 < n && s.charAt(idx394) != ']') {
-            if (s.charAt(idx394) > '9' || s.charAt(idx394) < '0') {
-                res += s.charAt(idx394);
-                idx394++;
-            } else {
-                // cal numstr to cnt
-                int cnt = 0;
-                while (s.charAt(idx394) >= '0' && s.charAt(idx394) <= '9') {
-                    cnt = cnt * 10 + s.charAt(idx394) - '0';
-                    idx394++;
-                }
-                // 进入左括号后第一个
-                idx394++;
-                String t = decode(s);
-                // 当进入循环的时候的s.charAt(i=6)=']'。  那么，需要跳过去， 所以idx++。
-                idx394++;
-                while (cnt-- > 0) {
-                    res += t;
-                }
-            }
-        }
-        return res;
-    }
-
-
-    // 解法2
-    // 不懂阿
-    public String decodeString0(String s) {
-        StringBuilder res = new StringBuilder();
-        Stack<Integer> numStack = new Stack<>();
-        Stack<String> strStack = new Stack<>();
-        String tempStr = null;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (s.charAt(i) == ']') {
-                String str = strStack.pop();
-                int num = numStack.pop();
-                String nowStr = repeatStr(str, num);
-                if (!numStack.isEmpty()) {
-                    StringBuilder builder = new StringBuilder();
-                    builder.append(strStack.peek());
-                    builder.append(nowStr);
-                    int m = i + 1;
-                    while (s.charAt(m) != ']' && !('0' < s.charAt(m) && '9' >= s.charAt(m))) {
-                        m++;
-                    }
-                    builder.append(s.substring(i + 1, m));
-                    strStack.set(strStack.size() - 1, builder.toString());
-                    i = m - 1;
-                } else {
-                    tempStr = null;
-                    res.append(nowStr);
-                }
-            } else if ('0' <= c && '9' >= c) {
-                int m = i + 1;
-                while ('0' <= s.charAt(m) && '9' >= s.charAt(m)) {
-                    m++;
-                }
-                numStack.push(Integer.parseInt(s.substring(i, m)));
-                i = m - 1;
-                int k = i + 2;
-                while (s.charAt(k) != ']' && !('0' <= s.charAt(k) && '9' >= s.charAt(k))) {
-                    k++;
-                }
-                strStack.push(s.substring(i + 2, k));
-                i = k - 1;
-            } else if (numStack.isEmpty()) {
-                res.append(s.charAt(i));
-            }
-        }
-        return res.toString();
-
-    }
-
-    public String repeatStr(String s, int num) {
+    public String decodeString01(String s) {
         StringBuilder sb = new StringBuilder();
-        if (num <= 0) return "";
-        for (int i = 0; i < num; i++) {
-            sb.append(s);
+        int multi = 0;
+        Stack<Integer> ints = new Stack();
+        Stack<String> strs = new Stack();
+        for (char c : s.toCharArray()) {
+            if (c >= '0' && c <= '9') {
+                multi = multi * 10 + c - '0';
+            } else if (c == '[') {
+                ints.push(multi);
+                strs.push(sb.toString());
+                sb = new StringBuilder();
+                multi = 0;
+            } else if (c == ']') {
+                StringBuilder tmp = new StringBuilder();
+                int cur_multi = ints.pop();
+                for (int i = 0; i < cur_multi; i++) {
+                    tmp.append(sb);
+                }
+                sb = new StringBuilder();
+                sb.append(strs.pop()).append(tmp);
+            } else {
+                sb.append(c);
+            }
+
         }
         return sb.toString();
     }
+
+    public String decodeString02(String s) {
+        StringBuilder sb = new StringBuilder();
+        int multi = 0;
+        Stack<Integer> ints = new Stack<>();
+        Stack<String> strs = new Stack<>();
+        for (char c : s.toCharArray()) {
+            if (c == '[') {
+                ints.push(multi);
+                strs.push(sb.toString());
+                multi = 0;
+                sb = new StringBuilder();
+            } else if (c == ']') {
+                StringBuilder tmp = new StringBuilder();
+                int cur_multi = ints.pop();
+                for (int i = 0; i < cur_multi; i++) tmp.append(sb);
+                sb = new StringBuilder();
+                sb.append(strs.pop()).append(tmp);
+
+            } else if (c >= '0' && c <= '9') {
+                multi = multi * 10 + c - '0';
+            } else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
 
     // ② 72. 编辑距离 DP的递归做法
     public int minDistance(String word1, String word2) {
@@ -2630,6 +2598,7 @@ public class Solution {
     }
 
     // 解法2 DP的迭代做法 参考这个连接 http://bit.ly/2SyePLi
+    //     dp[i][j] 表示从 word1 的前i个字符转换到 word2 的前j个字符所需要的步骤
     public int minDistance1(String word1, String word2) {
         int m = word1.length();
         int n = word2.length();
@@ -2675,6 +2644,7 @@ public class Solution {
 
             for (int i = 0; i < s.length(); i++) {
                 if (s.charAt(i) != '(' && s.charAt(i) != ')') continue;
+                // 存储下一层可能的候选
                 String t = s.substring(0, i) + s.substring(i + 1);
                 if (!visited.contains(t)) {
                     queue.add(t);
@@ -2700,7 +2670,7 @@ public class Solution {
 
 
     // http://bit.ly/2LvcJLu
-    // 438. 找到字符串中所有字母异位词
+    // ② 438. 找到字符串中所有字母异位词
     public List<Integer> findAnagrams(String s, String p) {
         List<Integer> res = new ArrayList<>();
         int[] letters = new int[27];
@@ -2726,7 +2696,7 @@ public class Solution {
         return res;
     }
 
-    // 解法2 滑动窗口   观察 p 频数的自增自减
+    // ② 解法2 滑动窗口   观察 p 频数的自增自减
     public List<Integer> findAnagrams1(String s, String p) {
         List<Integer> res = new ArrayList<>();
         if (s.isEmpty()) return res;
@@ -2743,7 +2713,7 @@ public class Solution {
         return res;
     }
 
-    // 49. 字母异位词分组
+    //② 49. 字母异位词分组  key就是异位词排序之后同一个key,然后map归类即可
     public List<List<String>> groupAnagrams(String[] strs) {
         Map<String, List<String>> m = new HashMap<>();
         for (String str : strs) {
@@ -2776,7 +2746,7 @@ public class Solution {
         return new ArrayList<>(m.values());
     }
 
-    // 621. 任务调度器 好难  http://bit.ly/2LxLShE [经典]
+    // 621. 任务调度器 好难  http://bit.ly/2LxLShE [经典] https://www.youtube.com/watch?v=YCD_iYxyXoo
     public int leastInterval(char[] tasks, int n) {
         int[] cnt = new int[26];
         for (char c : tasks) {
@@ -2815,9 +2785,9 @@ public class Solution {
         return tasks.length + idles;
     }
 
-    // 252. 会议室
+    // ② 252. 会议室 排个序,比较相邻的位置大小即可.
     public boolean canAttendMeetings(int[][] intervals) {
-        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
         for (int i = 1; i < intervals.length; i++) {
             if (intervals[i][0] < intervals[i - 1][1])
                 return false;
@@ -2825,26 +2795,8 @@ public class Solution {
         return true;
     }
 
-
     // 253. 会议室 II
-    public int minMeetingRooms0(int[][] intervals) {
-        Map<Integer, Integer> map = new TreeMap<>();
-        for (int[] interval : intervals) {
-            map.put(interval[0], map.getOrDefault(interval[0], 0) + 1);
-            map.put(interval[1], map.getOrDefault(interval[1], 0) - 1);
-        }
-        int rooms = 0;
-        int res = 0;
-
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-            System.out.println("entry:\t" + entry + "\troom: " + rooms);
-            // 求前缀和的最大值
-            res = Math.max(res, rooms += entry.getValue());
-        }
-        return res;
-    }
-
-    // 参考这个视频 https://youtu.be/wB884_Os58U  主要是人脑怎么处理的问题
+    //② interview friendly 参考这个视频 https://youtu.be/wB884_Os58U  主要是人脑怎么处理的问题
     public int minMeetingRooms1(int[][] intervals) {
         if (intervals.length == 0) return 0;
         Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
@@ -2860,11 +2812,23 @@ public class Solution {
         return pq.size();
     }
 
+    public int minMeetingRooms0(int[][] intervals) {
+        Map<Integer, Integer> map = new TreeMap<>();
+        for (int[] interval : intervals) {
+            map.put(interval[0], map.getOrDefault(interval[0], 0) + 1);
+            map.put(interval[1], map.getOrDefault(interval[1], 0) - 1);
+        }
+        int rooms = 0;
+        int res = 0;
 
-    // 347. 前 K 个高频元素
-    // follow up
-    // 692 Top K Frequent Words
-    // 451 Sort Characters By Frequency
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            // 求前缀和的最大值
+            res = Math.max(res, rooms += entry.getValue());
+        }
+        return res;
+    }
+
+    // ② 347. 前 K 个高频元素
     public List<Integer> topKFrequent1(int[] nums, int k) {
         Map<Integer, Integer> cnt = new HashMap<>();
         for (int num : nums) {
@@ -2886,62 +2850,61 @@ public class Solution {
         return res;
     }
 
-    // 解法2 TreeMap
+    // quick sort
     public List<Integer> topKFrequent2(int[] nums, int k) {
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int n : nums) {
-            map.put(n, map.getOrDefault(n, 0) + 1);
+        Map<Integer, Integer> cnt = new HashMap();
+        for (int i : nums) {
+            cnt.put(i, cnt.getOrDefault(i, 0) + 1);
         }
+        Set<Integer> set = cnt.keySet();
+        int[] arr = new int[set.size()];
+        int i = 0;
+        Iterator<Integer> iterator = set.iterator();
+        while (iterator.hasNext()) {
+            arr[i++] = iterator.next();
+        }
+        int l = 0, r = set.size() - 1;
+        while (true) {
+            int pos = partition(arr, cnt, l, r);
+            if (pos > k - 1) r = pos - 1;
+            if (pos < k - 1) l = pos + 1;
+            if (pos == k - 1) break;
+        }
+        List<Integer> ret = new ArrayList<>();
+        for (int j = 0; j < k; j++) {
+            ret.add(arr[j]);
+        }
+        return ret;
 
-        TreeMap<Integer, List<Integer>> freqMap = new TreeMap<>();
-        for (int num : map.keySet()) {
-            int freq = map.get(num);
-            if (!freqMap.containsKey(freq)) {
-                freqMap.put(freq, new LinkedList<>());
-            }
-            freqMap.get(freq).add(num);
-        }
-
-        List<Integer> res = new ArrayList<>();
-        while (res.size() < k) {
-            Map.Entry<Integer, List<Integer>> entry = freqMap.pollLastEntry();
-            // System.out.println(entry);
-            res.addAll(entry.getValue());
-        }
-        return res;
     }
 
-    // todo 解法3 bucket sort
-
-    // 279. 完全平方数 http://bit.ly/2Yl0Xt2 四平方和定理 但是 不太推荐
-    public int numSquares1(int n) {
-        System.out.println("四平方和定理 不过不好记住");
-        /*
-
-        while (n % 4 == 0) n /= 4;
-        if (n % 8 == 7) return 4;
-        for (int a = 0; a * a <= n; ++a) {
-            int b = sqrt(n - a * a);
-            if (a * a + b * b == n) {
-                return !!a + !!b;
+    public int partition(int[] arr, Map<Integer, Integer> cnt, int l, int r) {
+        int pivot = cnt.get(arr[l]);
+        int lo = l + 1, hi = r;
+        while (lo <= hi) {
+            if (cnt.get(arr[lo]) < pivot && pivot < cnt.get(arr[hi])) {
+                swap(arr, lo++, hi--);
             }
+            if (cnt.get(arr[lo]) >= pivot) lo++;
+            if (cnt.get(arr[hi]) <= pivot) hi--;
         }
-        return 3;
-
-        * */
-        return -1;
+        swap(arr, l, hi);
+        return hi;
     }
 
+    //② 279. 完全平方数 http://bit.ly/2Yl0Xt2 四平方和定理 但是 不太推荐
     // 这道题目 意义不强阿
+    // dp[n+1]  dp[0]=0;
+    // dp[i+j*j]=Math.min(dp[i]+1,dp[i+j*j]),i ∈[0,n],j∈[1,n]
     public int numSquares2(int n) {
         int[] dp = new int[n + 1];
         Arrays.fill(dp, Integer.MAX_VALUE);
         dp[0] = 0;
+        dp[1] = 1;
         for (int i = 0; i <= n; i++) {
             for (int j = 1; i + j * j <= n; j++) {
                 int idx = i + j * j;
                 dp[idx] = Math.min(dp[idx], dp[i] + 1);
-                System.out.println("i值: " + i + "\tj值: " + j + "\tj平方: " + (j * j) + "\t(i+j*j): " + idx + "\tdp:" + dp[idx] + "\n");
             }
         }
         return dp[n];
@@ -2955,16 +2918,16 @@ public class Solution {
         for (int i = 1; i < str.length(); i++) {
             if (str.charAt(i) == ')') {
                 if (str.charAt(i - 1) == '(') {
-                    dp[i]=(i-2>=0?dp[i-2]:0)+2;
+                    dp[i] = (i - 2 >= 0 ? dp[i - 2] : 0) + 2;
                 }
-                if((i-dp[i-1]-1>=0)&&str.charAt(i-dp[i-1]-1)=='('){
+                if ((i - dp[i - 1] - 1 >= 0) && str.charAt(i - dp[i - 1] - 1) == '(') {
                     // 就是这个状态转移方程比较难推到了...
-                    dp[i]=dp[i-1]+((i - dp[i - 1]) >= 2 ? dp[i - dp[i - 1] - 2] : 0) + 2;
+                    dp[i] = dp[i - 1] + ((i - dp[i - 1]) >= 2 ? dp[i - dp[i - 1] - 2] : 0) + 2;
                 }
             }
-            ans = Math.max(ans,dp[i]);
+            ans = Math.max(ans, dp[i]);
         }
-        return  ans;
+        return ans;
     }
 
     // 这个各种条件处理起来比较复杂
@@ -2983,7 +2946,6 @@ public class Solution {
         }
         return res;
     }
-
 
 
     // 7. 整数反转  ② 注意下边界条件即可
