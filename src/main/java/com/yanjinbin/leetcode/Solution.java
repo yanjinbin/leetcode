@@ -2433,7 +2433,34 @@ public class Solution {
         dfsIslandHelper(grid, visit, x, y - 1);
     }
 
-    // 44. 通配符匹配  参考这篇文章 匹配优先向下原则(说的不是通配哦!)  本质上是在构建NFA  http://bit.ly/2LyOYSq
+    // ② 44. 通配符匹配  思路和leetcode 10 差不多
+    // 解法2 dp来做  解题思路参考这个做法 http://bit.ly/2OPPKf0
+    // dp[i][j]=dp[i-1][j-1] s[i-1]=p[j-1] || p[j-1]=?   i∈[0,M]  j∈[0,N];
+    // dp[i][j]=dp[i][j-1] || dp[i-1][j]  p[j-1]="*";
+    public boolean isMatch1(String s, String p) {
+        int M = s.length(), N = p.length();
+        boolean[][] dp = new boolean[M + 1][N + 1];
+        dp[0][0] = true;
+        // edge case
+        for (int j = 1; j <= N; j++) {// 处理 * 可以代表空串的问题
+            dp[0][j] = dp[0][j - 1] && p.charAt(j - 1) == '*';
+        }
+
+        for (int i = 1; i <= M; i++) {
+            for (int j = 1; j <= N; j++) {
+                if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+                } else {
+                    dp[i][j] = dp[i - 1][j - 1] && (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?');
+                }
+            }
+        }
+        return dp[M][N];
+    }
+
+
+    // 参考这篇文章 匹配优先向下原则(说的不是通配哦!)
+    // 本质上是在构建NFA  http://bit.ly/2LyOYSq 但是理解这方面 你需要有深刻的理解 不适合面试哈!
     public boolean isMatch0(String s, String p) {
         char[] S = s.toCharArray(), P = p.toCharArray();
         int i = 0, j = 0, sStar = -1, pStar = -1;
@@ -2454,69 +2481,34 @@ public class Solution {
         return j == p.length(); //i与j同时到达终点完成匹配
     }
 
-    // 解法2 dp来做  解题思路参考这个做法 http://bit.ly/2StUSFc
-    public boolean isMatch1(String s, String p) {
-        char[] S = s.toCharArray();
-        int sLen = S.length;
-        char[] P = p.toCharArray();
-        int pLen = P.length;
-        boolean[][] dp = new boolean[sLen + 1][pLen + 1];
-        dp[0][0] = true;
-        // 处理特殊情况
-        // 当s为空，p为连续的星号时的情况。由于星号是可以代表空串的，所以只要s为空，那么连续的星号的位置都应该为 true，所以我们现将连续星号的位置都赋为 true
-        for (int i = 1; i <= pLen; i++) {
-            if (P[i - 1] == '*') dp[0][i] = dp[0][i - 1];
-        }
 
-        for (int i = 1; i <= sLen; i++) {
-            for (int j = 1; j <= pLen; j++) {
-                if (P[j - 1] == '*') {
-                    dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
-                } else {
-                    dp[i][j] = dp[i - 1][j - 1] && (S[i - 1] == P[j - 1] || P[j - 1] == '?');
-                }
-            }
-        }
-        return dp[sLen][pLen];
-    }
-
-
-    // leetcode 10 正则表达式匹配 http://bit.ly/2SsG9dA  todo 暂时放弃  看不懂示例3为什么true!
+    // ② leetcode 10 正则表达式匹配 http://bit.ly/2SsG9dA
+    // 1. dp[i][j] = dp[i-1][j-1] when s[i-1]==p[j-1] or p[j-1] = " . ";
+    // 2. dp[i][j] = dp[i][j-2] if p[j-1]="*" repeat 0 times. 表示长度缩短了 这个转台转移优先
+    // 3. dp[i][j] = dp[i-1][j] if p[j-1]="*" & s[i-1]=p[j-2],p[j-2]="." repeat at least 1 times,
+    // dp[0][j] always false;
+    // dp[i][0] always false except for dp[0][0] =true;
     public boolean isMatch2(String s, String p) {
-        boolean[][] dp = new boolean[s.length() + 1][p.length() + 1];
+        int M = s.length(), N = p.length();
+        boolean[][] dp = new boolean[M + 1][N + 1];
         dp[0][0] = true;
-
-        for (int i = 0; i < p.length(); i++) {
-            if (p.charAt(i) == '*' && dp[0][i - 1]) {
-                dp[0][i + 1] = true;
-            }
-        }
-
-        for (int i = 0; i < s.length(); i++) {
-            for (int j = 0; j < p.length(); j++) {
-                if (p.charAt(j) == '.') {
-                    dp[i + 1][j + 1] = dp[i][j];
-                }
-                if (p.charAt(j) == s.charAt(i)) {
-                    dp[i + 1][j + 1] = dp[i][j];
-                }
-
-                if (p.charAt(j) == '*') {
-                    if (p.charAt(j - 1) != s.charAt(i) && p.charAt(j - 1) != '.') {
-                        dp[i + 1][j + 1] = dp[i + 1][j - 1];
-                    } else {
-                        dp[i + 1][j + 1] = (dp[i + 1][j] || dp[i][j + 1] || dp[i + 1][j - 1]);
-                    }
+        for (int i = 0; i <= M; i++) {
+            for (int j = 1; j <= N; j++) {
+                if (p.charAt(j - 1) == '*') {
+                    dp[i][j] = (j > 1 && dp[i][j - 2]) || (i > 0 && j > 1 && dp[i - 1][j] && (p.charAt(j - 2) == s.charAt(i - 1) || p.charAt(j - 2) == '.'));
+                } else {
+                    dp[i][j] = (i > 0) && dp[i - 1][j - 1] && (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '.');
                 }
             }
         }
-        return dp[s.length()][p.length()];
+        return dp[M][N];
     }
+
 
     // ② 394. 字符串解码 用栈存储结果
     //  字符+数字+[+字母+] 的 模型 http://bit.ly/2qdR2WP
 
-    public String decodeString01(String s) {
+    public String decodeString(String s) {
         StringBuilder sb = new StringBuilder();
         int multi = 0;
         Stack<Integer> ints = new Stack();
@@ -2544,34 +2536,6 @@ public class Solution {
         }
         return sb.toString();
     }
-
-    public String decodeString02(String s) {
-        StringBuilder sb = new StringBuilder();
-        int multi = 0;
-        Stack<Integer> ints = new Stack<>();
-        Stack<String> strs = new Stack<>();
-        for (char c : s.toCharArray()) {
-            if (c == '[') {
-                ints.push(multi);
-                strs.push(sb.toString());
-                multi = 0;
-                sb = new StringBuilder();
-            } else if (c == ']') {
-                StringBuilder tmp = new StringBuilder();
-                int cur_multi = ints.pop();
-                for (int i = 0; i < cur_multi; i++) tmp.append(sb);
-                sb = new StringBuilder();
-                sb.append(strs.pop()).append(tmp);
-
-            } else if (c >= '0' && c <= '9') {
-                multi = multi * 10 + c - '0';
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
 
     // ② 72. 编辑距离 DP的递归做法
     public int minDistance(String word1, String word2) {

@@ -1065,16 +1065,13 @@ public class SolutionTest {
 
     @Test(timeout = 3000)
     public void isMatch() {
-        assert INSTANCE.isMatch0("aa", "a") == false;
-        assert INSTANCE.isMatch0("aa", "*") == true;
-        assert INSTANCE.isMatch0("cb", "*a") == false;
+
         assert INSTANCE.isMatch0("adceb", "*a*b") == true;
         assert INSTANCE.isMatch0("acdcb", "a*c?b") == false;
+        assert INSTANCE.isMatch1("aabbefccdd","aab*c*d?")==true;
 
-        assert INSTANCE.isMatch1("aa", "a") == false;
-        assert INSTANCE.isMatch1("adceb", "*a*b") == true;
 
-        System.out.println(INSTANCE.isMatch2("ab", ".*"));
+        assert INSTANCE.isMatch2("aabbbcccdd", "aab*cc*d.") == true;
     }
 
     @Test
@@ -1096,11 +1093,7 @@ public class SolutionTest {
 
     @Test
     public void decodeString() {
-        INSTANCE.decodeString("3[a2[c]]").equals("accaccacc");
-        // reset
-        INSTANCE.idx394 = 0;
-        System.out.println(INSTANCE.decodeString("3[a]2[bc]"));
-
+        assert INSTANCE.decodeString("3[a2[c]]").equals("accaccacc");
     }
 
 
@@ -1165,17 +1158,10 @@ public class SolutionTest {
 
     }
 
-    @Test
-    public void topKFrequent() {
-        int[] nums = {1, 1, 1, 2, 2, 3};
-        int k = 2;
-        System.out.println(INSTANCE.topKFrequent2(nums, k));
-    }
 
     @Test
     public void numSquares() {
         // 四平方和定理 不好掌握 就用迭代DP方法算吧
-        System.out.println(INSTANCE.numSquares1(12));
         assert INSTANCE.numSquares2(12) == 3;
     }
 
@@ -1188,6 +1174,8 @@ public class SolutionTest {
 
     @Test
     public void bitOperation() {
+        int z = 3;
+        System.out.println(z-- >= 3);
         // 感受异或的神奇 http://bit.ly/2Kkra1B
         for (int i = 0; i < 10; i++) {
             System.out.println("i值:" + i + "\t" + (i ^ (~i)) + "\t" + ((i ^ (-1)) == (~i)));
@@ -2227,9 +2215,17 @@ public class SolutionTest {
     @Test
     public void kth() {
         System.out.println("=====Top K系列问题专题=====");
+
+
+        int[] nums = {1, 1, 1, 1, 2, 2, 2, 2, 2, 3};
+        int k = 2;
+        nums = new int[]{4, 1, -1, 2, -1, 2, 3};
+        System.out.println(INSTANCE.topKFrequent2(nums, k));
+        assert Arrays.equals(INSTANCE.topKFrequent2(nums, k).toArray(), INSTANCE.topKFrequent1(nums, k).toArray());
+
         //  378 有序矩阵中 第K小的元素
         int[][] matrix = new int[][]{{1, 5, 7}, {10, 11, 13}, {12, 13, 15}};
-        int k = 6;
+        k = 6;
         assert INSTANCE.kthSmallest(matrix, k) == 12;
         assert INSTANCE.lessEqual(matrix, 9) == 3;
         // http://bit.ly/32lXQ2e
@@ -2259,8 +2255,7 @@ public class SolutionTest {
         // leetcode 395
         s = "aaabbbcc";
         k = 3;
-        //assert  INSTANCE.longestSubstring2(s, k)==3;
-        assert INSTANCE.longestSubstring(s, k) == 3;
+        assert INSTANCE.longestSubstring2(s, k) == 3;
         s = "eceba";
         k = 2;
         assert INSTANCE.longestSubstring(s, k) == 0;
@@ -2281,6 +2276,10 @@ public class SolutionTest {
         //   assert INSTANCE.findKthNumber(13, 2) == 10;
 
         assert INSTANCE.findKthNumber(198, 113) == 21;
+
+        // follow up
+        // 692 Top K Frequent Words
+        // 451 Sort Characters By Frequency
     }
 
     @Test
