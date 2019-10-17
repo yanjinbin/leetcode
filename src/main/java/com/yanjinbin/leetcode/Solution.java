@@ -23,12 +23,6 @@ import java.util.Stack;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
-/**
- * top-100-liked-questions
- * https://leetcode.com/problemset/top-100-liked-questions/
- * top 100 interviewed question
- * https://leetcode-cn.com/problemset/top/
- */
 public class Solution {
 
     public static void swap(int[] nums, int i, int j) {
@@ -2136,7 +2130,12 @@ public class Solution {
         return root;
     }
 
-    //105. 从前序与中序遍历序列构造二叉树
+    // ② 105. 从前序与中序遍历序列构造二叉树
+    // 所以构建二叉树的问题本质上就是：
+    // tips:
+    //找到各个子树的根节点 root
+    //构建该根节点的左子树
+    //构建该根节点的右子树
     public TreeNode buildTreePreIn(int[] preorder, int[] inorder) {
         return buildTrePreIn(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
     }
@@ -2146,8 +2145,8 @@ public class Solution {
             return null;
         }
         int i = 0;
+        // 找到根root
         for (i = iLeft; i <= iRight; i++) {
-            //  System.out.println("pLeft " + pLeft + "\t" + preOrder[pLeft] + "\ti: " + i + "\t" + inorder[i]);
             if (preOrder[pLeft] == inorder[i]) {
                 break;
             }
@@ -2184,7 +2183,7 @@ public class Solution {
 
 
     //889. 根据前序和后序遍历构造二叉树(结果不唯一)
-    public TreeNode constructFromPrePost(int[] pre, int[] post) {
+   // public TreeNode constructFromPrePost(int[] pre, int[] post) {
         return null;
     }
 
@@ -2304,12 +2303,7 @@ public class Solution {
     }
 
 
-    // 解法2 错误的双层for循环 越界了
-    // 解法2 并不太推崇 如果 i j的初始化方向不一样的话 还是有越界问题
-    // 我觉得 要避免这种问题 还是不好想到的
-    // 本质上是输入数据 "fdsklf" ff重复了 引发的问题
-    // 而且 感觉有些重复计算问题存在 , 并不优雅啦
-    // 解法1 比较可取 !
+    // ② 647 字符串回文个数 dp[i,j]  = dp[i+1][j-1] if s[i]=s[j]
     public int countSubstrings1(String s) {
         int res = 0;
         int len = s.length();
@@ -2319,7 +2313,6 @@ public class Solution {
 
                 dp[i][j] = s.charAt(i) == s.charAt(j) && (i - j <= 2 || dp[i + 1][j - 1]);
                 if (dp[i][j]) {
-                    System.out.println("i:" + i + "\tj:" + j);
                     res++;
                 }
             }
@@ -2337,7 +2330,7 @@ public class Solution {
 
                 dp[i][j] = s.charAt(i) == s.charAt(j) && (j - i <= 2 || dp[i + 1][j - 1]);
                 if (dp[i][j]) {
-                    System.out.println("i:" + (i) + "\tj:" + (j));
+
                     res++;
                 }
             }
@@ -2364,7 +2357,7 @@ public class Solution {
     }
 
 
-    // 160. 相交链表
+    // ② 160. 相交链表
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
         if (headA == null || headB == null) return null;
         ListNode a = headA;
@@ -2376,7 +2369,7 @@ public class Solution {
         return a;
     }
 
-    // 461. 汉明距离
+    //② 461. 汉明距离
     public int hammingDistance(int x, int y) {
         int xor = x ^ y, count = 0;
         for (int i = 0; i < 32; i++) count += (xor >> i) & 1;
@@ -2406,8 +2399,7 @@ public class Solution {
         return res.toArray(new int[res.size()][]);
     }
 
-    // 岛屿系列 todo
-    // 200. 岛屿数量
+    // ② 200. 岛屿数量
     public int numIslands(char[][] grid) {
         if (grid == null || grid.length == 0) return 0;
         boolean[][] visited = new boolean[grid.length][grid[0].length];
@@ -2418,13 +2410,14 @@ public class Solution {
                     continue;
                 }
                 dfsIslandHelper(grid, visited, i, j);
-                res++;
+                res++;//key
             }
         }
         return res;
     }
 
     public void dfsIslandHelper(char[][] grid, boolean[][] visit, int x, int y) {
+        // 别忘记transfer的时候 对grid[x][y] == '0' 判断哦
         if (x < 0 || x >= grid.length || y < 0 || y >= grid[x].length || grid[x][y] == '0' || visit[x][y]) return;
         visit[x][y] = true;
         dfsIslandHelper(grid, visit, x + 1, y);
@@ -3902,7 +3895,7 @@ public class Solution {
         return n > 0 ? res : 1 / res;
     }
 
-    // 41 缺失的第一个正整数 union find
+    // 41 缺失的第一个正整数 union find todo
     public int firstMissingPositive(int[] nums) {
         int n = nums.length;
         for (int i = 0; i < n; i++) {

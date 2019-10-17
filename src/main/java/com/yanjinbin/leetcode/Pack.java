@@ -792,7 +792,7 @@ public class Pack {
         return x==0?preSum[y]:preSum[y]-preSum[x-1];
     }
 
-    // 312. 戳气球 DP思想 迭代 http://bit.ly/2K4T01Z dp[i,j]
+    // 区间312. 戳气球 DP思想 迭代 http://bit.ly/2K4T01Z dp[i,j]
     public int maxCoins(int[] nums) {
         // ready data
         int n = nums.length;
