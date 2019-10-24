@@ -586,7 +586,7 @@ public class SolutionTest {
     public void searchRange() {
         int[] nums = new int[]{5, 7, 7, 8, 8, 10};
         int target = 8;
-        System.out.println(Arrays.toString(INSTANCE.searchRange0(nums, 8)));
+        //  System.out.println(Arrays.toString(INSTANCE.searchRange0(nums, 8)));
 
         nums = new int[]{2, 2};
         target = 1;
@@ -597,8 +597,9 @@ public class SolutionTest {
 
     @Test
     public void uniquePath() {
-        int count = INSTANCE.uniquePaths(7, 3);
-        assert count == 28;
+        assert INSTANCE.uniquePaths01(7, 3) == 28;
+
+        System.out.println(INSTANCE.uniquePaths(7, 3));
     }
 
     @Test
@@ -615,14 +616,17 @@ public class SolutionTest {
         int[] nums = {2, 3, 5};
         int target = 8;
         System.out.println(INSTANCE.combinationSum1(nums, target));
+
+        System.out.println(INSTANCE.combine(4, 2));
+        System.out.println(INSTANCE.combine01(4, 2));
     }
 
 
     @Test
     public void longestConsecutive() {
         int[] nums = {100, 1, 200, 3, 4, 2};
-        assert INSTANCE.longestConsecutive(nums) == 4;
-        //System.out.println(INSTANCE.longestConsecutive(nums));
+        assert INSTANCE.longestConsecutive01(nums) == 4;
+        assert INSTANCE.longestConsecutive02(nums) == 4;
     }
 
     @Test(timeout = 1000)
@@ -857,10 +861,7 @@ public class SolutionTest {
     @Test(timeout = 2000)
     public void pathSum() {
         TreeNode root = TreeNode.builder().val(1).build();
-
-        INSTANCE.pathSum0(root, 7);
-        INSTANCE.pathSum1(root, 7);
-        INSTANCE.pathSum2(root, 7);
+        TreeSP.pathSum(root, 7);
     }
 
     @Test(timeout = 2000)
@@ -896,8 +897,7 @@ public class SolutionTest {
         d.setRight(e);
         e.setRight(f);
 
-        System.out.println(INSTANCE.mergeTrees0(a, d));
-        System.out.println(INSTANCE.mergeTrees1(a, d));
+        System.out.println(INSTANCE.mergeTrees(a, d));
     }
 
     @Test(timeout = 1000)
@@ -1068,7 +1068,7 @@ public class SolutionTest {
 
         assert INSTANCE.isMatch0("adceb", "*a*b") == true;
         assert INSTANCE.isMatch0("acdcb", "a*c?b") == false;
-        assert INSTANCE.isMatch1("aabbefccdd","aab*c*d?")==true;
+        assert INSTANCE.isMatch1("aabbefccdd", "aab*c*d?") == true;
 
 
         assert INSTANCE.isMatch2("aabbbcccdd", "aab*cc*d.") == true;
@@ -1846,108 +1846,6 @@ public class SolutionTest {
     }
 
     @Test
-    public void binarySearch() {
-        System.out.println("===展示下二分法 上界 和 下界 以及java自带的二分搜索====");
-        int[] arr = new int[]{9, 5, 4, 2, 3, 1, 6, 7, 2, 2, 2, 2};
-        System.out.println(arr.length);
-        Arrays.sort(arr);
-        System.out.println(Arrays.toString(arr));
-        int first = 0;
-        int last = arr.length;
-        // for (int i = 0; i < 50; i++) {
-        System.out.println("======A");
-        int res = binarySearch(arr, first, last, -1);
-        System.out.println(res);
-        res = binarySearch01(arr, first, last, -1);
-        System.out.println(res);
-        res = Arrays.binarySearch(arr, first, last, -1);
-        System.out.println(res);
-        res = countSmallerOrEqual(arr, -1);
-        System.out.println(res);
-        System.out.println("======B");
-        res = binarySearch(arr, first, last, 11);
-        System.out.println(res);
-        res = binarySearch01(arr, first, last, 11);
-        System.out.println(res);
-        res = Arrays.binarySearch(arr, first, last, 11);
-        System.out.println(res);
-        res = countSmallerOrEqual(arr, 11);
-        System.out.println(res);
-        System.out.println("======C");
-        res = binarySearch(arr, first, last, 2);
-        System.out.println(res);
-        res = binarySearch01(arr, first, last, 2);
-        System.out.println(res);
-        res = Arrays.binarySearch(arr, first, last, 2);
-        System.out.println(res);
-        res = countSmallerOrEqual(arr, 2);
-        System.out.println(res);
-        System.out.println("======D");
-        res = binarySearch(arr, first, last, 6);
-        System.out.println(res);
-        res = binarySearch01(arr, first, last, 6);
-        System.out.println(res);
-        res = Arrays.binarySearch(arr, first, last, 6);
-        System.out.println(res);
-        res = countSmallerOrEqual(arr, 6);
-        System.out.println(res);
-    }
-
-    private int countSmallerOrEqual(int[] arr, int number) {
-        int start = 0, end = arr.length - 1;
-
-        // find first index that arr[index] > number;
-        while (start + 1 < end) {
-            int mid = start + (end - start) / 2;
-            if (arr[mid] <= number) {
-                start = mid;
-            } else {
-                end = mid;
-            }
-        }
-        if (arr[start] > number) {
-            return start;
-        }
-        if (arr[end] > number) {
-            return end;
-        }
-
-        return arr.length;
-    }
-
-    // 下界函数
-    // 二分查找的标准函数 http://bit.ly/32512ix  返回大于value的第一个位置
-    public int binarySearch(int[] array, int first, int last, int value) {
-        System.out.println("first " + first + " last " + last + " value " + value);
-        while (first < last) {
-            int mid = first + (last - first) / 2;
-            if (array[mid] < value) { // 返回满足 arr[i] >= value的第一个位置
-                first = mid + 1;
-            } else {
-                last = mid;
-            }
-        }
-        System.out.println("first " + first + " last " + last + " value " + value);
-        return first;
-    }
-
-    // >=value第一个位置  这个更好记
-    public int binarySearch01(int[] array, int first, int last, int value) {
-        while (first < last) {
-            int mid = first + (last - first) / 2;
-            if (array[mid] >= value) {
-                last = mid;
-            } else {
-                first = mid + 1;
-            }
-        }
-        assert first == last;
-        return first;
-
-    }
-
-
-    @Test
     public void searchMatrix() {
         int[][] matrix = new int[][]{
                 {-1, 3},
@@ -1981,9 +1879,12 @@ public class SolutionTest {
     public void wiggleSort() {
         System.out.println(Arrays.toString(new int[]{0, 1, 2, 3, 4, 5}));
         int[] test = new int[]{10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
+        INSTANCE.wiggleSort(test);
+        System.out.println(Arrays.toString(test));
         test = new int[]{1, 5, 1, 1, 6, 4};
         INSTANCE.wiggleSort01(test);
-        assert Arrays.equals(test, new int[]{1, 6, 1, 5, 1, 4});
+        System.out.println(Arrays.toString(test));
+        assert Arrays.equals(test, new int[]{1, 5, 1, 6, 1, 4});
 
 
     }
@@ -2457,4 +2358,75 @@ public class SolutionTest {
         assert DC.findMedianSortedArrays(s, l) == 6.5;
     }
 
+
+    @Test
+    public void lowerBound() {
+        System.out.println("===展示下二分法 上界 和 下界 以及java自带的二分搜索====");
+        int[] arr = new int[]{-1,1, 2, 3, 3, 3, 4, 4, 8,15};
+        Arrays.sort(arr);
+        System.out.println(Arrays.toString(new int[]{ 0, 1, 2, 3, 4, 5, 6, 7,8,9}));
+        System.out.println(Arrays.toString(arr));
+        System.out.println(lowerBound(arr, 0, arr.length, -1));
+        System.out.println(lowerBound(arr, 0, arr.length, 9));
+        System.out.println(lowerBound(arr, 0, arr.length, 3));
+        System.out.println(lowerBound(arr, 0, arr.length, 1));
+        System.out.println(upperBound(arr, -1, arr.length - 1, -1));
+        System.out.println(upperBound(arr, -1, arr.length - 1, 9));
+        System.out.println(upperBound(arr, -1, arr.length - 1, 3));
+        System.out.println(upperBound(arr, -1, arr.length - 1, 1));
+        int i = new Random().nextInt(20);
+        System.out.println(lowerBound(arr,0,arr.length,i));
+        System.out.println(upperBound(arr,-1,arr.length-1,i));
+
+    }
+
+    /*public int countSmallerOrEqual(int[] arr, int number) {
+        int start = 0, end = arr.length - 1;
+
+        // find first index that arr[index] > number;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (arr[mid] <= number) {
+                start = mid;
+            } else {
+                end = mid;
+            }
+        }
+        if (arr[start] > number) {
+            return start;
+        }
+        if (arr[end] > number) {
+            return end;
+        }
+
+        return arr.length;
+    }
+*/
+    // 下界函数
+    // 二分查找的标准函数 http://bit.ly/32512ix  返回大于value的第一个位置
+
+
+    public int lowerBound(int[] arr, int lo, int hi, int target) {
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (arr[mid] < target) {// 返回满足 arr[i] >= target的第一个位置
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
+    }
+
+    public int upperBound(int[] arr, int lo, int hi, int target) {
+        while (lo < hi) {
+            int mid = hi - (hi - lo) / 2;
+            if (arr[mid] <= target) {
+                lo = mid;
+            } else {
+                hi = mid - 1;
+            }
+        }
+        return lo;
+    }
 }
