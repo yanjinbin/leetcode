@@ -7,6 +7,8 @@ import java.util.Random;
 public class Sort {
 
     // shuffle linkedList
+    // shuffle array lower bound  inclusive   upper bound exclusive
+
     public void shuffle(ListNode head) {
         Random random = new Random();
         ListNode cur = head;
@@ -26,8 +28,6 @@ public class Sort {
             cur = cur.next;
         }
     }
-
-    // shuffle array lower bound  inclusive   upper bound exclusive
     public void shuffle(int[] nums, int lower, int upper) {
         Random rand = new Random();
         for (int i = lower; i < upper; i++) {
@@ -444,6 +444,26 @@ public class Sort {
         swap(head, slow);
         quickSort(head, slow);
         quickSort(slow.next, tail);*/
+    }
+    // 三项快速排序
+    public  void _3waySort(int[] nums,int lo,int hi){
+        if(hi<=lo) return;
+        int pivot = nums[lo];
+        int lt = lo,gt = hi;
+        int i = lo+1;
+        while (i<=gt){
+            int cmp = nums[i]-pivot;
+            if (cmp<0){
+                swap(nums,lt++,i++);
+            }else if (cmp>0){
+                swap(nums,i,gt--);
+            } else {
+                i++;
+            }
+        }
+        _3waySort(nums,lo,lt-1);
+        _3waySort(nums,gt+1,hi);
+
     }
 
     // 快排 top down方法
