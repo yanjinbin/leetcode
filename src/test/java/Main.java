@@ -6,12 +6,31 @@ public class Main {
     public static void main(String args[]) {
         Scanner cin = new Scanner(System.in);
         int N = cin.nextInt();
-        int[] stone = new int[N];
+        /*int[] stone = new int[N];
         for (int i = 0; i < N; i++) {
             stone[i] = cin.nextInt();
         }
-        mergeStone(N,stone);
+        mergeStone(N,stone);*/
+        int n = cin.nextInt();
+        int[][] dp = new int[n][n];
+        int[] a = new int[n];
+        for (int i = 0; i < n; i++) {
+            dp[i][0] = a[0];
+        }
+        for (int j = 1; (1 << j) <= n; j++) {
+            for (int i = 0; i + (1 << j) - 1 <= n; i++) {
+                dp[i][j] = Math.min(dp[i][j - 1], dp[i + (1 << (j - 1))][j - 1]);
+            }
+        }
 
+    }
+
+    public int RMQ(int L, int R,int[][] dp) {
+        int k = 0;
+        while (1 << (k + 1) <= R - L + 1) {
+            k++;
+        }
+        return Math.min(dp[L][k],dp[R-(1<<k)+1][k]);
     }
 
     // 区间DP https://oi-wiki.org/dp/interval/
