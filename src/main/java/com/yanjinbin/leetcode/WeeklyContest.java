@@ -3,7 +3,7 @@ package com.yanjinbin.leetcode;
 import java.util.Arrays;
 
 public class WeeklyContest {
-    //
+
     //leetcode  1186
     public int maximumSum(int[] arr) {
         int max = Integer.MIN_VALUE;

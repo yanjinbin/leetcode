@@ -3,11 +3,9 @@ import com.yanjinbin.leetcode.Pack;
 import com.yanjinbin.leetcode.Solution;
 import org.junit.Before;
 import org.junit.Test;
-import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.BitSet;
 import java.util.List;
 import java.util.Random;
 
@@ -145,7 +143,7 @@ public class DPTest {
     @Test
     public void ZeroOnePackSeries() {
         int[] nums = new int[]{1, 5, 11, 5};
-        assert PACK.canPartition(nums) == true;
+        assert PACK.canPartition01(nums) == true;
         String[] strs = new String[]{"10", "0001", "111001", "1", "0"};
         int m = 5, n = 3;
         assert PACK.findMaxForm(strs, m, n) == 4;

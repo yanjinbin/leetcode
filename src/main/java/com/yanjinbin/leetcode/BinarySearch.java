@@ -98,11 +98,27 @@ public class BinarySearch {
         return cnt;
     }
 
+    //②  162 寻找峰值
+    public int findPeakElement1(int[] nums) {
+        int l = 0, r = nums.length - 1;
+        while (l < r) {
+            int mid = l + (r - l) / 2;
+            if (nums[mid] < nums[mid + 1]) {
+                r = mid;
+            } else {
+                l = mid + 1;
+            }
+        }
+        return l;
+    }
+
+
     // 493 翻转对 https://leetcode-cn.com/problems/reverse-pairs/
 
     // 327 区间和的个数 https://leetcode-cn.com/problems/count-of-range-sum/
 
     // 514 自由之路 https://leetcode-cn.com/problems/freedom-trail/
 
+    // https://www.geeksforgeeks.org/sort-linked-list-already-sorted-absolute-values/
 
 }

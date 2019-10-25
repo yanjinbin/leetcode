@@ -79,7 +79,6 @@ public class Heap {
     }
 
     // 二叉堆从 0开始
-
     public void sink1(Comparable[] pq, int k, int n) {
                 // 注意这里的while 条件不等式 2k+1 <=n 和  2k+2 <n的区别
                 // if n=6, k 能不能取2的问题  k应该能取2, 因为 2只有一个叶子节点就是5

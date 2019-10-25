@@ -1,9 +1,5 @@
 package com.yanjinbin.leetcode;
 
-import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
-import edu.princeton.cs.algs4.BTree;
-import edu.princeton.cs.algs4.In;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -81,7 +77,7 @@ public class Pack {
         return dp[V];// 返回的是容量为V时候,处理一件物品获取的最大值
     }
 
-    // 抽象画_
+    // 抽象化
     public int _2DZeroOnePack(int ci, int di, int wi, int[][] dp, int V, int U) {
         for (int i = V; i >= ci; i--) {
             for (int j = U; j >= di; j--) {
@@ -129,7 +125,7 @@ public class Pack {
         return dp[V];
     }
 
-    // 二维
+    // 二维化
     public int _2DCompletePack(int ci, int di, int wi, int[][] dp, int V, int U) {
         for (int i = 0; i <= V && i >= ci; i++) {
             for (int j = 0; j <= U && j >= di; j++) {
@@ -383,7 +379,7 @@ public class Pack {
     }
 
     // 416 01 背包问题
-    public boolean canPartition(int[] nums) {
+    public boolean canPartition01(int[] nums) {
         int total = 0;
         for (int i : nums) {
             total += i;
@@ -399,6 +395,26 @@ public class Pack {
         return dp[ret] == ret;
     }
 
+    // 解法2
+    public boolean canPartition02(int[] nums) {
+        int sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum = sum + nums[i];
+        }
+        int target = sum / 2;
+        if (sum % 2 == 1) return false;
+        boolean[] dp = new boolean[target + 1];
+        // init
+        dp[0] = true;
+        for (int num : nums) {
+            // 为什么递减不是递增呢 因为递增的化 都为true了阿
+            for (int i = target; i >= num; i--) {
+                dp[i] = dp[i] || dp[i - num];
+            }
+        }
+        return dp[target];
+    }
+
     // follow up 698. 划分为k个相等的子集
     // 答案来自于 http://bit.ly/32YpVNg  ,
     // 更好奇的是 为什么不能用01背包DP来做了,只能用backtrack来做了 据说是NP问题? 有待考证
@@ -407,16 +423,16 @@ public class Pack {
         for (int num : nums) sum += num;
         if (k < 0 || sum % k != 0) return false;
         boolean[] visited = new boolean[nums.length];
-        return canPartition(nums, visited, 0, k, 0, 0, sum / k);
+        return canPartition01(nums, visited, 0, k, 0, 0, sum / k);
     }
 
-    public boolean canPartition(int[] nums, boolean[] visited, int start_index, int k, int cur_sum, int cur_num, int target) {
+    public boolean canPartition01(int[] nums, boolean[] visited, int start_index, int k, int cur_sum, int cur_num, int target) {
         if (k == 1) return true; // 划分为1个相等的子集
-        if (cur_sum == target && cur_num > 0) return canPartition(nums, visited, 0, k - 1, 0, 0, target);
+        if (cur_sum == target && cur_num > 0) return canPartition01(nums, visited, 0, k - 1, 0, 0, target);
         for (int i = start_index; i < nums.length; i++) {
             if (!visited[i]) {
                 visited[i] = true;
-                if (canPartition(nums, visited, i + 1, k, cur_num + nums[i], cur_num++, target)) return true;
+                if (canPartition01(nums, visited, i + 1, k, cur_num + nums[i], cur_num++, target)) return true;
                 visited[i] = false;
             }
         }
@@ -572,6 +588,8 @@ public class Pack {
 
     //  leetcode 300 最长上升子序列 复杂度 O(N²)
     //  花花讲解 http://bit.ly/2Oga3BP
+    //    // http://bit.ly/2S18Z4A 看动画就能理解为什么了 哈哈
+    //    //  [tag:面筋  很容易会被问到]
     public int lengthOfLIS(int[] nums) {
         int N = nums.length;
         if (N == 0 || N == 1) return N;

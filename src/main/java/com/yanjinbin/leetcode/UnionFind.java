@@ -1,5 +1,8 @@
 package com.yanjinbin.leetcode;
+
+
 // https://oi-wiki.org/ds/dsu/
+// https://leetcode-cn.com/tag/union-find/
 public class UnionFind {
 
     int[] fa;
@@ -8,7 +11,7 @@ public class UnionFind {
         if (fa[x]==x){
             return x;
         }else {
-          return   find(fa[x]);
+          return find(fa[x]);
         }
     }
 

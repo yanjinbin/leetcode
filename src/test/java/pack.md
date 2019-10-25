@@ -60,7 +60,10 @@ DAG DP
 337 124 310 834 968 
 
 单调栈
-42 496  503 739
+- [x] 42 
+- [x] 496
+- [x] 503
+- [x] 739
 https://blog.csdn.net/qq_17550379/article/details/86519771
 https://zhuanlan.zhihu.com/p/26465701
 https://www.cnblogs.com/grandyang/p/8887985.html
@@ -78,9 +81,3 @@ https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/discuss/2042
 
 常用行业俗语:
 剪枝==相当于求DP重叠子问题时候记忆化搜索
-
-补充:
-https://oi-wiki.org/ds/dsu/
-https://leetcode-cn.com/tag/union-find/
-
-并查集 

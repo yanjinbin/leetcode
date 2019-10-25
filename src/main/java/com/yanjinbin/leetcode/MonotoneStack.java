@@ -59,7 +59,7 @@ public class MonotoneStack {
         while (l < r) {
             int lower = height[height[l] < height[r] ? l++ : r--];
             level = Math.max(level, lower);
-            System.out.println("l:" + l + "r:" + r);
+            // System.out.println("l:" + l + "r:" + r);
             res = res + level - lower;
         }
         return res;
@@ -131,7 +131,6 @@ public class MonotoneStack {
     }
 
     // 503
-
     public int[] nextGreaterElements01(int[] A) {
         int n = A.length, res[] = new int[n];
         Arrays.fill(res, -1);
@@ -276,6 +275,7 @@ public class MonotoneStack {
 
     // 单调队列 http://poj.org/problem?id=2823
     // 239. 滑动窗口最大值 这道题目也是考察数据结构的熟悉程度了 大堆 优先队列
+    // 也可以当做RMQ问题 ST解决 http://bit.ly/35lfJkh
     public int[] maxSlidingWindow0(int[] nums, int k) {
         int[] res = new int[nums.length - k + 1];
         if (nums.length == 0 || nums == null) return new int[0];
