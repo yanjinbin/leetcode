@@ -4,11 +4,11 @@ package com.yanjinbin.leetcode;
 // ArrayDeque（双端队列）内部实现是一个循环数组，bit 巧妙运用
 
 
+import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -847,17 +847,43 @@ public class Solution {
         return res;
     }
 
-    // 287. 寻找重复数
+    //② 41 缺失的第一个正数  http://bit.ly/2Pir4Mc 类似鸽巢原理 ,放到正确的位置
+    public int firstMissingPositive01(int[] nums) {
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            while (nums[i] > 0 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {
+                swap(nums, nums[i] - 1, i);
+            }
+        }
+        for (int i = 0; i < n; i++) {
+            if (nums[i] != i + 1) {
+                return i + 1;
+            }
+        }
+        return n + 1;
+    }
+
+    public int firstMissingPositive02(int[] nums) {
+        Set<Integer> set = new HashSet<>();
+        for (int i : nums) {
+            set.add(i);
+        }
+        int i = 1;
+        while (set.contains(i)) i++;
+        return i;
+    }
+
+    // ② 287. 寻找重复数  除了下面这2种 ,lowB点用set处理或者排好序
     // 可以把index对应的value当做一个状态值 那么 value重复的化 就相当于是存在还了,可以使用floyd算法来检测
-    // Floyd算法wiki ---->   http://bit.ly/2S1omdy
+    // Floyd算法wiki ---->   http://bit.ly/2S1omdy  龟兔赛跑方法
     public int findDuplicate0(int[] nums) {
         // Find the intersection point of the two runners.
         int tortoise = nums[0];
         int hare = nums[0];
-        do {
+        while (tortoise != hare) {
             tortoise = nums[tortoise];
             hare = nums[nums[hare]];
-        } while (tortoise != hare);
+        }
 
         // Find the "entrance" to the cycle.
         int s = nums[0];
@@ -870,58 +896,74 @@ public class Solution {
 
     }
 
-    //  这种二分法还是比较参见的 但是也存在多钟限制阿 中间数的计算近似 median=(right+left)/2;
+    // ② 这种二分法还是比较少见的 但是也存在多钟限制阿 中间数的计算近似 median=(right+left)/2;
     public int findDuplicate1(int[] nums) {
-        int left = 0, right = nums.length;
-        while (left < right) {
-            int mid = (right + left) / 2;
-            int cnt = 0;
-            for (int num : nums) {
-                if (num <= mid) {
-                    cnt++;
-                }
+        // // 特殊case n = 1 ,长度为2，{1,1} ; n= 2 ,长度为3,{1,2,2} or {1,1,2}
+        int lo = 0, hi = nums.length;
+        while(lo<hi){
+            int mid = lo+(hi-lo)/2;
+            int count = 0;
+            for(int num:nums){ // 计算小于mid的个数,
+                if(num<=mid)count++;
             }
-            if (cnt <= mid) left = mid + 1;
-            else right = mid;
-
+            if(count<=mid){
+                lo = mid+1;
+            }else{
+                hi = mid;
+            }
         }
-        return right;
+        return lo;
     }
 
-
-    // 448. 找到所有数组中消失的数字
-    // http://bit.ly/2S1ZqT0 这个解释的通
-    public List<Integer> findDisappearedNumbers(int[] nums) {
-        List<Integer> ret = new ArrayList<Integer>();
-        for (int i = 0; i < nums.length; i++) {
-            int val = Math.abs(nums[i]) - 1;
-            if (nums[val] > 0) {
-                nums[val] = -nums[val];
+    //② 442 数组中重复的数据  鸽巢原理
+    public List<Integer> findDuplicates(int[] nums) {
+        int N = nums.length;
+        List<Integer> ret = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            while (nums[i] != nums[nums[i] - 1]) {
+                swap(nums, i, nums[i] - 1);
             }
         }
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] > 0) {
-                ret.add(i + 1);
+        for (int i = 0; i < N; i++) {
+            if (nums[i] != i + 1) {  // i+1这个鸽子不在正确的巢 i里
+                ret.add(nums[i]);       // 这个巢本该有的鸽子就是缺失的数字
             }
         }
         return ret;
     }
 
-    // http://bit.ly/2LuhFQO
-    // 142. 环形链表 II
+    //② 448. 找到所有数组中消失的数字 http://bit.ly/2qMgEKN
+    public List<Integer> findDisappearedNumbers01(int[] nums) {
+        int N = nums.length;
+        List<Integer> ret = new ArrayList<>();
+        for (int i = 0; i < N; i++) {
+            while (nums[i] != nums[nums[i] - 1]) {
+                swap(nums, i, nums[i] - 1);
+            }
+        }
+        for (int i = 0; i < N; i++) {
+            if (nums[i] != i + 1) {  // i+1这个鸽子不在正确的巢里
+                ret.add(i + 1);       // 这个巢本该有的鸽子就是缺失的数字
+            }
+        }
+        return ret;
+    }
+
+    // bit map 用法
+    public List<Integer> findDisappearedNumbers02(int[] nums) {
+        return null;
+    }
+
+    // ② 142. 环形链表 II
     // 环检测 https://leetcode-cn.com/problems/linked-list-cycle-ii/
     // 解除环 环长度
-    public ListNode detectCycle0(ListNode head) {
+    public ListNode detectCycle(ListNode head) {
         ListNode slow = head;
         ListNode fast = head;
         while (fast != null && fast.next != null) {
             slow = slow.next;
             fast = fast.next.next;
-            if (slow == fast) {
-                // 错误写法
-                // return slow;
-                break;
-            }
+            if (slow == fast) break;
         }
         //  条件没写全 if (fast != slow)
         if (fast != slow || fast == null || fast.next == null) return null;
@@ -934,167 +976,25 @@ public class Solution {
         return slow;
     }
 
-    public ListNode getIntersect(ListNode head) {
-        ListNode tortoise = head;
-        ListNode hare = head;
-
-        // A fast pointer will either loop around a cycle and meet the slow
-        // pointer or reach the `null` at the end of a non-cyclic list.
-        while (hare != null && hare.next != null) {
-            //  System.out.println("1");
-            tortoise = tortoise.next;
-            hare = hare.next.next;
-            if (tortoise == hare) {
-                return tortoise;
-            }
-        }
-
-        return null;
-    }
-
-    public ListNode detectCycle2(ListNode head) {
-        if (head == null) {
-            return null;
-        }
-
-        // If there is a cycle, the fast/slow pointers will intersect at some
-        // node. Otherwise, there is no cycle, so we cannot find an e***ance to
-        // a cycle.
-        ListNode intersect = getIntersect(head);
-        if (intersect == null) {
-            return null;
-        }
-
-        // To find the entrance to the cycle, we have two pointers traverse at
-        ListNode ptr1 = head;
-        ListNode ptr2 = intersect;
-        while (ptr1 != ptr2) {
-            ptr1 = ptr1.next;
-            ptr2 = ptr2.next;
-        }
-        return ptr1;
-
-    }
-
-    // LT 416. 分割等和子集  经典题目 dp
-    public boolean canPartition0(int[] nums) {
-        int sum = 0;
-        for (int i = 0; i < nums.length; i++) {
-            sum = sum + nums[i];
-        }
-        int target = sum / 2;
-        if (sum % 2 == 1) return false;
-        boolean[] dp = new boolean[target + 1];
-        // init
-        dp[0] = true;
-        for (int num : nums) {
-            // 为什么递减不是递增呢 因为递增的化 都为true了阿
-            for (int i = target; i >= num; i--) {
-                dp[i] = dp[i] || dp[i - num];
-            }
-        }
-        return dp[target];
-    }
-
-    // 300. 最长上升子序列
-    // http://bit.ly/2S18Z4A 看动画就能理解为什么了 哈哈
-    //  [tag:面筋  很容易会被问到]
-    public int lengthOfLIS(int[] nums) {
-        if (nums.length == 0) {
-            return 0;
-        }
-        int[] dp = new int[nums.length];
-        dp[0] = 1;
-        int maxLen = 1;
-        for (int i = 1; i < nums.length; i++) {
-            int maxVal = 0;
-            for (int j = 0; j < i; j++) {
-                if (nums[i] > nums[j]) {
-                    maxVal = Math.max(maxVal, dp[j]);
-                }
-            }
-            dp[i] = maxVal + 1;
-            maxLen = Math.max(dp[i], maxLen);
-        }
-        return maxLen;
-
-    }
-
-    // 审题审错了
-    public int lengthOfLISbad(int[] nums) {
-        int maxLen = 0, prevLen = 0;
-        int start = 0, end = 0;
-        while (end < nums.length - 1) {
-            if (nums[end] < nums[++end]) {
-                maxLen++;
-            } else {
-                //  System.out.println(start + "\t" + end + "\t" + maxLen + "\t" + prevLen);
-                // reset
-                start = end;
-                prevLen = Math.max(maxLen, prevLen);
-                maxLen = 0;
-            }
-        }
-        return prevLen;
-    }
-
     // 摩尔投票法 仔细想想 还是对的 因为不管如何排列,众数 频次肯定>=1阿  whatever even or odd
-    // 写的还是啰嗦,主要在于初始化步骤
-    // 另外一种哈希算法 就不做了
-    // 还有 分治算法来做
-    public int majorityElement0(int[] nums) {
-        if (nums.length == 0) {
-            return 0;
-        }
-        int cnt = 1;
-        int major = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            if (nums[i] == major) {
-                cnt++;
+    // 169
+    public int majorityElement(int[] nums) {
+        int candidate = nums[0], count = 1;
+        for (int i = 1; i < nums.length; ++i) {
+            if (count == 0) {
+                candidate = nums[i];
+                count = 1;// 互斥
+            } else if (nums[i] == candidate) {
+                count++;
             } else {
-                cnt--;
-                if (cnt == 0) {
-                    major = nums[i];
-                    cnt = 1;
-                }
+                count--;
             }
         }
-        return major;
+        return candidate;
     }
 
-    public int majorityElement1(int[] nums) {
-        if (nums.length == 0) return 0;
-        int cnt = 0;
-        int major = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (cnt == 0) {
-                //reset
-                major = nums[i];
-                cnt = 1;
-            } else if (major == nums[i]) {
-                cnt++;
-            } else {
-                cnt--;
-            }
-        }
-        return major;
-    }
 
-    public int majorityElement2(int[] nums) {
-        if (nums.length == 0) return 0;
-        int cnt = 0;
-        int major = 0;
-        for (int i = 0; i < nums.length; i++) {
-            if (cnt == 0) {
-                //reset
-                major = nums[i];
-            }
-            cnt += (nums[i] == major) ? 1 : -1;
-        }
-        return major;
-    }
-
-    // 283. 移动零
+    // ② 283. 移动零
     public void moveZeroes(int[] nums) {
         int idx = 0;
         for (int i = 0; i < nums.length; i++) {
@@ -1105,7 +1005,7 @@ public class Solution {
         }
     }
 
-    // 581. 最短无序连续子数组
+    // ② 581. 最短无序连续子数组
     // 先排序
     public int findUnsortedSubarray0(int[] nums) {
         int start = 0, end = nums.length - 1;
@@ -1115,6 +1015,27 @@ public class Solution {
         while (end > start && nums[end] == bak[end]) end--;
         return end - start + 1;
     }
+
+    public int findUnsortedSubarray2(int[] nums) {
+        Stack<Integer> s = new Stack();
+        int l = nums.length - 1, r = 0;
+        for (int i = 0; i < nums.length; i++) {
+            while (!s.isEmpty() && nums[s.peek()] > nums[i]) {
+                int idx = s.pop();
+                l = Math.min(l, idx);
+            }
+            s.push(i);
+        }
+        s.clear();
+        for (int i = nums.length - 1; i >= 0; i--) {
+            while (!s.isEmpty() && nums[s.peek()] < nums[i]) {
+                r = Math.max(r, s.pop());
+            }
+            s.push(i);
+        }
+        return r - l > 0 ? r - l + 1 : 0;
+    }
+
 
     public int findUnsortedSubarray1(int[] nums) {
         int n = nums.length;
@@ -1129,11 +1050,10 @@ public class Solution {
             if (mx > nums[i]) end = i;
             if (mn < nums[n - 1 - i]) start = n - 1 - i;
         }
-        // System.out.println("end" + end + "start" + start);
         return end - start + 1;
     }
 
-    // 560. 和为K的子数组
+    // ② 560. 和为K的子数组
     // corner case
     // map.put(0,1) 这个为什么需要呢 道友门 注意下列入参
     //比如 [2,2,2,2,2] k=4 ; [1,3,2,2,4] k=4 ; 以及 [0,0,0,0] k=0
@@ -1144,7 +1064,7 @@ public class Solution {
     public int subarraySum(int[] nums, int k) {
         int count = 0, sum = 0;
         Map<Integer, Integer> map = new HashMap<>();
-        //  map.put(0, 1);
+        map.put(0, 1);// 比较tricky的啊
         for (int i = 0; i < nums.length; i++) {
             sum += nums[i];
             if (map.containsKey(sum - k))
@@ -1154,10 +1074,12 @@ public class Solution {
         return count;
     }
 
-    // 56. 合并区间
+    //② 56. 合并区间
     public int[][] merge(int[][] intervals) {
         if (intervals.length <= 1) return intervals;
-        Arrays.sort(intervals, Comparator.comparingInt(o -> o[0]));
+        Arrays.sort(intervals, (o1, o2) -> {
+            return o1[0] - o2[0];
+        });
         List<int[]> ret = new ArrayList<>();
         int[] cursor = intervals[0];
         ret.add(cursor);
@@ -1174,7 +1096,7 @@ public class Solution {
 
     // ② 215. 数组中的第K个最大元素
     // quick sort思想
-    public int findKthLargest0(int[] nums, int k) {
+    public int findKthLargest01(int[] nums, int k) {
         int left = 0, right = nums.length - 1;
         while (true) {
             int pos = partition(nums, left, right);
@@ -1220,32 +1142,19 @@ public class Solution {
         return r;
     }
 
+    // ② 大小堆来做
+    public int findKthLargest02(int[] nums, int k) {
+        // init heap 'the smallest element first'
+        PriorityQueue<Integer> heap = new PriorityQueue<Integer>(((o1, o2) -> o1 - o2));
 
-    public int partition01(int[] nums, int lo, int hi) {
-        int pivot = nums[lo];
-        int l = lo + 1, r = hi;
-        while (l <= r) {
-            if (nums[l] > pivot && pivot > nums[r]) {
-                swap(nums, l++, r--);
-            }
-            if (nums[l] <= pivot) l++;
-            if (nums[r] >= pivot) r--;
+        // keep k largest elements in the heap
+        for (int n : nums) {
+            heap.add(n);
+            if (heap.size() > k)
+                heap.poll();
         }
-        swap(nums, lo, r);
-        return r;
-    }
-
-
-    public static boolean less(int v, int w) {
-        if (v == w) return false;   // optimization when reference equals
-        return v - w < 0;
-    }
-
-    public static void exch(int[] nums, int i, int j) {
-        System.out.println("i " + i + " j " + j);
-        int swap = nums[i];
-        nums[i] = nums[j];
-        nums[j] = swap;
+        // output
+        return heap.peek();
     }
 
     // leetcode 148 排序链表
@@ -1298,81 +1207,7 @@ public class Solution {
     }
 
 
-    public int[] items;
-
-    public void swap(int a, int b) {
-        int tmp = this.items[a];
-        this.items[a] = this.items[b];
-        this.items[b] = tmp;
-    }
-
-
-    public int partition(int left, int right, int pivot_index) {
-        int pivot = this.items[pivot_index];
-        // 1. move pivot to end
-        swap(pivot_index, right);
-        int store_index = left;
-
-        // 2. move all smaller elements to the left
-        for (int i = left; i <= right; i++) {
-            if (this.items[i] < pivot) {
-                swap(store_index, i);
-                store_index++;
-            }
-        }
-
-        // 3. move pivot to its final place
-        swap(store_index, right);
-
-        return store_index;
-    }
-
-    public int quickselect(int left, int right, int k_smallest) {
-    /*
-    Returns the k-th smallest element of list within left..right.
-    */
-
-        if (left == right) // If the list contains only one element,
-            return this.items[left];  // return that element
-
-        // select a random pivot_index
-        int pivot_index = left + 1;
-
-        pivot_index = partition(left, right, pivot_index);
-
-        // the pivot is on (N - k)th smallest position
-        if (k_smallest == pivot_index)
-            return this.items[k_smallest];
-            // go left side
-        else if (k_smallest < pivot_index)
-            return quickselect(left, pivot_index - 1, k_smallest);
-        // go right side
-        return quickselect(pivot_index + 1, right, k_smallest);
-    }
-
-    public int findKthLargest1(int[] nums, int k) {
-        this.items = nums;
-        int size = nums.length;
-        // kth largest is (N - k)th smallest
-        return quickselect(0, size - 1, size - k);
-    }
-
-    //  大小堆来做
-    public int findKthLargest2(int[] nums, int k) {
-        // init heap 'the smallest element first'
-        PriorityQueue<Integer> heap = new PriorityQueue<Integer>(((o1, o2) -> o1 - o2));
-
-        // keep k largest elements in the heap
-        for (int n : nums) {
-            heap.add(n);
-            if (heap.size() > k)
-                heap.poll();
-        }
-        // output
-        return heap.peek();
-    }
-
-    //  238. 除自身以外数组的乘积 至少需要2次遍历来
+    // ② 238. 除自身以外数组的乘积 至少需要2次遍历来
     public int[] productExceptSelf(int[] nums) {
         int size = nums.length;
         int[] res = new int[size];
@@ -1392,93 +1227,112 @@ public class Solution {
         return res;
     }
 
-    // 33. 搜索旋转排序数组
+    //② 33. 搜索旋转排序数组 tips: 构建不等式约束关系 来 选择 边界
     public int search(int[] nums, int target) {
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
+        int lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
             if (nums[mid] == target) return mid;
-            if (nums[mid] < nums[right]) {
-                if (nums[mid] < target && nums[right] >= target) {
-                    left = mid + 1;
+            if (nums[mid] < nums[hi]) { // 构建不等式约束关系
+                if (nums[mid] < target && target <= nums[hi]) {
+                    lo = mid + 1;
                 } else {
-                    right = mid - 1;
+                    hi = mid - 1;
                 }
             } else {
-                if (target >= nums[left] && target < nums[mid]) {
-                    right = mid - 1;
+                if (nums[lo] <= target && target < nums[mid]) {
+                    hi = mid - 1;
                 } else {
-                    left = mid + 1;
+                    lo = mid + 1;
                 }
             }
         }
         return -1;
     }
 
-
-    // 34. 在排序数组中查找元素的第一个和最后一个位置
-    //  这个方法相当low逼阿 哈哈
-    // 看别人的解题思路 有一种卧槽 还可以这样子的感觉!
-    public int minIdx = Integer.MAX_VALUE;
-    public int maxIdx = Integer.MIN_VALUE;
-
-    public int[] searchRange0(int[] nums, int target) {
-        if (nums.length == 0) {
-            return new int[]{-1, -1};
-        }
-        int left = 0, right = nums.length - 1;
-        search(nums, left, right, target);
-        if (minIdx == Integer.MAX_VALUE || maxIdx == Integer.MAX_VALUE) return new int[]{-1, -1};
-        return new int[]{minIdx, maxIdx};
-    }
-
-    public void search(int[] nums, int left, int right, int target) {
-        int mid = left + (right - left) / 2;
-        if (left > right) {
-            return;
-        }
-        if (left == right) {
-            if (nums[left] == target) {
-                maxIdx = Math.max(maxIdx, mid);
-                minIdx = Math.min(minIdx, mid);
-            }
-            return;
-        }
-        if (nums[mid] < target) {
-            search(nums, mid + 1, right, target);
-        } else if (nums[mid] > target) {
-            search(nums, left, mid - 1, target);
-        } else if (nums[mid] == target) {
-            maxIdx = Math.max(maxIdx, mid);
-            minIdx = Math.min(minIdx, mid);
-            search(nums, mid + 1, right, target);
-            search(nums, left, mid - 1, target);
-        }
-    }
-/*
-    public int[] searchRange1(int[] items, int target) {
-
-    }
-
-    public int searchBinary(int[] items, int target) {
-        int left = 0, right = items.length - 1;
-        int mid = left + (right - left) >> 2;
-        while (left <= right) {
-            if (items[mid] < target) {
-                left = mid + 1;
-            } else if (items[mid] > target) {
-                right = mid - 1;
-            } else if (items[mid] == target) {
-                left++;
-               // searchBinary(items,left,right)
+    // ② 34. 在排序数组中查找元素的第一个和最后一个位置
+    public int[] searchRange(int[] nums, int target) {
+        if (nums.length == 0) return new int[]{-1, -1};
+        int lo = 0, hi = nums.length, left = -1, right = -1;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] < target) {
+                lo = mid + 1;
+            } else { // 往闭区间一侧lo靠近
+                hi = mid;
             }
         }
-        return left;
-    }*/
+        if (hi == nums.length || nums[hi] != target) return new int[]{-1, -1};
+        left = hi;
 
-    // 62. 不同路径
+
+        // upper bound函数
+        lo = -1;
+        hi = nums.length - 1;
+        while (lo < hi) {
+            int mid = hi - (hi - lo) / 2;
+            if (nums[mid] <= target) { // 往闭区间hi一侧靠近
+                lo = mid;
+            } else {
+                hi = mid - 1;
+            }
+
+        }
+
+        if (hi == -1 || nums[hi] != target) return new int[]{-1, -1};
+        right = hi;
+        return new int[]{left, right};
+    }
+
+    // 39. 组合总和
+    // http://bit.ly/2XHHBi2  这个方法感觉还是不够优雅阿
+    public List<List<Integer>> combinationSum1(int[] candidates, int target) {
+        List<List<Integer>> res = new ArrayList<>();
+        Arrays.sort(candidates);
+        backtrack(candidates, target, res, 0, new LinkedList<>());
+        return res;
+    }
+
+    public void backtrack(int[] candidates, int target, List<List<Integer>> res, int start, LinkedList<Integer> sub) {
+        if (target < 0) return;
+        if (target == 0) {
+            res.add(new ArrayList(sub));
+            return;
+        }
+        for (int i = start; i < candidates.length; i++) {
+            sub.addLast(candidates[i]);
+            backtrack(candidates, target - candidates[i], res, i, sub);
+            sub.pollLast();
+        }
+    }
+    // todo
+    // 40. 组合总和 II
+
+    // 216. 组合总和 III
+
+    // 377. 组合总和 Ⅳ
+
+
+    //②  62. 不同路径 dfs/dp解法
+    // dp[i][j] = dp[i-1][j]+dp[i][j-1], i∈[0,m),j∈[0,n);
     public int uniquePaths(int m, int n) {
-        int count = 0;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            dp[i][0] = 1;
+        }
+        for (int j = 0; j < n; j++) {
+            dp[0][j] = 1;
+        }
+
+        for (int i = 1; i < m; i++) {
+            for (int j = 1; j < n; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[m - 1][n - 1];
+    }
+
+    public int uniquePaths01(int m, int n) {
         int[][] memo = new int[m + 1][n + 1];
         return path(m, n, memo);
     }
@@ -1500,55 +1354,57 @@ public class Solution {
     }
 
 
-    //39. 组合总和
-    // http://bit.ly/2XHHBi2  这个方法感觉还是不够优雅阿
-    public List<List<Integer>> combinationSum1(int[] candidates, int target) {
-        List<List<Integer>> res = new ArrayList<>();
-        Arrays.sort(candidates);
-        backtrack(candidates, target, res, 0, new ArrayList<Integer>());
-        return res;
+    // ② 77  组合
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> ans = new ArrayList();
+        LinkedList<Integer> sub = new LinkedList();
+        dfsCombine(ans, sub, 1, k, n);
+        return ans;
     }
 
-    public void backtrack(int[] candidates, int target, List<List<Integer>> res, int start, ArrayList<Integer> tmpList) {
-        if (target < 0) return;
-        if (target == 0) {
-            res.add(new ArrayList(tmpList));
+    public void dfsCombine(List<List<Integer>> ans, LinkedList<Integer> sub, int start, int k, int n) {
+        if (k == 0) {
+            ans.add(new ArrayList(sub));
             return;
         }
-        for (int i = start; i < candidates.length; i++) {
-            tmpList.add(candidates[i]);
-            backtrack(candidates, target - candidates[i], res, i, tmpList);
-            tmpList.remove(tmpList.size() - 1);
+        for (int i = start; i <= n; i++) {
+            sub.addLast(i);
+            // 写错了
+            // dfsCombine(ans,sub,start+1,k-1,n);
+            dfsCombine(ans, sub, i + 1, k - 1, n);
+            sub.pollLast();
         }
     }
 
-
-    // 77  组合 todo
-    public List<List<Integer>> combine(int n, int k) {
-        List<List<Integer>> ret = new ArrayList<>();
+    // 错误 算组合去了
+    public List<List<Integer>> combine01(int n, int k) {
+        List<List<Integer>> ans = new ArrayList<>();
         Map<Integer, Boolean> dict = new HashMap();
         for (int i = 1; i <= n; i++) {
             dict.put(i, false);
         }
-        return ret;
+        dfsCombine01(ans, new LinkedList(), 0, n, k, dict);
+        return ans;
     }
 
-    public void backTrackCombine(List<List<Integer>> ret, LinkedList<Integer> sub, int level, int k, Map<Integer, Boolean> dict) {
+    public void dfsCombine01(List<List<Integer>> ans, LinkedList<Integer> sub, int level, int n, int k, Map<Integer, Boolean> dict) {
         if (level == k) {
-            ret.add(new ArrayList(sub));
+            ans.add(new ArrayList(sub));
             return;
         }
-        for (int i = 1; i <= dict.size(); i++) {
+
+        for (int i = 1; i <= n; i++) {
             if (dict.get(i)) continue;
             dict.put(i, true);
             sub.add(i);
-            //backTrackCombine();
+            dfsCombine01(ans, sub, level + 1, n, k, dict);
             dict.put(i, false);
             sub.pollLast();
         }
     }
 
-    // 46. 全排列
+
+    //②  46. 全排列 dfs +   visited boolean数组
     public List<List<Integer>> permute(int[] nums) {
         List<List<Integer>> ret = new ArrayList<>();
         LinkedList<Integer> sub = new LinkedList<>();
@@ -1575,34 +1431,44 @@ public class Solution {
     }
 
     // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
-    // 128. 最长连续序列 map set solve
-    public int longestConsecutive(int[] nums) {
-        int res = 0;
-        Set<Integer> set = new HashSet<>(nums.length);
-        for (int num : nums) {
-            set.add(num);
-        }
-
-        for (int num : nums) {
-
-            int cmp = 1;
-            set.remove(num);
-            int left = num - 1;
-            while (set.contains(left)) {
-                set.remove(left);
-                cmp++;
-                left--;
+    // 128. 最长连续序列 map set solve  哈希表/并查集/DP
+    // ② 复杂度 nLog(N)
+    public int longestConsecutive01(int[] nums) {
+        Arrays.sort(nums);
+        int ans = 1;
+        int res = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] - nums[i - 1] == 1) {
+                ans++;
+            } else {
+                res = Math.max(res, ans);
+                ans = 1;
             }
-            int right = num + 1;
-            while (set.contains(right)) {
-                set.remove(right);
-                cmp++;
-                right++;
-            }
-            res = Math.max(res, cmp);
         }
         return res;
+    }
 
+    // ② tips: 存入set,找到连续递增序列的第一个数  nums-1
+    public int longestConsecutive02(int[] nums) {
+        Set<Integer> sets = new HashSet();
+        for (int i : nums) {
+            sets.add(i);
+        }
+
+        int ans = 0;
+        for (int num : nums) {
+            // 如果是连续序列,找到第一个起点
+            if (!sets.contains(num - 1)) {
+                int currentNum = num;
+                int res = 1;
+                while (sets.contains(currentNum + 1)) {
+                    currentNum += 1;
+                    res++;
+                }
+                ans = Math.max(ans, res);
+            }
+        }
+        return ans;
     }
 
     //  接下去 进入 二叉树专题
@@ -1870,21 +1736,19 @@ public class Solution {
         return ret;
     }
 
-    //96. 不同的二叉搜索树 卡塔兰数的运用
-    // 真的不太会做这种题目阿 mmp 好难
-    // http://bit.ly/2LqUWVL
+    // ② 96. 不同的二叉搜索树  DP题目  可以采用卡塔兰数,不过目前看起来暂时好难理解
     public int numTrees(int n) {
         int[] dp = new int[n + 1];
         dp[0] = dp[1] = 1;
-        for (int i = 2; i <= n; i++) {
-            for (int j = 0; j < i; j++) {
-                dp[i] += dp[j] * dp[i - j - 1];
+        for (int level = 2; level <= n; level++) {
+            for (int root = 1; root <= level; root++) {
+                dp[level] += dp[root - 1] * dp[level - root];
             }
         }
         return dp[n];
     }
 
-    // 98. 验证二叉搜索树
+    // ② 98. 验证二叉搜索树
     // 用Long 代替int 就是为了满足边界条件 if root.val= Integer.MAX_VALUE
     public boolean isValidBST0(TreeNode root) {
         long right = Long.MAX_VALUE;
@@ -1899,7 +1763,8 @@ public class Solution {
         return false;
     }
 
-    // 101. 对称二叉树递归左右对称即可。 迭代做法 两个队列放入元素顺序需要做到对称
+    //② 101. 对称二叉树递归左右对称即可。 迭代做法 两个队列放入元素顺序需要做到对称
+    // tips: 本质上是比较2个左右子树的对称性 也就是2棵树。
     public boolean isSymmetric(TreeNode root) {
         if (root == null) return true;
         return validateSymmetricHelper(root.left, root.right);
@@ -1913,10 +1778,7 @@ public class Solution {
         return false;
     }
 
-
-    // 114. 二叉树展开为链表
-    // http://bit.ly/2LtZDhc
-    // 看懂图解哦
+    // 114. 二叉树展开为链表 http://bit.ly/2LtZDhc  看懂图解哦
     public void flatten(TreeNode root) {
         if (root == null) return;
         flatten(root.left);
@@ -1924,13 +1786,14 @@ public class Solution {
         TreeNode tmp = root.right;
         root.right = root.left;
         root.left = null;
+        //  key tips: 更新root.right节点
         while (root.right != null) {
             root = root.right;
         }
         root.right = tmp;
     }
 
-    // 226. 翻转二叉树
+    // ② 226. 翻转二叉树
     public TreeNode invertTree(TreeNode root) {
         invertHelper(root);
         return root;
@@ -1946,70 +1809,6 @@ public class Solution {
         root.left = tmp;
     }
 
-
-    public int counter;
-
-    // 437. 路径总和 III  思路  http://bit.ly/2LukqSa
-    public int pathSum1(TreeNode root, int sum) {
-        LinkedList<TreeNode> queue = new LinkedList<>();
-        dfsPathSumHelper(root, sum, 0, queue);
-        return counter;
-    }
-
-    public void dfsPathSumHelper(TreeNode node, int sum, int curSum, LinkedList<TreeNode> queue) {
-        if (node == null) return;
-        curSum = curSum + node.val;
-        queue.add(node);
-        if (curSum == sum) counter = counter + 1;
-        int tmp = curSum;
-        for (int i = 0; i < (queue.size() - 1); i++) {
-            tmp = tmp - queue.get(i).val;
-            if (tmp == sum) counter = counter + 1;
-        }
-        dfsPathSumHelper(node.left, sum, curSum, queue);
-        dfsPathSumHelper(node.right, sum, curSum, queue);
-        // 维护队列
-        queue.pollLast();
-    }
-
-    // 易懂 不好想出来
-    public int pathSum2(TreeNode root, int sum) {
-        if (root == null) return 0;
-        return pathHelper(root, sum) + pathSum2(root.left, sum) + pathSum2(root.right, sum);
-    }
-
-    public int pathHelper(TreeNode root, int sum) {
-        if (root == null) return 0;
-        sum = sum - root.val;
-        return (sum == 0 ? 1 : 0) + pathHelper(root.left, sum) + pathHelper(root.right, sum);
-    }
-
-
-    public int cnt;
-
-    // 错的阿
-    public int pathSum0(TreeNode root, int sum) {
-        dfsPathSumHelper0(root, root, sum, sum);
-        return cnt;
-    }
-
-    public void dfsPathSumHelper0(TreeNode root, TreeNode cur, int sum, int remainder) {
-        if (root == null || cur == null) return;
-        if ((cur.val - remainder) == 0) {
-            cnt = cnt + 1;
-            // reset
-            dfsPathSumHelper0(root.left, root.left, sum, sum);
-            dfsPathSumHelper0(root.right, root.right, sum, sum);
-        }
-        // continue
-        dfsPathSumHelper0(root, cur.left, sum, remainder - root.val);
-        dfsPathSumHelper0(root, cur.right, sum, remainder - root.val);
-
-
-        dfsPathSumHelper0(root.left, root.left, sum, sum);
-        dfsPathSumHelper0(root.right, root.right, sum, sum);
-    }
-
     // 538. 把二叉搜索树转换为累加树  BST 中序遍历 满足顺序关系  先访问右子树-->root-->左子树 降序排列
     public int sum = 0;
 
@@ -2021,8 +1820,8 @@ public class Solution {
     public void convert(TreeNode cur) {
         if (cur == null) return;
         convertBST(cur.right);
-        cur.val = cur.val + sum;
-        sum = cur.val;
+        sum = sum + cur.val;
+        cur.val = sum;
         convertBST(cur.left);
     }
 
@@ -2051,40 +1850,8 @@ public class Solution {
         return root.val;
     }
 
-    // 617. 合并二叉树
-    public TreeNode mergeTrees0(TreeNode t1, TreeNode t2) {
-        TreeNode node = new TreeNode(0);
-        return mergeHelper(t1, t2, node);
 
-    }
-
-    public TreeNode mergeHelper(TreeNode t1, TreeNode t2, TreeNode node) {
-        if (t1 == null && t2 == null) return null;
-        if (t1 == null) return t2;
-        if (t2 == null) return t1;
-        node.val = t1.val + t2.val;
-        TreeNode left = mergeHelper(t1.left, t2.left, new TreeNode(0));
-        TreeNode right = mergeHelper(t1.right, t2.right, new TreeNode(0));
-        node.left = left;
-        node.right = right;
-        return node;
-    }
-
-    public TreeNode mergeTrees1(TreeNode t1, TreeNode t2) {
-        if (t1 == null && t2 == null) return null;
-        if (t1 == null) {
-            return t2;
-        }
-        if (t2 == null) {
-            return t1;
-        }
-        TreeNode node = new TreeNode(t1.val + t2.val);
-        node.right = mergeTrees1(t1.right, t2.right);
-        node.left = mergeTrees1(t1.left, t2.left);
-        return node;
-    }
-
-    // 543. 二叉树的直径
+    //② 543. 二叉树的直径
     public int diameterOfBinaryTree0(TreeNode root) {
         if (root == null) return 0;
         int left = dfsHeight(root.left);
@@ -2114,8 +1881,24 @@ public class Solution {
         res = Math.max(res, left + right);
         return Math.max(left, right) + 1;
     }
+    // 106 105 108  617 构建二叉树的本质在于招到根节点,然后构建根节点的左右子树
 
-    //108. 将有序数组转换为二叉搜索树 tips 考察的就是二分法
+    //②  617. 合并二叉树
+    public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
+        if (t1 == null && t2 == null) return null;
+        if (t1 == null) {
+            return t2;
+        }
+        if (t2 == null) {
+            return t1;
+        }
+        TreeNode node = new TreeNode(t1.val + t2.val);
+        node.right = mergeTrees(t1.right, t2.right);
+        node.left = mergeTrees(t1.left, t2.left);
+        return node;
+    }
+
+    // ②  108. 将有序数组转换为二叉搜索树 tips 考察的就是二分法
     public TreeNode sortedArrayToBST(int[] nums) {
         if (nums == null || nums.length == 0) return null;
         return bstHelper(nums, 0, nums.length - 1);
@@ -2160,7 +1943,7 @@ public class Solution {
     }
 
 
-    // 106. 从中序与后序遍历序列构造二叉树
+    // ② 106. 从中序与后序遍历序列构造二叉树
     public TreeNode buildTreeInPost(int[] inorder, int[] postorder) {
         return buildTreeInPost(inorder, 0, inorder.length - 1, postorder, 0, postorder.length - 1);
     }
@@ -2175,17 +1958,12 @@ public class Solution {
         }
         TreeNode root = new TreeNode(postOrder[pRight]);
         root.left = buildTreeInPost(inorder, iLeft, i - 1, postOrder, pLeft, pRight - (iRight - i) - 1);
-        //   root.right = buildTreeInPost(inorder, i + 1, iRight, postOrder, pRight - (iRight - i) +1, pRight-1);
-        // 为什么 +1 就错了呢 详见 http://bit.ly/2SooOma
         root.right = buildTreeInPost(inorder, i + 1, iRight, postOrder, pRight - (iRight - i), pRight - 1);
         return root;
     }
 
 
     //889. 根据前序和后序遍历构造二叉树(结果不唯一)
-   // public TreeNode constructFromPrePost(int[] pre, int[] post) {
-        return null;
-    }
 
 
     // 297. 二叉树的序列化与反序列化 这道题目就直接抄把 没啥好说的了 http://bit.ly/2LteuIY
@@ -3895,32 +3673,6 @@ public class Solution {
         return n > 0 ? res : 1 / res;
     }
 
-    // 41 缺失的第一个正整数 union find todo
-    public int firstMissingPositive(int[] nums) {
-        int n = nums.length;
-        for (int i = 0; i < n; i++) {
-            while (nums[i] > 0 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {
-                swap(nums, nums[i] - 1, i);
-            }
-        }
-        for (int i = 0; i < n; i++) {
-            if (nums[i] != i + 1) {
-                return i + 1;
-            }
-        }
-        return n + 1;
-    }
-
-    public int firstMissingPositive_1(int[] nums) {
-        Set<Integer> set = new HashSet<>();
-        for (int i : nums) {
-            set.add(i);
-        }
-        int i = 1;
-        while (set.contains(i)) i++;
-        return i;
-    }
-
     //② 179. 最大 int数组编程字符串数组 然后从大到下排列
     public String largestNumber(int[] nums) {
         String[] strs = new String[nums.length];
@@ -4205,6 +3957,7 @@ public class Solution {
         return res;
     }
 
+    public int cnt;
 
     // ❌放弃 //数学 行列式的运用   149 直线上最多的点数   // https://youtu.be/bzsdelrRgNk // 对角线乘积和反对角线乘积之差/2 是 S△
     public int maxPoints(int[][] points) {
@@ -5260,7 +5013,7 @@ public class Solution {
 
     //② 解法1 快排最佳实践 http://bit.ly/353KVnO  http://bit.ly/354yckZ  三项快速排序 需要构造newIdx, 需要一次中值切分
     public void wiggleSort01(int[] nums) {
-        int median = findKthLargest0(nums, (nums.length + 1) / 2);
+        int median = findKthLargest01(nums, (nums.length + 1) / 2);
         int n = nums.length;
         int lt = 0, i = 0, gt = n - 1;
         while (i <= gt) {
@@ -5920,6 +5673,23 @@ public class Solution {
     // leetcode 178
 
     // 80
+
+    // chapter 8.2 P442
+    // 这个问题 网上也已经有很多人分析过如何写出正确的二分查找了
+    //  8.2章节  也给出标准示范了 , 以及几个细节的分析
+    // 二分查找的标准函数 http://bit.ly/32512ix
+    public int binarySearch(int[] array, int lo, int hi, int target) {
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (array[mid] <= target) { // 返回满足 arr[i] > value的第一个位置
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
+    }
+
 }
 
 

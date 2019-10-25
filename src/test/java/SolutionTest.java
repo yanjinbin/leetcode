@@ -3,6 +3,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.function.IntFunction;
+import java.util.function.ToIntFunction;
 
 public class SolutionTest {
 
@@ -384,7 +386,7 @@ public class SolutionTest {
 
     @Test
     public void findDuplicate() {
-        int[] nums = {1, 3, 4, 6, 7, 8, 3, 3};
+        int[] nums = {1,3,4,2,2};
         System.out.println(INSTANCE.findDuplicate0(nums));
         System.out.println(INSTANCE.findDuplicate1(nums));
     }
@@ -475,37 +477,45 @@ public class SolutionTest {
         node2.setNext(node3);
         node3.setNext(node4);
         node4.setNext(node2);
-        System.out.println("ret\t" + INSTANCE.detectCycle0(node1));
+        System.out.println("ret\t" + INSTANCE.detectCycle(node1));
         ListNode node5 = ListNode.builder().val(1).build();
         System.out.println("====");
-        System.out.println(INSTANCE.detectCycle2(node5));
-        System.out.println(INSTANCE.detectCycle0(null));
+        System.out.println(INSTANCE.detectCycle(null));
     }
 
     @Test
     public void canPartition() {
         int[] nums = {1, 5, 11, 5};
-        System.out.println(INSTANCE.canPartition0(nums));
+        assert PACK.canPartition01(nums);
     }
 
     @Test
     public void lengthOfLIS() {
         int[] nums = {10, 9, 2, 5, 3, 7, 101, 18};
-        System.out.println(INSTANCE.lengthOfLIS(nums));
+        System.out.println(PACK.lengthOfLIS(nums));
     }
 
     @Test
     public void findDisappearedNumbers() {
-        int[] nums = {1, 2, 5, 2, 1};
-        // https://leetcode.com/problems/find-all-numbers-disappeared-in-an-array/discuss/92956/Java-accepted-simple-solution/97460
-        // Each time when a new value X is read, it changes the corresponding Xth number (value at index X-1) into negative, indicating value X is read for the first time.
-        INSTANCE.findDisappearedNumbers(nums);
+        int[] nums = new int[]{4, 3, 2, 7, 8, 2, 3, 1};
+        System.out.println(Arrays.toString(nums));
+        assert Arrays.equals(INSTANCE.findDisappearedNumbers01(nums)
+                .stream()
+                .mapToInt(value -> value)
+                .toArray(), new int[]{5, 6});
+
+        assert Arrays.equals(INSTANCE.findDuplicates(nums)
+                .stream()
+                .mapToInt(value -> value)
+                .toArray(), new int[]{3, 2});
+
+
     }
 
     @Test
     public void majorElement() {
         int[] nums = {2, 1, 3, 2, 1, 2, 3, 2};
-        System.out.println(INSTANCE.majorityElement0(nums));
+        System.out.println(INSTANCE.majorityElement(nums));
     }
 
     @Test
@@ -568,11 +578,9 @@ public class SolutionTest {
         System.out.println("=========");
         INSTANCE.shuffle(nums, 0, nums.length);
         System.out.println(Arrays.toString(nums));
-        INSTANCE.partition01(nums, 0, nums.length - 1);
+        INSTANCE.partition(nums, 0, nums.length - 1);
         System.out.println(Arrays.toString(nums));
-        assert INSTANCE.findKthLargest0(nums, k) == INSTANCE.findKthLargest1(nums, k);
-        assert INSTANCE.findKthLargest1(nums, k) == INSTANCE.findKthLargest2(nums, k);
-
+        assert INSTANCE.findKthLargest01(nums, k) == INSTANCE.findKthLargest02(nums, k);
     }
 
     @Test
@@ -1542,14 +1550,12 @@ public class SolutionTest {
     @Test
     public void findMissingPositive() {
         int[] nums = {1, 2, 0};
-        System.out.println(INSTANCE.firstMissingPositive_1(nums));
-        System.out.println(INSTANCE.firstMissingPositive(nums));
+        System.out.println(INSTANCE.firstMissingPositive01(nums));
         nums = new int[]{3, 4, -1, 1};
-        System.out.println(INSTANCE.firstMissingPositive_1(nums));
-        System.out.println(INSTANCE.firstMissingPositive(nums));
+        System.out.println(INSTANCE.firstMissingPositive01(nums));
         nums = new int[]{7, 8, 9, 11, 12};
-        System.out.println(INSTANCE.firstMissingPositive_1(nums));
-        System.out.println(INSTANCE.firstMissingPositive(nums));
+        System.out.println(INSTANCE.firstMissingPositive01(nums));
+
     }
 
     @Test
@@ -2362,9 +2368,9 @@ public class SolutionTest {
     @Test
     public void lowerBound() {
         System.out.println("===展示下二分法 上界 和 下界 以及java自带的二分搜索====");
-        int[] arr = new int[]{-1,1, 2, 3, 3, 3, 4, 4, 8,15};
+        int[] arr = new int[]{-1, 1, 2, 3, 3, 3, 4, 4, 8, 15};
         Arrays.sort(arr);
-        System.out.println(Arrays.toString(new int[]{ 0, 1, 2, 3, 4, 5, 6, 7,8,9}));
+        System.out.println(Arrays.toString(new int[]{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}));
         System.out.println(Arrays.toString(arr));
         System.out.println(lowerBound(arr, 0, arr.length, -1));
         System.out.println(lowerBound(arr, 0, arr.length, 9));
@@ -2375,8 +2381,8 @@ public class SolutionTest {
         System.out.println(upperBound(arr, -1, arr.length - 1, 3));
         System.out.println(upperBound(arr, -1, arr.length - 1, 1));
         int i = new Random().nextInt(20);
-        System.out.println(lowerBound(arr,0,arr.length,i));
-        System.out.println(upperBound(arr,-1,arr.length-1,i));
+        System.out.println(lowerBound(arr, 0, arr.length, i));
+        System.out.println(upperBound(arr, -1, arr.length - 1, i));
 
     }
 
@@ -2404,8 +2410,6 @@ public class SolutionTest {
 */
     // 下界函数
     // 二分查找的标准函数 http://bit.ly/32512ix  返回大于value的第一个位置
-
-
     public int lowerBound(int[] arr, int lo, int hi, int target) {
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
