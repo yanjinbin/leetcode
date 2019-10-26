@@ -4,7 +4,6 @@ package com.yanjinbin.leetcode;
 // ArrayDeque（双端队列）内部实现是一个循环数组，bit 巧妙运用
 
 
-import javax.sound.sampled.Line;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -224,7 +223,7 @@ public class Solution {
     }
 
 
-    // lt 3 无重复最长子串
+    // 3 无重复最长子串
     public int lengthOfLongestSubstring(String s) {
         int n = s.length();
         int ans = 0, i = 0, j = 0;
@@ -242,7 +241,7 @@ public class Solution {
         return ans;
     }
 
-    // leetcode 15 3sum
+    //  15 3数字和
     // http://bit.ly/2Sp1iFG
     public List<List<Integer>> threeSum(int[] nums) {
         List<List<Integer>> ret = new ArrayList();
@@ -267,7 +266,7 @@ public class Solution {
     }
 
     // #19. 删除链表的倒数第N个节点
-    // 无法处理 corner case,
+    /*// 无法处理 corner case,
     public ListNode removeNthFromEnd_poor(ListNode head, int n) {
         ListNode delayNode = head, startNode = head;
         int start = 0;
@@ -283,9 +282,9 @@ public class Solution {
         delayNode.next.next = null;
         delayNode.next = next;
         return head;
-    }
+    }*/
 
-    //// #19. 删除链表的倒数第N个节点, 完美处理corner case
+    //② #19. 删除链表的倒数第N个节点, 完美处理corner case
     public ListNode removeNthFromEnd(ListNode head, int n) {
         // init dummy node
         ListNode dummyNode = new ListNode(0);
@@ -322,7 +321,6 @@ public class Solution {
                 end = i + len / 2;
             }
         }
-        System.out.println("final! start:" + start + "\tend:" + end);
         return s.substring(start, end + 1);
     }
 
@@ -338,7 +336,6 @@ public class Solution {
     // 最长回文子串 最佳解法
     // http://bit.ly/2KMyIgk
     public int lo, maxLen;
-
     public String GoodLongestPalindrome(String s) {
         if (s.length() < 2) {
             return s;
@@ -357,37 +354,48 @@ public class Solution {
             k++;
         }
         if (maxLen < k - j - 1) {
-            // System.out.println("before，maxLen:"+maxLen+"\tlo:"+lo+"\tk:"+k+"\tj:"+j);
             lo = j + 1;
             maxLen = k - j - 1;
-            // System.out.println("after，maxLen:"+maxLen+"\tlo:"+lo+"\tk:"+k+"\tj:"+j);
         }
     }
 
-    // 21. 合并两个有序链表Copy Merge Two Sorted Lists
-
-    public ListNode mergeTwoLists_1(ListNode l1, ListNode l2) {
-        ListNode dummyNode = new ListNode(0);
+    // ② 21. 合并两个有序链表Copy Merge Two Sorted Lists 迭代方法
+    public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+        ListNode dummyNode = new ListNode(-1);
         ListNode cur = dummyNode;
-        while (l1 != null && l2 != null) {
-            if (l1.val > l2.val) {
+        while(l1!=null&&l2!=null){
+            if(l1.val < l2.val){
                 cur.next = new ListNode(l1.val);
-                l1 = l1.next;
-            } else {
+                l1  = l1.next;
+            }else{
                 cur.next = new ListNode(l2.val);
                 l2 = l2.next;
             }
             cur = cur.next;
         }
-        cur.next = l1 == null ? l2 : l1;
+        if(l1==null){
+            cur.next = l2;
+        }else{
+            cur.next = l1;
+        }
         return dummyNode.next;
-
     }
 
-    // 21. Merge Two Sorted Lists
+    //   递归解法
+    public ListNode mergeTwoSortedList(ListNode l1, ListNode l2) {
+        if (l1 == null) return l2;
+        if (l2 == null) return l1;
+        if (l1.val < l2.val) {
+            l1.next = mergeTwoSortedList(l1.next, l2);
+            return l1;
+        } else {
+            l2.next = mergeTwoSortedList(l1, l2.next);
+            return l2;
+        }
+    }
 
     // 错误的解法
-    public ListNode mergeTwoLists_0(ListNode l1, ListNode l2) {
+    /*public ListNode mergeTwoLists_0(ListNode l1, ListNode l2) {
         ListNode ret = l1.val > l2.val ? l2 : l1;
         ListNode cursor;
         // 这样想 ,其实有问题的 l1 l2长短不一的时候. 就会NPE阿
@@ -403,22 +411,9 @@ public class Solution {
             l2 = l2.next;
         }
         return ret;
-    }
-//    // 递归解法
+    }*/
 
-    public ListNode mergeTwoSortedList(ListNode l1, ListNode l2) {
-        if (l1 == null) return l2;
-        if (l2 == null) return l1;
-        if (l1.val < l2.val) {
-            l1.next = mergeTwoSortedList(l1.next, l2);
-            return l1;
-        } else {
-            l2.next = mergeTwoSortedList(l1, l2.next);
-            return l2;
-        }
-    }
-
-    // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
+    //②  [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // 23. 合并K个排序链表 Merge k Sorted Lists
     // http://bit.ly/2LtXUbI
     public ListNode mergeKLists(ListNode[] lists) {
@@ -439,7 +434,7 @@ public class Solution {
         return mergeTwoSortedList(l1, l2);
     }
 
-    //  22. 括号生成  回溯法(http://bit.ly/2KPYQHi)  假如我先添加一个左括号，next 接下来我可以添加
+    // ② 22. 括号生成  回溯法(http://bit.ly/2KPYQHi)  假如我先添加一个左括号，next 接下来我可以添加
     public List<String> generateParenthesis(int n) {
         List<String> ans = new ArrayList();
         backtrack(ans, "", 0, 0, n);
@@ -452,10 +447,6 @@ public class Solution {
             ans.add(cur);
             return;
         }
-        // 达到终点，问题的解 未达成，回溯
-        // 问题的解 不达成
-        // return
-
         // DFS探索
         if (close < open)
             backtrack(ans, cur + ")", open, close + 1, max);
@@ -463,7 +454,7 @@ public class Solution {
             backtrack(ans, cur + "(", open + 1, close, max);
     }
 
-    //[tag: 面筋 http://bit.ly/2Na3nW1] 11. 盛最多水的容器 双指针法，左右移动时候，选择移动 高度短的 可能能增加面积 如果是盛水最少的容器呢
+    // ② [tag: 面筋 http://bit.ly/2Na3nW1] 11. 盛最多水的容器 双指针法，左右移动时候，选择移动 高度短的 可能能增加面积 如果是盛水最少的容器呢
     public int maxArea(int[] height) {
         int left = 0, right = height.length - 1;
         int maxArea = 0;
@@ -480,7 +471,7 @@ public class Solution {
         return maxArea;
     }
 
-    // 206 反转链表 todo 递归解法 需要crack
+    // ② 206 反转链表  迭代和递归2种方法
     public ListNode reverseList(ListNode head) {
         ListNode prev = null;
         ListNode cursor = head;
@@ -519,35 +510,8 @@ public class Solution {
         return reversedListHead;
     }
 
-    // 206 Leetcode 错误解答
-    public ListNode reverseListBad1(ListNode head) {
-        ListNode prev = null;
-        ListNode cursor = head;
-        while (cursor != null) {
-            cursor.next = prev;
-            ListNode temp = cursor;
-            prev = temp;
-            cursor = cursor.next;
-        }
-        return prev;
-    }
-
-    // 206 Leetcode 错误解答
-    public ListNode reverseListBad2(ListNode head) {
-        ListNode prev = null;
-        ListNode cursor = head;
-        while (cursor != null) {
-            ListNode temp = cursor;
-            cursor = cursor.next;
-            prev = cursor;
-            prev.next = temp;
-
-        }
-        return prev;
-    }
-
-
-    //  31. 下一个排列 首先理解字典序  找下一个字典序更大的 如果最大了 就全局升序排列了
+    //  31. 下一个排列 首先理解字典序   找下一个字典序更大的 如果最大了 就全局升序排列了
+    //  todo 暂时放弃 没意思
     //  题解连接 http://bit.ly/2RS8Wbd
     public void nextPermutation(int[] nums) {
         if (nums == null || nums.length == 0) return;
@@ -559,10 +523,10 @@ public class Solution {
             while (nums[j] <= nums[i]) j--;// i 指向元素 从右往左找第一个
             swap(nums, i, j); //
         }
-        reverse0(nums, i + 1, nums.length - 1);
+        reverse(nums, i + 1, nums.length - 1);
     }
 
-    public void reverse0(int[] nums, int i, int j) {
+    public void reverse(int[] nums, int i, int j) {
         while (i < j) {
             swap(nums, i++, j--);
         }
@@ -589,8 +553,9 @@ public class Solution {
 
     }
 
-    // 53. 最大子序和
-    public int maxSubArray(int[] nums) {
+    // ② 53. 最大子序和
+    // dp[i] = dp[i-1]+A[i],if A[i]>0;else dp[i] = d[i-1]
+    public int maxSubArray01(int[] nums) {
         int res = Integer.MIN_VALUE, curSum = 0;
         for (int num : nums) {
             // 为什么比较的是curSum+num 和 num呢  而不是curSum+num 和 curSum呢  也就是判断num的正负呢
@@ -601,20 +566,23 @@ public class Solution {
         }
         return res;
     }
-
-    // 53. 最大子序和 错误解法
-    public int maxSubArray1(int[] nums) {
-        int cursum = 0;
-        int res = Integer.MIN_VALUE;
-        for (int i = 0; i < nums.length; i++) {
-            if (cursum > 0) {
-                cursum = cursum + nums[i];
-            }
-            if (res > cursum) {
-                res = cursum;
-            }
+    // 解法2 dp
+    // dp[i]=dp[i-1]+nums[i] if dp[i-1]>=0
+    // dp[i] =nums[i] if dp[i-1]<=0;
+    public int maxSubArray02(int[] nums) {
+        int N = nums.length;
+        int[] dp = new int[N];
+        dp[0] = nums[0];
+        for (int i = 1; i < N; i++) {
+            if (dp[i - 1] > 0) dp[i] = dp[i - 1] + nums[i];
+            else dp[i] = nums[i];
         }
-        return res;
+        int ans = Integer.MIN_VALUE;
+        for(int i:dp){
+            ans = Math.max(ans,i);
+        }
+        return  ans;
+
     }
 
     // leetcode 70 climbing stairs
@@ -831,7 +799,7 @@ public class Solution {
     }
 
     // 这道题目 关键在于 负数 以及0的处理
-    // Leetcode 152 乘积最大的连续 子序列 http://bit.ly/2RZ9AUo
+    //  152 乘积最大的连续 子序列 http://bit.ly/2RZ9AUo
     // 最大的最小的有可能互换  以及0 会使得  一切乘积都为0
     public int maxProduct(int[] nums) {
         int[] f = new int[nums.length];
@@ -900,15 +868,15 @@ public class Solution {
     public int findDuplicate1(int[] nums) {
         // // 特殊case n = 1 ,长度为2，{1,1} ; n= 2 ,长度为3,{1,2,2} or {1,1,2}
         int lo = 0, hi = nums.length;
-        while(lo<hi){
-            int mid = lo+(hi-lo)/2;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
             int count = 0;
-            for(int num:nums){ // 计算小于mid的个数,
-                if(num<=mid)count++;
+            for (int num : nums) { // 计算小于mid的个数,
+                if (num <= mid) count++;
             }
-            if(count<=mid){
-                lo = mid+1;
-            }else{
+            if (count <= mid) {
+                lo = mid + 1;
+            } else {
                 hi = mid;
             }
         }

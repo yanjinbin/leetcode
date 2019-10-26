@@ -3,8 +3,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.*;
-import java.util.function.IntFunction;
-import java.util.function.ToIntFunction;
 
 public class SolutionTest {
 
@@ -215,7 +213,6 @@ public class SolutionTest {
         System.out.println(INSTANCE.threeSum(ints));
     }
 
-
     @Test
     public void removeNthFromEnd() {
         /*
@@ -253,6 +250,45 @@ public class SolutionTest {
         rs = INSTANCE.GoodLongestPalindrome(s2);
         System.out.println(rs);
     }
+
+
+    @Test
+    public void mergeKLists() {
+        System.out.println("===合并2个,K个有序链表===");
+        ListNode h1 = ListNode.builder().val(1)
+                .next(ListNode.builder().val(3)
+                        .next(ListNode.builder().val(5).build()).build()).build();
+        ListNode h2 = ListNode.builder().val(2)
+                .next(ListNode.builder().val(4)
+                        .next(ListNode.builder().val(6).build()).build()).build();
+        ListNode ans = INSTANCE.mergeTwoLists(h1, h2);
+        System.out.println(ans);
+        h1 = ListNode.builder().val(1)
+                .next(ListNode.builder().val(3)
+                        .next(ListNode.builder().val(5).build()).build()).build();
+        h2 = ListNode.builder().val(2)
+                .next(ListNode.builder().val(4)
+                        .next(ListNode.builder().val(6).build()).build()).build();
+        ans = INSTANCE.mergeTwoSortedList(h1, h2);
+        System.out.println(ans);
+
+        h1 = ListNode.builder().val(1)
+                .next(ListNode.builder().val(4)
+                        .next(ListNode.builder().val(7).build()).build()).build();
+        h2 = ListNode.builder().val(2)
+                .next(ListNode.builder().val(5)
+                        .next(ListNode.builder().val(8).build()).build()).build();
+        ListNode h3 = ListNode.builder().val(3)
+                .next(ListNode.builder().val(6)
+                        .next(ListNode.builder().val(9).build()).build()).build();
+        ListNode h4 = ListNode.builder().val(-1)
+                .next(ListNode.builder().val(10)
+                        .next(ListNode.builder().val(12).build()).build()).build();
+        ans = INSTANCE.mergeKLists(new ListNode[]{h1, h2, h3, h4});
+        System.out.println(ans);
+
+    }
+
 
     @Test
     public void generateParenthesis() {
@@ -386,7 +422,7 @@ public class SolutionTest {
 
     @Test
     public void findDuplicate() {
-        int[] nums = {1,3,4,2,2};
+        int[] nums = {1, 3, 4, 2, 2};
         System.out.println(INSTANCE.findDuplicate0(nums));
         System.out.println(INSTANCE.findDuplicate1(nums));
     }
@@ -1548,13 +1584,19 @@ public class SolutionTest {
     }
 
     @Test
+    public void maxSubArray() {
+        int[] nums = new int[]{-2, 1, -3, 4, -1, 2, 1, -5, 4};
+        assert INSTANCE.maxSubArray01(nums) == INSTANCE.maxSubArray02(nums);
+    }
+
+    @Test
     public void findMissingPositive() {
         int[] nums = {1, 2, 0};
-        System.out.println(INSTANCE.firstMissingPositive01(nums));
+        assert INSTANCE.firstMissingPositive01(nums) == INSTANCE.firstMissingPositive02(nums);
         nums = new int[]{3, 4, -1, 1};
-        System.out.println(INSTANCE.firstMissingPositive01(nums));
+        assert INSTANCE.firstMissingPositive01(nums) == INSTANCE.firstMissingPositive02(nums);
         nums = new int[]{7, 8, 9, 11, 12};
-        System.out.println(INSTANCE.firstMissingPositive01(nums));
+        assert INSTANCE.firstMissingPositive01(nums) == INSTANCE.firstMissingPositive02(nums);
 
     }
 
