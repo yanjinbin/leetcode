@@ -154,21 +154,6 @@ public class SolutionTest {
     }
 
     @Test
-    public void ReverseSingleLinkedList() {
-        ListNode headNode = ListNode.builder()
-                .val(9).next(ListNode.builder()
-                        .val(11).next(ListNode.builder()
-                                .val(10).next(ListNode.builder()
-                                        .val(12).next(ListNode.builder()
-                                                .val(32).next(ListNode.builder()
-                                                        .val(13).build()).build()).build()).build()).build()).build();
-        System.out.println(headNode);
-        ListNode listNode = INSTANCE.reverseSingleLinkedList(headNode);
-        System.out.println(listNode);
-    }
-
-
-    @Test
     public void isPalindrome() {
 
 
@@ -328,9 +313,6 @@ public class SolutionTest {
         System.out.println(demoNode);
         demoNode = INSTANCE.reverseList1(demoNode);
         System.out.println(demoNode);
-
-        //  System.out.println(INSTANCE.reverseListBad1(demoNode));
-        //  System.out.println(INSTANCE.reverseListBad2(demoNode));
     }
 
     @Test(timeout = 1000)
@@ -344,11 +326,7 @@ public class SolutionTest {
 
     @Test
     public void climbStairs() {
-        System.out.println(INSTANCE.climbStairs1(5));
-        System.out.println("======");
-        System.out.println(INSTANCE.climbStairs2(5));
-        System.out.println("=====爬楼梯follow up问题===");
-        System.out.println(INSTANCE.climbStairFU(10, 5));
+        assert INSTANCE.climbStairs1(5) == INSTANCE.climbStairs1(5);
     }
 
     @Test
@@ -573,33 +551,15 @@ public class SolutionTest {
     public void findUnsortedSubarray() {
         //  int[] nums = {2, 6, 4, 8, 10, 9, 15};
         int[] nums = {1, 2, 3, 4};
-        System.out.println(INSTANCE.findUnsortedSubarray0(nums));
-        int[] nums1 = {9, 8, 7, 6, 12, 13, 15};
-        System.out.println(INSTANCE.findUnsortedSubarray1(nums1));
+        assert INSTANCE.findUnsortedSubarray01(nums) == INSTANCE.findUnsortedSubarray02(nums);
+        nums = new int[]{9, 8, 7, 6, 12, 13, 15};
+        assert INSTANCE.findUnsortedSubarray01(nums) == INSTANCE.findUnsortedSubarray02(nums);
     }
 
     @Test
     public void subarraySum() {
         int[] nums = {1, 3, 4, 2, 1, 5, 1, 1, 4, 2, 3, 6, 1};
         System.out.println(INSTANCE.subarraySum(nums, 7));
-    }
-
-    @Test
-    public void mergeTwoSortedList() {
-        ListNode node1 =
-                ListNode.builder().val(1).next(
-                        ListNode.builder().val(3).next(
-                                ListNode.builder().val(5).next(
-                                        ListNode.builder().val(7).build()).build()).build()).build();
-
-        ListNode node2 = ListNode.builder().val(2).next
-                (ListNode.builder().val(4).next(
-                        ListNode.builder().val(6).next(
-                                ListNode.builder().val(8).next(
-                                        ListNode.builder().val(10).next(
-                                                ListNode.builder().val(14).build()).build()).build()).build()).build()).build();
-        System.out.println(INSTANCE.merge(node1, node2));
-
     }
 
 
@@ -1546,23 +1506,25 @@ public class SolutionTest {
     @Test
     public void maxProfit() {
         //  [一个通用方法团灭 6 道股票问题](http://bit.ly/333JDIm)
-        System.out.println("=====参考 这位大佬的  http://bit.ly/333JDIm  ====");
+        System.out.println("=====参考 http://bit.ly/333JDIm 其实和背包问题有共同之处 ====");
+        int[] prices = new int[]{7, 1, 3, 4, 9, 2, 6, 1, 8};
+        prices = new int[]{7, 1, 5, 3, 6, 4};
+        assert INSTANCE.maxProfit121A(prices) == INSTANCE.maxProfit121B(prices);
+        assert INSTANCE.maxProfit122(prices) == 7;
 
-        int[] nums = new int[]{7, 1, 3, 4, 9, 2, 6, 1, 8};
-        assert INSTANCE.maxProfit1A(nums) == 8;
-        assert INSTANCE.maxProfit1B_Good(nums) == 8;
+        prices = new int[]{3, 3, 5, 0, 0, 3, 1, 4};
+        assert INSTANCE.maxProfit123(prices, 2) == 6;
 
-        assert INSTANCE.maxProfit2A(nums) == 19;
-        assert INSTANCE.maxProfit2B(nums) == 19;
+        prices = new int[]{3, 2, 6, 5, 0, 3};
+        int k = 2;
+        assert INSTANCE.maxProfit188(k, prices) == 7;
 
+        prices = new int[]{1, 2, 3, 0, 2};
+        assert INSTANCE.maxProfit309(prices) == 3;
 
-        assert INSTANCE.maxProfit3B(nums, 6) == 19;
-        assert INSTANCE.maxProfit4A(6, nums) == 19;
-        assert INSTANCE.maxProfit4A(2, nums) == 15;
-
-        assert INSTANCE.maxProfit5A(nums) == 15;
-        assert INSTANCE.maxProfit5B(nums) == 15;
-        assert INSTANCE.maxProfit6A(nums, 1) == 16;
+        prices = new int[]{1, 3, 2, 8, 4, 9};
+        int fee = 2;
+        assert INSTANCE.maxProfit714(prices, fee) == 8;
 
     }
 

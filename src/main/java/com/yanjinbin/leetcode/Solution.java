@@ -40,7 +40,7 @@ public class Solution {
         }
     }
 
-    // #1
+    //② #1
     public int[] twoSum(int[] nums, int target) {
         Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
@@ -116,17 +116,7 @@ public class Solution {
         return dummy.next;
     }
 
-
-    public static ListNode reverseListInt(ListNode head, ListNode newHead) {
-        if (head == null) {
-            return newHead;
-        }
-        ListNode next = head.next;
-        head.next = newHead;
-        return reverseListInt(next, head);
-    }
-
-    // 141. Linked List Cycle
+    // ② 141. Linked List Cycle
     public boolean hasCycle(ListNode head) {
         if (head == null) {
             return false;
@@ -173,11 +163,7 @@ public class Solution {
             s.push(slow);
             fast = fast.next.next;
         }
-        System.out.println("head: " + (head == null ? "null" : head) + "\tslow: " + (slow == null ? "null" : slow.val) + "\tfast: " + (fast == null ? "null " : fast.val) + "\n");
-        for (ListNode listNode : s) {
-            System.out.println("栈元素 " + listNode.val);
-        }
-        // System.out.println("===stack end ===");
+
         s.pop();
         // 奇数时候 去掉中间不参与比较的数字
         if (fast != null) {
@@ -207,21 +193,6 @@ public class Solution {
         if (res) cur = cur.next;
         return res;
     }
-
-    // 反转单链表
-    public ListNode reverseSingleLinkedList(ListNode head) {
-        ListNode prev = null, next = null;
-        ListNode cursor = head;
-        while (cursor != null) {
-            next = cursor.next;
-            cursor.next = prev;
-            prev = cursor;
-            cursor = next;
-        }
-        // 这里返回prev 是因为while循环跳出之后cursor = null 说明 prev is tail node了.
-        return prev;
-    }
-
 
     // 3 无重复最长子串
     public int lengthOfLongestSubstring(String s) {
@@ -303,7 +274,7 @@ public class Solution {
         return dummyNode.next;
     }
 
-    //  #5 最长回文字符串 5. Longest Palindromic Substring 官方题解垃圾的一点就是 start 和 end的更新问题 有问题
+    //②  #5 最长回文字符串 5. Longest Palindromic Substring 官方题解垃圾的一点就是 start 和 end的更新问题 有问题
     public String longestPalindrome(String s) {
         if (s == null || s.length() < 1) {
             return "";
@@ -316,7 +287,6 @@ public class Solution {
             int len = Math.max(len1, len2);
             if (len > (end - start)) {
                 // 为什么要减一呢 （反推确实验证是越界问题,如果len是2的话）
-                System.out.println("update\t i:" + i + "\tstart:" + start + "\tend:" + end + "\tlen:" + len);
                 start = i - (len - 1) / 2;
                 end = i + len / 2;
             }
@@ -333,9 +303,10 @@ public class Solution {
         return R - L - 1;
     }
 
-    // 最长回文子串 最佳解法
+    // ② 最长回文子串 最佳解法 中心扩散法
     // http://bit.ly/2KMyIgk
     public int lo, maxLen;
+
     public String GoodLongestPalindrome(String s) {
         if (s.length() < 2) {
             return s;
@@ -363,19 +334,19 @@ public class Solution {
     public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         ListNode dummyNode = new ListNode(-1);
         ListNode cur = dummyNode;
-        while(l1!=null&&l2!=null){
-            if(l1.val < l2.val){
+        while (l1 != null && l2 != null) {
+            if (l1.val < l2.val) {
                 cur.next = new ListNode(l1.val);
-                l1  = l1.next;
-            }else{
+                l1 = l1.next;
+            } else {
                 cur.next = new ListNode(l2.val);
                 l2 = l2.next;
             }
             cur = cur.next;
         }
-        if(l1==null){
+        if (l1 == null) {
             cur.next = l2;
-        }else{
+        } else {
             cur.next = l1;
         }
         return dummyNode.next;
@@ -412,7 +383,6 @@ public class Solution {
         }
         return ret;
     }*/
-
     //②  [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // 23. 合并K个排序链表 Merge k Sorted Lists
     // http://bit.ly/2LtXUbI
@@ -454,7 +424,9 @@ public class Solution {
             backtrack(ans, cur + "(", open + 1, close, max);
     }
 
-    // ② [tag: 面筋 http://bit.ly/2Na3nW1] 11. 盛最多水的容器 双指针法，左右移动时候，选择移动 高度短的 可能能增加面积 如果是盛水最少的容器呢
+    // ② [tag: 面筋 http://bit.ly/2Na3nW1]
+    // 11. 盛最多水的容器
+    // 双指针法，左右移动时候，选择移动 高度短的 可能能增加面积 如果是盛水最少的容器呢
     public int maxArea(int[] height) {
         int left = 0, right = height.length - 1;
         int maxArea = 0;
@@ -487,6 +459,7 @@ public class Solution {
         return prev;
     }
 
+    // 递归方法 1
     public ListNode reverseList1(ListNode head) {
         return help(head, null);
     }
@@ -498,6 +471,7 @@ public class Solution {
         return help(next, cur);
     }
 
+    // 递归方法 2
     public ListNode reverseList2(ListNode head) {
         if (head == null || head.next == null) {
             return head;
@@ -566,6 +540,7 @@ public class Solution {
         }
         return res;
     }
+
     // 解法2 dp
     // dp[i]=dp[i-1]+nums[i] if dp[i-1]>=0
     // dp[i] =nums[i] if dp[i-1]<=0;
@@ -578,16 +553,37 @@ public class Solution {
             else dp[i] = nums[i];
         }
         int ans = Integer.MIN_VALUE;
-        for(int i:dp){
-            ans = Math.max(ans,i);
+        for (int i : dp) {
+            ans = Math.max(ans, i);
         }
-        return  ans;
-
+        return ans;
     }
 
-    // leetcode 70 climbing stairs
-    // todo follow up问题 http://bit.ly/2SplozJ
-    // 迭代形式
+    // ② 这道题目 关键在于 负数 以及0的处理
+    // 152 乘积最大的连续 子序列 http://bit.ly/2RZ9AUo
+    // 最大的最小的有可能互换  以及0 会使得  一切乘积都为0
+    public int maxProduct(int[] nums) {
+        int N = nums.length;
+        int[] mindp = new int[N];
+        int[] maxdp = new int[N];
+        int res = nums[0];
+        mindp[0] = nums[0];
+        maxdp[0] = nums[0];
+        for (int i = 1; i < N; i++) {
+            if (nums[i] > 0) {
+                maxdp[i] = Math.max(maxdp[i - 1] * nums[i], nums[i]);
+                mindp[i] = Math.min(mindp[i - 1] * nums[i], nums[i]);
+            } else {
+                maxdp[i] = Math.max(mindp[i - 1] * nums[i], nums[i]);
+                mindp[i] = Math.min(maxdp[i - 1] * nums[i], nums[i]);
+            }
+            res = Math.max(res, maxdp[i]);
+        }
+        return res;
+    }
+
+
+    // ② 70 climbing stairs
     public int climbStairs1(int n) {
         if (n <= 1) return 1;
         int[] dp = new int[n];
@@ -602,12 +598,6 @@ public class Solution {
     // 递归+记忆数组
     // DP问题: 记忆数组+迭代
     public int climbStairs2(int n) {
-        // 为什么 n+1长度呢 这个怎么算出来的呢
-        // 首先memo 是用来存储数组用的
-        //  递归一次 n 分别-1 -2
-        // 递归终止条件是n <=1
-        // 假设 n= 1 可以推导出  climbHelper(n,memo)[memo(n)] --> memo[2]=climber(1)+climber(0),或者memo[3]=climber(2)+climber(1)--> memo[2]=climber(1)+climber(0),因此递归的时候memo数组的长度是n+1啦
-
         int[] memo = new int[n + 1];
         return climbHelper(n, memo);
     }
@@ -620,29 +610,8 @@ public class Solution {
         }
         return memo[n] = climbHelper(n - 1, memo) + climbHelper(n - 2, memo);
     }
-    // follow up 问题
 
-    /**
-     * @param n 总步长
-     * @param m 每一次最能能跨的最大台阶数
-     * @return
-     */
-    public int climbStairFU(int n, int m) {
-        int stepCount = 0;
-        if (n == 0) {
-            return 1;
-        }
-        if (n >= m) {
-            for (int i = 1; i <= m; i++) {
-                stepCount = stepCount + climbStairFU(n - i, m);
-            }
-        } else {
-            stepCount += climbStairFU(n, n);
-        }
-        return stepCount;
-    }
-
-    // 64. 最小路径和  这是一道很经典的题目  哈哈 😁  忠于自己亲手做出来了 😘
+    //  64. 最小路径和  这是一道很经典的题目  哈哈 😁  忠于自己亲手做出来了 😘
     public int minPathSum(int[][] grid) {
         int rowLen = grid.length;
         int colLen = grid[rowLen].length;
@@ -721,7 +690,7 @@ public class Solution {
         dfsAdd(level + 1, nums, res, subset);
     }
 
-    // leetcode 79 单次搜索
+    //  79 单词搜索
     public boolean exist(char[][] board, String word) {
         if (board == null || board.length == 0 || (board.length == 1 && board[0].length == 0)) return false;
         int collen = board.length;
@@ -758,14 +727,11 @@ public class Solution {
 
     public boolean exist = false;
 
-    // leetcode 139  单词拆分 http://bit.ly/2Ld41Bt 这是一道DP题目
-    // 分治思想 DP
+    // ② 139 单词拆分 http://bit.ly/2Ld41Bt  0起点,长度为N的字符串 能否被words填充
     // S[0,i)= S[0,j) || S[j,i)  0 <= j < i <= s.length()
     public boolean wordBreak(String s, List<String> wordDict) {
         boolean[] dp = new boolean[s.length() + 1];
         dp[0] = true;
-        // 关于对下面dp 状态转移方程的一点思考, 那就是 状态转移条件(内循环的if更新)和状态转移的更新迭代器(dict.contain(s.substring(j,i)---->dp[i]=true)
-        // i有写错了呢 !!! i要从1开始哦,这样最后一个字符串才能包含进去阿  substring 左闭右开
         for (int i = 1; i <= s.length(); i++) {
             for (int j = 0; j < i; j++) {
                 if (dp[j] && wordDict.contains(s.substring(j, i))) {
@@ -777,8 +743,8 @@ public class Solution {
         return dp[s.length()];
     }
 
-
-    // leetcode 139 错误做法
+/*
+    // 139 错误做法
     public boolean wordBreakbad(String s, List<String> wordDict) {
         splitHelper(s, s.length(), 0, wordDict);
         return exist;
@@ -788,7 +754,6 @@ public class Solution {
         if (exist) return;
         if (cursor > length) exist = false;
         if (cursor == length) exist = true;
-        System.out.println(s + " " + cursor);
         String ret = s.substring(cursor);
         for (String word : wordDict) {
             if (ret.startsWith(word)) {
@@ -796,24 +761,8 @@ public class Solution {
                 splitHelper(s, length, cursor, wordDict);
             }
         }
-    }
+    }*/
 
-    // 这道题目 关键在于 负数 以及0的处理
-    //  152 乘积最大的连续 子序列 http://bit.ly/2RZ9AUo
-    // 最大的最小的有可能互换  以及0 会使得  一切乘积都为0
-    public int maxProduct(int[] nums) {
-        int[] f = new int[nums.length];
-        int[] g = new int[nums.length];
-        // init
-        int res;
-        res = f[0] = g[0] = nums[0];
-        for (int i = 1; i < nums.length; i++) {
-            f[i] = Math.max(Math.max(nums[i], f[i - 1] * nums[i]), nums[i] * g[i - 1]);
-            g[i] = Math.min(Math.min(nums[i], f[i - 1] * nums[i]), nums[i] * g[i - 1]);
-            res = Math.max(res, f[i]);
-        }
-        return res;
-    }
 
     //② 41 缺失的第一个正数  http://bit.ly/2Pir4Mc 类似鸽巢原理 ,放到正确的位置
     public int firstMissingPositive01(int[] nums) {
@@ -975,7 +924,7 @@ public class Solution {
 
     // ② 581. 最短无序连续子数组
     // 先排序
-    public int findUnsortedSubarray0(int[] nums) {
+    public int findUnsortedSubarray01(int[] nums) {
         int start = 0, end = nums.length - 1;
         int[] bak = Arrays.copyOf(nums, nums.length);
         Arrays.sort(bak);
@@ -984,7 +933,7 @@ public class Solution {
         return end - start + 1;
     }
 
-    public int findUnsortedSubarray2(int[] nums) {
+    public int findUnsortedSubarray02(int[] nums) {
         Stack<Integer> s = new Stack();
         int l = nums.length - 1, r = 0;
         for (int i = 0; i < nums.length; i++) {
@@ -1005,7 +954,7 @@ public class Solution {
     }
 
 
-    public int findUnsortedSubarray1(int[] nums) {
+    /*public int findUnsortedSubarray1(int[] nums) {
         int n = nums.length;
         // -1 和 -2 也是有意义的哦 end-start+1 = 0!!!
         int start = -1;
@@ -1019,7 +968,7 @@ public class Solution {
             if (mn < nums[n - 1 - i]) start = n - 1 - i;
         }
         return end - start + 1;
-    }
+    }*/
 
     // ② 560. 和为K的子数组
     // corner case
@@ -1035,8 +984,7 @@ public class Solution {
         map.put(0, 1);// 比较tricky的啊
         for (int i = 0; i < nums.length; i++) {
             sum += nums[i];
-            if (map.containsKey(sum - k))
-                count += map.get(sum - k);
+            if (map.containsKey(sum - k)) count += map.get(sum - k);
             map.put(sum, map.getOrDefault(sum, 0) + 1);
         }
         return count;
@@ -1125,7 +1073,7 @@ public class Solution {
         return heap.peek();
     }
 
-    // leetcode 148 排序链表
+    // todo leetcode 148 排序链表
     public ListNode sortList(ListNode head) {
         if (head == null || head.next == null) {
             return head;
@@ -1141,37 +1089,7 @@ public class Solution {
         prev.next = null;
         ListNode l1 = sortList(head);
         ListNode l2 = sortList(slow);
-        ListNode merge = merge(l1, l2);
-        return merge;
-
-    }
-
-    public ListNode merge(ListNode l1, ListNode l2) {
-        ListNode dummy = new ListNode(0);
-        ListNode l = dummy;
-        while (l1 != null && l2 != null) {
-            if (l1.val < l2.val) {
-                l.next = l1;
-                l1 = l1.next;
-            } else {
-                l.next = l2;
-                l2 = l2.next;
-            }
-            l = l.next;
-        }
-
-        while (l1 != null) {
-            l.next = l1;
-            l1 = l1.next;
-            l = l.next;
-        }
-        while (l2 != null) {
-            l.next = l2;
-            l2 = l2.next;
-            l = l.next;
-        }
-        // System.out.println("dummy:" + dummy.val + "next:" + dummy.next);
-        return dummy.next;
+        return mergeTwoSortedList(l1, l2);
     }
 
 
@@ -3346,227 +3264,179 @@ public class Solution {
 
     }
 
-    // ✅ 买卖股票系列问题 参考下面这篇 Blog 属实牛逼 http://bit.ly/333JDIm
+    // ✅ 买卖股票系列问题 参考 http://bit.ly/333JDIm
+
+    // dp[i][k][0]=Math.max(dp[i-1][k][0],dp[i-1][k][1]+prices[i]);
+    // dp[i][k][1]=Math.max(dp[i-1][k][1],dp[i-1][k-1][0]-prices[i]);
+    // i ∈ [0,N), k ∈ [0，K]
+
+    // base case ,i = 0;
+    //  dp[0][k][0]=Math.max(dp[-1][k][0],dp[-1][k][1]+prices[0]);
+    //  dp[0][k][1]=Math.max(dp[-1][k][1],dp[-1][k-1][0]-prices[0]);
+    // base case ,k = 0;
+    //  dp[i][0][0]=Math.max(dp[i-1][0][0],dp[i-1][0][1]+prices[i]);
+    //  dp[i][0][1]=Math.max(dp[i-1][0][1],dp[i-1][-1][0]-prices[i])
+
+
     // 121. 买卖股票的最佳时机
-    public int maxProfit1A(int[] prices) {
-        if (prices.length == 0) return 0;
-        int min = prices[0];
-        int gap = 0;
-        for (int i = 0; i < prices.length; i++) {
-            min = Math.min(min, prices[i]);
-            gap = Math.max(prices[i] - min, gap);
+    // dp[i][0] = 0;
+    // 解释：
+    //   dp[i][0] = max(dp[-1][0], dp[-1][1] + prices[i]) = max(0, -infinity + prices[i]) = 0
+    //  dp[i][1] = -prices[i];
+    //解释：
+    //   dp[i][1] = max(dp[-1][1], dp[-1][0] - prices[i]) = max(-infinity, 0 - prices[i])
+    // = -prices[i]
+
+    public int maxProfit121A(int[] prices) {
+        if (prices == null || prices.length == 0) return 0;
+        // int k = 1;
+        int n = prices.length;
+        int[][] dp = new int[prices.length][2];
+
+        dp[0][0] = 0;
+        dp[0][1] = -prices[0];
+        for (int i = 1; i < n; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
         }
-        return gap;
+        return dp[n - 1][0];
     }
 
-    public int maxProfit1B_Bad(int[] prices) {
+    public int maxProfit121B(int[] prices) {
+        if (prices.length == 0 || prices == null) return 0;
+        int N = prices.length;
         int k = 1;
-        int n = prices.length;
-        int[][] dp = new int[prices.length][2];
-        for (int i = 0; i < n; i++) { // 没有处理base case
-            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
-            dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
-        }
-        return dp[n - 1][0];
-    }
-
-    public int maxProfit1B_Good(int[] prices) {
-
-        if (prices == null || prices.length == 0) return 0;
-        // int k = 1;
-        int n = prices.length;
-        int[][] dp = new int[prices.length][2];
-        for (int i = 0; i < n; i++) {
-            if (i - 1 == -1) {
-                dp[i][0] = 0;
-                // 解释：
-                //   dp[i][0]
-                // = max(dp[-1][0], dp[-1][1] + prices[i])
-                // = max(0, -infinity + prices[i]) = 0
-                dp[i][1] = -prices[i];
-                //解释：
-                //   dp[i][1]
-                // = max(dp[-1][1], dp[-1][0] - prices[i])
-                // = max(-infinity, 0 - prices[i])
-                // = -prices[i]
-                continue;
-            }
-            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
-            dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
-        }
-        return dp[n - 1][0];
-
-
-
-
-/*
-        if (prices == null || prices.length == 0) return 0;
-        // int k = 1;
-        int n = prices.length;
-        int[][] dp = new int[prices.length][2];
-        dp[0][0] = 0;
-        dp[0][1] = -prices[0];
-        for (int i = 1; i < n; i++) {
-            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
-            dp[i][1] = Math.max(dp[i - 1][1], -prices[i]);
-        }
-        return dp[n - 1][0];*/
-    }
-
-    public int maxProfit1C(int[] prices) {
-        int n = prices.length;
-        // base case: dp[-1][0] = 0, dp[-1][1] = -infinity
-        int dp_i_0 = 0, dp_i_1 = Integer.MIN_VALUE;
-        for (int i = 0; i < n; i++) {
-            // dp[i][0] = max(dp[i-1][0], dp[i-1][1] + prices[i])
-            dp_i_0 = Math.max(dp_i_0, dp_i_1 + prices[i]);
-            // dp[i][1] = max(dp[i-1][1], -prices[i])
-            dp_i_1 = Math.max(dp_i_1, -prices[i]);
-        }
-        return dp_i_0;
-
-    }
-
-
-    // ✅122. 买卖股票的最佳时机 II   逢涨必抛  贪心算法
-    public int maxProfit2A(int[] prices) {
-        int res = 0;
-        for (int i = 1; i < prices.length; i++) {
-            if (prices[i] > prices[i - 1]) {
-                res += prices[i] - prices[i - 1];
-            }
-        }
-        return res;
-    }
-
-    //  股票系列通用的模版
-    public int maxProfit2B(int[] prices) {
-        if (prices == null || prices.length == 0) return 0;
-        int n = prices.length;
-        int[][] dp = new int[n][2];
-        // init
-        dp[0][0] = 0;
-        dp[0][1] = -prices[0];
-        for (int i = 1; i < n; i++) {
-            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
-            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]);
-        }
-        return dp[n - 1][0];
-    }
-
-
-    // ✅ 123. 买卖股票的最佳时机 III
-    // 解法1  没看懂
-    public int maxProfit3A(int[] prices, int k) {
-        if (prices.length == 0 || prices == null) return 0;
-        int n = prices.length;
-        int[][] dpG = new int[n][k];
-        int[][] dpL = new int[n][k];
-        dpG[n][3] = 0;
-        dpL[n][3] = 0;
-        for (int i = 1; i < n; ++i) {
-            int diff = prices[i] - prices[i - 1];
-            for (int j = 1; j <= 2; ++j) {
-                dpL[i][j] = Math.max(dpG[i - 1][j - 1] + Math.max(diff, 0), dpL[i - 1][j] + diff);
-                dpG[i][j] = Math.max(dpL[i][j], dpG[i - 1][j]);
-            }
-        }
-        return dpG[n - 1][2];
-    }
-
-    // 解法2
-    //
-    public int maxProfit3B(int[] prices, int k) {
-        if (prices.length == 0 || prices == null) return 0;
-        int n = prices.length;
-        // k 代表最多可以进行的交易次数
-        int[][][] dp = new int[n][k + 1][2];
-        // init
-        for (int i = 0; i < n; i++) {
-            // j >=1 也可以 因为 j =0 代表不进行交易,那么是负无穷大
-            for (int j = 1; j <= k; j++) {
+        int[][][] dp = new int[N][k + 1][2];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j <= k; j++) {
                 if (i == 0) {
                     dp[0][j][0] = 0;
-                    dp[0][j][1] = -prices[i];
+                    dp[0][j][1] = -prices[0];
+                    continue;
+                }
+                if (j == 0) {
+                    dp[i][0][0] = 0;
+                    dp[i][0][1] = Integer.MIN_VALUE;
                     continue;
                 }
                 dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i]);
                 dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i]);
             }
         }
-        return dp[n - 1][k][0];
+        return dp[N - 1][1][0];
     }
 
-    //✅ 188. 买卖股票的最佳时机 IV
-    public int maxProfit4A(int k, int[] prices) {
-        int n = prices.length;
-        if (k > n / 2) { // 一天内
-            return maxProfit2B(prices);
-        }
-        return maxProfit3B(prices, k);
-    }
-
-
-    //✅ 309. 最佳买卖股票时机含冷冻期
-    public int maxProfit5A(int[] prices) {
-        // corner case
-        if (prices == null || prices.length <= 1) return 0;
-
-        if (prices.length == 2) {
-            return prices[1] - prices[0] > 0 ? prices[1] - prices[0] : 0;
-        }
-
+    // ✅122. 买卖股票的最佳时机 II
+    public int maxProfit122(int[] prices) {
+        if (prices == null || prices.length == 0) return 0;
         int n = prices.length;
         int[][] dp = new int[n][2];
-
-        // general case
         // init
-        // k=0;
         dp[0][0] = 0;
         dp[0][1] = -prices[0];
-
-        // k = 1
-        dp[1][0] = Math.max(dp[0][0], dp[0][1] + prices[1]);
-        dp[1][1] = Math.max(dp[0][1], 0 - prices[1]);
-
-        for (int i = 2; i < n; i++) {
+        for (int i = 1; i < n; i++) {
             dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
-            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]);// 和121就差这一行
         }
         return dp[n - 1][0];
     }
 
-    // 改写上面maxProfit5A方法
-    public int maxProfit5B(int[] prices) {
-        int n = prices.length;
-        int dp_i_0 = 0;
-        int dp_i_1 = Integer.MIN_VALUE;
-        int dp_pre_0 = 0;
-        for (int i = 0; i < n; i++) {
-            // 改写
-            int temp = dp_i_0;// 上一次的  0-->1
-            dp_i_0 = Math.max(dp_i_0, dp_i_1 + prices[i]);// 更新了一次1-->2
-            dp_i_1 = Math.max(dp_i_1, dp_pre_0 - prices[i]);//0  哲理可以看到 dp_pre_0 的使用和被赋值规律
-            dp_pre_0 = temp; // 0-->1
+
+    // ✅ 123. 买卖股票的最佳时机 III
+    public int maxProfit123(int[] prices, int K) {
+        if (prices.length == 0 || prices == null) return 0;
+        int N = prices.length;
+        int[][][] dp = new int[N][K + 1][2];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j <= K; j++) {
+                if (i == 0) {
+                    dp[0][j][0] = 0;
+                    dp[0][j][1] = -prices[0];
+                    continue;
+                }
+                if (j == 0) {
+                    dp[i][0][0] = 0;
+                    dp[i][0][1] = Integer.MIN_VALUE;
+                    continue;
+                }
+                dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i]);
+                dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i]);
+            }
         }
-        return dp_i_0;
+        return dp[N - 1][K][0];
+    }
+
+    //✅ 188. 买卖股票的最佳时机 IV
+    public int maxProfit188(int k, int[] prices) {
+        // 还需要优化  一次交易由买入和卖出构成，至少需要两天。
+        // 所以说有效的限制 k 应该不超过 n/2，如果超过，就没有约束作用了，相当于 k = +infinity。
+
+        if (prices.length == 0 || prices == null) return 0;
+        int N = prices.length;
+        if (k > N / 2) {
+            // 不限次数交易
+            return maxProfit122(prices);
+        }
+        int[][][] dp = new int[N][k + 1][2];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j <= k; j++) {
+                if (i == 0) {
+                    dp[0][j][0] = 0;
+                    dp[0][j][1] = -prices[0];
+                    continue;
+                }
+                if (j == 0) {
+                    dp[i][0][0] = 0;
+                    dp[i][0][1] = Integer.MIN_VALUE;
+                    continue;
+                }
+                dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i]);
+                dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i]);
+            }
+        }
+        return dp[N - 1][k][0];
     }
 
 
-    //✅ 714. 买卖股票的最佳时机含手续费
-    public int maxProfit6A(int[] prices, int fee) {
-        int n = prices.length;
-        int dp_i_0 = 0, dp_i_1 = Integer.MIN_VALUE;
-        for (int i = 0; i < n; i++) {
-            int temp = dp_i_0;
-            dp_i_0 = Math.max(dp_i_0, dp_i_1 + prices[i]);
-            dp_i_1 = Math.max(dp_i_1, temp - prices[i] - fee);
+    //✅ 309. 最佳买卖股票时机含冷冻期
+    // dp(i,0) = Max{ dp(i-1,0),dp(i-1,1)+prices[i]
+    // dp(i,1) = Max{ dp(i-1,1),dp(i-2,0)-prices[i]
+    public int maxProfit309(int[] prices) {
+        // input validate
+        if (prices == null || prices.length <= 1) return 0;
+        int N = prices.length;
+        int[][] dp = new int[N][2];
+        // BASE CASE
+        dp[0][0] = 0;
+        dp[0][1] = -prices[0];
+
+        dp[1][0] = Math.max(dp[0][0], dp[0][1] + prices[1]);
+        dp[1][1] = Math.max(dp[0][1], -prices[1]);
+
+        for (int i = 2; i < N; i++) {
+            dp[i][0]=Math.max(dp[i-1][0],dp[i-1][1]+prices[i]);
+            dp[i][1]=Math.max(dp[i-1][1],dp[i-2][0]-prices[i]);
         }
-        return dp_i_0;
+        return dp[N - 1][0];
+    }
+
+    //✅ 714. 买卖股票的最佳时机含手续费
+    public int maxProfit714(int[] prices, int fee) {
+        if (prices == null || prices.length == 0) return 0;
+        int n = prices.length;
+        int[][] dp = new int[n][2];
+        // init
+        dp[0][0] = 0;
+        dp[0][1] = -prices[0]-fee;
+        for (int i = 1; i < n; i++) {
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]-fee);
+        }
+        return dp[n - 1][0];
     }
 
     // ② [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
-    // leetcode 8  字符串转换整数 (atoi)
+    // 8  字符串转换整数 (atoi)
     public int myAtoi(String str) {
         int sign = 1;
         int i = 0;

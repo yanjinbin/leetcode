@@ -73,7 +73,7 @@ https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/discuss/2042
 
 经典问题
 -[X] 1143 最长公共子序列 LCS 
--[x] 300  最长上升子序列 LIC 
+-[x] 300  最长上升子序列 LIC ˙
 -[x] 674  最长连续递增序列 
 -[x] 516  最长回文子序列 
 -[x] 5 最长回文子串(马拉车算法)

@@ -43,7 +43,6 @@ public class DP {
                 tot++;
             }
         }
-        System.out.println("运算次数:\t" + tot);
         return best;
     }
 

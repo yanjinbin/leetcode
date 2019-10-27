@@ -29,11 +29,12 @@ public class DPTest {
         int[] arr = new int[]{3, -1, -4, 9, 8, 7};
         Solution.shuffle(arr, 0, arr.length);
         System.out.println(Arrays.toString(arr));
-        assert DP.maxConsecutiveSum1(arr) == SOLUTION.maxSubArray(arr);
+        assert DP.maxConsecutiveSum1(arr) == SOLUTION.maxSubArray01(arr);
         System.out.println("====解法2====");
-        assert DP.maxConsecutiveSum2(arr) == SOLUTION.maxSubArray(arr);
+        assert DP.maxConsecutiveSum2(arr) == SOLUTION.maxSubArray01(arr);
         System.out.println("====解法3====");
-        assert DP.maxConsecutiveSum3(arr) == SOLUTION.maxSubArray(arr);
+        assert DP.maxConsecutiveSum3(arr) == SOLUTION.maxSubArray01(arr);
+
     }
 
     @Test
