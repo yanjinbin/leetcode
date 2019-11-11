@@ -1,7 +1,11 @@
 package com.yanjinbin.leetcode;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class BinarySearch {
     // 887. 鸡蛋掉落
@@ -15,16 +19,16 @@ public class BinarySearch {
     public int mySqrt1(int x) {
         // 无法处理x= Integer.MAX_VALUE;
         long l = 1;
-        long  r = x+1;
-        while (l<r){
-            long mid = l+(r-l)/2;
-            if (mid>x/mid){
-                r=mid;
-            }else {
-                l = mid+1;
+        long r = x + 1;
+        while (l < r) {
+            long mid = l + (r - l) / 2;
+            if (mid > x / mid) {
+                r = mid;
+            } else {
+                l = mid + 1;
             }
         }
-        return  (int)(l-1);
+        return (int) (l - 1);
 
         /*
         *
@@ -70,11 +74,10 @@ public class BinarySearch {
     }
 
 
-
     // ② 378 有序矩阵中 第K小的元素
     // 解法2 二分查找
     public int kthSmallest(int[][] matrix, int k) {
-        int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1]+1;
+        int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1] + 1;
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
             int count = lessEqual(matrix, mid);
@@ -110,6 +113,24 @@ public class BinarySearch {
             }
         }
         return l;
+    }
+
+    //  658 K个最接近的元素
+    public List<Integer> findKClosestElements(int[] arr, int k, int x) {
+        int lo = 0, hi = arr.length - k;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (x - arr[mid] > arr[mid + k] - x) {
+                lo = mid+1;
+            }else{
+                hi = mid;
+            }
+        }
+        List<Integer> list = new ArrayList<>();
+        for (int j=lo;j<lo+k;j++){
+            list.add(arr[j]);
+        }
+        return list;
     }
 
 

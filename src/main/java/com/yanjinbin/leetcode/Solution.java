@@ -1421,7 +1421,7 @@ public class Solution {
 
     // 102. 二叉树的层次遍历
     public List<List<Integer>> levelOrder0(TreeNode root) {
-        Queue<TreeNode> queue = new LinkedList<>();
+        LinkedList<TreeNode> queue = new LinkedList<>();
         queue.add(root);
         List<List<Integer>> ret = new ArrayList<>();
         while (!queue.isEmpty()) {
@@ -1543,7 +1543,8 @@ public class Solution {
         if (root == null) return ret;
         Stack<TreeNode> stack = new Stack<>();
         stack.push(root);
-        // 后续遍历可以首先想到的就是 左右子树均为null--->向上搜寻 出现 左右子树一个为空的时候 你需要 标识上次的递归 必须是左右子树为null
+        // 后续遍历可以首先想到的就是 左右子树均为null--->向上搜寻
+        // 出现 左右子树一个为空的时候 你需要 标识上次的递归 必须是左右子树为null
         TreeNode flag = root;
         while (!stack.isEmpty()) {
             TreeNode t = stack.peek();
@@ -1664,7 +1665,7 @@ public class Solution {
         return false;
     }
 
-    // 114. 二叉树展开为链表 http://bit.ly/2LtZDhc  看懂图解哦
+    //② 114. 二叉树展开为链表 http://bit.ly/2LtZDhc  看懂图解哦
     public void flatten(TreeNode root) {
         if (root == null) return;
         flatten(root.left);
@@ -3265,8 +3266,8 @@ public class Solution {
     }
 
     // ✅ 买卖股票系列问题 参考 http://bit.ly/333JDIm
-
     // dp[i][k][0]=Math.max(dp[i-1][k][0],dp[i-1][k][1]+prices[i]);
+
     // dp[i][k][1]=Math.max(dp[i-1][k][1],dp[i-1][k-1][0]-prices[i]);
     // i ∈ [0,N), k ∈ [0，K]
 
@@ -3414,8 +3415,8 @@ public class Solution {
         dp[1][1] = Math.max(dp[0][1], -prices[1]);
 
         for (int i = 2; i < N; i++) {
-            dp[i][0]=Math.max(dp[i-1][0],dp[i-1][1]+prices[i]);
-            dp[i][1]=Math.max(dp[i-1][1],dp[i-2][0]-prices[i]);
+            dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 2][0] - prices[i]);
         }
         return dp[N - 1][0];
     }
@@ -3427,10 +3428,10 @@ public class Solution {
         int[][] dp = new int[n][2];
         // init
         dp[0][0] = 0;
-        dp[0][1] = -prices[0]-fee;
+        dp[0][1] = -prices[0] - fee;
         for (int i = 1; i < n; i++) {
             dp[i][0] = Math.max(dp[i - 1][0], dp[i - 1][1] + prices[i]);
-            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i]-fee);
+            dp[i][1] = Math.max(dp[i - 1][1], dp[i - 1][0] - prices[i] - fee);
         }
         return dp[n - 1][0];
     }
@@ -3859,8 +3860,7 @@ public class Solution {
         }
         return res;
     }
-    // folllow up 59 螺旋矩阵2
-
+    // follow up 59 螺旋矩阵2
     /*  public List<List<Integer>> getSkyline(int[][] building) {
           throw new IllegalStateException("扫描线方法 todo 有点难啊");
           List<List<Integer>> res = new ArrayList();
@@ -4995,7 +4995,6 @@ public class Solution {
             int mid = lo + (hi - lo) / 2;
             int count = lessEqual(matrix, mid);
             if (count < k) lo = mid + 1;
-                // 为什么是mid-1呢 而不是mid
             else hi = mid;
         }
         return hi;
@@ -5528,7 +5527,22 @@ public class Solution {
         return lo;
     }
 
+    // 最大公约数
+    // gcd(104,40) = 8  辗转相除法
+    public int gcd(int a, int b) {
+        return b == 0 ? a : gcd(b, a % b);
+    }
+
+    // 最大公倍数 * 最小公约数 = a*b
+    public int lcm(int a, int b) {
+        return (b) / Math.abs(gcd(a, b)) * a;
+    }
+
+    // 1071
+
+
 }
+
 
 
 

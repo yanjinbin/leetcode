@@ -16,6 +16,8 @@ public class SolutionTest {
 
     private static DivideConquer DC = new DivideConquer();
 
+    private static BinarySearch BS = new BinarySearch();
+
     @Before()
     public void init() {
 
@@ -862,11 +864,6 @@ public class SolutionTest {
         System.out.println(INSTANCE.invertTree(b));
     }
 
-    @Test(timeout = 2000)
-    public void pathSum() {
-        TreeNode root = TreeNode.builder().val(1).build();
-        TreeSP.pathSum(root, 7);
-    }
 
     @Test(timeout = 2000)
     public void convertBST() {
@@ -2436,5 +2433,75 @@ public class SolutionTest {
             }
         }
         return lo;
+    }
+
+    @Test
+    public void findKClosestElement() {
+        int[] arr = new int[]{1, 2, 3, 4, 5};
+        int x = 4;
+        int k = 3;
+        BS.findKClosestElements(arr, x, k);
+        arr = new int[]{1, 1, 2, 2, 2, 2, 2, 3, 3};
+        x = 3;
+        k = 3;
+        BS.findKClosestElements(arr, x, k);
+
+    }
+
+    @Test
+    public void GcdLcm() {
+        System.out.println(INSTANCE.gcd(-40, -104));
+        System.out.println(INSTANCE.gcd(0, 8));
+        System.out.println(INSTANCE.gcd(8, 0));
+        System.out.println(INSTANCE.gcd(-104, -40));
+        System.out.println(INSTANCE.gcd(104, 40));
+        assert INSTANCE.lcm(40, 104) == 520;
+    }
+
+    @Test
+    public void largestSubtree() {
+        TreeNode root = TreeNode.builder().val(10).build();
+        TreeSP.largestBSTSubTree(root);
+    }
+
+    @Test
+    public void treeToDoublyList() {
+        TreeNode a = TreeNode.builder().name("a").val(3).build();
+        TreeNode b = TreeNode.builder().name("b").val(9).build();
+        TreeNode c = TreeNode.builder().name("c").val(7).build();
+        TreeNode d = TreeNode.builder().name("d").val(15).build();
+        TreeNode e = TreeNode.builder().name("e").val(30).build();
+        c.setLeft(b);
+        b.setLeft(a);
+        c.setRight(e);
+        e.setLeft(d);
+        assert TreeSP.treeToDoublyList(c).val == 3;
+    }
+
+
+    @Test
+    public void pathSum() {
+        TreeNode root = TreeNode.builder().val(5).build();
+        TreeNode t2 = TreeNode.builder().val(4).build();
+        TreeNode t3 = TreeNode.builder().val(8).build();
+        TreeNode t4 = TreeNode.builder().val(11).build();
+        TreeNode t5 = TreeNode.builder().val(13).build();
+        TreeNode t6 = TreeNode.builder().val(4).build();
+        TreeNode t7 = TreeNode.builder().val(7).build();
+        TreeNode t8 = TreeNode.builder().val(2).build();
+        TreeNode t9 = TreeNode.builder().val(5).build();
+        TreeNode t10 = TreeNode.builder().val(1).build();
+        root.setLeft(t2);
+        root.setRight(t3);
+        t2.setLeft(t4);
+        t4.setLeft(t7);
+        t4.setRight(t8);
+        t3.setLeft(t5);
+        t3.setRight(t6);
+        t6.setLeft(t9);
+        t6.setRight(t10);
+        System.out.println(TreeSP.pathSum2(root, 22));
+
+
     }
 }

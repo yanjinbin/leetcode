@@ -305,8 +305,7 @@ public class Pack {
     }
 
 
-
-    // leetcode 546 移除盒子 区间dP  http://bit.ly/2OgJson
+    // 546 移除盒子 区间dP  http://bit.ly/2OgJson
     public int removeBoxes(int[] boxes) {
         int N = boxes.length;
         int[][][] dp = new int[N][N][N];
@@ -440,7 +439,7 @@ public class Pack {
     }
 
 
-    // leetcode  474 01背包问题
+    //  474 01背包问题
     public int findMaxForm(String[] strs, int m, int n) {
         int[][] dp = new int[m + 1][n + 1];
         for (int i = 0; i < strs.length; i++) {
@@ -459,7 +458,7 @@ public class Pack {
         return dp[m][n];
     }
 
-    // leetcode 494 01背包问题
+    // 494 01背包问题
     public int findTargetSum0(int[] nums, int target) {
         int total = 0;
         for (int i : nums) total += i;
@@ -566,7 +565,7 @@ public class Pack {
 
     // 经典DP问题
 
-    // leetcode 1143  最长公共子序列
+    //  1143  最长公共子序列
     // LCS https://leetcode.com/problems/longest-common-subsequence/ https://oi-wiki.org/dp/#_7
     // dp[i][j] denote LCS between  s1[0:i] and s2[0,j], then
     // dp[i][j] = dp[i-1][j-1]+1 if s1[i] == s2[j], else dp[i][j] = Max(dp[i-1][j],dp[i][j-1])
@@ -586,7 +585,7 @@ public class Pack {
     // follow up 优化
 
 
-    //  leetcode 300 最长上升子序列 复杂度 O(N²)
+    //  300 最长上升子序列 复杂度 O(N²)
     //  花花讲解 http://bit.ly/2Oga3BP
     //    // http://bit.ly/2S18Z4A 看动画就能理解为什么了 哈哈
     //    //  [tag:面筋  很容易会被问到]
@@ -634,8 +633,7 @@ public class Pack {
 
     }
 
-
-    // leetcode 674  最长连续递增序列
+    // 674  最长连续递增序列
     public int findLengthOfLCIS(int[] nums) {
         int ans = Integer.MIN_VALUE;
         int len = 0;
@@ -664,7 +662,7 @@ public class Pack {
         return ans;
     }
 
-    //leetcode 516 最长回文子序列 不是子串哦! a+bbb+b   b+bbb+a
+    // 516 最长回文子序列 不是子串哦! a+bbb+b   b+bbb+a
     // dp[i][j]=dp[i+1][j-1] +2 if(s[i]==s[j]]) else dp [i][j]= max(dp[i+1][j],dp[i][j-1]);
     public int longestPalindromeSubseq(String s) {
         int N = s.length();
@@ -686,7 +684,7 @@ public class Pack {
         return dp[0][N - 1];
     }
 
-    // leetcode 5 最长回文子串  DP O(N²)
+    // 5 最长回文子串  DP O(N²)
     public String longestPalindrome(String s) {
         if (s.length() < 2 || s == null) return s;
         int N = s.length();
@@ -707,13 +705,13 @@ public class Pack {
         return s.substring(start, start + maxLen);
     }
 
-    //leetcode 5 最长回文子串  著名的马拉车算法 O(n)
+    // 5 最长回文子串  著名的马拉车算法 O(n)
     public String longestPalindrome01(String s) {
-        throw new IllegalStateException("马拉车算法放弃 有规律 写出来 还是i太难了 ");
+        throw new IllegalStateException("马拉车算法放弃 有规律 写出来 还是太难了 ");
     }
 
     // 落谷P2758 编辑距离 https://www.luogu.org/problemnew/solution/P2758
-    // leetcode 72
+    //  72
     public int minDistance(String s1, String s2) {
         int N1 = s1.length();
         int N2 = s2.length();
@@ -743,7 +741,7 @@ public class Pack {
 
 
     // 区间DP
-    // leetcode 87 扰乱字符串
+    //  87 扰乱字符串
     // dp[i][j][len] = True( (dp[i][j][k] && [i+k][j+k][len-k]) || dp[i][j+n-k] ][len )
     // dp(i,j,k)&&dp(i+k,j+K,len-k) ||  dp(i,j+len-k,k)&&dp(i+k,j,len-k)  len ∈[1,length], 0<K<len
     public boolean isScramble(String s1, String s2) {
@@ -760,7 +758,7 @@ public class Pack {
         for (int len = 2; len <= N; len++) {
             for (int i = 0; i <= N - len; i++) {
                 for (int j = 0; j <= N - len; j++) {
-                     // 有效的切分
+                    // 有效的切分
                     for (int k = 1; k < len; k++) {
                         dp[i][j][len] = dp[i][j][len] || (dp[i][j][k] && dp[i + k][j + k][len - k]) || (dp[i][j + len - k][k] && dp[i + k][j][len - k]);
                     }
@@ -773,41 +771,41 @@ public class Pack {
     // 813 最大平均值和的分组
     // dp(i,j,k) = max(dp(i,s,k-1)+dp(s+1,j,1),dp(i,j,k));
     // 0<=i<=s<j<N;
-    public double largestSumOfAverages(int[] nums,int K){
+    public double largestSumOfAverages(int[] nums, int K) {
         int N = nums.length;
         // 前缀和
         int[] preSum = new int[N];
-        preSum[0]=nums[0];
-        for(int i=1;i<N;i++){
-            preSum[i]=preSum[i-1]+nums[i];
+        preSum[0] = nums[0];
+        for (int i = 1; i < N; i++) {
+            preSum[i] = preSum[i - 1] + nums[i];
         }
         // init
-        double[][][] dp = new double[N][N][K+1];
-        for(int i=0;i<N;i++){
-            for (int j=i;j<N;j++){
-                dp[i][j][1]=1.0*sum(i,j,preSum)/(j-i+1);
+        double[][][] dp = new double[N][N][K + 1];
+        for (int i = 0; i < N; i++) {
+            for (int j = i; j < N; j++) {
+                dp[i][j][1] = 1.0 * sum(i, j, preSum) / (j - i + 1);
             }
         }
-        for(int k=2;k<=K;k++){
-            for (int i=0;i<N;i++){
-                for(int j=i+k-1;j<N;j++){
-                    for (int s=i;s<j;s++){
-                        dp[i][j][k]=Math.max(dp[i][j][k],dp[i][s][k-1]+sum(s+1,j,preSum)/(j-s));
+        for (int len = 2; len <= K; len++) {
+            for (int i = 0; i < N; i++) {
+                for (int j = i + len - 1; j < N; j++) {
+                    for (int s = i; s < j; s++) {
+                        dp[i][j][len] = Math.max(dp[i][j][len], dp[i][s][len - 1] + sum(s + 1, j, preSum) / (j - s));
                     }
                 }
             }
         }
-        return dp[0][N-1][K];
+        return dp[0][N - 1][K];
     }
 
     /**
-     * @param x inclusive
-     * @param y inclusive
+     * @param x      inclusive
+     * @param y      inclusive
      * @param preSum prefix sum for arr[0:N-1]
      * @return sum of arr[x:y]
      */
-    public int sum(int x,int y,int[] preSum) {
-        return x==0?preSum[y]:preSum[y]-preSum[x-1];
+    public int sum(int x, int y, int[] preSum) {
+        return x == 0 ? preSum[y] : preSum[y] - preSum[x - 1];
     }
 
     // 区间312. 戳气球 DP思想 迭代 http://bit.ly/2K4T01Z dp[i,j]
@@ -834,13 +832,13 @@ public class Pack {
         return dp[1][n];
     }
 
-    // leetcode 488 todo
-    public int findMinStep(String board,String hand){
+    //  488 todo
+    public int findMinStep(String board, String hand) {
         return -1;
 
     }
 
-    //leetcode 647. 回文子串 http://bit.ly/2LugfFU 区间DP
+    // 647. 回文子串 http://bit.ly/2LugfFU 区间DP
     public int countSubstrings(String s) {
         if (s.isEmpty()) {
             return 0;
@@ -866,71 +864,71 @@ public class Pack {
         return res;
     }
 
-    // leetcode 877 石子游戏 区间DP
+    //  877 石子游戏 区间DP
     // dp(i,j)表示区间(i,j)呢 先手的人能获得最大石子数
     // dp(i,j) = Max{ sum[i,j]-dp(i+1,j),sum[i,j]-dp(i,j-1) }
-    public boolean stoneGame(int[] piles){
+    public boolean stoneGame(int[] piles) {
         int N = piles.length;
         int[] preSum = new int[N];
-        preSum[0]=piles[0];
-        for(int i=1;i<N;i++){
-            preSum[i]=preSum[i-1]+piles[i];
+        preSum[0] = piles[0];
+        for (int i = 1; i < N; i++) {
+            preSum[i] = preSum[i - 1] + piles[i];
         }
         int[][] dp = new int[N][N];
         // init
-        for(int i=0;i<N;i++) {
-            dp[i][i]=piles[i];
+        for (int i = 0; i < N; i++) {
+            dp[i][i] = piles[i];
         }
         // 区间Dp 最重要的一点是遍历方式的不同 因为这是DP性质决定啊(小问题决策影响大问题决策)
-        for(int len=1; len < N; len++){
-            for(int i=0; i < N-len; i++){
-                int j = i+len;
-                dp[i][j]=Math.max(sum(i,j,preSum)-dp[i+1][j],sum(i,j,preSum)-dp[i][j-1]);
+        for (int len = 1; len < N; len++) {
+            for (int i = 0; i < N - len; i++) {
+                int j = i + len;
+                dp[i][j] = Math.max(sum(i, j, preSum) - dp[i + 1][j], sum(i, j, preSum) - dp[i][j - 1]);
             }
 
         }
-        return dp[0][N-1]>(preSum[N-1]/2);
+        return dp[0][N - 1] > (preSum[N - 1] / 2);
 
     }
 
-    // leetcode 1000  合并石头的最低成本
+    // 1000  合并石头的最低成本
     // 0<=i<=t<j<N  1<=k<=K
     // 有2次状态转移
     // dp(i,j,k) = min(dp(i,j,k),dp(i,t,k-1)+dp(t+1,j,1))
     //dp(i,j,1) = min(dp(i,j,1)
-    public int mergeStone(int[] stones,int K){
+    public int mergeStone(int[] stones, int K) {
         int N = stones.length;
-        if((N-1)%(K-1)!=0) return -1;// 是否有解的前提条件
+        if ((N - 1) % (K - 1) != 0) return -1;// 是否有解的前提条件
         //前缀和
         int[] preSum = new int[N];
-        preSum[0]=stones[0];
-        for(int i=1;i<N;i++){
-            preSum[i]=preSum[i-1]+stones[i];
+        preSum[0] = stones[0];
+        for (int i = 1; i < N; i++) {
+            preSum[i] = preSum[i - 1] + stones[i];
         }
-        int[][][] dp = new int[N][N][K+1];
-        for (int i=0;i<dp.length;i++){
-            for (int j=0;j<dp[i].length;j++){
-                for (int k=0;k<dp[i][j].length;k++){
-                    dp[i][j][k]=Integer.MAX_VALUE;
+        int[][][] dp = new int[N][N][K + 1];
+        for (int i = 0; i < dp.length; i++) {
+            for (int j = 0; j < dp[i].length; j++) {
+                for (int k = 0; k < dp[i][j].length; k++) {
+                    dp[i][j][k] = Integer.MAX_VALUE;
                 }
             }
         }
         // init
-        for(int i=0;i<N;i++){
-            dp[i][i][1]=0;// 注意是0哦
+        for (int i = 0; i < N; i++) {
+            dp[i][i][1] = 0;// 注意是0哦
         }
-        for(int len =2;len <= N; len++){ // sub problem length
-            for(int i=0;i<=N-len;i++){
-                int j = i+len-1;
-                for(int k=2;k<=K;k++){
-                    for(int m=i;m<j;m +=K-1){
-                        dp[i][j][k]=Math.min(dp[i][j][k],dp[i][m][1]+dp[m+1][j][k-1]);
-                        dp[i][j][1]=sum(i,j,preSum)+dp[i][j][k];
+        for (int len = 2; len <= N; len++) { // sub problem length
+            for (int i = 0; i <= N - len; i++) {
+                int j = i + len - 1;
+                for (int k = 2; k <= K; k++) {
+                    for (int m = i; m < j; m += K - 1) {
+                        dp[i][j][k] = Math.min(dp[i][j][k], dp[i][m][1] + dp[m + 1][j][k - 1]);
+                        dp[i][j][1] = sum(i, j, preSum) + dp[i][j][k];
                     }
                 }
             }
         }
-        return dp[0][N-1][1];
+        return dp[0][N - 1][1];
     }
 
 }

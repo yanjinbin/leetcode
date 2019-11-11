@@ -23,7 +23,6 @@ public class UnionFind {
         return x;
     }
     // 合并
-
     public void unionSet(int x,int y){
         x= find(x);
         y= find(y);
