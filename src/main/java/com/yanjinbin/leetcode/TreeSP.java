@@ -304,7 +304,7 @@ public class TreeSP {
         sum = sum - root.val;
         if (root.left == null && root.right == null && sum == 0) {
             ans.add(new ArrayList<>(sub));
-           // return; 不然 return提早返回,sub多余的元素没去除
+            // return; 不然 return提早返回,sub多余的元素没去除
             // 或者 在return前 pollLast()
            /* sub.pollLast();
             return;*/
@@ -327,9 +327,6 @@ public class TreeSP {
         return (sum == 0 ? 1 : 0) + pathHelper(root.left, sum) + pathHelper(root.right, sum);
     }
 
-    // 666. 路径和 IV
-
-    // 共同祖先问题
 
     // 1026 节点与祖先最大差值  update diff = cur = max(abs(root.val-min),abs(root.val-max)) ,then   pass min,max to left and right;
     // update diff= cur = max(cur,dfs(root.left) dfs(root.right) ) again;
@@ -344,12 +341,6 @@ public class TreeSP {
         min = Math.min(min, root.val);
         max = Math.max(max, root.val);
         return Math.max(cur, Math.max(dfs(root.left, min, max), dfs(root.right, min, max)));
-    }
-
-    // 1123. 最深叶节点的最近公共祖先
-    public TreeNode lcaDeepestLeaves(TreeNode root) {
-        // 无法理解题意 pass
-        return null;
     }
 
 

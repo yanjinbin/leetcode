@@ -18,6 +18,8 @@ public class SolutionTest {
 
     private static BinarySearch BS = new BinarySearch();
 
+    private static FakeStack FS = new FakeStack();
+
     @Before()
     public void init() {
 
@@ -2501,7 +2503,19 @@ public class SolutionTest {
         t6.setLeft(t9);
         t6.setRight(t10);
         System.out.println(TreeSP.pathSum2(root, 22));
+    }
 
-
+    @Test
+    public void Stack() {
+        FakeStack s = new FakeStack();
+        s.push(1);
+        s.push(2);
+        s.push(3);
+        int i1 = s.pop();
+        assert i1 == 3;
+        int i2 = s.pop();
+        assert i2 == 2;
+        int i3 = s.pop();
+        assert  i3==1;
     }
 }

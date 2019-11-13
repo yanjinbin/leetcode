@@ -2799,16 +2799,12 @@ public class Solution {
         dividend = Math.abs(dividend);
         divisor = Math.abs(divisor);
         int count = 0;
-        //  System.out.println("count: " + count + "\tdivisor: " + divisor);
         while (dividend >= divisor) {
             // 会存在int越界问题 divisor ---> 0
             count++;
             divisor <<= 1;
-            System.out.println("count: " + count + "\tdivisor: " + divisor);
             if (divisor == 0) return -1;
-
         }
-
         int result = 0;
         while (count > 0) {
 
@@ -5539,6 +5535,71 @@ public class Solution {
     }
 
     // 1071
+
+
+    // 829
+
+
+    // 36进制加法运算？
+    //将'0'-'9'映射到数字0-9，将'a'-'z'映射到数字10-35
+    int GetInt(char c) {
+        if ((c - '0') > 0 && (c <= '9')) {
+            return (c - '0');
+        } else {
+            return (c - 'A') + 10;
+        }
+    }
+
+    private char[] letter = new char[]{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
+
+    public String Add36(String s1, String s2) {
+        char[] a = s1.toCharArray();
+        int i = a.length - 1;
+        char[] b = s2.toCharArray();
+        int j = a.length - 1;
+        StringBuilder ans = new StringBuilder();
+        int carry = 0;
+        // 处理sign 空格
+        while (i >= 0 && j >= 0) {
+            int ret = GetInt(a[i]) + GetInt(b[j]) + carry;
+            if (ret >= 36) {
+                carry = 1;
+                ans.append(letter[ret % 36]);
+            } else {
+                carry = 0;
+                ans.append(letter[ret]);
+            }
+            i--;
+            j--;
+        }
+
+        while (i >= 0) {
+            int ret = GetInt(a[i]) + carry;
+            if (ret >= 36) {
+                carry = 1;
+                ans.append(letter[ret % 36]);
+            } else {
+                carry = 0;
+                ans.append(letter[ret]);
+            }
+            i--;
+        }
+        while (j >= 0) {
+            int ret = GetInt(b[j]) + carry;
+            if (ret >= 36) {
+                carry = 1;
+                ans.append(letter[ret % 36]);
+            } else {
+                carry = 0;
+                ans.append(letter[ret]);
+            }
+            j--;
+        }
+        return ans.toString();
+
+    }
 
 
 }
