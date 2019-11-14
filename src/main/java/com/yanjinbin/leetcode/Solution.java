@@ -4158,11 +4158,11 @@ public class Solution {
     public List<List<String>> partition(String s) {
         List<List<String>> res = new ArrayList<>();
         List<String> sub = new ArrayList<>();
-        dfs(s, 0, sub, res);
+        hasCycle(s, 0, sub, res);
         return res;
     }
 
-    public void dfs(String s, int pos, List<String> sub, List<List<String>> res) {
+    public void hasCycle(String s, int pos, List<String> sub, List<List<String>> res) {
         if (pos == s.length()) {
             res.add(new ArrayList<>(sub));
             sub.clear();
@@ -4171,7 +4171,7 @@ public class Solution {
         for (int i = pos; i < s.length(); i++) {
             if (isPal(s, pos, i)) {
                 sub.add(s.substring(pos, i + 1));
-                dfs(s, i + 1, sub, res);
+                hasCycle(s, i + 1, sub, res);
                 // sub.remove(sub.size() - 1); // TODO  移除之后,
             }
 
@@ -5599,6 +5599,106 @@ public class Solution {
         }
         return ans.toString();
 
+    }
+
+    int VISITED = -1;
+    int VISITING = -2;
+
+    // 207 课程表  构建通topology sort
+    public boolean canFinish01(int numCourses, int[][] prerequisites) {
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        for (int i = 0; i < prerequisites.length; i++) {
+            int key = prerequisites[i][0];
+            List<Integer> arr = map.getOrDefault(key, new ArrayList<>());
+            arr.add(prerequisites[i][1]);
+            map.put(key, arr);
+        }
+        int[] visit = new int[numCourses];
+        for (int i = 0; i < numCourses; i++) {
+            if (hasCycle(map, i, visit)) return false;
+        }
+        return true;
+    }
+
+    public boolean hasCycle(Map<Integer, List<Integer>> map, int key, int[] visit) {
+        if (visit[key] == VISITED) return false;
+        if (visit[key] == VISITING) return true;
+        visit[key] = VISITING;
+        if (map.containsKey(key)) {
+            for (Integer i : map.get(key)) {
+                if (hasCycle(map, i, visit)) return true;
+            }
+        }
+        visit[key] = VISITED;
+        return false;
+    }
+
+    // 207 BFS topology sort 参考链接：http://bit.ly/33SdXpG
+    // 210 也可以用这道题目来做呢
+    public boolean canFinish02(int numCourses, int[][] prerequisites) {
+        if (numCourses < 0) return false;
+        int plen = prerequisites.length;
+        if (plen < 0) return false;
+        if (plen == 0) return true;
+        int[] indegree = new int[numCourses];
+        for (int[] cp : prerequisites) {
+            indegree[cp[0]]++;
+        }
+        LinkedList<Integer> q = new LinkedList<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (indegree[i] == 0) q.addLast(i);
+        }
+
+        List<Integer> res = new ArrayList<>();
+        while (!q.isEmpty()) {
+            int zero = q.pollFirst();
+            res.add(zero);
+            for (int[] cp : prerequisites) {
+                if (cp[1] == zero) {
+                    indegree[cp[0]]--; // 删除 zero的领标
+                    if (indegree[cp[0]] == 0) q.add(cp[0]);// 如果领边的节点indegree是0 ，那么入队
+                }
+            }
+        }
+        return res.size() == numCourses;
+    }
+
+    // 花花的解法 用DFS也能做呢
+    // http://zxi.mytechroad.com/blog/graph/leetcode-210-course-schedule-ii/
+
+    // 210
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        for (int i = 0; i < prerequisites.length; i++) {
+            int key = prerequisites[i][0];
+            List<Integer> arr = map.getOrDefault(key, new ArrayList<>());
+            arr.add(prerequisites[i][1]);
+            map.put(key, arr);
+        }
+        int[] visit = new int[numCourses];
+        LinkedList<Integer> ans = new LinkedList<>();
+        int[] ret = new int[numCourses];
+        for (int i = 0; i < numCourses; i++) {
+            if (hasCycle03(map, i, visit, ans)) return ret;
+        }
+        for (int i = 0; i < ans.size(); i++) {
+            ret[i] = ans.get(i);
+        }
+        return ret;
+    }
+
+    public boolean hasCycle03(Map<Integer, List<Integer>> map, int key, int[] visit, LinkedList<Integer> ans) {
+        if (visit[key] == VISITED) return false;
+        if (visit[key] == VISITING) return true;
+        visit[key] = VISITING;
+        if (map.containsKey(key)) {
+            for (Integer i : map.get(key)) {
+                if (hasCycle03(map, i, visit, ans)) return true;
+            }
+        }
+        visit[key] = VISITED;
+        ans.addFirst(key);
+        return false;
     }
 
 
