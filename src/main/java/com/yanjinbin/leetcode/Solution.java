@@ -5701,7 +5701,57 @@ public class Solution {
         return false;
     }
 
+    // 链式前向星 excu me?  链式前向星介绍参见 https://oi-wiki.org/graph/basic/
+    // http://bit.ly/2KfuHPN
+    // 题目答案参见  http://bit.ly/2OdVc9c
+    // 链式前向星据说是来自OI圈的叫法，不过换成边，比之前的容易理解
+    public Edge[] edges;
+    public int[] head;
+    public int[] deg; //记录入度
 
+    void add(int u,int v){
+        edges[cnt]=new Edge();
+        edges[cnt].to=v;
+        edges[cnt].next=head[u];//理解这个是关键点啊
+        head[u]=cnt++;
+    }
+
+    public boolean solve(int n){
+        Queue<Integer> queue=new LinkedList<Integer>();
+        for(int i=0;i<n;++i){
+            if(deg[i]==0){ //存入度为0的点
+                queue.offer(i);
+            }
+        }
+        int k=0;
+        while (!queue.isEmpty()){
+            int u=queue.poll();
+            ++k;  //记录入度为0的个数
+            for (int i=head[u];i!=-1;i=edges[i].next){ //循环与其相连的点
+                int v=edges[i].to;
+                --deg[v];
+                if(deg[v]==0){ //入度为0加入队列中
+                    queue.offer(v);
+                }
+            }
+        }
+        return k==n; //若为n说明不存在环
+    }
+
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        int n=prerequisites.length;
+        int l=Math.max(numCourses,n); //取大
+        cnt=0;
+        edges=new Edge[l];
+        head=new int[l];
+        deg=new int[l];
+        Arrays.fill(head,-1);
+        for(int i=0;i<n;++i){
+            add(prerequisites[i][1],prerequisites[i][0]); //建图
+            ++deg[prerequisites[i][0]]; //记录入度
+        }
+        return solve(numCourses);
+    }
 }
 
 
