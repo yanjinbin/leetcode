@@ -2,11 +2,16 @@ package com.yanjinbin.leetcode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Set;
 import java.util.Stack;
 
 public class Microsoft {
@@ -614,4 +619,253 @@ public class Microsoft {
     }
 
 
+    // 410 分割数组的最大值  花花酱 https://youtu.be/_k-Jb4b7b_0
+    // dp[i][j]表示 前j个数字切分为i个子数组和最大值的 最小值。
+    // dp[i][j]=min(dp[i][j],Max(dp[i-1][k],sum[j]-sum[k])),
+    //  init: dp 为Integer.MAX_VALUE ,  dp[1][j]=preSum[j]
+    public int splitArray(int[] nums, int m) {
+        int N = nums.length;
+        int[] preSum = new int[N];
+        // 求前缀和
+        preSum[0] = nums[0];
+        for (int i = 1; i < N; i++) {
+            preSum[i] = preSum[i - 1] + nums[i];
+        }
+        // DP init
+        int[][] dp = new int[m + 1][N];
+        // 题目是要各子数组和最大值  最小！！所以初始化的时候 init MAX_VALUE.
+        for (int i = 0; i < dp.length; i++) {
+            Arrays.fill(dp[i], Integer.MAX_VALUE);
+        }
+        for (int j = 0; j < N; j++) {
+            dp[1][j] = preSum[j];
+        }
+
+        for (int i = 2; i <= m; i++) {
+            for (int j = i - 1; j < N; j++) {// j = i-1
+                for (int k = 0; k < j; k++) {
+                    dp[i][j] = Math.min(dp[i][j], Math.max(dp[i - 1][k], preSum[j] - preSum[k]));
+                }
+            }
+        }
+        return dp[m][N - 1];
+    }
+
+    // 解法2 二分搜索 思路参见花花酱的  就是讲nums均等分m份
+    public int splitArray02(int[] nums, int m) {
+        long sum = 0;
+        int max = 0;
+        for (int num : nums) {
+            max = Math.max(max, num);
+            sum += num;
+        }
+        return (int) binary(nums, m, sum + 1, max);
+    }
+
+    private long binary(int[] nums, int m, long high, long low) {
+        while (low < high) {
+            long mid = (high - low) / 2 + low;
+            if (valid(nums, m, mid)) {
+                high = mid;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return low;
+    }
+
+    private boolean valid(int[] nums, int m, long max) {
+        int cur = 0;
+        int count = 1;
+        for (int num : nums) {
+            cur += num;
+            if (cur > max) {
+                cur = num;
+                count++;
+                if (count > m) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    // 40. 组合总和 II
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<List<Integer>> ans = new ArrayList<>();
+        dfs(candidates, target, 0, ans, new LinkedList<>());
+        return ans;
+    }
+
+    public void dfs(int[] candidates, int target, int s, List<List<Integer>> ans, LinkedList<Integer> sub) {
+        if (target == 0) {
+            ans.add(new ArrayList<>(sub));
+            return;
+        }
+        for (int i = s; i < candidates.length; i++) {
+            if (target < candidates[i]) return;
+            // 去除重复
+            if (i > s && candidates[i] == candidates[i - 1]) continue;
+            sub.addLast(candidates[i]);
+            dfs(candidates, target - candidates[i], s + 1, ans, sub);
+            sub.pollLast();
+        }
+    }
+
+    // 127 单词接龙
+    // 解法1 单广BFS
+    public int ladderLength01(String beginWord, String endWord, List<String> wordList) {
+        HashSet<String> words = new HashSet<>(wordList);
+        if (!words.contains(endWord)) return 0;
+        Queue<String> q = new LinkedList();
+        q.offer(beginWord);
+        int step = 0;
+        // BFS遍历
+        while (!q.isEmpty()) {
+            step++;
+            int size = q.size();
+            while (size-- > 0) {  // level 遍历
+                String str = q.poll();
+                char[] chars = str.toCharArray();
+                for (int i = 0; i < chars.length; i++) {
+                    char chr = chars[i];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c == chr) continue;
+                        chars[i] = c;
+                        String s = new String(chars);
+                        if (s.equals(endWord)) return step + 1;
+                        if (words.contains(s)) {
+                            words.remove(s);
+                            q.offer(s);
+                        }
+                    }
+                    // 复位
+                    chars[i] = chr;
+                }
+            }
+        }
+        return 0;
+    }
+
+    // 解法2 双广 BFS
+    public int ladderLength02(String beginWord, String endWord, List<String> wordList) {
+        Set<String> words = new HashSet<>(wordList);
+        if (!words.contains(endWord)) return 0;
+        Set<String> s1 = new HashSet<>();
+        Set<String> s2 = new HashSet<>();
+        s1.add(beginWord);
+        s2.add(endWord);
+        int step = 0;
+
+        while (!s1.isEmpty() && !s2.isEmpty()) {
+            step++;
+            // swap, for balance
+            if (s1.size() > s2.size()) {
+                Set<String> tmp = s1;
+                s1 = s2;
+                s2 = tmp;
+            }
+
+            Set<String> q = new HashSet<>();
+            for (String str : s1) {
+                char[] chars = str.toCharArray();
+                for (int i = 0; i < chars.length; i++) {
+                    char chr = chars[i];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        chars[i] = c;
+                        String t = new String(chars);
+                        if (s2.contains(t)) return step + 1;
+                        if (words.contains(t)) {
+                            // 从字典表移除，并且添加到新构建的下一层次的Queue。
+                            words.remove(t);
+                            q.add(t);
+                        }
+                    }
+                    chars[i] = chr;
+                }
+            }
+            s1 = q;
+        }
+        return 0;
+    }
+
+
+    // 126 单词接龙2
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        List<List<String>> ans = new ArrayList<>();
+        HashSet<String> words = new HashSet<>(wordList);
+        if (!words.contains(endWord)) return ans;
+        words.remove(beginWord);
+        words.remove(endWord);
+        Map<String, Integer> steps = new HashMap();
+        steps.put(beginWord, 1);
+        Map<String, Set<String>> parents = new HashMap<>();
+        Queue<String> q = new LinkedList<>();
+        q.offer(beginWord);
+
+        int l = beginWord.length();
+        int step = 0;
+        boolean found = false;
+        // 不为空 且找到 就终止
+        while (!q.isEmpty() && !found) {
+            step++;
+            for (int size = q.size(); size > 0; size--) {
+                String s = q.poll();
+                char[] chars = s.toCharArray();
+                String p = String.copyValueOf(chars);
+                for (int i = 0; i < l; i++) {
+                    char chr = chars[i];
+                    for (char c = 'a'; c <= 'z'; c++) {
+                        if (c == chr) continue;
+                        chars[i] = c;
+                        s = new String(chars);
+                        if (s.equals(endWord)) {
+                            Set<String> val = parents.getOrDefault(s, new HashSet<>());
+                            val.add(p);
+                            parents.put(s, val);
+                            found = true;
+                        } else {
+                            int val = steps.getOrDefault(s, 0);
+                            if (val > 0 && val > step) {
+                                Set<String> set = parents.getOrDefault(s, new HashSet<>());
+                                set.add(p);
+                                parents.put(s, set);
+                            }
+                        }
+
+                        if (words.contains(s)) {
+                            words.remove(s);
+                            q.offer(s);
+
+                            steps.put(s, steps.get(p) + 1);
+                            Set<String> set = parents.get(s);
+                            set.add(p);
+                            parents.put(s, set);
+                        }
+                    }
+                    // 复位
+                    chars[i] = chr;
+                }
+            }
+        }
+        if (found) {
+            LinkedList sub = new LinkedList();
+            dfsPaths(endWord,beginWord,parents,sub,ans);
+        }
+        return ans;
+    }
+
+    // dfs求解
+    public void dfsPaths(String word, String beginWord, Map<String, Set<String>> parents, LinkedList<String> sub, List<List<String>> ans) {
+        if (word==beginWord){
+            Collections.reverse(sub);
+            ans.add(new ArrayList<>(sub));
+            return;
+        }
+        for (String s:parents.get(word)){
+            sub.addLast(s);
+            dfsPaths(s,beginWord,parents,sub,ans);
+            sub.pollLast();
+        }
+    }
 }
