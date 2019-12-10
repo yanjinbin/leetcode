@@ -5582,6 +5582,28 @@ public class Solution {
     }
 
 
+    // 366
+    public List<List<Integer>> findLeaves(TreeNode root) {
+        // 用TreeMap代替,然后转换成ans
+        Map<Integer, List<Integer>> map = new TreeMap<>();
+        dfs(root, map);
+
+        List<List<Integer>> ans = new ArrayList<>();
+        for (List<Integer> value : map.values()) {
+            ans.add(value);
+        }
+        return ans;
+    }
+
+    public int dfs(TreeNode root, Map<Integer, List<Integer>> map) {
+        if (root == null) return -1;
+        int depth = Math.max(dfs(root.left, map), dfs(root.right, map)) + 1;
+        List<Integer> sub = map.getOrDefault(depth, new ArrayList<>());
+        sub.add(root.val);
+        map.put(depth, sub);
+        return depth;
+    }
+
 }
 
 
