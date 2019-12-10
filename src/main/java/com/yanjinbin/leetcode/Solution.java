@@ -24,6 +24,16 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    public boolean isAscendSort(int[] arr) {
+        if (arr == null || arr.length == 1) return true;
+        int i = 0;
+        while (i < arr.length - 1) {
+            if (arr[i] > arr[i + 1]) return false;
+            i++;
+        }
+        return true;
+    }
+
     public static void swap(int[] nums, int i, int j) {
         if (i == j) return;
         int tmp = nums[i];
@@ -236,44 +246,6 @@ public class Solution {
         return ret;
     }
 
-    // #19. 删除链表的倒数第N个节点
-    /*// 无法处理 corner case,
-    public ListNode removeNthFromEnd_poor(ListNode head, int n) {
-        ListNode delayNode = head, startNode = head;
-        int start = 0;
-        while (startNode.next != null) {
-            startNode = startNode.next;
-            start++;
-            if (start > n) {
-                delayNode = delayNode.next;
-            }
-        }
-        // 只有一个节点的情况下 就很难处理了 NPE
-        ListNode next = delayNode.next.next;
-        delayNode.next.next = null;
-        delayNode.next = next;
-        return head;
-    }*/
-
-    //② #19. 删除链表的倒数第N个节点, 完美处理corner case
-    public ListNode removeNthFromEnd(ListNode head, int n) {
-        // init dummy node
-        ListNode dummyNode = new ListNode(0);
-        dummyNode.next = head;
-        ListNode delayNode = dummyNode, start = dummyNode;
-        for (int i = 0; i < n; i++) {
-            start = start.next;
-        }
-        while (start.next != null) {
-            start = start.next;
-            delayNode = delayNode.next;
-        }
-        delayNode.next = delayNode.next.next;
-        // 参考如下代码 http://bit.ly/2xo4dEI
-        // return head; 错误的原因在于head 节点也有可能Update 为Null阿  在更新code---> " delayNode.next = delayNode.next.next; "
-        return dummyNode.next;
-    }
-
     //②  #5 最长回文字符串 5. Longest Palindromic Substring 官方题解垃圾的一点就是 start 和 end的更新问题 有问题
     public String longestPalindrome(String s) {
         if (s == null || s.length() < 1) {
@@ -383,6 +355,8 @@ public class Solution {
         }
         return ret;
     }*/
+
+
     //②  [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // 23. 合并K个排序链表 Merge k Sorted Lists
     // http://bit.ly/2LtXUbI
@@ -443,6 +417,7 @@ public class Solution {
         return maxArea;
     }
 
+
     // ② 206 反转链表  迭代和递归2种方法
     public ListNode reverseList(ListNode head) {
         ListNode prev = null;
@@ -459,6 +434,7 @@ public class Solution {
         return prev;
     }
 
+
     // 递归方法 1
     public ListNode reverseList1(ListNode head) {
         return help(head, null);
@@ -471,7 +447,7 @@ public class Solution {
         return help(next, cur);
     }
 
-    // 递归方法 2
+    // 递归方法 2    不好看
     public ListNode reverseList2(ListNode head) {
         if (head == null || head.next == null) {
             return head;
@@ -484,14 +460,16 @@ public class Solution {
         return reversedListHead;
     }
 
+    // 25 k个一组翻转链表
+
+
     //  31. 下一个排列 首先理解字典序   找下一个字典序更大的 如果最大了 就全局升序排列了
-    //  todo 暂时放弃 没意思
     //  题解连接 http://bit.ly/2RS8Wbd
     public void nextPermutation(int[] nums) {
         if (nums == null || nums.length == 0) return;
-
         int i = nums.length - 2;
-        while (i >= 0 && nums[i] >= nums[i + 1]) i--; // 找到第一个破坏 descend order -->i
+        while (i >= 0 && nums[i] >= nums[i + 1]) i--;// 找到第一个破坏 descend order -->i
+        //System.out.println("i："+i+" "+nums[i]);
         if (i >= 0) {
             int j = nums.length - 1;
             while (nums[j] <= nums[i]) j--;// i 指向元素 从右往左找第一个
@@ -764,6 +742,31 @@ public class Solution {
     }*/
 
 
+    // ② 287. 寻找重复数  除了下面这2种 ,lowB点用set处理或者排好序
+    // 可以把index对应的value当做一个状态值 那么 value重复的化 就相当于是存在还了,可以使用floyd算法来检测
+    // 这道题目跟处理链表是否存在环比较相似
+    // Floyd算法wiki ---->   http://bit.ly/2S1omdy  龟兔赛跑方法
+    public int findDuplicate0(int[] nums) {
+        // Find the intersection point of the two runners.
+        int tortoise = nums[0];
+        int hare = nums[0];
+        while (tortoise != hare) {
+            tortoise = nums[tortoise];
+            hare = nums[nums[hare]];
+        }
+
+        // Find the "entrance" to the cycle.
+        int s = nums[0];
+        int m = tortoise;
+        while (s != m) {
+            s = nums[s];
+            m = nums[m];
+        }
+        return s;
+
+    }
+
+    // [tag:鸽巢原理]
     //② 41 缺失的第一个正数  http://bit.ly/2Pir4Mc 类似鸽巢原理 ,放到正确的位置
     public int firstMissingPositive01(int[] nums) {
         int n = nums.length;
@@ -790,48 +793,6 @@ public class Solution {
         return i;
     }
 
-    // ② 287. 寻找重复数  除了下面这2种 ,lowB点用set处理或者排好序
-    // 可以把index对应的value当做一个状态值 那么 value重复的化 就相当于是存在还了,可以使用floyd算法来检测
-    // Floyd算法wiki ---->   http://bit.ly/2S1omdy  龟兔赛跑方法
-    public int findDuplicate0(int[] nums) {
-        // Find the intersection point of the two runners.
-        int tortoise = nums[0];
-        int hare = nums[0];
-        while (tortoise != hare) {
-            tortoise = nums[tortoise];
-            hare = nums[nums[hare]];
-        }
-
-        // Find the "entrance" to the cycle.
-        int s = nums[0];
-        int m = tortoise;
-        while (s != m) {
-            s = nums[s];
-            m = nums[m];
-        }
-        return s;
-
-    }
-
-    // ② 这种二分法还是比较少见的 但是也存在多钟限制阿 中间数的计算近似 median=(right+left)/2;
-    public int findDuplicate1(int[] nums) {
-        // // 特殊case n = 1 ,长度为2，{1,1} ; n= 2 ,长度为3,{1,2,2} or {1,1,2}
-        int lo = 0, hi = nums.length;
-        while (lo < hi) {
-            int mid = lo + (hi - lo) / 2;
-            int count = 0;
-            for (int num : nums) { // 计算小于mid的个数,
-                if (num <= mid) count++;
-            }
-            if (count <= mid) {
-                lo = mid + 1;
-            } else {
-                hi = mid;
-            }
-        }
-        return lo;
-    }
-
     //② 442 数组中重复的数据  鸽巢原理
     public List<Integer> findDuplicates(int[] nums) {
         int N = nums.length;
@@ -854,7 +815,7 @@ public class Solution {
         int N = nums.length;
         List<Integer> ret = new ArrayList<>();
         for (int i = 0; i < N; i++) {
-            while (nums[i] != nums[nums[i] - 1]) {
+            if (nums[i] != nums[nums[i] - 1]) {
                 swap(nums, i, nums[i] - 1);
             }
         }
@@ -866,11 +827,7 @@ public class Solution {
         return ret;
     }
 
-    // bit map 用法
-    public List<Integer> findDisappearedNumbers02(int[] nums) {
-        return null;
-    }
-
+    //  [tag:微软] https://www.1point3acres.com/bbs/thread-506243-1-1.html
     // ② 142. 环形链表 II
     // 环检测 https://leetcode-cn.com/problems/linked-list-cycle-ii/
     // 解除环 环长度
@@ -886,21 +843,25 @@ public class Solution {
         if (fast != slow || fast == null || fast.next == null) return null;
         slow = head;
         ListNode m = fast;
+        int len = 0;
         while (m != slow) {
             slow = slow.next;
             m = m.next;
+            len++;
         }
+        // len 长度
         return slow;
     }
 
+    // [tag:微软] https://www.1point3acres.com/bbs/thread-506243-1-1.html
     // 摩尔投票法 仔细想想 还是对的 因为不管如何排列,众数 频次肯定>=1阿  whatever even or odd
     // 169
-    public int majorityElement(int[] nums) {
-        int candidate = nums[0], count = 1;
-        for (int i = 1; i < nums.length; ++i) {
+    public int majorityElement01(int[] nums) {
+        int count = 1, candidate = nums[0];
+        for (int i = 1; i < nums.length; i++) {
             if (count == 0) {
                 candidate = nums[i];
-                count = 1;// 互斥
+                count = 1;
             } else if (nums[i] == candidate) {
                 count++;
             } else {
@@ -908,6 +869,52 @@ public class Solution {
             }
         }
         return candidate;
+    }
+
+    //follow up
+    // 229 超过1/3
+    public List<Integer> majorityElement02(int[] nums) {
+        List<Integer> ans = new ArrayList();
+        if (nums == null || nums.length == 0) return ans;
+        int candidateA = nums[0];
+        int cntA = 0;
+        int candidateB = nums[0];
+        int cntB = 0;
+        for (int num : nums) {
+            if (candidateA == num) {
+                cntA++;
+            } else if (candidateB == num) {
+                cntB++;
+            } else if (cntA == 0) {
+                cntA = 1;
+                candidateA = num;
+            } else if (cntB == 0) {
+                cntB = 1;
+                candidateB = num;
+            } else {
+                cntA--;
+                cntB--;
+            }
+        }
+
+        // RESET
+        cntA = 0;
+        cntB = 0;
+        for (int num : nums) {
+            if (candidateA == num) {
+                cntA++;
+            } else if (candidateB == num) {
+                cntB++;
+            }
+        }
+        if (cntA > nums.length / 3) {
+            ans.add(candidateA);
+        }
+        if (cntB > nums.length / 3) {
+            ans.add(candidateB);
+        }
+        return ans;
+
     }
 
 
@@ -1050,7 +1057,7 @@ public class Solution {
             if (nums[r] <= pivot) r--;
         }
         // l-r=1
-        //为什么必须要 交还的是R呢
+        //为什么必须要 交换的是R呢
         // 分三种情况
         // l=r的时候 nums[l]>=pivot 或者 nums[r]<=pivot
         // l+1=r的时候 l++,r--此时 此时l = r ,r = l,那么 此时需要交交还的依旧是因为nums[r]>nums[l]
@@ -1073,7 +1080,7 @@ public class Solution {
         return heap.peek();
     }
 
-    // todo leetcode 148 排序链表
+    //  148 排序链表
     public ListNode sortList(ListNode head) {
         if (head == null || head.next == null) {
             return head;
@@ -1170,7 +1177,8 @@ public class Solution {
         return new int[]{left, right};
     }
 
-    // 39. 组合总和
+    // 背包套路不适合 这道题目还是通过回溯法去解决
+    // 39. 组合总和 Ⅰ
     // http://bit.ly/2XHHBi2  这个方法感觉还是不够优雅阿
     public List<List<Integer>> combinationSum1(int[] candidates, int target) {
         List<List<Integer>> res = new ArrayList<>();
@@ -1191,12 +1199,94 @@ public class Solution {
             sub.pollLast();
         }
     }
-    // todo
+
+
     // 40. 组合总和 II
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(candidates);
+        dfs(candidates, target, ans, 0, new LinkedList<Integer>());
+        return ans;
+    }
+
+    public void dfs(int[] candidates, int target, List<List<Integer>> ans, int start, LinkedList<Integer> sub) {
+        if (target < 0) return;
+        if (target == 0) {
+            ans.add(new ArrayList<>(sub));
+            return;
+        }
+        for (int i = start; i < candidates.length; i++) {
+            if (target < candidates[i]) return;
+            if (i > start && candidates[i - 1] == candidates[i]) continue;
+            sub.add(candidates[i]);
+            dfs(candidates, target - candidates[i], ans, i + 1, sub);
+            sub.pollLast();
+        }
+    }
+
+
+    // ② 377 组合总和Ⅳ  ,这个 应该叫做排列 而非组合  也可以自己画个数, 可以观察出来 就是如下分解
+    // dp[4] = dp[4-1]+dp[4-2]+dp[4-3] = dp[3]+dp[2]+dp[1]
+    //
+    //dp[1] = dp[0] = 1;
+    //dp[2] = dp[1]+dp[0] = 2;
+    //dp[3] = dp[2]+dp[1]+dp[0] = 4;
+    //dp[4] = dp[4-1]+dp[4-2]+dp[4-3] = dp[3]+dp[2]+dp[1] = 7
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target + 1];
+        dp[0] = 1;
+        for (int i = 1; i <= target; i++) {
+            for (int j = 0; j < nums.length; j++) {
+                // 互斥，故相加。
+                if (i >= nums[j]) dp[i] = dp[i] + dp[i - nums[j]];
+            }
+        }
+        return dp[target];
+    }
+
 
     // 216. 组合总和 III
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> ans = new ArrayList();
+        dfs(k, n, 1, ans, new LinkedList());
+        return ans;
+    }
 
-    // 377. 组合总和 Ⅳ
+    public void dfs(int k, int n, int s, List<List<Integer>> ans, LinkedList<Integer> sub) {
+        if (n == 0) {
+            if (k == 0) ans.add(new ArrayList(sub));
+            return;
+        }
+        for (int i = s; i <= 9; i++) {
+            if (i > n) return;
+            sub.addLast(i);
+            dfs(k - 1, n - i, i + 1, ans, sub);
+            sub.pollLast();
+        }
+    }
+
+   /* // 解法2
+    public List<List<Integer>> combinationSum3_02(int k, int n) {
+        List<List<Integer>> ans = new ArrayList<>();
+
+
+        for (int i = 0; i < (1 << 9); i++) {
+            List<Integer> sub = new ArrayList<>();
+            int sum = 0;
+            for (int j = 1; j <= 9; j++) {
+
+                int ret = i & (1 << (j - 1));
+                if (ret > 0) {
+                    sum += j;
+                    sub.add(j);
+                }
+            }
+            if (sum == k && sub.size() == n) {
+                ans.add(sub);
+            }
+        }
+        return ans;
+    }*/
 
 
     //②  62. 不同路径 dfs/dp解法
@@ -1432,7 +1522,6 @@ public class Solution {
                 subSet.add(node.val);
                 if (node.left != null) queue.add(node.left);
                 if (node.right != null) queue.add(node.right);
-
             }
             if (!subSet.isEmpty()) {
                 ret.add(subSet);
@@ -1452,12 +1541,12 @@ public class Solution {
         if (root == null) {
             return;
         }
-        // 为什么要加上这一判断呢 因为阿  index >= size的时候 就会包index out of range 错误了 tips 值得注意的点
+        // 为什么要加上这一判断呢 因为 index >= size的时候 就会包index out of range 错误了 tips 值得注意的点
         if (ret.size() == level) {
             ret.add(new ArrayList<>());
         }
-
         ret.get(level).add(root.val);
+
         levelHelper(root.left, level + 1, ret);
         levelHelper(root.right, level + 1, ret);
     }
@@ -1623,6 +1712,8 @@ public class Solution {
         return ret;
     }
 
+    // 742 314 垂直遍历
+
     // ② 96. 不同的二叉搜索树  DP题目  可以采用卡塔兰数,不过目前看起来暂时好难理解
     public int numTrees(int n) {
         int[] dp = new int[n + 1];
@@ -1738,20 +1829,29 @@ public class Solution {
     }
 
 
+    // 687
+    private int ans687 = Integer.MIN_VALUE;
+
+    public int longestUnivaluePath(TreeNode root) {
+        if (root == null) return 0;
+        dfsUniValuePath(root);
+        return ans687;
+    }
+
+    public int dfsUniValuePath(TreeNode root) {
+        if (root == null) return 0;
+        int l = dfsUniValuePath(root.left);
+        int r = dfsUniValuePath(root.right);
+        int pl = 0;
+        int pr = 0;
+        if (root.left != null && root.val == root.left.val) pl = l + 1;
+        if (root.right != null && root.val == root.right.val) pr = r + 1;
+        ans687 = Math.max(ans687, pl + pr);
+        return Math.max(pl, pr);
+    }
+
+
     //② 543. 二叉树的直径
-    public int diameterOfBinaryTree0(TreeNode root) {
-        if (root == null) return 0;
-        int left = dfsHeight(root.left);
-        int right = dfsHeight(root.right);
-        int height = left + right;
-        return left > right ? Math.max(diameterOfBinaryTree0(root.left), height) : Math.max(diameterOfBinaryTree0(root.right), height);
-    }
-
-    public int dfsHeight(TreeNode root) {
-        if (root == null) return 0;
-        return 1 + Math.max(dfsHeight(root.left), dfsHeight(root.right));
-    }
-
 
     // 第二种解法 为什么更快呢 好奇怪?
     public int res = 0;
@@ -1768,8 +1868,23 @@ public class Solution {
         res = Math.max(res, left + right);
         return Math.max(left, right) + 1;
     }
-    // 106 105 108  617 构建二叉树的本质在于招到根节点,然后构建根节点的左右子树
 
+
+    public int diameterOfBinaryTree0(TreeNode root) {
+        if (root == null) return 0;
+        int left = dfsHeight(root.left);
+        int right = dfsHeight(root.right);
+        int height = left + right;
+        return left > right ? Math.max(diameterOfBinaryTree0(root.left), height) : Math.max(diameterOfBinaryTree0(root.right), height);
+    }
+
+    public int dfsHeight(TreeNode root) {
+        if (root == null) return 0;
+        return 1 + Math.max(dfsHeight(root.left), dfsHeight(root.right));
+    }
+
+
+    // 106 105 108  617 构建二叉树的本质在于找到根节点,然后构建根节点的左右子树
     //②  617. 合并二叉树
     public TreeNode mergeTrees(TreeNode t1, TreeNode t2) {
         if (t1 == null && t2 == null) return null;
@@ -1792,13 +1907,22 @@ public class Solution {
     }
 
     public TreeNode bstHelper(int[] nums, int left, int right) {
-        if (left > right) return null;
+        if (left > right) return null;//忘记递归base条件！
         int mid = left + (right - left) / 2;
         TreeNode root = new TreeNode(nums[mid]);
         root.left = bstHelper(nums, left, mid - 1);
         root.right = bstHelper(nums, mid + 1, right);
         return root;
     }
+
+    // 876
+    public ListNode middleNode(ListNode head) {
+        return null;
+    }
+
+    // 109   注意如何寻找中点, 这个问题之前就发现过 。
+    // http://bit.ly/2rlhKgu,构造方法和108没什么区别
+
 
     // ② 105. 从前序与中序遍历序列构造二叉树
     // 所以构建二叉树的问题本质上就是：
@@ -1897,7 +2021,7 @@ public class Solution {
 
     // 打家劫舍系列
 
-    // 198. 打家劫舍  DP dp[i]=Math.max(dp[i-2]+nums[i],dp[i-1])
+    // ② 198. 打家劫舍  DP dp[i]=Math.max(dp[i-2]+nums[i],dp[i-1])
     public int rob1(int[] nums) {
         if (nums.length == 0) return 0;
         if (nums.length == 1) return nums[0];
@@ -1905,7 +2029,7 @@ public class Solution {
         int[] dp = new int[len];
         dp[0] = nums[0];
         dp[1] = Math.max(nums[0], nums[1]);
-        for (int i = 2; i < len; i++) {
+        for (int i = 2; i < len; i++) {// 可以采用滚动数组优化，找出dp[i] dp[i-1] dp[i-2] 每一次迭代变更关系即可
             dp[i] = Math.max(dp[i - 2] + nums[i], dp[i - 1]);
         }
         return dp[len - 1];
@@ -1914,17 +2038,22 @@ public class Solution {
     //  只用到memo[i] memo[i-1] 所以 用两个变量 去迭代更新即可
     // http://bit.ly/2SppaZW
     public int rob2(int[] nums) {
-        int prev1 = 0;
-        int prev2 = 0;
-        for (int num : nums) {
-            int tmp = prev1;
-            prev1 = Math.max(prev1, prev2 + num);
-            prev2 = tmp;
+        // dp[i]=Max(dp[i-1],dpp[i-2]+nums[i]);
+        if (nums.length == 0) return 0;
+        if (nums.length == 1) return nums[0];
+        int prev1 = nums[0];
+        int prev2 = Math.max(nums[0], nums[1]);
+        int ret = Math.max(prev2, prev1);
+        // 滚动数组优化
+        for (int i = 1; i < nums.length; i++) {
+            ret = Math.max(prev2, prev1 + nums[i]);
+            prev1 = prev2;
+            prev2 = ret;
         }
-        return prev1;
+        return ret;
     }
 
-    //  213. 打家劫舍 II
+    // ② 213. 打家劫舍 II
     public int rob3(int[] nums) {
         if (nums.length == 0) return 0;
         if (nums.length == 1) return nums[0];
@@ -2003,25 +2132,6 @@ public class Solution {
         return res;
     }
 
-    // 背包问题
-    // 322. 零钱兑换  ★ 经典题目阿
-    public int coinChange(int[] coins, int amount) {
-        Arrays.sort(coins);
-        int[] f = new int[amount + 1];
-        f[0] = 0;
-        for (int i = 1; i <= amount; i++) {
-            int cost = Integer.MAX_VALUE;
-            for (int j = 0; j < coins.length; j++) {
-                if (i - coins[j] >= 0 && f[i - coins[j]] != Integer.MAX_VALUE) {
-                    cost = Math.min(cost, f[i - coins[j]] + 1);
-                }
-            }
-            f[i] = cost;
-        }
-        return f[amount] == Integer.MAX_VALUE ? -1 : f[amount];
-    }
-
-
     // ② 160. 相交链表
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
         if (headA == null || headB == null) return null;
@@ -2041,6 +2151,7 @@ public class Solution {
         return count;
     }
 
+    // 494
     public int findTargetSumWays(int[] nums, int S) {
         return dfsTargetSumHelper(nums, S, 0, res);
     }
@@ -2866,7 +2977,7 @@ public class Solution {
         return (int) res;
     }
 
-    //② 解乏2 二分法求
+    //② 解法2 二分法求
     public int mySqrt1(int x) {
         // 无法处理x= Integer.MAX_VALUE;
         long l = 1;
@@ -2880,26 +2991,6 @@ public class Solution {
             }
         }
         return (int) (l - 1);
-
-        /*
-        *
-        *  if(x<=0) return 0;
-        int res =1;
-        int   l = 1;
-        int   r = x;
-        while (l<r){
-            int mid = l+(r-l)/2;
-            if (mid>x/mid){ // 避免溢出
-                r=mid;
-            }else {
-                res = mid;
-                l = mid+1;
-
-            }
-        }
-        return  res;
-        *
-        * */
     }
 
     // follow up  立方根  牛顿求根法解决
@@ -4089,7 +4180,7 @@ public class Solution {
     }
 
     // 91 解码方法 ✅ DP  斐波那些数列翻版  dp[i] 表示 前I个表示方法;
-    // dp解决  状态转移方程式: if s[i-1,i)!=0, dp[i]+=dp[i-1],if 10<=s[i-2:i)<=26 dp[i] +=dp[i-2]
+    // dp解决  状态转移方程式: if 1<= s[i-1] <=9, dp[i]+=dp[i-1],if 10<=s[i-2:i)<=26 dp[i] +=dp[i-2]
     public int numDecodings(String s) {
         if (s == null || s.length() == 0) return 0;
         int N = s.length();
@@ -4183,159 +4274,6 @@ public class Solution {
             if (s.charAt(left++) != s.charAt(right--)) return false;
         }
         return true;
-    }
-
-    // todo 127 单词接龙  BFS  邻接
-    // 这个方法 不好的一点在于,要判定 每个单词是否与单次列表相连通
-    // 这个问题 可以变成Graph 的 最短路径问题
-    //  我们需要构建邻接表
-    public int ret127 = Integer.MAX_VALUE;
-
-    public int ladderLength1(String beginWord, String endWord, List<String> wordList) {
-        for (int i = 0; i < wordList.size(); i++) {
-            if (wordList.get(i).equals(endWord))
-                return ladderHelper(beginWord, endWord, 1, wordList);
-            ;
-        }
-        return 0;
-    }
-
-    public int ladderHelper(String beginWord, String endWord, int res, List<String> word) {
-        if (connected(beginWord, endWord)) {
-            return res + 1;
-        }
-        if (word.isEmpty()) {
-            return Integer.MAX_VALUE;
-        }
-        for (int i = 0; i < word.size(); i++) {
-            String s = word.get(i);
-            if (connected(beginWord, s)) {
-                word.remove(i);
-                beginWord = s;
-                ret127 = Math.min(ret127, ladderHelper(beginWord, endWord, res + 1, word));
-            }
-        }
-        return ret127;
-    }
-
-    public boolean connected(String s1, String s2) {
-        if (s1.length() != s2.length()) return false;
-        Map<Character, Integer> map = new HashMap<>();
-        int res = 0;
-        for (char c : s1.toCharArray()) {
-            map.put(c, map.getOrDefault(c, 0) + 1);
-            res++;
-        }
-        for (char c : s2.toCharArray()) {
-            if (map.containsKey(c)) {
-                res--;
-            }
-        }
-        return res == 1 ? true : false;
-    }
-
-    // 解法2 问题化为 构建邻接表  , 转变成无向图的最短路径问题。
-    public int ladderLength2(String beginWord, String endWord, List<String> words) {
-        if (!words.contains(endWord)) return 0;
-        int L = beginWord.length();
-        Map<String, List<String>> allComboDict = new HashMap();
-        // 构建 adjacent edges;
-        for (String word : words) {
-            for (int i = 0; i < L; i++) {
-                String newWord = word.substring(0, i) + "*" + word.substring(i + 1, L);
-                List<String> wildCards = allComboDict.getOrDefault(newWord, new ArrayList());
-                wildCards.add(word);
-                allComboDict.put(newWord, wildCards);
-            }
-        }
-
-        // BFS init
-        Queue<Pair<String, Integer>> queue = new LinkedList();
-        queue.add(new Pair(beginWord, 1));
-        Map<String, Boolean> visited = new HashMap();
-        visited.put(beginWord, true);
-
-        // BFS traversal
-        while (!queue.isEmpty()) {
-            Pair<String, Integer> point = queue.remove();
-            String word = point.key;
-            Integer level = point.val;
-            for (int i = 0; i < L; i++) {
-                String newWord = word.substring(0, i) + "*" + word.substring(i + 1, L);
-                for (String adjacentWord : allComboDict.getOrDefault(newWord, new ArrayList<>())) {
-                    if (adjacentWord.equals(endWord)) {
-                        return level + 1;
-                    }
-                    if (!visited.containsKey(adjacentWord)) {
-                        visited.put(adjacentWord, true);
-                        queue.add(new Pair(adjacentWord, level + 1));
-                    }
-                }
-            }
-        }
-        return 0;
-    }
-
-
-    public int ladderLength3(String beginWord, String endWord, List<String> words) {
-        if (!words.contains(endWord)) return 0;
-        // 构建邻接表
-        Map<String, List<String>> combo = new HashMap<>();
-        int n = beginWord.length();
-        for (String s : words) {
-            for (int i = 0; i < n; i++) {
-                String wildWord = s.substring(0, i) + "*" + s.substring(i + 1, n);
-                List<String> matchWords = combo.getOrDefault(wildWord, new ArrayList());
-                matchWords.add(s);
-                combo.put(wildWord, matchWords);
-            }
-        }
-        // double BFS init
-        Queue<Pair<String, Integer>> startQueue = new LinkedList();
-        Map<String, Integer> startVisited = new HashMap();
-        startQueue.add(new Pair(beginWord, 1));
-        startVisited.put(beginWord, 1);
-
-        Queue<Pair<String, Integer>> endQueue = new LinkedList();
-        Map<String, Integer> endVisited = new HashMap();
-        endQueue.add(new Pair(endWord, 1));
-        endVisited.put(endWord, 1);
-
-        while (!startQueue.isEmpty() && !endQueue.isEmpty()) {
-            Pair<String, Integer> p1 = startQueue.remove();
-            String w1 = p1.key;
-            Integer l1 = p1.val;
-            for (int i = 0; i < n; i++) {
-                String wild1 = w1.substring(0, i) + "*" + w1.substring(i + 1, n);
-                for (String adjacentWord : combo.getOrDefault(wild1, new ArrayList<>())) {
-                    if (endVisited.containsKey(adjacentWord)) {
-                        return l1 + endVisited.get(adjacentWord);
-                    }
-                    if (!startVisited.containsKey(adjacentWord)) {
-                        startVisited.put(adjacentWord, l1 + 1);
-                        startQueue.add(new Pair(adjacentWord, l1 + 1));
-                    }
-                }
-            }
-
-            Pair<String, Integer> p2 = endQueue.remove();
-            String w2 = p2.key;
-            Integer l2 = p2.val;
-            for (int i = 0; i < n; i++) {
-                String wild2 = w2.substring(0, i) + "*" + w2.substring(i + 1, n);
-                for (String adjacentWord : combo.getOrDefault(wild2, new ArrayList<>())) {
-                    if (startVisited.containsKey(adjacentWord)) {
-                        return l2 + startVisited.get(adjacentWord);
-                    }
-                    if (!endVisited.containsKey(adjacentWord)) {
-                        endVisited.put(adjacentWord, l2 + 1);
-                        endQueue.add(new Pair(adjacentWord, l2 + 1));
-                    }
-                }
-            }
-        }
-
-        return 0;
     }
 
     //212 单词搜索Ⅱ 构造单词表, 并通过前缀树 及时停止无效DFS.
@@ -4743,83 +4681,6 @@ public class Solution {
             root.right = insert(root.right, val, ans, i);
         }
         return root;
-    }
-
-    // 74
-    // ② 240 搜索二维矩阵 Ⅱ
-    // 错误思路  对角线对称部分 不能保证上半部分>下半部分  因为 是左至右递增 以及 上到下递增
-    // 正确思路应该是 先判断他在上下半部分,然后 再判断他在左右半部分.
-    public boolean searchMatrix1(int[][] matrix, int target) {
-        if (matrix.length == 0 || matrix[0].length == 0 || matrix == null) return false;
-        int m = matrix.length, n = matrix[0].length;
-        if (matrix[0][0] > target || target > matrix[m - 1][n - 1]) return false;
-        int u = 0, d = m, l = 0, r = n;
-        int cmp = 0;
-        while (u < d || l < r) {
-            int m1 = u + (d - u) / 2;
-            int m2 = l + (r - l) / 2;
-            if (m1 == m) {
-                return matrix[m - 1][m2] == target;
-            } else if (m2 == n) {
-                return matrix[m1][n - 1] == target;
-            } else cmp = matrix[m1][m2];
-
-            if (cmp == target) return true;
-            else if (cmp < target) {
-                u = m1 + 1;
-                l = m2 + 1;
-            } else if (cmp > target) {
-                d = m1;
-                r = m2;
-            }
-        }
-        return false;
-    }
-
-
-    public boolean searchMatrix2(int[][] matrix, int target) {
-        if (matrix.length == 0 || matrix[0].length == 0 || matrix == null) return false;
-        int m = matrix.length, n = matrix[0].length;
-        if (matrix[0][0] > target || matrix[m - 1][n - 1] < target) return false;
-        int u = 0, d = m;
-        while (u < d) {
-            int m1 = u + (d - u) / 2;
-            int cmp1 = matrix[m1][0];
-            if (cmp1 < target) {
-                u = m1 + 1;
-            } else if (cmp1 > target) {
-                d = m1;
-            } else return true;
-        }
-        u = u - 1;
-
-        int l = 0, r = n;
-        while (l < r) {
-            int m2 = l + (r - l) / 2;
-            int cmp2 = matrix[u][m2];
-            if (cmp2 < target) {
-                l = m2 + 1;
-            } else if (cmp2 > target) {
-                r = m2;
-            } else return true;
-        }
-        return false;
-
-    }
-
-    // ② 上买呢的2个方法都是异曲同工, 都是同样的错误思路!
-    public boolean searchMatrix(int[][] matrix, int target) {
-        if (matrix.length == 0 || matrix[0].length == 0 || matrix == null) return false;
-        int m = matrix.length, n = matrix[0].length;
-        if (matrix[0][0] > target || target > matrix[m - 1][n - 1]) return false;
-        int x = matrix.length - 1, y = 0;
-        while (true) {
-            if (matrix[x][y] > target) x--;
-            else if (matrix[x][y] < target) y++;
-            else return true;
-            if (x < 0 || y > n - 1) break;
-        }
-        return false;
     }
 
     // 324 摆动排序Ⅱ
@@ -5306,8 +5167,8 @@ public class Solution {
         return ret.toString();
     }
 
-    // leetcode 516  [tag:微软面筋]  https://www.1point3acres.com/bbs/thread-541121-1-1.html
-    // [tag:微软面筋] 求M的N次方的后3位
+    // 516  [tag:微软面筋]  https://www.1point3acres.com/bbs/thread-541121-1-1.html
+    // 求M的N次方的后3位
     public int getLastThreeNum(int m, int n) {
         int res = 1;
         for (int i = 0; i < n; i++) {
@@ -5397,148 +5258,16 @@ public class Solution {
         return res;
     }
 
-
-    // 403 青蛙过河
-
-    //  464 我能赢吗
-
-    // 1092. 最短公共超序列
-
-    // 718. 最长重复子数组
-
-
-    // 873
-
-    // 673. 最长递增子序列的个数
-
-    // 915. 分割数组
-    //
-
-    // follow up
-    //  数2012的M次方与数2012的N次方的最后三位数相同,求正整数M和N,使M+N最小
-    /*public int resMinMN = 0;
-    public int MinMN(int m,int n){
-       int r1 = getLastThreeNum(2012,m);
-       int r2 = getLastThreeNum(2012,n);
-       if (r1==r2){
-          res = Math.min(m+n,res);
-       }else {
-
-       }
-
-    }
-    */
-    //[tag:微软面经] https://www.1point3acres.com/bbs/thread-506842-1-1.html
-    // leetcode 415
-    public String addStrings(String num1, String num2) {
-        return "";
-    }
-
-    //[tag:微软面经] leetcode 419 https://www.1point3acres.com/bbs/thread-506842-1-1.html
-    public int countBattleships(char[][] board) {
-        return -1;
-    }
-
-    // [tag:微软面经] https://www.1point3acres.com/bbs/thread-535401-1-1.html
-    // https://www.geeksforgeeks.org/k-th-element-two-sorted-arrays/
-    int kth(int arr1[], int arr2[], int m, int n, int k) {
-        return -1;
-    }
-
-    //  [tag:微软面经] https://www.1point3acres.com/bbs/thread-535401-1-1.html
-    // https://www.geeksforgeeks.org/array-rotation/
-
-
-    // [tag:微软面经] https://www.1point3acres.com/bbs/thread-535401-1-1.html
-    // leetcode 716
-    // [tag:微软面经] https://www.1point3acres.com/bbs/thread-529016-1-1.html
-    // https://www.hackerrank.com/challenges/almost-sorted/problem
-    // leetcode 969 https://leetcode.com/problems/pancake-sorting/
-
-    // 字节
-    // https://blog.csdn.net/kuangsonghan/article/details/82767363
-
-    // airbnb 面筋
-    // leetcode 316. 去除重复字母
-
-    // https://www.1point3acres.com/bbs/thread-532266-1-1.html
-    // http://www.voidcn.com/article/p-srkptnpu-bnt.html
-
-    //654 RMQ
-
-    // 位运算法
-
-    // backtrack 回溯算法
-
-    // [special专题]（分治思想/二分查找）https://www.cnblogs.com/grandyang/p/6854825.html
-
-    //  grocery
-    //  http://bit.ly/2HVV8Zz  遍历问题 注意不要无限递归下去就行 就是要找出所有可能的base case  return
-
-
-    // 面筋题目
-    //  http://bit.ly/32H6YPn
-    // leetcode 664
-    public int strangePrinter(String s) {
-        return -1;
-    }
-
-    // leetcode 415
-    // https://leetcode-cn.com/problems/add-strings/
-    // 415. 字符串相加
-
-    // follow up todo 590. N叉树的后序遍历
-    public List<Integer> postorder(Node root) {
-        return null;
-    }
-
-    // 207. 课程表 拓扑排序
-
-    // 124. 二叉树中的最大路径和
-    public int maxPathSum(TreeNode root) {
-        return 1;
-    }
-
-
-    // kmp字符串匹配的实现
-    // leetcode 260. 只出现一次的数字 III
-
-    // leetcode 178
-
-    // 80
-
-    // chapter 8.2 P442
-    // 这个问题 网上也已经有很多人分析过如何写出正确的二分查找了
-    //  8.2章节  也给出标准示范了 , 以及几个细节的分析
-    // 二分查找的标准函数 http://bit.ly/32512ix
-    public int binarySearch(int[] array, int lo, int hi, int target) {
-        while (lo < hi) {
-            int mid = lo + (hi - lo) / 2;
-            if (array[mid] <= target) { // 返回满足 arr[i] > value的第一个位置
-                lo = mid + 1;
-            } else {
-                hi = mid;
-            }
-        }
-        return lo;
-    }
-
     // 最大公约数
     // gcd(104,40) = 8  辗转相除法
     public int gcd(int a, int b) {
         return b == 0 ? a : gcd(b, a % b);
     }
 
-    // 最大公倍数 * 最小公约数 = a*b
+    // 最小公倍数 * 最大公约数 = a*b
     public int lcm(int a, int b) {
         return (b) / Math.abs(gcd(a, b)) * a;
     }
-
-    // 1071
-
-
-    // 829
-
 
     // 36进制加法运算？
     //将'0'-'9'映射到数字0-9，将'a'-'z'映射到数字10-35
@@ -5709,49 +5438,150 @@ public class Solution {
     public int[] head;
     public int[] deg; //记录入度
 
-    void add(int u,int v){
-        edges[cnt]=new Edge();
-        edges[cnt].to=v;
-        edges[cnt].next=head[u];//理解这个是关键点啊
-        head[u]=cnt++;
+    void add(int u, int v) {
+        edges[cnt] = new Edge();
+        edges[cnt].to = v;
+        edges[cnt].next = head[u];//理解这个是关键点啊
+        head[u] = cnt++;
     }
 
-    public boolean solve(int n){
-        Queue<Integer> queue=new LinkedList<Integer>();
-        for(int i=0;i<n;++i){
-            if(deg[i]==0){ //存入度为0的点
+    public boolean solve(int n) {
+        Queue<Integer> queue = new LinkedList<Integer>();
+        for (int i = 0; i < n; ++i) {
+            if (deg[i] == 0) { //存入度为0的点
                 queue.offer(i);
             }
         }
-        int k=0;
-        while (!queue.isEmpty()){
-            int u=queue.poll();
+        int k = 0;
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
             ++k;  //记录入度为0的个数
-            for (int i=head[u];i!=-1;i=edges[i].next){ //循环与其相连的点
-                int v=edges[i].to;
+            for (int i = head[u]; i != -1; i = edges[i].next) { //循环与其相连的点
+                int v = edges[i].to;
                 --deg[v];
-                if(deg[v]==0){ //入度为0加入队列中
+                if (deg[v] == 0) { //入度为0加入队列中
                     queue.offer(v);
                 }
             }
         }
-        return k==n; //若为n说明不存在环
+        return k == n; //若为n说明不存在环
     }
 
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        int n=prerequisites.length;
-        int l=Math.max(numCourses,n); //取大
-        cnt=0;
-        edges=new Edge[l];
-        head=new int[l];
-        deg=new int[l];
-        Arrays.fill(head,-1);
-        for(int i=0;i<n;++i){
-            add(prerequisites[i][1],prerequisites[i][0]); //建图
+        int n = prerequisites.length;
+        int l = Math.max(numCourses, n); //取大
+        cnt = 0;
+        edges = new Edge[l];
+        head = new int[l];
+        deg = new int[l];
+        Arrays.fill(head, -1);
+        for (int i = 0; i < n; ++i) {
+            add(prerequisites[i][1], prerequisites[i][0]); //建图
             ++deg[prerequisites[i][0]]; //记录入度
         }
         return solve(numCourses);
     }
+
+    public int[] smallestRange(List<List<Integer>> nums) {
+        //小根堆，堆顶为各列表最小当前元素 二维坐标
+        Queue<int[]> minQueue = new PriorityQueue<>(Comparator.comparingInt(arr -> nums.get(arr[0]).get(arr[1])));
+        //大根堆，堆顶为各列表最大当前元素 二维坐标
+        Queue<int[]> maxQueue = new PriorityQueue<>((arr1, arr2) -> nums.get(arr2[0]).get(arr2[1]) - nums.get(arr1[0]).get(arr1[1]));
+        int[] ans = new int[]{Integer.MIN_VALUE, Integer.MAX_VALUE};
+        for (int i = 0; i < nums.size(); i++) {
+            //初始化各列表第一个元素，小根堆&大根堆添加同一个对象，方便后面remove
+            int[] arr = new int[]{i, 0};
+            minQueue.offer(arr);
+            maxQueue.offer(arr);
+        }
+        while (minQueue.size() == nums.size()) {
+            //推出小根堆顶元素，小根堆size-1
+            int[] minArr = minQueue.poll();
+            //小根堆顶元素与大根堆顶元素区间，每个列表至少有一个数包含在其中
+            int[] maxArr = maxQueue.peek();
+            //注意此处相减值溢出，需要转成long
+            if ((long) nums.get(maxArr[0]).get(maxArr[1]) - (long) nums.get(minArr[0]).get(minArr[1]) < (long) ans[1] - (long) ans[0]) {
+                ans[0] = nums.get(minArr[0]).get(minArr[1]);
+                ans[1] = nums.get(maxArr[0]).get(maxArr[1]);
+            }
+            //丢弃小根堆顶元素，取其所在列表下一元素重新构建堆
+            if (minArr[1] < nums.get(minArr[0]).size() - 1) {
+                int[] newArr = new int[]{minArr[0], minArr[1] + 1};
+                minQueue.offer(newArr);
+                //因为添加相同对象，可以直接remove
+                maxQueue.remove(minArr);
+                maxQueue.offer(newArr);
+            }
+        }
+        return ans;
+    }
+
+    // 547 朋友圈
+    public int findCircleNum(int[][] M) {
+        int[] visited = new int[M.length];
+        int count = 0;
+        for (int i = 0; i < M.length; i++) {
+            if (visited[i] == 0) {
+                dfs(M, visited, i);
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+    public void dfs(int[][] M, int[] visited, int i) {
+        for (int j = 0; j < M.length; j++) {
+            if (M[i][j] == 1 && visited[j] == 0) {
+                visited[j] = 1;
+                dfs(M, visited, j);
+            }
+        }
+    }
+
+    // 969 pancake
+    public List<Integer> pancakeSort(int[] A) {
+        List<Integer> res = new ArrayList<>();
+        for (int x = A.length, i; x > 0; --x) {
+            for (i = 0; A[i] != x; ++i) ;
+            reverse(A, i + 1);
+            res.add(i + 1);
+            reverse(A, x);
+            res.add(x);
+        }
+        return res;
+    }
+
+    public void reverse(int[] A, int k) {
+        for (int i = 0, j = k - 1; i < j; i++, j--) {
+            int tmp = A[i];
+            A[i] = A[j];
+            A[j] = tmp;
+        }
+    }
+
+    //
+    // https://www.geeksforgeeks.org/sort-linked-list-already-sorted-absolute-values/
+    // HEAD>-- PREV --> CUR -->NEXT
+    public ListNode sortedList(ListNode head) {
+        ListNode prev = head;
+        ListNode curr = head.next;
+        while (cur != null) {
+            if (curr.val < prev.val) {
+                prev.next = curr.next;
+                cur.next = head;
+                head = cur;
+                cur = prev;
+
+            } else {
+                prev = curr;
+            }
+            curr = curr.next;
+        }
+        return head;
+    }
+
+
 }
 
 
