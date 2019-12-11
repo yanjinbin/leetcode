@@ -1,6 +1,7 @@
 package com.yanjinbin.leetcode;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -9,11 +10,11 @@ import java.util.PriorityQueue;
 import java.util.Stack;
 
 public class MonotoneStack {
-    // 42
+
     // 42. 接雨水 trap rain water  http://bit.ly/2RKoy0k
-    // ✅
     public int trap1(int[] height) {
-        // 遍历一次，找左边最大值，然后遍历一次，找右边最大值，选个最大的dp[i],if dp[i] > height[i],则add
+        // 遍历一次，找左边最大值，然后遍历一次，
+        // 找右边最大值，选个最大的dp[i],if dp[i] > height[i],则add
         int res = 0, mx = 0, n = height.length;
         int[] dp = new int[n];
         for (int i = 0; i < n; ++i) {
@@ -30,7 +31,7 @@ public class MonotoneStack {
         return res;
     }
 
-    //  42. 接雨水 trap rain water 双指针法
+    //  42. 接雨水 trap rain water 双指针法 interview friendly  本质是也是计算一种单调递增关系
     public int trap2(int[] height) {
         int res = 0, l = 0, r = height.length - 1;
         while (l < r) {
@@ -38,13 +39,11 @@ public class MonotoneStack {
             if (min == height[l]) {
                 l++;
                 while (l < r && height[l] < min) {
-                    System.out.println("l:" + l + "r:" + r);
                     res = res + min - height[l++];
                 }
             } else {
                 r--;
                 while (l < r && height[r] < min) {
-                    System.out.println("l:" + l + "r:" + r);
                     res = res + min - height[r--];
                 }
             }
@@ -59,13 +58,31 @@ public class MonotoneStack {
         while (l < r) {
             int lower = height[height[l] < height[r] ? l++ : r--];
             level = Math.max(level, lower);
-            // System.out.println("l:" + l + "r:" + r);
             res = res + level - lower;
         }
         return res;
     }
 
-    // 单调递减栈
+    // 单调递减栈  计算方式有点trick的
+    // 单调栈的2种写法
+    // 单调栈 1
+    //  while(i<len){
+    //      if(!s.isEmpty()&&s.peek()<=height[i]){
+    //          s.push(i++);
+    //      } else{
+    //          s.pop();
+    //      }
+    //  }
+
+    // 单调栈 2
+    // for(int i=0;i<len;i++){
+    //     while(!s.isEmpty()&&s.peek()<=height[i]){
+    //
+    //
+    //     }
+    //     s.pop();
+    //
+    // }
     public int trap4(int[] height) {
         Stack<Integer> s = new Stack<>();
         int i = 0, n = height.length, res = 0;
@@ -75,15 +92,65 @@ public class MonotoneStack {
             } else {
                 int t = s.pop();
                 if (s.isEmpty()) continue;
-                //   int v1 = Math.min(height[i], height[s.peek()]) - height[t];
-                //  int v2 = i-t;
-                // int v3 = i-s.peek()-1;
-                // System.out.println("v1: "+v1+" v2: "+v2+" v3: "+v3);
-                res += Math.min(height[i], height[s.peek()] - height[t]) * (i - s.peek() - 1);
+                res += (Math.min(height[i], height[s.peek()]) - height[t]) * (i - s.peek() - 1);
             }
         }
         return res;
     }
+
+
+    // 407 接雨水Ⅱ 优先队列+BFS
+    public int trapRainWater(int[][] heightMap) {
+        PriorityQueue<Tuple> q = new PriorityQueue<Tuple>((o1, o2) -> o1.z - o2.z);
+        int m = heightMap.length;
+        int n = heightMap[0].length;
+        boolean[][] visited = new boolean[m][n];
+        for (int i = 0; i < m; i++) {
+            q.offer(new Tuple(i, 0, heightMap[i][0]));
+            q.offer(new Tuple(i, n - 1, heightMap[i][n - 1]));
+            visited[i][0] = true;
+            visited[i][n - 1] = true;
+        }
+        for (int j = 0; j < n; j++) {
+            q.offer(new Tuple(0, j, heightMap[0][j]));
+            q.offer(new Tuple(m - 1, j, heightMap[m - 1][j]));
+            visited[0][j] = true;
+            visited[m - 1][j] = true;
+        }
+
+        int[] dx = new int[]{1, -1, 0, 0};
+        int[] dy = new int[]{0, 0, 1, -1};
+        int water = 0;
+        while (!q.isEmpty()) {
+            Tuple p = q.poll();
+            int x = p.x, y = p.y, height = p.z;
+            for (int i = 0; i < 4; i++) {
+                int nx = dx[i] + x;
+                int ny = dy[i] + y;
+                if (nx >= 0 && nx < m && ny >= 0 && ny < n && !visited[nx][ny]) {
+                    visited[nx][ny] = true;
+                    if (height > heightMap[nx][ny]) {
+                        water += height - heightMap[nx][ny];
+                        q.offer(new Tuple(nx, ny, height));
+                    } else {
+                        q.offer(new Tuple(nx, ny, heightMap[nx][ny]));
+                    }
+                }
+            }
+        }
+        return water;
+    }
+
+    // 778
+
+    // 1263 BFS+优先队列
+
+    // 943 花花酱视频 https://youtu.be/u_Wc4jwrp3Q
+
+
+    // https://www.cnblogs.com/neopenx/p/4023458.html
+    // https://www.ctolib.com/topics-53827.html
+
 
     // 496 单调
     public int[] nextGreaterElement01(int[] nums1, int[] nums2) {
@@ -115,7 +182,8 @@ public class MonotoneStack {
         Map<Integer, Integer> map = new HashMap<>();
         int N = all.length;
         for (int i = N - 1; i >= 0; i--) {
-            // 如果栈顶数  小于 待入栈数 那么 我一直削栈顶元素,知道 大于待入栈元素位置 ,然后入栈 所以是单调递减栈
+            // 如果栈顶数  小于 待入栈数 那么 我一直削栈顶元素,直到大于待入栈元素位置,
+            //  然后入栈 所以是单调递减栈
             while (!s.isEmpty() && s.peek() < all[i]) {// 维护单调性
                 s.pop();
             }
@@ -214,13 +282,44 @@ public class MonotoneStack {
         for (int i = 0; i < h.length; i++) {
             while (!s.isEmpty() && h[s.peek()] > h[i]) {
                 int idx = s.pop();
-                System.out.println(h[idx] + " " + (i - (s.isEmpty() ? 0 : (s.peek() + 1))));
                 maxArea = Math.max(maxArea, h[idx] * (i - (s.isEmpty() ? 0 : s.peek() + 1)));
             }
             s.push(i);
         }
         return maxArea;
     }
+
+    public int calculateArea(int[] heights, int lo, int hi) {
+        if (lo > hi)
+            return 0;
+        int minIndex = lo;
+        for (int i = lo; i <= hi; i++)
+            if (heights[minIndex] > heights[i])
+                minIndex = i;
+        return Math.max(heights[minIndex] * (hi - lo + 1), Math.max(calculateArea(heights, lo, minIndex - 1), calculateArea(heights, minIndex + 1, hi)));
+    }
+
+    public int largestRectangleArea03(int[] heights) {
+        return calculateArea(heights, 0, heights.length - 1);
+    }
+
+
+    public int largestRectangleArea04(int[] heights) {
+
+        Stack<Integer> s = new Stack<>();
+        s.push(-1);
+        int maxArea = 0;
+        for (int i = 0; i < heights.length; ++i) {
+            while (s.peek() != -1 && heights[s.peek()] >= heights[i])
+                maxArea = Math.max(maxArea, heights[s.pop()] * (i - s.peek() - 1));
+            s.push(i);
+        }
+        while (s.peek() != -1)
+            maxArea = Math.max(maxArea, heights[s.pop()] * (heights.length - s.peek() - 1));
+        return maxArea;
+
+    }
+
     /*
     public int largestRectangleArea03(int[] heights) {
         if (heights.length==1) return heights[0];// 错误 ,如果输入数据是[2,2]
@@ -266,13 +365,57 @@ public class MonotoneStack {
                 } else {
                     hMax[i][0] = 1;
                 }
-
             }
         }
         // todo 哈
         return 1;
     }
 
+
+    // 456
+    // 给定一个整数序列：a1, a2, ..., an，一个132模式的子序列 ai, aj, ak 被定义为：
+    // 当 i < j < k 时，ai < ak < aj。设计一个算法，
+    // 当给定有 n 个数字的序列时，验证这个序列中是否含有132模式的子序列。
+
+    public boolean find132pattern(int[] nums) {
+        int N = nums.length;
+        if (N < 3) return false;
+        int ak = Integer.MIN_VALUE;// 次大  第二大
+        Stack<Integer> s = new Stack<>();
+        for (int i = N - 1; i >= 0; i--) { // ai,aj  -->nums[i]   ak-->flag
+            if (nums[i] < ak) {
+                return true;
+            } else {
+                while (!s.isEmpty() && s.peek() < nums[i]) {
+                    ak = Math.max(ak, s.pop());
+                }
+                s.push(nums[i]);
+            }
+        }
+        return false;
+    }
+
+    // 解法2  还是错的  无法处理  边界情况 [-1,3,2]  这种从
+    public boolean find132pattern01(int[] nums) {
+        int N = nums.length;
+        if (N < 3) return false;
+        int flag = Integer.MAX_VALUE;
+        Stack<Integer> s = new Stack<>();
+        s.add(nums[0]);
+        for (int i = 1; i < N; i++) {
+            if (nums[i] > flag) {
+                return true;
+            } else {
+                while (!s.isEmpty() && nums[i] < s.peek()) {
+                    flag = Math.min(flag, s.pop());
+                }
+                s.push(nums[i]);
+            }
+        }
+        return false;
+    }
+
+    // [tag:微软 2019-2-8] https://www.1point3acres.com/bbs/thread-479082-1-1.html
     // 单调队列 http://poj.org/problem?id=2823
     // 239. 滑动窗口最大值 这道题目也是考察数据结构的熟悉程度了 大堆 优先队列
     // 也可以当做RMQ问题 ST解决 http://bit.ly/35lfJkh
@@ -311,49 +454,5 @@ public class MonotoneStack {
             }
         }
         return ans;
-    }
-
-    // 456
-    // 给定一个整数序列：a1, a2, ..., an，一个132模式的子序列 ai, aj, ak 被定义为：
-    // 当 i < j < k 时，ai < ak < aj。设计一个算法，
-    // 当给定有 n 个数字的序列时，验证这个序列中是否含有132模式的子序列。
-
-
-    public boolean find132pattern(int[] nums) {
-        int N = nums.length;
-        if (N < 3) return false;
-        int ak = Integer.MIN_VALUE;// 次大  第二大
-        Stack<Integer> s = new Stack<>();
-        for (int i = N - 1; i >= 0; i--) { // ai,aj  -->nums[i]   ak-->flag
-            if (nums[i] < ak) {
-                return true;
-            } else {
-                while (!s.isEmpty() && s.peek() < nums[i]) {
-                    ak = Math.max(ak, s.pop());
-                }
-                s.push(nums[i]);
-            }
-        }
-        return false;
-    }
-
-    // 解法2  还是错的  无法处理  边界情况 [-1,3,2]  这种从
-    public boolean find132pattern01(int[] nums) {
-        int N = nums.length;
-        if (N < 3) return false;
-        int flag = Integer.MAX_VALUE;
-        Stack<Integer> s = new Stack<>();
-        s.add(nums[0]);
-        for (int i = 1; i < N; i++) {
-            if (nums[i] > flag) {
-                return true;
-            } else {
-                while (!s.isEmpty() && nums[i] < s.peek()) {
-                    flag = Math.min(flag, s.pop());
-                }
-                s.push(nums[i]);
-            }
-        }
-        return false;
     }
 }
