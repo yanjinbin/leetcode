@@ -20,7 +20,7 @@ class LRUCache {
 
     public int get(int key) {
         if (m.containsKey(key)) {
-            // java 的 linkedlist so bad
+            // LinkedList so bad
             elems.remove((Integer) key);
             elems.addFirst(key);
             return m.get(key);

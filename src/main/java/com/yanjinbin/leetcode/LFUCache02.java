@@ -37,6 +37,7 @@ public class LFUCache02 {
         int cnt = counts.get(key);
         counts.put(key, cnt + 1);
         lists.get(cnt).remove(key);
+
         // corner case
         if (cnt == min && lists.get(cnt).size() == 0) {
             min++;
