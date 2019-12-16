@@ -3,13 +3,12 @@ package com.yanjinbin.leetcode;
 
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static com.yanjinbin.leetcode.Solution.swap;
 
 // https://oi-wiki.org/ds/dsu/
 // https://leetcode-cn.com/tag/union-find/
@@ -28,20 +27,12 @@ public class UnionFind {
         }
     }
 
-    // 查找
-    /*public int find(int u) {
-        if (fa[u] == u) {
-            return u;
-        } else {
-            return find(fa[u]);
-        }
-    }*/
-
-    // 路径压缩
+    // 查找带路径压缩
     public int find(int u) {
         if (u != fa[u]) {
             fa[u] = find(fa[u]);
         }
+        // 不要写成 return u了。
         return fa[u];
     }
 
@@ -70,38 +61,70 @@ public class UnionFind {
         return null;
     }
 
-    // 685 挺复杂的。处理好几个case
-    // https://youtu.be/lnmJT5b4NlM
-    // 这个中文解释的不错哦  http://bit.ly/37OBJFj
-    // int[] fa;
+    // 685 冗余链接Ⅱ 挺复杂的。处理好几个case : https://youtu.be/lnmJT5b4NlM?t=731
     public int[] findRedundantDirectedConnection(int[][] edges) {
         int N = edges.length;
-        fa = new int[N + 1];
-        int[] parent = new int[N + 1];
-        int[] edge1 = null, edge2 = null, edgeCircle = null;
-        for (int[] pair : edges) {
-            int u = pair[0], v = pair[1];
-            if (fa[u] == 0) fa[u] = u;
-            if (fa[v] == 0) fa[v] = v;
-            if (parent[v] != 0) {//跳过下面else部分！！重点理解这个
-                edge1 = new int[]{parent[v], v};
-                edge2 = pair;
-            } else {
-                parent[v] = u;
-                int ancU = find(u);
-                int ancV = find(v);
-                if (ancU != ancV) {
-                    fa[ancV] = ancU;
-                } else {// 碰到了环
-                    edgeCircle = pair;
-                }
+        int[] fa = new int[N + 1];
+        int[] root = new int[N + 1];
+        int[] rank = new int[N + 1];
+        Arrays.fill(rank, 1);
+        int[] ans1 = null, ans2 = null;
+        // step1  是否有duplicate parents
+        for (int[] edge : edges) {
+            int u = edge[0], v = edge[1];
+            if (fa[v] > 0) { // has two parents
+                ans1 = new int[]{fa[v], v};
+                ans2 = new int[]{u, v};
+                // delete the later edge
+                edge[0] = edge[1] = -1;
             }
+            fa[v] = u;
         }
-        if (edge1 != null && edge2 != null) return edgeCircle == null ? edge2 : edge1;
-        else return edgeCircle;
+
+        // step2  分3种情况讨论
+        for (int[] edge : edges) {
+            int u = edge[0], v = edge[1];
+            // invalid edge
+            if (u < 0 || v < 0) continue;
+            if (root[u] == 0) root[u] = u;
+            if (root[v] == 0) root[v] = v;
+            int pu = find(u, root);
+            int pv = find(v, root);
+            if (pu == pv) {
+                return ans1 == null ? edge : ans1;
+            }
+            if (rank[pv] > rank[pu]) {
+                int tmp = pv;
+                pv = pu;
+                pu = tmp;
+            }
+            // 做 merge
+            root[pv] = pu;
+            rank[pu] += rank[pv];
+        }
+        return ans2;
     }
 
-    // 547 朋友圈
+
+    // 递归版本
+    public int find(int u, int[] fa) {
+        if (u != fa[u]) {
+            fa[u] = find(fa[u], fa);
+        }
+        return fa[u];
+    }
+
+    // 非递归版本
+    public int find02(int u, int[] fa) {
+        while (u != fa[u]) {
+            fa[u] = fa[fa[u]];
+            u = fa[u];
+        }
+        return u;
+    }
+
+
+    // 547 朋友圈 也可以DFS遍历，记录一个访问数组即可。
     public int findCircleNum(int[][] M) {
         int N = M.length;
         UnionFind uf = new UnionFind(N);
@@ -120,13 +143,14 @@ public class UnionFind {
     }
 
 
-    // 737
+    // 737 句子相似性Ⅱ
     public boolean areSentenceSimilarityTwo(String[] w1, String[] w2, List<List<String>> pairs) {
         if (w1.length != w2.length) return false;
         int N = pairs.size() * 2;
         UnionFind uf = new UnionFind(N);
         Map<String, Integer> map = new HashMap<>();
         int id = 0;
+        // 构建union
         for (List<String> strs : pairs) {
             for (String str : strs) {
                 if (!map.containsKey(str)) {
@@ -136,8 +160,7 @@ public class UnionFind {
             }
             uf.Union(map.get(strs.get(0)), map.get(strs.get(1)));
         }
-
-
+        // 逐个比较，find 比对相似性
         for (int i = 0; i < w1.length; i++) {
             if (w1[i].equals(w2[i])) continue;
             if (!map.containsKey(w1[i]) || !map.containsKey(w2[i]) || uf.find(map.get(w1[i])) != uf.find(map.get(w2[i]))) {
@@ -146,25 +169,15 @@ public class UnionFind {
         }
         return true;
     }
-    // 721 账户合并
-    public List<List<String>> accountsMerge(List<List<String>> accounts) {
-        return null;
+
+    public static void main(String[] args) {
+        int[] pa = new int[]{0, 4, 1, 2, 5, 5};
+        // find02(1,pa); // 就是成员变量和局部变量的
+//        find01(1, pa);
+//        System.out.println(Arrays.toString(pa));
+//        fa = pa;
+//        find(1);
+//        System.out.println(Arrays.toString(fa));
+
     }
-
-    // 847
-
-    // 928 尽量减少恶意软件的传播 II
-
-    /// 803 打砖块
-
-    // 1101. 彼此熟识的最早时间
-
-    // 399. 除法求值
-
-
-    // 778 水位上升的泳池中游泳
-
-    // ==============
-
-
 }
