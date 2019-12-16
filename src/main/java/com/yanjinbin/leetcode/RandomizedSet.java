@@ -44,7 +44,7 @@ public class RandomizedSet {
         if (idx < vals.size() - 1) {
             int lastOne = vals.get(vals.size() - 1);
             map.put(lastOne, idx);
-            vals.set(idx, val);
+            vals.set(idx, lastOne);
         }
 
         map.remove(val);
