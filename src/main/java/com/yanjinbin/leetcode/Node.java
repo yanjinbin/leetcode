@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.List;
 
@@ -20,5 +21,9 @@ public class Node {
     public List<Node> children;
 
     public String name;
+
+    // 116 117专用
+    @ToString.Exclude
+    public Node left,right,next;
 
 }

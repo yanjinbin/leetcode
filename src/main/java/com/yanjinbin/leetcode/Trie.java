@@ -56,8 +56,6 @@ public class Trie {
         TrieNode node = searchPrefix(prefix);
         return node != null;
     }
-
-
 }
 
 class TrieNode {

@@ -23,6 +23,8 @@ public class TreeNode {
 
     public TreeNode left;
     @Exclude
+    public TreeNode next;
+
     public TreeNode right;
 
     public TreeNode(int x) {
