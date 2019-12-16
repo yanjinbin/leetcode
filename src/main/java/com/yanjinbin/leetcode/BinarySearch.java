@@ -8,12 +8,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BinarySearch {
-    // 887. 鸡蛋掉落
-
-    // 426 426. 将二叉搜索树转化为排序的双向链表
-
-    // 1044. 最长重复子串
-
 
     //69 平方根 解乏2 二分法求
     public int mySqrt1(int x) {
@@ -22,33 +16,13 @@ public class BinarySearch {
         long r = x + 1;
         while (l < r) {
             long mid = l + (r - l) / 2;
-            if (mid > x / mid) {
+            if (mid > x / mid) {//避免溢出
                 r = mid;
             } else {
                 l = mid + 1;
             }
         }
         return (int) (l - 1);
-
-        /*
-        *
-        *  if(x<=0) return 0;
-        int res =1;
-        int   l = 1;
-        int   r = x;
-        while (l<r){
-            int mid = l+(r-l)/2;
-            if (mid>x/mid){ // 避免溢出
-                r=mid;
-            }else {
-                res = mid;
-                l = mid+1;
-
-            }
-        }
-        return  res;
-        *
-        * */
     }
 
     // ② 230 二叉搜索树中第k小 通用方法
@@ -115,7 +89,8 @@ public class BinarySearch {
         return l;
     }
 
-    //  658 K个最接近的元素
+    //② 658 K个最接近X的元素
+    // x-arr[mid] < arr[mid]+k -x
     public List<Integer> findKClosestElements(int[] arr, int k, int x) {
         int lo = 0, hi = arr.length - k;
         while (lo < hi) {
@@ -134,12 +109,23 @@ public class BinarySearch {
     }
 
 
-    // 493 翻转对 https://leetcode-cn.com/problems/reverse-pairs/
-
-    // 327 区间和的个数 https://leetcode-cn.com/problems/count-of-range-sum/
-
-    // 514 自由之路 https://leetcode-cn.com/problems/freedom-trail/
-
-    // https://www.geeksforgeeks.org/sort-linked-list-already-sorted-absolute-values/
+    // 287 ② 这种二分法还是比较少见的 但是也存在多钟限制阿 中间数的计算近似 median=(right+left)/2;
+    public int findDuplicate1(int[] nums) {
+        // // 特殊case n = 1 ,长度为2，{1,1} ; n= 2 ,长度为3,{1,2,2} or {1,1,2}
+        int lo = 0, hi = nums.length;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            int count = 0;
+            for (int num : nums) { // 计算小于mid的个数,
+                if (num <= mid) count++;
+            }
+            if (count <= mid) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
+    }
 
 }
