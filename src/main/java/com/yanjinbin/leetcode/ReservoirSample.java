@@ -18,7 +18,7 @@ public class ReservoirSample {
         this.nums = nums;
         this.random = new Random();
     }
-
+    //LC 398
     public int pick(int target) {
         int index = -1;
         int cnt = 0;
@@ -32,7 +32,7 @@ public class ReservoirSample {
     }
 
 
-    // 382
+    //LC 382
     public ReservoirSample(ListNode head) {
         this.head = head;
         this.random = new Random();
