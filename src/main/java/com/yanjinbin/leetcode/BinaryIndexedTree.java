@@ -30,8 +30,9 @@ public class BinaryIndexedTree {
             }
         }
     }
-
     // 返回x 二进制 右边第一个1代表的值。
+
+    // 1110 -->  0001 ---> 0010
     public int lowBit(int x) {
         return x & (~x + 1);
     }
@@ -88,9 +89,6 @@ public class BinaryIndexedTree {
         return ans + 1;
         */
     }
-
-
-    // 629 k个逆序对
 
 
     // 剑指offer 36 逆序对
