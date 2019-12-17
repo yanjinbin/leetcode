@@ -11,8 +11,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.Stack;
+import java.util.Vector;
 
 public class Microsoft {
 
@@ -56,15 +58,6 @@ public class Microsoft {
         }
         return ans;
     }
-
-    // [tag:微软] https://www.1point3acres.com/bbs/thread-529016-1-1.html
-    // https://www.hackerrank.com/challenges/almost-sorted/problem
-    public boolean almostSorted(int[] arr) {
-        return false;
-        // 找出 reverse 和 swap的种类，先reverse之后 再swap ，存在顺序依赖关系
-
-    }
-
 
     // [tag:微软 2019-3-5] https://www.1point3acres.com/bbs/thread-490657-1-1.html
     // https://www.geeksforgeeks.org/largest-independent-set-problem-dp-26/
@@ -283,8 +276,6 @@ public class Microsoft {
 
     //[tag:微软 实习 2019-04-05] https://www.1point3acres.com/bbs/thread-510474-1-1.html
 
-    // 实习 https://www.1point3acres.com/bbs/thread-506842-1-1.html
-    // 419
 
     // https://www.1point3acres.com/bbs/thread-513482-1-1.html
     // 93 468
@@ -311,7 +302,7 @@ public class Microsoft {
     }
 
     // [tag:微软]https://www.1point3acres.com/bbs/thread-460409-1-1.html
-    // LC 98 230
+    // LC 98 285
 
     // [tag：微软实习] https://www.1point3acres.com/bbs/thread-506392-1-1.html
     // lc235 236
@@ -326,9 +317,6 @@ public class Microsoft {
 
     // 全职 2019-7-9 https://www.1point3acres.com/bbs/thread-536123-1-1.html
 
-    public static void main(String[] args) {
-        AmicablePair(10000);
-    }
     // https://leetcode.com/discuss/interview-question/398023/Microsoft-Online-Assessment-Questions
 
     // =================
@@ -469,6 +457,7 @@ public class Microsoft {
         }
     }
 
+    // 实习 https://www.1point3acres.com/bbs/thread-506842-1-1.html
     // 419 甲板上的战舰
     public int countBattleships01(char[][] board) {
         int count = 0;
@@ -790,82 +779,245 @@ public class Microsoft {
     }
 
 
-    // 126 单词接龙2
+    // 126 单词接龙2 todo
     public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
         List<List<String>> ans = new ArrayList<>();
-        HashSet<String> words = new HashSet<>(wordList);
-        if (!words.contains(endWord)) return ans;
-        words.remove(beginWord);
-        words.remove(endWord);
-        Map<String, Integer> steps = new HashMap();
+        Set<String> dict = new HashSet<>(wordList);
+        if (!dict.contains(endWord)) return ans;
+        dict.remove(beginWord);
+        dict.remove(endWord);
+
+        Map<String, Integer> steps = new HashMap<>();
         steps.put(beginWord, 1);
-        Map<String, Set<String>> parents = new HashMap<>();
+
+        Map<String, List<String>> parents = new HashMap<>();
         Queue<String> q = new LinkedList<>();
         q.offer(beginWord);
 
-        int l = beginWord.length();
+        int len = beginWord.length();
         int step = 0;
         boolean found = false;
-        // 不为空 且找到 就终止
         while (!q.isEmpty() && !found) {
             step++;
-            for (int size = q.size(); size > 0; size--) {
-                String s = q.poll();
-                char[] chars = s.toCharArray();
-                String p = String.copyValueOf(chars);
-                for (int i = 0; i < l; i++) {
-                    char chr = chars[i];
+            for (int j = q.size(); j > 0; j--) {
+                String p = q.poll();
+                char[] w = p.toCharArray();
+                for (int i = 0; i < len; i++) {
+                    char chr = w[i];
                     for (char c = 'a'; c <= 'z'; c++) {
                         if (c == chr) continue;
-                        chars[i] = c;
-                        s = new String(chars);
-                        if (s.equals(endWord)) {
-                            Set<String> val = parents.getOrDefault(s, new HashSet<>());
-                            val.add(p);
-                            parents.put(s, val);
+                        w[i] = c;
+                        String t = new String(w);
+                        if (t.equals(endWord)) {
+                            List<String> l = parents.getOrDefault(t, new LinkedList<>());
+                            l.add(p);
+                            parents.put(t, l);
                             found = true;
-                        } else {
-                            int val = steps.getOrDefault(s, 0);
-                            if (val > 0 && val > step) {
-                                Set<String> set = parents.getOrDefault(s, new HashSet<>());
-                                set.add(p);
-                                parents.put(s, set);
-                            }
+                        } else if (steps.containsKey(t) && step < steps.get(t)) {
+                            List<String> l = parents.getOrDefault(t, new LinkedList<>());
+                            l.add(p);
+                            parents.put(t, l);
                         }
 
-                        if (words.contains(s)) {
-                            words.remove(s);
-                            q.offer(s);
-
-                            steps.put(s, steps.get(p) + 1);
-                            Set<String> set = parents.get(s);
-                            set.add(p);
-                            parents.put(s, set);
+                        if (dict.contains(t)) {
+                            dict.remove(t);
+                            q.offer(t);
+                            steps.put(t, steps.getOrDefault(p, 0) + 1);
+                            List<String> l = parents.getOrDefault(t, new LinkedList<>());
+                            l.add(p);
+                            parents.put(t, l);
                         }
                     }
-                    // 复位
-                    chars[i] = chr;
+                    w[i] = chr;
                 }
             }
         }
         if (found) {
-            LinkedList sub = new LinkedList();
-            dfsPaths(endWord,beginWord,parents,sub,ans);
+            LinkedList<String> l = new LinkedList<>();
+            l.add(endWord);
+            dfsPaths(endWord, beginWord, parents, ans, l);
         }
         return ans;
+
     }
 
     // dfs求解
-    public void dfsPaths(String word, String beginWord, Map<String, Set<String>> parents, LinkedList<String> sub, List<List<String>> ans) {
-        if (word==beginWord){
+    public void dfsPaths(String word, String beginWord, Map<String, List<String>> parents, List<List<String>> ans, LinkedList<String> sub) {
+        if (word == beginWord) {
             Collections.reverse(sub);
             ans.add(new ArrayList<>(sub));
             return;
         }
-        for (String s:parents.get(word)){
+        for (String s : parents.getOrDefault(word, new LinkedList<>())) {
             sub.addLast(s);
-            dfsPaths(s,beginWord,parents,sub,ans);
+            dfsPaths(s, beginWord, parents, ans, sub);
             sub.pollLast();
         }
     }
+
+    // https://www.geeksforgeeks.org/array-rotation/
+    // LC 189
+    void leftRotate(int arr[], int d, int n) {
+        for (int i = 0; i < d; i++)
+            leftRotatebyOne(arr, n);
+    }
+
+    void leftRotatebyOne(int arr[], int n) {
+        int i, temp;
+        temp = arr[0];
+        for (i = 0; i < n - 1; i++)
+            arr[i] = arr[i + 1];
+        arr[i] = temp;
+    }
+
+    //  https://www.hackerrank.com/challenges/almost-sorted/problem
+
+
+    public static void main(String[] args) {
+        /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution. */
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int[] ar = new int[n];
+        for (int i = 0; i < n; i++)
+            ar[i] = in.nextInt();
+        Vector<Integer> vec = new Vector<Integer>();
+        for (int i = 0; i < n - 1; i++)
+            if (ar[i] > ar[i + 1])
+                vec.add(i);
+        int v_size = vec.size();
+        if (v_size == 0)
+            System.out.println("yes");
+        else if (v_size == 1) {
+            if (n == 2)
+                System.out.println("yes\nswap " + (vec.get(0) + 1) + " " + (vec.get(0) + 2));
+            else if (ar[vec.get(0)] < ar[vec.get(0) + 2])
+                System.out.println("yes\nswap " + (vec.get(0) + 1) + " " + (vec.get(0) + 2));
+            else
+                System.out.println("no");
+        } else if (v_size == 2)
+            System.out.println("yes\nswap " + (vec.get(0) + 1) + " " + (vec.get(1) + 2));
+        else if (vec.get(v_size - 1) - vec.get(0) + 1 == v_size)
+            System.out.println("yes\nreverse " + (vec.get(0) + 1) + " " + (vec.get(v_size - 1) + 2));
+        else
+            System.out.println("no");
+    }
+
+    // [tag:微软] https://www.1point3acres.com/bbs/thread-529016-1-1.html
+    // https://www.hackerrank.com/challenges/almost-sorted/problem
+    public boolean almostSorted(int[] arr) {
+        return false;
+        // 找出 reverse 和 swap的种类，先reverse之后 再swap ，存在顺序依赖关系
+    }
+
+    // 887. 鸡蛋掉落
+
+    // 426 426. 将二叉搜索树转化为排序的双向链表
+
+    // 1044. 最长重复子串
+
+    // https://www.geeksforgeeks.org/k-th-element-two-sorted-arrays//
+
+    // 第K小
+    // 解法1 sort  S: O(M+N),  T: O(k)
+    public int kthElements01(int[] arr1, int[] arr2, int k) {
+        int m = arr1.length, n = arr2.length;
+        if (m + n < k) return -1;
+        int[] arr = new int[m + n];
+        int i = 0, j = 0, idx = 0;
+        while (i < m && j < n) {
+            if (arr1[i] < arr2[j]) {
+                arr[idx++] = arr1[i++];
+            } else {
+                arr[idx++] = arr2[j++];
+            }
+        }
+        while (i < m) {
+            arr[idx++] = arr1[i++];
+        }
+        while (j < n) {
+            arr[idx++] = arr2[j++];
+        }
+        return arr[k - 1];
+    }
+
+    // 对解法1改进 S:O(1)  T:O(N)
+    public int kthElements02(int[] arr1, int[] arr2, int k) {
+        int m = arr1.length, n = arr2.length;
+        int i = 0, j = 0, c = 0;// c代表第几个
+        while (i < m && j < n) {
+            c++;
+            if (arr1[i] < arr2[j]) {
+                if (c == k) {
+                    return arr1[i];
+                }
+                i++;
+            } else {
+                if (c == k) {
+                    return arr2[j];
+                }
+                j++;
+            }
+
+        }
+        while (i < m) {
+            c++;
+            if (c == k) return arr1[i];
+            i++;
+
+        }
+        while (j < n) {
+            c++;
+            if (c == k) return arr2[j];
+            j++;
+
+        }
+        return -1;
+    }
+
+    // 解法 2 PQ  S: O(K) T:O(KlgK)
+    public int kthElements03(int[] arr1, int[] arr2, int k) {
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        for (int num : arr1) {
+            maxHeap.offer(num);
+            if (maxHeap.size() > k) maxHeap.poll();
+        }
+        for (int num : arr2) {
+            maxHeap.offer(num);
+            if (maxHeap.size() > k) maxHeap.poll();
+        }
+        return maxHeap.peek();
+    }
+
+    // https://www.geeksforgeeks.org/k-th-element-two-sorted-arrays/
+    // 解法3 分治 divide and conquer
+    // 参考这个  http://bit.ly/2YUmy9F  http://bit.ly/34uQudj
+    /**
+     * @param start1 inclusive
+     * @param end1 inclusive
+     * @param start2 inclusive
+     * @param end2 inclusive
+     * @param k  KthSmallest
+     * @return
+     */
+    public int FindKth(int[] nums1, int start1, int end1, int[] nums2, int start2, int end2, int k) {
+        int len1 = end1 - start1 + 1;
+        int len2 = end2 - start2 + 1;
+        //让 len1 的长度小于 len2，这样就能保证如果有数组空了，一定是 len1
+        if (len1 > len2) return FindKth(nums2, start2, end2, nums1, start1, end1, k);
+        if (len1 == 0) return nums2[start2 + k - 1];
+       // if (k == 1) return Math.min(nums1[start1], nums2[start2]);
+
+        int i = start1 + Math.min(len1, k / 2) - 1;
+        int j = start2 + Math.min(len2, k / 2) - 1;
+
+        if (nums1[i] > nums2[j]) {
+            return FindKth(nums1, start1, end1, nums2, j + 1, end2, k - (j - start2 + 1));
+        }
+        else {
+            return FindKth(nums1, i + 1, end1, nums2, start2, end2, k - (i - start1 + 1));
+        }
+    }
+
+
+
 }
