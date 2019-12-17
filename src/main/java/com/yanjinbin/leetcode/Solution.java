@@ -1,9 +1,5 @@
 package com.yanjinbin.leetcode;
 
-
-// ArrayDeque（双端队列）内部实现是一个循环数组，bit 巧妙运用
-
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,7 +46,7 @@ public class Solution {
         }
     }
 
-    //② #1
+    //③ #1
     public int[] twoSum(int[] nums, int target) {
         Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
@@ -63,13 +59,12 @@ public class Solution {
         throw new IllegalArgumentException("No two sum solution");
     }
 
-
-    // #2  两数相加
+    //② #2  两数相加
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
-        ListNode dummyHead = new ListNode(0);
+        ListNode dummyNode = new ListNode(0);
         ListNode p = l1;
         ListNode q = l2;
-        ListNode cur = dummyHead;
+        ListNode cur = dummyNode;
         int carry = 0;
         while (p != null || q != null) {
             int x = p != null ? p.val : 0;
@@ -93,11 +88,11 @@ public class Solution {
         if (carry > 0) {
             cur.next = new ListNode(carry);
         }
-        // dummyhead 是0 所以是返回他的下一个节点,作为头部节点
-        return dummyHead.next;
+        // dummyNode 是0 所以是返回他的下一个节点,作为头部节点
+        return dummyNode.next;
     }
 
-    // bad
+   /* // wrong
     public ListNode addTwoNumber(ListNode l1, ListNode l2) {
         // 这种方法有个缺陷是无法处理 111  88999999 这样的
         ListNode dummy = new ListNode(0);
@@ -124,9 +119,10 @@ public class Solution {
             cur.next = l1;
         }
         return dummy.next;
-    }
+    }*/
 
-    // ② 141. Linked List Cycle
+
+    // ③ 141. Linked List Cycle
     public boolean hasCycle(ListNode head) {
         if (head == null) {
             return false;
@@ -143,7 +139,7 @@ public class Solution {
         return false;
     }
 
-    // 234 Palindrome Linked List 回文单链表
+    // ② 234 Palindrome Linked List 回文单链表
     public boolean isPalindrome(ListNode head) {
         if (head == null) return true;
         ListNode cur = head;
@@ -162,7 +158,7 @@ public class Solution {
     // 快慢指针法
     public boolean isPalindrome1(ListNode head) {
         if (head == null || head.next == null) return true;
-        // 比较一般元素即可
+        // 比较一半元素即可
         ListNode slow = head;
         ListNode fast = head;
         Stack<ListNode> s = new Stack<>();
@@ -204,7 +200,7 @@ public class Solution {
         return res;
     }
 
-    // 3 无重复最长子串
+    //② 3 无重复最长子串 双指针法
     public int lengthOfLongestSubstring(String s) {
         int n = s.length();
         int ans = 0, i = 0, j = 0;
@@ -222,7 +218,7 @@ public class Solution {
         return ans;
     }
 
-    //  15 3数字和
+    // ② 15 3数字和，先排序  i j k指针，跳过重复数
     // http://bit.ly/2Sp1iFG
     public List<List<Integer>> threeSum(int[] nums) {
         List<List<Integer>> ret = new ArrayList();
@@ -246,7 +242,7 @@ public class Solution {
         return ret;
     }
 
-    //②  #5 最长回文字符串 5. Longest Palindromic Substring 官方题解垃圾的一点就是 start 和 end的更新问题 有问题
+    //③  #5 最长回文字符串 5. Longest Palindromic Substring 官方题解垃圾的一点就是 start 和 end的更新问题 有问题
     public String longestPalindrome(String s) {
         if (s == null || s.length() < 1) {
             return "";
@@ -275,7 +271,7 @@ public class Solution {
         return R - L - 1;
     }
 
-    // ② 最长回文子串 最佳解法 中心扩散法
+    // ③ 最长回文子串 最佳解法 中心扩散法
     // http://bit.ly/2KMyIgk
     public int lo, maxLen;
 
@@ -296,13 +292,14 @@ public class Solution {
             j--;
             k++;
         }
+        // Update
         if (maxLen < k - j - 1) {
             lo = j + 1;
             maxLen = k - j - 1;
         }
     }
 
-    // ② 21. 合并两个有序链表Copy Merge Two Sorted Lists 迭代方法
+    // ③ 21. 合并两个有序链表Copy Merge Two Sorted Lists 迭代方法
     public ListNode mergeTwoLists(ListNode l1, ListNode l2) {
         ListNode dummyNode = new ListNode(-1);
         ListNode cur = dummyNode;
@@ -324,7 +321,7 @@ public class Solution {
         return dummyNode.next;
     }
 
-    //   递归解法
+    //②   递归解法 O(M+N)
     public ListNode mergeTwoSortedList(ListNode l1, ListNode l2) {
         if (l1 == null) return l2;
         if (l2 == null) return l1;
@@ -357,9 +354,10 @@ public class Solution {
     }*/
 
 
-    //②  [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
+    // ③  [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // 23. 合并K个排序链表 Merge k Sorted Lists
     // http://bit.ly/2LtXUbI
+    // T: O(lgK)
     public ListNode mergeKLists(ListNode[] lists) {
         if (lists == null || lists.length == 0) return null;
         return mergeKLists(lists, 0, lists.length - 1);
@@ -373,12 +371,14 @@ public class Solution {
             return lists[start];
         }
         int mid = (end - start) / 2 + start;
+
         ListNode l1 = mergeKLists(lists, start, mid);
         ListNode l2 = mergeKLists(lists, mid + 1, end);
         return mergeTwoSortedList(l1, l2);
     }
 
     // ② 22. 括号生成  回溯法(http://bit.ly/2KPYQHi)  假如我先添加一个左括号，next 接下来我可以添加
+    // tips:还可以BFS 也可以 dp
     public List<String> generateParenthesis(int n) {
         List<String> ans = new ArrayList();
         backtrack(ans, "", 0, 0, n);
@@ -398,8 +398,8 @@ public class Solution {
             backtrack(ans, cur + "(", open + 1, close, max);
     }
 
-    // ② [tag: 面筋 http://bit.ly/2Na3nW1]
-    // 11. 盛最多水的容器
+    // ② [tag: 字节面筋 http://bit.ly/2Na3nW1]
+    // 11. 盛最多水的容器  T:O(N)
     // 双指针法，左右移动时候，选择移动 高度短的 可能能增加面积 如果是盛水最少的容器呢
     public int maxArea(int[] height) {
         int left = 0, right = height.length - 1;
@@ -411,14 +411,12 @@ public class Solution {
                 left++;
             } else {
                 right--;
-
             }
         }
         return maxArea;
     }
 
-
-    // ② 206 反转链表  迭代和递归2种方法
+    // ③ 206 反转链表  迭代和递归2种方法
     public ListNode reverseList(ListNode head) {
         ListNode prev = null;
         ListNode cursor = head;
@@ -435,7 +433,7 @@ public class Solution {
     }
 
 
-    // 递归方法 1
+    // ③ 递归方法 1
     public ListNode reverseList1(ListNode head) {
         return help(head, null);
     }
@@ -447,7 +445,7 @@ public class Solution {
         return help(next, cur);
     }
 
-    // 递归方法 2    不好看
+   /* // 递归方法 2  不好看
     public ListNode reverseList2(ListNode head) {
         if (head == null || head.next == null) {
             return head;
@@ -458,23 +456,21 @@ public class Solution {
         nextNode.next = head;
         head.next = null;
         return reversedListHead;
-    }
-
-    // 25 k个一组翻转链表
+    }*/
 
 
-    //  31. 下一个排列 首先理解字典序   找下一个字典序更大的 如果最大了 就全局升序排列了
+    // ③ 31. 下一个排列 首先理解字典序   找下一个字典序更大的 如果最大了 就全局升序排列了
     //  题解连接 http://bit.ly/2RS8Wbd
     public void nextPermutation(int[] nums) {
         if (nums == null || nums.length == 0) return;
         int i = nums.length - 2;
         while (i >= 0 && nums[i] >= nums[i + 1]) i--;// 找到第一个破坏 descend order -->i
-        //System.out.println("i："+i+" "+nums[i]);
         if (i >= 0) {
             int j = nums.length - 1;
-            while (nums[j] <= nums[i]) j--;// i 指向元素 从右往左找第一个
+            while (nums[j] <= nums[i]) j--;//step1: 从右往左找第一个大于i的值 并且swap
             swap(nums, i, j); //
         }
+        //step2: 然后 逆序 [i+1,len-1]区间
         reverse(nums, i + 1, nums.length - 1);
     }
 
@@ -484,13 +480,13 @@ public class Solution {
         }
     }
 
-    // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-542957-1-1.html
-    // 48 旋转图像 todo 这道题目 需要观察下规律
+    // ③ [tag:微软面筋] https://www.1point3acres.com/bbs/thread-542957-1-1.html
+    //  48 旋转图像
     //  http://bit.ly/2RNX8a6
     //  http://bit.ly/2JmVgB7
     //  展示每次移动的元素 https://photos.app.goo.gl/LaeDGURidfWi1oLa7
     public void rotate(int[][] matrix) {
-        int n = matrix.length;
+/*        int n = matrix.length;
         // i < n/2 的原因是 从 外层到内层  你需要转移置换 多少个 "4数字"
         for (int i = 0; i < n / 2; i++) {
             // 告诉你  每一层 你需要移动的元素个数
@@ -501,8 +497,21 @@ public class Solution {
                 matrix[n - i - 1][n - j - 1] = matrix[j][n - i - 1];
                 matrix[j][n - i - 1] = tmp;
             }
+        }*/
+
+        // step: 对角线折一次，然后逆序下。
+        int N = matrix.length;
+        for (int i = 0; i < N; i++) {
+            for (int j = i + 1; j < N; j++) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = tmp;
+            }
         }
 
+        for (int i = 0; i < N; i++) {
+            reverse(matrix[i], 0, matrix.length - 1);
+        }
     }
 
     // ② 53. 最大子序和
@@ -537,9 +546,10 @@ public class Solution {
         return ans;
     }
 
-    // ② 这道题目 关键在于 负数 以及0的处理
-    // 152 乘积最大的连续 子序列 http://bit.ly/2RZ9AUo
+    // ③ 152 乘积最大的连续 子序列 http://bit.ly/2RZ9AUo
+    // 这道题目 关键在于 负数 以及0的处理
     // 最大的最小的有可能互换  以及0 会使得  一切乘积都为0
+    // 因此需要保留 minDp和maxDp
     public int maxProduct(int[] nums) {
         int N = nums.length;
         int[] mindp = new int[N];
@@ -560,8 +570,8 @@ public class Solution {
         return res;
     }
 
-
-    // ② 70 climbing stairs
+    // ③  70 climbing stairs
+    // 转义公式 dp[i] = dp[i - 1] + dp[i - 2];
     public int climbStairs1(int n) {
         if (n <= 1) return 1;
         int[] dp = new int[n];
@@ -583,13 +593,14 @@ public class Solution {
     public int climbHelper(int n, int[] memo) {
         if (n <= 1) return 1;
         if (memo[n] > 0) {
-            //  System.out.println("n:" + n + "memo:" + memo[n]);
             return memo[n];
         }
         return memo[n] = climbHelper(n - 1, memo) + climbHelper(n - 2, memo);
     }
 
-    //  64. 最小路径和  这是一道很经典的题目  哈哈 😁  忠于自己亲手做出来了 😘
+    // ② 64. 最小路径和  这是一道很经典的题目  哈哈 😁  忠于自己亲手做出来了 😘
+    // DFS遍历 或者 DP都可以
+    // dp(i,j) = grid(i,j)+min(dp(i-1,j)+grid(i-1,j),dp(i,j-1)+grid(i,j-1))
     public int minPathSum(int[][] grid) {
         int rowLen = grid.length;
         int colLen = grid[rowLen].length;
@@ -615,7 +626,8 @@ public class Solution {
         return memo[i][j] = Math.min(routerHelper(i - 1, j, grid, memo), routerHelper(i, j - 1, grid, memo)) + grid[i][j];
     }
 
-    // ② 75. 颜色分类  只要遇到 0和2 就进行交换即可
+    // ③ 75. 颜色分类  只要遇到 0和2 就进行交换即可
+    // 这道题目的 swap 和 3项快排很像。但是目测还是不同的
     public void sortColors(int[] nums) {
         // 双指针法 移动
         int red = 0, blue = nums.length - 1;
@@ -629,9 +641,11 @@ public class Solution {
         }
     }
 
-    // 78 子集和
-    public List<List<Integer>> subsets1(int[] nums) {
-        Arrays.sort(nums);
+    // 组合经典题型  tips: 不要写错了，poll是pollFirst而不是pollLast
+
+    // ② 78 子集和
+    //👎🏻 解法1 看起来比较难理解额 树形展开
+    public List<List<Integer>> subsets01(int[] nums) {
         List<List<Integer>> res = new ArrayList<>();
         res.add(new ArrayList<>());
         for (int num : nums) {
@@ -645,30 +659,63 @@ public class Solution {
         return res;
     }
 
-    // dfs
-    public List<List<Integer>> subsets2(int[] nums) {
-        Arrays.sort(nums);
-        List<List<Integer>> res = new ArrayList<>();
-        List empty = new ArrayList();
-        // 忘记添加empty了
-        res.add(empty);
-        dfsAdd(0, nums, res, empty);
-        return res;
+    // 解法2 dfs  d但是不让过 ，因为顺序不同
+    public List<List<Integer>> subsets02(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        for (int i = 0; i <= nums.length; i++) {
+            dfsComb(nums, i, 0, ans, new LinkedList<>());
+        }
+        return ans;
     }
 
-    // subset 类型 写错了 理解不到位 写成List<List<Integer>> subset 类型了。
-    public void dfsAdd(int level, int[] nums, List<List<Integer>> res, List<Integer> subset) {
-        // 注意循环便利次数阿  少写了一个=
-        if (level >= nums.length)
+    public void dfsComb(int[] nums, int len, int start, List<List<Integer>> ans, LinkedList<Integer> sub) {
+        if (sub.size() == len) {
+            ans.add(new ArrayList<>(sub));
             return;
-        subset = new ArrayList<>(subset);
-        dfsAdd(level + 1, nums, res, subset);
-        subset.add(nums[level]);
-        res.add(subset);
-        dfsAdd(level + 1, nums, res, subset);
+        }
+        for (int i = start; i < nums.length; i++) {
+            sub.add(nums[i]);
+            dfsComb(nums, len, i + 1, ans, sub);
+            // 不要写错了，poll是pollFirst而不是pollLast
+            sub.pollLast();
+        }
     }
 
-    //  79 单词搜索
+    // 解法3
+    public List<List<Integer>> subsets03(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        dfsComb78(nums, 0, new LinkedList<>(), ans);
+        return ans;
+    }
+
+    private void dfsComb78(int[] nums, int start, LinkedList<Integer> sub, List<List<Integer>> ans) {
+        ans.add(new ArrayList<>(sub));
+        for (int i = start; i < nums.length; i++) {
+            sub.add(nums[i]);
+            dfsComb78(nums, i + 1, sub, ans);
+            sub.pollLast();
+        }
+    }
+
+    // ② LC 90 子集Ⅱ
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        List<List<Integer>> ans = new ArrayList<>();
+        Arrays.sort(nums);
+        dfsComb(nums, 0, new LinkedList<>(), ans);
+        return ans;
+    }
+
+    private void dfsComb(int[] nums, int start, LinkedList<Integer> sub, List<List<Integer>> ans) {
+        ans.add(new ArrayList<>(sub));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1]) continue;
+            sub.add(nums[i]);
+            dfsComb(nums, i + 1, sub, ans);
+            sub.pollLast();
+        }
+    }
+
+    // ② 79 单词搜索   T:O(M*N)
     public boolean exist(char[][] board, String word) {
         if (board == null || board.length == 0 || (board.length == 1 && board[0].length == 0)) return false;
         int collen = board.length;
@@ -684,32 +731,24 @@ public class Solution {
         return false;
     }
 
-    public boolean dfsSearch(int i, int j, int colLen, int rowLen, char[][] board, int cursor, char[] word, boolean[][] visited) {
-        if (cursor == word.length) {
-            return true;
-        }
-        // board[i][j] != word[cursor]  放到最后面阿  . visit数组 条件 不要漏掉哦
-        if (i < 0 || j < 0 || i >= colLen || j >= rowLen || visited[i][j] || board[i][j] != word[cursor]) {
-            return false;
-        }
+    public boolean dfsSearch(int i, int j, int colLen, int rowLen, char[][] board, int macth, char[] word, boolean[][] visited) {
+        if (macth == word.length) return true;
+        if (i < 0 || j < 0 || i >= colLen || j >= rowLen || visited[i][j] || board[i][j] != word[macth]) return false;
+
         visited[i][j] = true;
-        boolean exist = dfsSearch(i + 1, j, colLen, rowLen, board, cursor + 1, word, visited) ||
-                dfsSearch(i, j + 1, colLen, rowLen, board, cursor + 1, word, visited) ||
-                dfsSearch(i - 1, j, colLen, rowLen, board, cursor + 1, word, visited) ||
-                dfsSearch(i, j - 1, colLen, rowLen, board, cursor + 1, word, visited);
-        // 这是一个小细节阿 看到了没??!!!
-        // reset 重置哦
+        boolean exist = dfsSearch(i + 1, j, colLen, rowLen, board, macth + 1, word, visited) ||
+                dfsSearch(i, j + 1, colLen, rowLen, board, macth + 1, word, visited) ||
+                dfsSearch(i - 1, j, colLen, rowLen, board, macth + 1, word, visited) ||
+                dfsSearch(i, j - 1, colLen, rowLen, board, macth + 1, word, visited);
         visited[i][j] = false;
         return exist;
     }
 
-    public boolean exist = false;
-
-    // ② 139 单词拆分 http://bit.ly/2Ld41Bt  0起点,长度为N的字符串 能否被words填充
+    // ③ 139 单词拆分 http://bit.ly/2Ld41Bt  0起点,长度为N的字符串 能否被words填充
     // S[0,i)= S[0,j) || S[j,i)  0 <= j < i <= s.length()
     public boolean wordBreak(String s, List<String> wordDict) {
         boolean[] dp = new boolean[s.length() + 1];
-        dp[0] = true;
+        dp[0] = true;// init
         for (int i = 1; i <= s.length(); i++) {
             for (int j = 0; j < i; j++) {
                 if (dp[j] && wordDict.contains(s.substring(j, i))) {
@@ -721,39 +760,19 @@ public class Solution {
         return dp[s.length()];
     }
 
-/*
-    // 139 错误做法
-    public boolean wordBreakbad(String s, List<String> wordDict) {
-        splitHelper(s, s.length(), 0, wordDict);
-        return exist;
-    }
-
-    public void splitHelper(String s, int length, int cursor, List<String> wordDict) {
-        if (exist) return;
-        if (cursor > length) exist = false;
-        if (cursor == length) exist = true;
-        String ret = s.substring(cursor);
-        for (String word : wordDict) {
-            if (ret.startsWith(word)) {
-                cursor = cursor + word.length();
-                splitHelper(s, length, cursor, wordDict);
-            }
-        }
-    }*/
-
-
-    // ② 287. 寻找重复数  除了下面这2种 ,lowB点用set处理或者排好序
+    // ③ 287. 寻找重复数  除了下面这2种 ,lowB点用set处理或者排好序
     // 可以把index对应的value当做一个状态值 那么 value重复的化 就相当于是存在还了,可以使用floyd算法来检测
     // 这道题目跟处理链表是否存在环比较相似
     // Floyd算法wiki ---->   http://bit.ly/2S1omdy  龟兔赛跑方法
-    public int findDuplicate0(int[] nums) {
+    public int findDuplicate01(int[] nums) {
         // Find the intersection point of the two runners.
         int tortoise = nums[0];
         int hare = nums[0];
-        while (tortoise != hare) {
+        // do while结构 ！！ 之前写错了，协程while(){}
+        do {
             tortoise = nums[tortoise];
             hare = nums[nums[hare]];
-        }
+        } while (tortoise != hare);
 
         // Find the "entrance" to the cycle.
         int s = nums[0];
@@ -766,8 +785,38 @@ public class Solution {
 
     }
 
+    // ③  解法2  鸽巢原理
+    public int findDuplicate02(int[] nums) {
+        int[] arr = new int[nums.length];
+        for (int j = 0; j < nums.length; j++) {
+            if (arr[nums[j] - 1] != 0) return nums[j];
+            arr[nums[j - 1]] = nums[j];
+        }
+        return -1;
+    }
+
+    // 287 ③ 这种二分法还是比较少见的 但是也存在多钟限制阿 中间数的计算近似 median=(right+left)/2;
+    public int findDuplicate03(int[] nums) {
+        // // 特殊case n = 1 ,长度为2，{1,1} ; n= 2 ,长度为3,{1,2,2} or {1,1,2}
+        int lo = 0, hi = nums.length;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            int count = 0;
+            for (int num : nums) { // 计算小于mid的个数,
+                if (num <= mid) count++;
+            }
+            if (count <= mid) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
+    }
+
+
     // [tag:鸽巢原理]
-    //② 41 缺失的第一个正数  http://bit.ly/2Pir4Mc 类似鸽巢原理 ,放到正确的位置
+    //③ 41 缺失的第一个正数  http://bit.ly/2Pir4Mc 类似鸽巢原理 ,放到正确的位置
     public int firstMissingPositive01(int[] nums) {
         int n = nums.length;
         for (int i = 0; i < n; i++) {
@@ -776,13 +825,14 @@ public class Solution {
             }
         }
         for (int i = 0; i < n; i++) {
-            if (nums[i] != i + 1) {
+            if (nums[i] != i + 1) {// （i+1 代表各自，i代表鸽巢位置）
                 return i + 1;
             }
         }
         return n + 1;
     }
 
+    // ③ 解法 2 ,set 判定去重
     public int firstMissingPositive02(int[] nums) {
         Set<Integer> set = new HashSet<>();
         for (int i : nums) {
@@ -793,7 +843,7 @@ public class Solution {
         return i;
     }
 
-    //② 442 数组中重复的数据  鸽巢原理
+    //③ 442 数组中重复的数据  鸽巢原理
     public List<Integer> findDuplicates(int[] nums) {
         int N = nums.length;
         List<Integer> ret = new ArrayList<>();
@@ -810,12 +860,12 @@ public class Solution {
         return ret;
     }
 
-    //② 448. 找到所有数组中消失的数字 http://bit.ly/2qMgEKN
+    //③ 448. 找到所有数组中消失的数字 http://bit.ly/2qMgEKN
     public List<Integer> findDisappearedNumbers01(int[] nums) {
         int N = nums.length;
         List<Integer> ret = new ArrayList<>();
         for (int i = 0; i < N; i++) {
-            if (nums[i] != nums[nums[i] - 1]) {
+            while (nums[i] != nums[nums[i] - 1]) {
                 swap(nums, i, nums[i] - 1);
             }
         }
@@ -828,7 +878,7 @@ public class Solution {
     }
 
     //  [tag:微软] https://www.1point3acres.com/bbs/thread-506243-1-1.html
-    // ② 142. 环形链表 II
+    // ③ 142. 环形链表 II
     // 环检测 https://leetcode-cn.com/problems/linked-list-cycle-ii/
     // 解除环 环长度
     public ListNode detectCycle(ListNode head) {
@@ -929,8 +979,8 @@ public class Solution {
         }
     }
 
-    // ② 581. 最短无序连续子数组
-    // 先排序
+    // 581. 最短无序连续子数组
+    // ② 先排序
     public int findUnsortedSubarray01(int[] nums) {
         int start = 0, end = nums.length - 1;
         int[] bak = Arrays.copyOf(nums, nums.length);
@@ -940,6 +990,7 @@ public class Solution {
         return end - start + 1;
     }
 
+    // ② 解法2 单调栈一个递增，求min,一个递减，求max。  interview friendly T: O(N)
     public int findUnsortedSubarray02(int[] nums) {
         Stack<Integer> s = new Stack();
         int l = nums.length - 1, r = 0;
@@ -959,23 +1010,6 @@ public class Solution {
         }
         return r - l > 0 ? r - l + 1 : 0;
     }
-
-
-    /*public int findUnsortedSubarray1(int[] nums) {
-        int n = nums.length;
-        // -1 和 -2 也是有意义的哦 end-start+1 = 0!!!
-        int start = -1;
-        int end = -2;
-        int mn = nums[n - 1];
-        int mx = nums[0];
-        for (int i = 1; i < n; i++) {
-            mx = Math.max(mx, nums[i]);
-            mn = Math.min(mn, nums[n - 1 - i]);
-            if (mx > nums[i]) end = i;
-            if (mn < nums[n - 1 - i]) start = n - 1 - i;
-        }
-        return end - start + 1;
-    }*/
 
     // ② 560. 和为K的子数组
     // corner case
@@ -1405,6 +1439,12 @@ public class Solution {
             visit[i] = false;
         }
     }
+
+    // 47 全排列Ⅱ
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        return null;
+    }
+
 
     // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // 128. 最长连续序列 map set solve  哈希表/并查集/DP
@@ -2972,7 +3012,7 @@ public class Solution {
         while (Math.abs(res - last) > 1e-9) {
             last = res;
             res = (res + x / res) / 2;
-            // res = (res*res+x)/(2*res)
+
         }
         return (int) res;
     }
@@ -3108,13 +3148,10 @@ public class Solution {
     public int reverseBits(int n) {
         int res = 0;
         for (int i = 0; i < 32; ++i) {
-            if ((n & 1) == 1) {
-                // 注意下运算符的优先级
-                res = (res << 1) + 1;
-            } else {
-                res = res << 1;
-            }
-            //  res= (res<<1)+(n&1);
+            // 注意下运算符的优先级
+            // 为什么要用位运算而不是 ans =ans*2+n%2;n=n/2;
+            // 因为n%2，n=-3 负数时，n%2 = -1 不是我们想要的1
+            res = (res << 1) | 1;
             n = n >> 1;
         }
         return res;
@@ -4156,7 +4193,7 @@ public class Solution {
     public int binarySearch0(int[] nums, int l, int r) {
         if (l == r) return l;
         int mid = (r - l) / 2 + l;
-        if (nums[mid] > nums[mid - 1]) {// l=2 r=3 就会陷入无限循环
+        if (nums[mid + 1] > nums[mid]) {// l=2 r=3 就会陷入无限循环
             return binarySearch0(nums, mid, r);
         } else {
             return binarySearch0(nums, l, mid - 1);
@@ -5604,6 +5641,18 @@ public class Solution {
         return depth;
     }
 
+    // 327 303
+
+    // 629 k个逆序对 DP
+    // 等式A dp(n,k)= dp(n-1,k)+dp(n-1,k-1)+...dp(n-1,k+1-(n-1))+dp(n-1,k-(n-1))
+    // 等式B dp(n,k+1) = dp(n-1,k+1)+dp(n-1,k)+dp(n-1,k-1)+...dp(n-1,k+1-(n-1))
+
+    //  做消元 ，dp（n,k+1) = dp(n,k)+dp(n-1,k+1)-dp(n-1,k-n+1), n
+    public int kInversePairs(int n, int k) {
+        return -1;
+    }
+
+    // 25 k个一组翻转链表
 }
 
 
