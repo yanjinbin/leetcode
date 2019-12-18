@@ -1011,9 +1011,9 @@ public class Solution {
         return r - l > 0 ? r - l + 1 : 0;
     }
 
-    // ② 560. 和为K的子数组
+    // ③ 560. 和为K的子数组
     // corner case
-    // map.put(0,1) 这个为什么需要呢 道友门 注意下列入参
+    // map.put(0,1) 这个为什么需要呢
     //比如 [2,2,2,2,2] k=4 ; [1,3,2,2,4] k=4 ; 以及 [0,0,0,0] k=0
     //就是从起始数开始求的连续和为K 那么 这种corner case 你就需要 放上map.put(0,1) 0 1可以理解为0出现的次数为1 相当于 sum(0,i)=k --> sum(0,i)-k =0
     //同理 count +=map.get(sum-k) 而不是count++哈哈
@@ -1031,7 +1031,7 @@ public class Solution {
         return count;
     }
 
-    //② 56. 合并区间
+    // ③ 56. 合并区间
     public int[][] merge(int[][] intervals) {
         if (intervals.length <= 1) return intervals;
         Arrays.sort(intervals, (o1, o2) -> {
@@ -1065,20 +1065,6 @@ public class Solution {
             }
         }
     }
-
-  /*  public int partition(int[] nums,int lo, int hi){
-        int pivot = nums[lo];
-        int l = lo+1, r = hi;
-        while(l<=r){
-            if(nums[l] < pivot && pivot < nums[r]){
-                swap(nums,l++,r--);
-            }
-            if(nums[l]>=pivot)l++;
-            if(nums[r]<=pivot)r--;
-        }
-        swap(nums,lo,r);
-        return r;
-    }*/
 
     public int partition(int[] nums, int lo, int hi) {
         int pivot = nums[lo];
@@ -1114,7 +1100,7 @@ public class Solution {
         return heap.peek();
     }
 
-    //  148 排序链表
+    //② 148 排序链表  归并排序  O(NlgN)
     public ListNode sortList(ListNode head) {
         if (head == null || head.next == null) {
             return head;
@@ -1133,9 +1119,8 @@ public class Solution {
         return mergeTwoSortedList(l1, l2);
     }
 
-
-    // ② 238. 除自身以外数组的乘积 至少需要2次遍历来
-    public int[] productExceptSelf(int[] nums) {
+    // ③ 238. 除自身以外数组的乘积 至少需要2次遍历来
+   /* public int[] productExceptSelf(int[] nums) {
         int size = nums.length;
         int[] res = new int[size];
         int[] l = new int[size];
@@ -1150,11 +1135,28 @@ public class Solution {
         for (int i = 0; i < size; i++) {
             res[i] = l[i] * r[i];
         }
-        // System.out.println(Arrays.toString(res));
         return res;
+    }*/
+
+    //②  解法 2
+    public int[] productExceptSelf(int[] nums) {
+        int N = nums.length;
+        int[] ans = new int[N];
+        int k = 1;
+        for (int i = 0; i < N; i++) {
+            ans[i] = k;
+            k = k * nums[i];// 左积
+        }
+        k = 1;
+        for (int i = N - 1; i >= 0; i--) {
+            ans[i] = ans[i] * k;//
+            k = k * nums[i]; // 右积
+        }
+        return ans;
     }
 
-    //② 33. 搜索旋转排序数组 tips: 构建不等式约束关系 来 选择 边界
+    //② 33. 搜索旋转排序数组 tips: 构建不等式约束关系 来 选择 边界、
+    // 注意  折转之后的  曲线 参考图见：https://youtu.be/qKgKU7gMZ1I?t=300
     public int search(int[] nums, int target) {
         int lo = 0, hi = nums.length - 1;
         while (lo <= hi) {
@@ -1212,7 +1214,7 @@ public class Solution {
     }
 
     // 背包套路不适合 这道题目还是通过回溯法去解决
-    // 39. 组合总和 Ⅰ
+    //③ 39. 组合总和 Ⅰ
     // http://bit.ly/2XHHBi2  这个方法感觉还是不够优雅阿
     public List<List<Integer>> combinationSum1(int[] candidates, int target) {
         List<List<Integer>> res = new ArrayList<>();
@@ -1235,7 +1237,7 @@ public class Solution {
     }
 
 
-    // 40. 组合总和 II
+    // ③  40. 组合总和 II 和 LC 90 子集Ⅱ 相同
     public List<List<Integer>> combinationSum2(int[] candidates, int target) {
         List<List<Integer>> ans = new ArrayList<>();
         Arrays.sort(candidates);
@@ -1258,27 +1260,6 @@ public class Solution {
         }
     }
 
-
-    // ② 377 组合总和Ⅳ  ,这个 应该叫做排列 而非组合  也可以自己画个数, 可以观察出来 就是如下分解
-    // dp[4] = dp[4-1]+dp[4-2]+dp[4-3] = dp[3]+dp[2]+dp[1]
-    //
-    //dp[1] = dp[0] = 1;
-    //dp[2] = dp[1]+dp[0] = 2;
-    //dp[3] = dp[2]+dp[1]+dp[0] = 4;
-    //dp[4] = dp[4-1]+dp[4-2]+dp[4-3] = dp[3]+dp[2]+dp[1] = 7
-    public int combinationSum4(int[] nums, int target) {
-        int[] dp = new int[target + 1];
-        dp[0] = 1;
-        for (int i = 1; i <= target; i++) {
-            for (int j = 0; j < nums.length; j++) {
-                // 互斥，故相加。
-                if (i >= nums[j]) dp[i] = dp[i] + dp[i - nums[j]];
-            }
-        }
-        return dp[target];
-    }
-
-
     // 216. 组合总和 III
     public List<List<Integer>> combinationSum3(int k, int n) {
         List<List<Integer>> ans = new ArrayList();
@@ -1299,41 +1280,33 @@ public class Solution {
         }
     }
 
-   /* // 解法2
-    public List<List<Integer>> combinationSum3_02(int k, int n) {
-        List<List<Integer>> ans = new ArrayList<>();
-
-
-        for (int i = 0; i < (1 << 9); i++) {
-            List<Integer> sub = new ArrayList<>();
-            int sum = 0;
-            for (int j = 1; j <= 9; j++) {
-
-                int ret = i & (1 << (j - 1));
-                if (ret > 0) {
-                    sum += j;
-                    sub.add(j);
-                }
-            }
-            if (sum == k && sub.size() == n) {
-                ans.add(sub);
+    // ③ 377 组合总和Ⅳ 完全背包问题,求个数
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target + 1];
+        dp[0] = 1;// 求个数，故初始化 dp[0]=1;
+        for (int i = 1; i <= target; i++) {
+            for (int j = 0; j < nums.length; j++) {
+                // 互斥，故相加。
+                if (i >= nums[j]) dp[i] = dp[i] + dp[i - nums[j]];
             }
         }
-        return ans;
-    }*/
+        return dp[target];
+    }
 
+    // 不同路径系列
 
-    //②  62. 不同路径 dfs/dp解法
+    // ③ 62. 不同路径 dp解法
     // dp[i][j] = dp[i-1][j]+dp[i][j-1], i∈[0,m),j∈[0,n);
-    public int uniquePaths(int m, int n) {
+    public int uniquePaths01(int m, int n) {
         int[][] dp = new int[m][n];
+        // 初始化
         for (int i = 0; i < m; i++) {
             dp[i][0] = 1;
         }
         for (int j = 0; j < n; j++) {
             dp[0][j] = 1;
         }
-
+        // dp
         for (int i = 1; i < m; i++) {
             for (int j = 1; j < n; j++) {
                 dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
@@ -1342,7 +1315,8 @@ public class Solution {
         return dp[m - 1][n - 1];
     }
 
-    public int uniquePaths01(int m, int n) {
+    // ③ 解法 2 dfs
+    public int uniquePaths02(int m, int n) {
         int[][] memo = new int[m + 1][n + 1];
         return path(m, n, memo);
     }
@@ -1363,6 +1337,9 @@ public class Solution {
         return memo[i][j];
     }
 
+    // 63. 不同路径 II
+
+    // 980 不同路径 III
 
     // ② 77  组合
     public List<List<Integer>> combine(int n, int k) {
@@ -1386,35 +1363,8 @@ public class Solution {
         }
     }
 
-    // 错误 算组合去了
-    public List<List<Integer>> combine01(int n, int k) {
-        List<List<Integer>> ans = new ArrayList<>();
-        Map<Integer, Boolean> dict = new HashMap();
-        for (int i = 1; i <= n; i++) {
-            dict.put(i, false);
-        }
-        dfsCombine01(ans, new LinkedList(), 0, n, k, dict);
-        return ans;
-    }
-
-    public void dfsCombine01(List<List<Integer>> ans, LinkedList<Integer> sub, int level, int n, int k, Map<Integer, Boolean> dict) {
-        if (level == k) {
-            ans.add(new ArrayList(sub));
-            return;
-        }
-
-        for (int i = 1; i <= n; i++) {
-            if (dict.get(i)) continue;
-            dict.put(i, true);
-            sub.add(i);
-            dfsCombine01(ans, sub, level + 1, n, k, dict);
-            dict.put(i, false);
-            sub.pollLast();
-        }
-    }
-
-
-    //②  46. 全排列 dfs +   visited boolean数组
+    // 全排列系列
+    //③ 46. 全排列 dfs +   visited boolean数组
     public List<List<Integer>> permute(int[] nums) {
         List<List<Integer>> ret = new ArrayList<>();
         LinkedList<Integer> sub = new LinkedList<>();
@@ -1442,12 +1392,32 @@ public class Solution {
 
     // 47 全排列Ⅱ
     public List<List<Integer>> permuteUnique(int[] nums) {
-        return null;
+        List<List<Integer>> ans = new ArrayList<>();
+        LinkedList<Integer> sub = new LinkedList<>();
+        Arrays.sort(nums);
+        boolean[] seen = new boolean[nums.length];
+        dfsPermuteUnique(nums, 0, seen, ans, sub);
+        return ans;
+    }
+
+    public void dfsPermuteUnique(int[] nums, int level, boolean[] seen, List<List<Integer>> ans, LinkedList<Integer> sub) {
+        if (level == nums.length) {
+            ans.add(new ArrayList<>(sub));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (seen[i] || (i > 0 && seen[i - 1] && nums[i] == nums[i - 1])) continue;
+            seen[i] = true;
+            sub.addLast(nums[i]);
+            dfsPermuteUnique(nums, level + 1, seen, ans, sub);
+            sub.pollLast();
+            seen[i] = false;
+        }
     }
 
 
     // [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
-    // 128. 最长连续序列 map set solve  哈希表/并查集/DP
+    // 128. 最长连续序列 map set solve  哈希表/并查集/DP    parent = i , son = i+1;
     // ② 复杂度 nLog(N)
     public int longestConsecutive01(int[] nums) {
         Arrays.sort(nums);
@@ -1464,7 +1434,7 @@ public class Solution {
         return res;
     }
 
-    // ② tips: 存入set,找到连续递增序列的第一个数  nums-1
+    // ② tips: 存入set,找到连续递增序列的第一个数  nums-1   T:O(N)
     public int longestConsecutive02(int[] nums) {
         Set<Integer> sets = new HashSet();
         for (int i : nums) {
@@ -1520,7 +1490,7 @@ public class Solution {
         return ret;
     }
 
-    // 解法 3 Morris遍历算法 todo 有点绕 ,  理解起来很麻烦 http://bit.ly/2jXmyW5
+    // 解法 3 Morris遍历算法  理解起来很麻烦 http://bit.ly/2jXmyW5
     public List<Integer> inorderTraversal2(TreeNode root) {
         // morris 遍历 核心 就是简历  root和 左子树 最右边节点的关系 pre = root.left; pre.right = root;
         List<Integer> ret = new ArrayList();
@@ -1752,21 +1722,57 @@ public class Solution {
         return ret;
     }
 
-    // 742 314 垂直遍历
-
-    // ② 96. 不同的二叉搜索树  DP题目  可以采用卡塔兰数,不过目前看起来暂时好难理解
+    // ③ 96. 不同的二叉搜索树 BST ,  dp http://bit.ly/36HVnRO
+    //  G（n） = f(1)+f(2)+f(3)+...+f(n)
+    //  f(i)  = G(i-1)*G(n-i)
+    // G(n)=G(0)∗G(n−1)+G(1)∗(n−2)+...+G(n−1)∗G(0)
     public int numTrees(int n) {
         int[] dp = new int[n + 1];
+        // init
         dp[0] = dp[1] = 1;
-        for (int level = 2; level <= n; level++) {
-            for (int root = 1; root <= level; root++) {
-                dp[level] += dp[root - 1] * dp[level - root];
+
+        for (int i = 2; i <= n; i++) {
+            for (int j = 1; j <= i; j++) {
+                dp[i] += dp[i - j] * dp[j - 1];
             }
         }
         return dp[n];
     }
 
-    // ② 98. 验证二叉搜索树
+    // ② 95 不同的二叉搜索树 dp
+    // 这道题目很经典,这道题目,比96 求解个数, 换了一种形式.
+    public List<TreeNode> generateTrees(int N) {
+        if(N==0) return new ArrayList<TreeNode>();
+        List<TreeNode>[] dp = new List[N+1];
+        // init;
+        dp[0]=new ArrayList();
+        dp[0].add(null);
+        for(int i=1;i<=N;i++){
+            dp[i]= new ArrayList<TreeNode>();
+            for(int j=1;j<=i;j++){
+                for(TreeNode left:dp[j-1]){
+                    for(TreeNode right:dp[i-j]){
+                        TreeNode root = new TreeNode(j);
+                        root.left = left;
+                        root.right = clone(right,j);
+                        dp[i].add(root);
+                    }
+                }
+            }
+        }
+        return dp[N];
+    }
+
+    public TreeNode clone(TreeNode root, int delta) {
+        if (root == null) return root;
+        TreeNode node = new TreeNode(root.val + delta);
+        node.left = clone(root.left, delta);
+        node.right = clone(root.right, delta);
+        return node;
+    }
+
+
+    // ③ 98. 验证二叉搜索树
     // 用Long 代替int 就是为了满足边界条件 if root.val= Integer.MAX_VALUE
     public boolean isValidBST0(TreeNode root) {
         long right = Long.MAX_VALUE;
@@ -2144,7 +2150,6 @@ public class Solution {
         boolean[][] dp = new boolean[len][len];
         for (int i = 0; i < len; i++) {
             for (int j = i; j >= 0; j--) {
-
                 dp[i][j] = s.charAt(i) == s.charAt(j) && (i - j <= 2 || dp[i + 1][j - 1]);
                 if (dp[i][j]) {
                     res++;
@@ -2161,10 +2166,8 @@ public class Solution {
         boolean[][] dp = new boolean[len][len];
         for (int i = len - 1; i >= 0; i--) {
             for (int j = i; j < len; j++) {
-
                 dp[i][j] = s.charAt(i) == s.charAt(j) && (j - i <= 2 || dp[i + 1][j - 1]);
                 if (dp[i][j]) {
-
                     res++;
                 }
             }
@@ -2172,7 +2175,7 @@ public class Solution {
         return res;
     }
 
-    // ② 160. 相交链表
+    // ③ 160. 相交链表
     public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
         if (headA == null || headB == null) return null;
         ListNode a = headA;
@@ -2184,7 +2187,7 @@ public class Solution {
         return a;
     }
 
-    //② 461. 汉明距离
+    //③ 461. 汉明距离
     public int hammingDistance(int x, int y) {
         int xor = x ^ y, count = 0;
         for (int i = 0; i < 32; i++) count += (xor >> i) & 1;
@@ -2219,17 +2222,17 @@ public class Solution {
     public int numIslands(char[][] grid) {
         if (grid == null || grid.length == 0) return 0;
         boolean[][] visited = new boolean[grid.length][grid[0].length];
-        int res = 0;
+        int count = 0;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
                 if (grid[i][j] == '0' || visited[i][j]) {
                     continue;
                 }
                 dfsIslandHelper(grid, visited, i, j);
-                res++;//key
+                count++;//key
             }
         }
-        return res;
+        return count;
     }
 
     public void dfsIslandHelper(char[][] grid, boolean[][] visit, int x, int y) {
@@ -2242,7 +2245,7 @@ public class Solution {
         dfsIslandHelper(grid, visit, x, y - 1);
     }
 
-    // ② 44. 通配符匹配  思路和leetcode 10 差不多
+    // ② 44. 通配符匹配  思路和LC  10 差不多
     // 解法2 dp来做  解题思路参考这个做法 http://bit.ly/2OPPKf0
     // dp[i][j]=dp[i-1][j-1] s[i-1]=p[j-1] || p[j-1]=?   i∈[0,M]  j∈[0,N];
     // dp[i][j]=dp[i][j-1] || dp[i-1][j]  p[j-1]="*";
@@ -2267,8 +2270,8 @@ public class Solution {
         return dp[M][N];
     }
 
-
-    // 参考这篇文章 匹配优先向下原则(说的不是通配哦!)
+    // 👎🏻  interview
+   /* // 参考这篇文章 匹配优先向下原则(说的不是通配哦!)
     // 本质上是在构建NFA  http://bit.ly/2LyOYSq 但是理解这方面 你需要有深刻的理解 不适合面试哈!
     public boolean isMatch0(String s, String p) {
         char[] S = s.toCharArray(), P = p.toCharArray();
@@ -2289,7 +2292,7 @@ public class Solution {
         while (j < p.length() && P[j] == '*') j++; //i扫描完成后要看j能不能够到达终点，即j可以沿着'*'行程的通路一直向下
         return j == p.length(); //i与j同时到达终点完成匹配
     }
-
+*/
 
     // ② leetcode 10 正则表达式匹配 http://bit.ly/2SsG9dA
     // 1. dp[i][j] = dp[i-1][j-1] when s[i-1]==p[j-1] or p[j-1] = " . ";
@@ -2407,7 +2410,6 @@ public class Solution {
 
         while (!queue.isEmpty()) {
             s = queue.poll();
-
             if (isValid(s)) {
                 res.add(s);
                 found = true;
