@@ -1458,9 +1458,9 @@ public class Solution {
     }
 
     //  接下去 进入 二叉树专题
-    // 94. 二叉树的中序遍历 递归做法
+    // ③ 94. 二叉树的中序遍历 递归做法
     // tips: 搞清楚 树的迭代是有轮回的 也就是说 中序遍历的左右子树要看清楚是哪个部分,子树层层递进的起点
-    public List<String> inorderTraversal0(TreeNode root) {
+    public List<String> inorder01(TreeNode root) {
         List<String> ret = new ArrayList<>();
         inorderHelper(root, ret);
         return ret;
@@ -1473,26 +1473,28 @@ public class Solution {
         inorderHelper(root.right, ret);
     }
 
-    // 解法2  栈来做
-    public List<Integer> inorderTraversal1(TreeNode root) {
-        List<Integer> ret = new ArrayList<>();
-        Stack<TreeNode> stack = new Stack<>();
+    // ③ 解法2  栈来做
+    public List<Integer> inorder02(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        Stack<TreeNode> s = new Stack<>();
         TreeNode cur = root;
-        while (cur != null || !stack.isEmpty()) {
-            while (cur != null) {
-                stack.push(cur);
+        while (!s.isEmpty() || cur != null) {
+            if (cur != null) {
+                s.push(cur);
                 cur = cur.left;
+            } else {
+                TreeNode node = s.pop();
+                ans.add(node.val);  // Add after all left children
+                cur = node.right;
             }
-            cur = stack.pop();
-            ret.add(cur.val);
-            cur = cur.right;
         }
-        return ret;
+        return ans;
     }
 
-    // 解法 3 Morris遍历算法  理解起来很麻烦 http://bit.ly/2jXmyW5
-    public List<Integer> inorderTraversal2(TreeNode root) {
-        // morris 遍历 核心 就是简历  root和 左子树 最右边节点的关系 pre = root.left; pre.right = root;
+    //③ morris 要回答 什么时候访问节点,左子树没有的时候,左子树有的时候,访问玩pre前驱节点,断开,然后访问root节点
+    // 解法 3 Morris遍历算法  理解起来很麻烦 http://bit.ly/2jXmyW5,
+    public List<Integer> inorderTraversal04(TreeNode root) {
+        // morris 遍历 核心 就是建立 root和 左子树 最右边节点的关系 pre = root.left; pre.right = root;
         List<Integer> ret = new ArrayList();
         while (root != null) {
             if (root.left == null) {
@@ -1519,7 +1521,124 @@ public class Solution {
         return ret;
     }
 
-    // 102. 二叉树的层次遍历
+    // ③ 144. 二叉树的前序遍历 递归玩法
+    public List<Integer> preorder01(TreeNode root) {
+        List<Integer> ret = new ArrayList<>();
+        preorderHelper(root, ret);
+        return ret;
+    }
+
+    public void preorderHelper(TreeNode root, List<Integer> ret) {
+        if (root == null) return;
+        ret.add(root.val);
+        preorderHelper(root.left, ret);
+        preorderHelper(root.right, ret);
+    }
+
+    public List<Integer> preorder02(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        Stack<TreeNode> s = new Stack<>();
+        TreeNode cur = root;
+        while (!s.isEmpty() || cur != null) {
+            if (cur != null) {
+                s.push(cur);
+                ans.add(cur.val);  // Add before going to children
+                cur = cur.left;
+            } else {
+                TreeNode node = s.pop();
+                cur = node.right;
+            }
+        }
+        return ans;
+    }
+
+    // ③ morris 前序遍历
+    public List<Integer> preOrder03(TreeNode root) {
+        List<Integer> ret = new ArrayList<>();
+        while (root != null) {
+            if (root.left == null) {
+                ret.add(root.val);
+                root = root.right;
+            } else {
+                TreeNode pre = root.left;
+                while (pre.right != null && pre.right != root) {
+                    pre = pre.right;
+                }
+                if (pre.right == null) {
+                    // 建立morris 关系
+                    pre.right = root;
+                    // 先访问 root!!!
+                    ret.add(root.val);
+                    root = root.left;
+                } else {
+                    // 断开
+                    pre.right = null;
+                    root = root.right;
+                }
+            }
+        }
+        return ret;
+    }
+
+    // ③ 145. 二叉树的后序遍历 http://bit.ly/2SodiqQ
+    public List<Integer> postorder01(TreeNode root) {
+        List<Integer> ret = new ArrayList<>();
+        postorderHelper(root, ret);
+        return ret;
+    }
+
+    public void postorderHelper(TreeNode root, List<Integer> ret) {
+        if (root == null) return;
+        postorderHelper(root.left, ret);
+        postorderHelper(root.right, ret);
+        ret.add(root.val);
+    }
+
+    // 解法 2 栈
+    public List<Integer> postorder02(TreeNode root) {
+        LinkedList<Integer> ans = new LinkedList<>();
+        Stack<TreeNode> s = new Stack<>();
+        TreeNode cur = root;
+        while (!s.isEmpty() || cur != null) {
+            if (cur != null) {
+                s.push(cur);
+                ans.addFirst(cur.val);  // Reverse the process of preorder
+                cur = cur.right;             // Reverse the process of preorder
+            } else {
+                TreeNode node = s.pop();
+                cur = node.left;           // Reverse the process of preorder
+            }
+        }
+        return ans;
+    }
+
+    // morris遍历
+    public List<Integer> postorder03(TreeNode root) {
+        LinkedList<Integer> ans = new LinkedList<>();
+        TreeNode cur = root;
+        while (cur != null) {
+            if (cur.right == null) {
+                ans.addFirst(cur.val);
+                cur = cur.left;
+            } else {
+                TreeNode prev = cur.right;
+                while (prev.left != null && prev.left != cur) {
+                    prev = prev.left;
+                }
+                if (prev.left == null) {
+                    prev.left = cur;
+                    ans.addFirst(cur.val);
+                    cur = cur.right;
+                } else {
+                    prev.left = null;
+                    cur = cur.left;
+                }
+            }
+        }
+        return ans;
+    }
+
+    // ③ 102. 二叉树的层次遍历
     public List<List<Integer>> levelOrder0(TreeNode root) {
         LinkedList<TreeNode> queue = new LinkedList<>();
         queue.add(root);
@@ -1559,167 +1678,6 @@ public class Solution {
 
         levelHelper(root.left, level + 1, ret);
         levelHelper(root.right, level + 1, ret);
-    }
-
-    // 144. 二叉树的前序遍历 递归玩法
-    public List<Integer> preorderTraversal0(TreeNode root) {
-        List<Integer> ret = new ArrayList<>();
-        preorderHelper(root, ret);
-        return ret;
-    }
-
-    public void preorderHelper(TreeNode root, List<Integer> ret) {
-        if (root == null) return;
-        ret.add(root.val);
-        preorderHelper(root.left, ret);
-        preorderHelper(root.right, ret);
-    }
-
-    // morris 前序遍历
-    public List<Integer> morrisPreorder(TreeNode root) {
-        List<Integer> ret = new ArrayList<>();
-        while (root != null) {
-            if (root.left == null) {
-                ret.add(root.val);
-                root = root.right;
-            } else {
-                TreeNode pre = root.left;
-                while (pre.right != null && pre.right != root) {
-                    pre = pre.right;
-                }
-                if (pre.right == null) {
-                    // 建立morris 关系
-                    pre.right = root;
-                    // 先访问 root
-                    ret.add(root.val);
-                    root = root.left;
-                } else {
-                    // 断开
-                    pre.right = null;
-                    root = root.right;
-                }
-            }
-        }
-        return ret;
-    }
-
-    // 144. 二叉树的前序遍历 栈的做法
-    public List<Integer> preorderTraversal1(TreeNode root) {
-        if (root == null) return Collections.EMPTY_LIST;
-        Stack<TreeNode> stack = new Stack<>();
-        stack.add(root);
-        List<Integer> ret = new ArrayList<>();
-        while (!stack.isEmpty()) {
-            TreeNode cur = stack.pop();
-            ret.add(cur.val);
-            // 先压入右边的因为右边的后访问阿
-            if (cur.right != null) {
-                stack.push(cur.right);
-            }
-            if (cur.left != null) {
-                stack.push(cur.left);
-            }
-        }
-        return ret;
-    }
-
-    // 145. 二叉树的后序遍历 http://bit.ly/2SodiqQ
-    public List<Integer> postorderTraversal0(TreeNode root) {
-        List<Integer> ret = new ArrayList<>();
-        postorderHelper(root, ret);
-        return ret;
-    }
-
-    public void postorderHelper(TreeNode root, List<Integer> ret) {
-        if (root == null) return;
-        postorderHelper(root.left, ret);
-        postorderHelper(root.right, ret);
-        ret.add(root.val);
-    }
-
-    public List<Integer> postorderTraversal1(TreeNode root) {
-        List<Integer> ret = new ArrayList<>();
-        if (root == null) return ret;
-        Stack<TreeNode> stack = new Stack<>();
-        stack.push(root);
-        // 后续遍历可以首先想到的就是 左右子树均为null--->向上搜寻
-        // 出现 左右子树一个为空的时候 你需要 标识上次的递归 必须是左右子树为null
-        TreeNode flag = root;
-        while (!stack.isEmpty()) {
-            TreeNode t = stack.peek();
-            if ((t.right == null && t.left == null) || t.left == flag || t.right == flag) {
-                ret.add(t.val);
-                stack.pop();
-                flag = t;
-            } else {
-                if (t.right != null) stack.push(t.right);
-                if (t.left != null) stack.push(t.left);
-            }
-        }
-        return ret;
-    }
-
-
-    // time complexity O(2N)
-    public List<Integer> postorderTraversal2(TreeNode root) {
-        List<Integer> ret = new ArrayList<>();
-        if (root == null) return ret;
-        Stack<TreeNode> s1 = new Stack();
-        Stack<TreeNode> s2 = new Stack();
-        s1.push(root);
-        while (!s1.isEmpty()) {
-            TreeNode cur = s1.pop();
-            s2.push(cur);
-            if (cur.left != null) s1.push(cur.left);
-            if (cur.right != null) s1.push(cur.right);
-        }
-        // 和 下面的add First 异曲同工
-        while (!s2.isEmpty()) {
-            ret.add(s2.pop().val);
-        }
-        return ret;
-    }
-
-    public List<Integer> postorderTraversal3(TreeNode root) {
-        LinkedList<Integer> ret = new LinkedList();
-        if (root == null) return ret;
-        Stack<TreeNode> s = new Stack();
-        s.push(root);
-        while (!s.isEmpty()) {
-            TreeNode cur = s.pop();
-            // addFirst 关键
-            ret.addFirst(cur.val);
-            if (cur.right != null) s.push(cur.right);
-            if (cur.left != null) s.push(cur.left);
-        }
-        return ret;
-    }
-
-    // 后续遍历 这是最好的 也是最棒的
-    public List<Integer> postorderTraversal4(TreeNode root) {
-        List<Integer> ret = new LinkedList<>();
-        if (root == null) return ret;
-        Stack<TreeNode> s = new Stack<>();
-
-        TreeNode cur = null;
-        s.push(root);
-        s.push(root);
-        while (!s.isEmpty()) {
-            cur = s.pop();
-            if (s.isEmpty() || cur != s.peek()) {
-                ret.add(cur.val);
-            } else {
-                if (cur.right != null) {
-                    s.push(cur.right);
-                    s.push(cur.right);
-                }
-                if (cur.left != null) {
-                    s.push(cur.left);
-                    s.push(cur.left);
-                }
-            }
-        }
-        return ret;
     }
 
     // ③ 96. 不同的二叉搜索树 BST ,  dp http://bit.ly/36HVnRO
@@ -1816,6 +1774,7 @@ public class Solution {
         }
         root.right = tmp;
     }
+
     //② 解法 2
     public void flatten02(TreeNode root) {
         if (root == null) return;
@@ -1824,9 +1783,9 @@ public class Solution {
             if (cur.left != null) {
                 TreeNode p = cur.left;
                 while (p.right != null) p = p.right;
-                p.right  = cur.right;
+                p.right = cur.right;
                 cur.right = cur.left;
-                cur.left =null;
+                cur.left = null;
             }
             cur = cur.right;
         }
