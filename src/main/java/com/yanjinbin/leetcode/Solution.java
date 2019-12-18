@@ -1742,19 +1742,19 @@ public class Solution {
     // ② 95 不同的二叉搜索树 dp
     // 这道题目很经典,这道题目,比96 求解个数, 换了一种形式.
     public List<TreeNode> generateTrees(int N) {
-        if(N==0) return new ArrayList<TreeNode>();
-        List<TreeNode>[] dp = new List[N+1];
+        if (N == 0) return new ArrayList<TreeNode>();
+        List<TreeNode>[] dp = new List[N + 1];
         // init;
-        dp[0]=new ArrayList();
+        dp[0] = new ArrayList();
         dp[0].add(null);
-        for(int i=1;i<=N;i++){
-            dp[i]= new ArrayList<TreeNode>();
-            for(int j=1;j<=i;j++){
-                for(TreeNode left:dp[j-1]){
-                    for(TreeNode right:dp[i-j]){
+        for (int i = 1; i <= N; i++) {
+            dp[i] = new ArrayList<TreeNode>();
+            for (int j = 1; j <= i; j++) {
+                for (TreeNode left : dp[j - 1]) {
+                    for (TreeNode right : dp[i - j]) {
                         TreeNode root = new TreeNode(j);
                         root.left = left;
-                        root.right = clone(right,j);
+                        root.right = clone(right, j);
                         dp[i].add(root);
                     }
                 }
@@ -1787,7 +1787,7 @@ public class Solution {
         return false;
     }
 
-    //② 101. 对称二叉树递归左右对称即可。 迭代做法 两个队列放入元素顺序需要做到对称
+    //③ 101. 对称二叉树递归左右对称即可。 迭代做法 两个队列放入元素顺序需要做到对称
     // tips: 本质上是比较2个左右子树的对称性 也就是2棵树。
     public boolean isSymmetric(TreeNode root) {
         if (root == null) return true;
@@ -1802,11 +1802,11 @@ public class Solution {
         return false;
     }
 
-    //② 114. 二叉树展开为链表 http://bit.ly/2LtZDhc  看懂图解哦
-    public void flatten(TreeNode root) {
+    //② 114. 二叉树展开为链表   看懂图解哦
+    public void flatten01(TreeNode root) {
         if (root == null) return;
-        flatten(root.left);
-        flatten(root.right);
+        flatten01(root.left);
+        flatten01(root.right);
         TreeNode tmp = root.right;
         root.right = root.left;
         root.left = null;
@@ -1815,6 +1815,21 @@ public class Solution {
             root = root.right;
         }
         root.right = tmp;
+    }
+    //② 解法 2
+    public void flatten02(TreeNode root) {
+        if (root == null) return;
+        TreeNode cur = root;
+        while (cur != null) {
+            if (cur.left != null) {
+                TreeNode p = cur.left;
+                while (p.right != null) p = p.right;
+                p.right  = cur.right;
+                cur.right = cur.left;
+                cur.left =null;
+            }
+            cur = cur.right;
+        }
     }
 
     // ② 226. 翻转二叉树
