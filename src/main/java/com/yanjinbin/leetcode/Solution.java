@@ -2,7 +2,6 @@ package com.yanjinbin.leetcode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1791,106 +1790,74 @@ public class Solution {
         }
     }
 
-    // ② 226. 翻转二叉树
+    // ③ 226. 翻转二叉树
     public TreeNode invertTree(TreeNode root) {
-        invertHelper(root);
+        postInvert(root);
         return root;
     }
 
-    public void invertHelper(TreeNode root) {
+    // 后续遍历
+    public void postInvert(TreeNode root) {
         if (root == null) return;
-        invertHelper(root.left);
-        invertHelper(root.right);
+        postInvert(root.left);
+        postInvert(root.right);
         // 交换
         TreeNode tmp = root.right;
         root.right = root.left;
         root.left = tmp;
     }
 
-    // 538. 把二叉搜索树转换为累加树  BST 中序遍历 满足顺序关系  先访问右子树-->root-->左子树 降序排列
-    public int sum = 0;
+    // ③ 538. 把二叉搜索树转换为累加树  BST 中序遍历 满足顺序关系  先访问右子树-->root-->左子树 降序排列
+    public int delta = 0;
 
     public TreeNode convertBST(TreeNode root) {
-        convert(root);
+        if (root == null) return root;
+        convertBST(root.right);
+        root.val = root.val + delta;
+        delta = root.val;
+        convertBST(root.left);
         return root;
     }
 
-    public void convert(TreeNode cur) {
-        if (cur == null) return;
-        convertBST(cur.right);
-        sum = sum + cur.val;
-        cur.val = sum;
-        convertBST(cur.left);
-    }
-
-    public TreeNode convertBST1(TreeNode root) {
-        dfsPreSumHelper1(root);
-        return root;
-    }
-
-    public int dfsPreSumHelper1(TreeNode root) {
-        if (root == null) return 0;
-        int left = dfsPreSumHelper1(root.left);
-        int right = dfsPreSumHelper1(root.right);
-        int cmp = root.val;
-        boolean cl = cmp < left;
-        boolean cr = cmp < right;
-        boolean lr = left < right;
-        if (cl && lr) {
-            cmp = cmp + left + right;
-            left = left + right;
-        }
-        if (cr && !lr) {
-            cmp = cmp + left + right;
-            right = right + left;
-        }
-        // 6种排列顺序关系组合了(A3) 那就很麻烦了 不再继续写下去
-        return root.val;
-    }
-
-
-    // 687
+    // ③ 687
     private int ans687 = Integer.MIN_VALUE;
 
     public int longestUnivaluePath(TreeNode root) {
         if (root == null) return 0;
-        dfsUniValuePath(root);
+        dfsPost(root);
         return ans687;
     }
 
-    public int dfsUniValuePath(TreeNode root) {
+    public int dfsPost(TreeNode root) {
         if (root == null) return 0;
-        int l = dfsUniValuePath(root.left);
-        int r = dfsUniValuePath(root.right);
-        int pl = 0;
+        int l = dfsPost(root.left);
+        int r = dfsPost(root.right);
+        int pl = 0;// 单独设置pl,pr是为了方便更新ans,不需要再次判断 节点是否为null
         int pr = 0;
         if (root.left != null && root.val == root.left.val) pl = l + 1;
         if (root.right != null && root.val == root.right.val) pr = r + 1;
         ans687 = Math.max(ans687, pl + pr);
-        return Math.max(pl, pr);
+        return Math.max(pl, pr); // 注意返回值,不是pl+pr哦 ,想想是为什么!
     }
 
-
-    //② 543. 二叉树的直径
-
+    // ③ 543. 二叉树的直径
     // 第二种解法 为什么更快呢 好奇怪?
     public int res = 0;
 
     public int diameterOfBinaryTree1(TreeNode root) {
-        DFS(root);
+        dfsPostDiameter(root);
         return res;
     }
 
-    public int DFS(TreeNode root) {
+    public int dfsPostDiameter(TreeNode root) {
         if (root == null) return 0;
-        int left = DFS(root.left);
-        int right = DFS(root.right);
+        int left = dfsPostDiameter(root.left);
+        int right = dfsPostDiameter(root.right);
         res = Math.max(res, left + right);
         return Math.max(left, right) + 1;
     }
-
-
-    public int diameterOfBinaryTree0(TreeNode root) {
+    // 上文的方法 较好
+   /* public int diameterOfBinaryTree0(TreeNode root) {
         if (root == null) return 0;
         int left = dfsHeight(root.left);
         int right = dfsHeight(root.right);
@@ -1901,7 +1868,7 @@ public class Solution {
     public int dfsHeight(TreeNode root) {
         if (root == null) return 0;
         return 1 + Math.max(dfsHeight(root.left), dfsHeight(root.right));
-    }
+    }*/
 
 
     // 106 105 108  617 构建二叉树的本质在于找到根节点,然后构建根节点的左右子树
@@ -1935,14 +1902,42 @@ public class Solution {
         return root;
     }
 
-    // 876
+    // ③ 876
     public ListNode middleNode(ListNode head) {
-        return null;
+        // 看之前错误的提交记录 就很有意思,fast取 head.next 还是head呢
+        // 奇数 2n+1, 中点:n+1,偶数 如果fast取head,中点是n+1;取head.next,那么是n
+        if (head == null) return head;
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        return slow;
     }
 
-    // 109   注意如何寻找中点, 这个问题之前就发现过 。
-    // http://bit.ly/2rlhKgu,构造方法和108没什么区别
+    // LC 109 这个方法最好,不需要断开节点!
+    public TreeNode sortedListToBST(ListNode head) {
+        if (head == null) return null;
+        return preDfs(head, null);
+    }
 
+    // head inclusive, tail exclusive
+    public TreeNode preDfs(ListNode head, ListNode tail) {
+        if (head == tail) { // 说明 递归条件终止了,返回Null。
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != tail && fast.next != tail) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        TreeNode root = new TreeNode(slow.val);
+        root.left = preDfs(head, slow);
+        root.right = preDfs(slow.next, tail);
+        return root;
+    }
 
     // ② 105. 从前序与中序遍历序列构造二叉树
     // 所以构建二叉树的问题本质上就是：
