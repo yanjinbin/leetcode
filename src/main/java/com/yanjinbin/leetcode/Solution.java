@@ -1990,7 +1990,7 @@ public class Solution {
     }
 
 
-    //889. 根据前序和后序遍历构造二叉树(结果不唯一)
+    //③ 889. 根据前序和后序遍历构造二叉树(结果不唯一)
     public TreeNode constructFromPrePost01(int[] pre, int[] post) {
         return preBuildPrePost(pre, 0, pre.length - 1, post, 0, post.length - 1);
     }
@@ -2042,15 +2042,13 @@ public class Solution {
         return serialize(root, "[") + "]";
     }
 
-
     // Decodes your encoded data to tree.
-    public TreeNode deserialize(List<String> l) {
+    public TreeNode deserialize(LinkedList<String> l) {
         if (l.get(0).equals("null")) {
-            l.remove(0);
+            l.pollFirst();
             return null;
         }
-        TreeNode root = new TreeNode(Integer.valueOf(l.get(0)));
-        l.remove(0);
+        TreeNode root = new TreeNode(Integer.valueOf(l.pollFirst()));
         root.left = deserialize(l);
         root.right = deserialize(l);
         return root;
@@ -2062,7 +2060,7 @@ public class Solution {
         data = data.substring(1, data.length() - 1);
 
         String[] data_array = data.split(",");
-        List<String> data_list = new LinkedList<String>(Arrays.asList(data_array));
+        LinkedList<String> data_list = new LinkedList<String>(Arrays.asList(data_array));
         return deserialize(data_list);
     }
 
@@ -3253,7 +3251,7 @@ public class Solution {
     }
 
 
-    // ② leetcode 137 137. 只出现一次的数字 II
+    // ②  137. 只出现一次的数字 II
     // 解法1 重新定义运算规则
     public int singleNumberⅡ0(int[] nums) {
         int ones = 0, twos = 0, threes = 0;
