@@ -1916,7 +1916,7 @@ public class Solution {
         return slow;
     }
 
-    // LC 109 这个方法最好,不需要断开节点!
+    // ③  LC 109 这个方法最好,不需要断开节点!
     public TreeNode sortedListToBST(ListNode head) {
         if (head == null) return null;
         return preDfs(head, null);
@@ -1946,10 +1946,11 @@ public class Solution {
     //构建该根节点的左子树
     //构建该根节点的右子树
     public TreeNode buildTreePreIn(int[] preorder, int[] inorder) {
-        return buildTrePreIn(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
+        return preBuildPreAndIn(preorder, 0, preorder.length - 1, inorder, 0, inorder.length - 1);
     }
 
-    public TreeNode buildTrePreIn(int[] preOrder, int pLeft, int pRight, int[] inorder, int iLeft, int iRight) {
+    //前序遍历方式,重建二叉树
+    public TreeNode preBuildPreAndIn(int[] preOrder, int pLeft, int pRight, int[] inorder, int iLeft, int iRight) {
         if (pLeft > pRight || iLeft > iRight) {
             return null;
         }
@@ -1963,18 +1964,18 @@ public class Solution {
         TreeNode root = new TreeNode(preOrder[pLeft]);
         //  参考 http://bit.ly/2LoQpTz
         //  [pLeft+1 , pLeft+(i-iLeft)]是左子树元素区间哦
-        root.left = buildTrePreIn(preOrder, pLeft + 1, pLeft + (i - iLeft), inorder, iLeft, i - 1);
-        root.right = buildTrePreIn(preOrder, pLeft + i - iLeft + 1, pRight, inorder, i + 1, iRight);
+        root.left = preBuildPreAndIn(preOrder, pLeft + 1, pLeft + (i - iLeft), inorder, iLeft, i - 1);
+        root.right = preBuildPreAndIn(preOrder, pLeft + i - iLeft + 1, pRight, inorder, i + 1, iRight);
         return root;
     }
 
 
-    // ② 106. 从中序与后序遍历序列构造二叉树
+    // ③ 106. 从中序与后序遍历序列构造二叉树
     public TreeNode buildTreeInPost(int[] inorder, int[] postorder) {
-        return buildTreeInPost(inorder, 0, inorder.length - 1, postorder, 0, postorder.length - 1);
+        return preBuildInAndPost(inorder, 0, inorder.length - 1, postorder, 0, postorder.length - 1);
     }
 
-    public TreeNode buildTreeInPost(int[] inorder, int iLeft, int iRight, int[] postOrder, int pLeft, int pRight) {
+    public TreeNode preBuildInAndPost(int[] inorder, int iLeft, int iRight, int[] postOrder, int pLeft, int pRight) {
         if (pLeft > pRight || iLeft > iRight) {
             return null;
         }
@@ -1983,14 +1984,45 @@ public class Solution {
             if (postOrder[pRight] == inorder[i]) break;
         }
         TreeNode root = new TreeNode(postOrder[pRight]);
-        root.left = buildTreeInPost(inorder, iLeft, i - 1, postOrder, pLeft, pRight - (iRight - i) - 1);
-        root.right = buildTreeInPost(inorder, i + 1, iRight, postOrder, pRight - (iRight - i), pRight - 1);
+        root.left = preBuildInAndPost(inorder, iLeft, i - 1, postOrder, pLeft, pRight - (iRight - i) - 1);
+        root.right = preBuildInAndPost(inorder, i + 1, iRight, postOrder, pRight - (iRight - i), pRight - 1);
         return root;
     }
 
 
     //889. 根据前序和后序遍历构造二叉树(结果不唯一)
+    public TreeNode constructFromPrePost01(int[] pre, int[] post) {
+        return preBuildPrePost(pre, 0, pre.length - 1, post, 0, post.length - 1);
+    }
 
+    public TreeNode preBuildPrePost(int[] pre, int el, int er, int[] post, int pl, int pr) {
+        // base
+        if (el > er || pl > pr) return null;
+        TreeNode root = new TreeNode(pre[el]);
+        int idx = el + 1;
+        // 这个就有点技巧在了,想想看为什么 之前的历史提交记录里面就有越界的问题存在.
+        // https://leetcode-cn.com/submissions/detail/40560538/
+        for (int i = el + 1; i <= er; i++) {
+            if (pre[i] == post[pr - 1]) {
+                idx = i;
+            }
+        }
+        root.left = preBuildPrePost(pre, el + 1, idx - 1, post, pl, pl + idx - el - 2);
+        root.right = preBuildPrePost(pre, idx, er, post, pl + idx - el - 1, pr - 1);
+        return root;
+    }
+
+    // 参考 http://bit.ly/38VJzNJ
+    int preIndex = 0, posIndex = 0;
+    public TreeNode constructFromPrePost02(int[] pre, int[] post) {
+        TreeNode root = new TreeNode(pre[preIndex++]);
+        if (root.val != post[posIndex])
+            root.left = constructFromPrePost02(pre, post);
+        if (root.val != post[posIndex])
+            root.right = constructFromPrePost02(pre, post);
+        posIndex++;
+        return root;
+    }
 
     // 297. 二叉树的序列化与反序列化 这道题目就直接抄把 没啥好说的了 http://bit.ly/2LteuIY
     // Encodes a tree to a single string.
