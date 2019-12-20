@@ -2457,7 +2457,12 @@ public class Solution {
         return new ArrayList<>(m.values());
     }
 
-    // 621. 任务调度器 好难  http://bit.ly/2LxLShE [经典] https://www.youtube.com/watch?v=YCD_iYxyXoo
+    // LC 358   todo K距离间隔重排字符串
+    public String rearrangeString(String s, int k) {
+        return "";
+    }
+
+    // 621. 任务调度器  参考: http://bit.ly/2MdJkUu
     public int leastInterval01(char[] tasks, int n) {
         int[] cnt = new int[26];
         for (char c : tasks) {
@@ -2473,32 +2478,32 @@ public class Solution {
 
     // round-robin 算法
     public int leastInterval02(char[] tasks, int n) {
-        Map<Character, Integer> counts = new HashMap<>();
-        for (char c : tasks) {
-            counts.put(c, counts.getOrDefault(c, 0) + 1);
+        Map<Character, Integer> counts = new HashMap();
+        for (char t : tasks) {
+            counts.put(t, counts.getOrDefault(t, 0) + 1);
         }
-        PriorityQueue<Integer> pq = new PriorityQueue<Integer>((o1, o2) -> o2 - o1);
-        pq.addAll(counts.values());
-        int allTime = 0;
-        int cycle = n + 1;
-        while (!pq.isEmpty()) {
-            int workTime = 0;
-            List<Integer> tmp = new ArrayList<>();
-            for (int i = 0; i < cycle; i++) {
-                if (!pq.isEmpty()) {
-                    tmp.add(pq.poll());
-                    workTime++;
-                }
-
-                for (int cnt : tmp) {
-                    if (--cnt > 0) {
-                        pq.offer(cnt);
-                    }
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a, b) -> b - a);
+        maxHeap.addAll(counts.values());
+        int alltime = 0;
+        int cycleLen = n + 1;
+        while (!maxHeap.isEmpty()) {
+            int roundTime = 0;
+            List<Integer> round = new ArrayList<>();
+            for (int i = 0; i < cycleLen; i++) {
+                if (!maxHeap.isEmpty()) {
+                    // 取n个出来
+                    round.add(maxHeap.poll());
+                    roundTime++;
                 }
             }
-            allTime += !pq.isEmpty() ? cycle : workTime;
+            for (int freq : round) {
+                if (--freq > 0) {// 放回去
+                    maxHeap.offer(freq);
+                }
+            }
+            alltime += maxHeap.isEmpty() ? roundTime : cycleLen;
         }
-        return allTime;
+        return alltime;
     }
 
 
