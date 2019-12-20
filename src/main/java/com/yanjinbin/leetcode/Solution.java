@@ -1844,7 +1844,7 @@ public class Solution {
     // 第二种解法 为什么更快呢 好奇怪?
     public int res = 0;
 
-    public int diameterOfBinaryTree1(TreeNode root) {
+    public int diameterOfBinaryTree(TreeNode root) {
         dfsPostDiameter(root);
         return res;
     }
@@ -2014,6 +2014,7 @@ public class Solution {
 
     // 参考 http://bit.ly/38VJzNJ
     int preIndex = 0, posIndex = 0;
+
     public TreeNode constructFromPrePost02(int[] pre, int[] post) {
         TreeNode root = new TreeNode(pre[preIndex++]);
         if (root.val != post[posIndex])
@@ -2066,7 +2067,7 @@ public class Solution {
 
     // 打家劫舍系列
 
-    // ② 198. 打家劫舍  DP dp[i]=Math.max(dp[i-2]+nums[i],dp[i-1])
+    // ③ 198. 打家劫舍  DP dp[i]=Math.max(dp[i-2]+nums[i],dp[i-1])
     public int rob1(int[] nums) {
         if (nums.length == 0) return 0;
         if (nums.length == 1) return nums[0];
@@ -2098,7 +2099,7 @@ public class Solution {
         return ret;
     }
 
-    // ② 213. 打家劫舍 II
+    // ③ 213. 打家劫舍 II tag:环形数组
     public int rob3(int[] nums) {
         if (nums.length == 0) return 0;
         if (nums.length == 1) return nums[0];
@@ -2119,8 +2120,8 @@ public class Solution {
     }
 
 
-    // 337. 打家劫舍 III  看懂比较模型即可 http://bit.ly/2LtppCe
-    // dp(right) = max(dp(root),dp(left)+right.val)
+    // ③ 337. 打家劫舍 III  看懂比较模型即可 http://bit.ly/2LtppCe
+    // dfs 做比较下即可.
     public int rob4(TreeNode root) {
         Map<TreeNode, Integer> map = new HashMap<>();
         return dfsRobHelper(root, map);
@@ -2141,37 +2142,21 @@ public class Solution {
         return val;
     }
 
-
-    // ② 647 字符串回文个数 dp[i,j]  = dp[i+1][j-1] if s[i]=s[j]
-    public int countSubstrings1(String s) {
-        int res = 0;
-        int len = s.length();
-        boolean[][] dp = new boolean[len][len];
-        for (int i = 0; i < len; i++) {
-            for (int j = i; j >= 0; j--) {
-                dp[i][j] = s.charAt(i) == s.charAt(j) && (i - j <= 2 || dp[i + 1][j - 1]);
-                if (dp[i][j]) {
-                    res++;
-                }
-            }
+    // ② 647 字符串回文个数 dp[i,j]  = dp[i+1][j-1] if s[i]=s[j],   0<=i<=j<N;
+    public int countSubstrings(String s) {
+        int N = s.length();
+        int count = 0;
+        boolean[][] dp = new boolean[N][N];
+        for (int i = 0; i < N; i++) {
+            dp[i][i] = true;
         }
-        return res;
-    }
-
-    // 这道题目就是有点取巧了阿  不推荐这种做法
-    public int countSubstrings2(String s) {
-        int res = 0;
-        int len = s.length();
-        boolean[][] dp = new boolean[len][len];
-        for (int i = len - 1; i >= 0; i--) {
-            for (int j = i; j < len; j++) {
+        for (int i = N - 1; i >= 0; i--) {// 注意遍历方式  i-- ，j++
+            for (int j = i; j < N; j++) {
                 dp[i][j] = s.charAt(i) == s.charAt(j) && (j - i <= 2 || dp[i + 1][j - 1]);
-                if (dp[i][j]) {
-                    res++;
-                }
+                if (dp[i][j]) count++;
             }
         }
-        return res;
+        return count;
     }
 
     // ③ 160. 相交链表
@@ -2193,7 +2178,7 @@ public class Solution {
         return count;
     }
 
-    // 494
+    // ③  494 DFS 参加 pack.java下的dp 解答。
     public int findTargetSumWays(int[] nums, int S) {
         return dfsTargetSumHelper(nums, S, 0, res);
     }
@@ -2244,7 +2229,7 @@ public class Solution {
         dfsIslandHelper(grid, visit, x, y - 1);
     }
 
-    // ② 44. 通配符匹配  思路和LC  10 差不多
+    // ③ 44. 通配符匹配  思路和LC  10 差不多
     // 解法2 dp来做  解题思路参考这个做法 http://bit.ly/2OPPKf0
     // dp[i][j]=dp[i-1][j-1] s[i-1]=p[j-1] || p[j-1]=?   i∈[0,M]  j∈[0,N];
     // dp[i][j]=dp[i][j-1] || dp[i-1][j]  p[j-1]="*";
@@ -2252,7 +2237,8 @@ public class Solution {
         int M = s.length(), N = p.length();
         boolean[][] dp = new boolean[M + 1][N + 1];
         dp[0][0] = true;
-        // edge case
+
+        // 2处DP  此处DP ,补全下面DP不足的问题
         for (int j = 1; j <= N; j++) {// 处理 * 可以代表空串的问题
             dp[0][j] = dp[0][j - 1] && p.charAt(j - 1) == '*';
         }
@@ -2293,7 +2279,7 @@ public class Solution {
     }
 */
 
-    // ② leetcode 10 正则表达式匹配 http://bit.ly/2SsG9dA
+    // ③ LC 10 正则表达式匹配 http://bit.ly/2SsG9dA  这个状态转移方程不够优雅!!,还是第一个好点
     // 1. dp[i][j] = dp[i-1][j-1] when s[i-1]==p[j-1] or p[j-1] = " . ";
     // 2. dp[i][j] = dp[i][j-2] if p[j-1]="*" repeat 0 times. 表示长度缩短了 这个转台转移优先
     // 3. dp[i][j] = dp[i-1][j] if p[j-1]="*" & s[i-1]=p[j-2],p[j-2]="." repeat at least 1 times,
@@ -2316,9 +2302,8 @@ public class Solution {
     }
 
 
-    // ② 394. 字符串解码 用栈存储结果
+    // ③ 394. 字符串解码 用栈存储结果.int 和 string stack 分别暂时存储结果.sb 负责append.
     //  字符+数字+[+字母+] 的 模型 http://bit.ly/2qdR2WP
-
     public String decodeString(String s) {
         StringBuilder sb = new StringBuilder();
         int multi = 0;
@@ -2339,6 +2324,7 @@ public class Solution {
                     tmp.append(sb);
                 }
                 sb = new StringBuilder();
+                //  这里要对内层的进行合并!!
                 sb.append(strs.pop()).append(tmp);
             } else {
                 sb.append(c);
@@ -2360,7 +2346,7 @@ public class Solution {
         if (j == word2.length()) return word1.length() - i;
         if (i == word1.length()) return word2.length() - j;
         if (memo[i][j] > 0) return memo[i][j];
-        int res = 0;
+        int res;
         if (word1.charAt(i) == word2.charAt(j)) {
             return dfsMinDistanceHelper(word1, i + 1, word2, j + 1, memo);
         } else {
@@ -2373,7 +2359,7 @@ public class Solution {
     }
 
     // 解法2 DP的迭代做法 参考这个连接 http://bit.ly/2SyePLi
-    //     dp[i][j] 表示从 word1 的前i个字符转换到 word2 的前j个字符所需要的步骤
+    //   dp[i][j] 表示从 word1 的前i个字符转换到 word2 的前j个字符所需要的步骤
     public int minDistance1(String word1, String word2) {
         int m = word1.length();
         int n = word2.length();
@@ -2394,62 +2380,13 @@ public class Solution {
         return dp[m][n];
     }
 
-    //301 删除最小数量的无效括号 BFS扫描做法
-    public List<String> removeInvalidParentheses0(String s) {
-        List<String> res = new ArrayList<>();
-        // sanity check
-        if (s == null) return res;
-        Set<String> visited = new HashSet<>();
-        Queue<String> queue = new LinkedList<>();
-
-        visited.add(s);
-        queue.add(s);
-
-        boolean found = false;
-
-        while (!queue.isEmpty()) {
-            s = queue.poll();
-            if (isValid(s)) {
-                res.add(s);
-                found = true;
-            }
-            // 这里是实现BFS的关键哦  判断是否要进行下一层次(子节点)的BFS扫描,if true ,执行同级节点的扫描.
-            if (found) continue;
-
-            for (int i = 0; i < s.length(); i++) {
-                if (s.charAt(i) != '(' && s.charAt(i) != ')') continue;
-                // 存储下一层可能的候选
-                String t = s.substring(0, i) + s.substring(i + 1);
-                if (!visited.contains(t)) {
-                    queue.add(t);
-                    visited.add(t);
-                }
-            }
-        }
-        return res;
-    }
-
-
-    public boolean isValid(String s) {
-        int count = 0;
-
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c == '(') count++;
-            // 左右括号存在顺序性
-            if (c == ')' && --count < 0) return false;
-        }
-        return count == 0;
-    }
-
-
     // http://bit.ly/2LvcJLu
-    // ② 438. 找到字符串中所有字母异位词
+    // ② 438. 找到字符串中所有字母异位词 双指针
     public List<Integer> findAnagrams(String s, String p) {
         List<Integer> res = new ArrayList<>();
-        int[] letters = new int[27];
+        int[] letters = new int[26];
         for (char c : p.toCharArray()) {
-            letters[c - 'a'] = letters[c - 'a'] + 1;
+            letters[c - 'a']++;
         }
         int i = 0;
         while (i < s.length()) {
@@ -2505,7 +2442,7 @@ public class Solution {
     public List<List<String>> groupAnagrams1(String[] strs) {
         Map<String, List<String>> m = new HashMap<>();
         for (String str : strs) {
-            int[] cnt = new int[27];
+            int[] cnt = new int[26];
             for (char c : str.toCharArray()) {
                 cnt[c - 'a']++;
             }
@@ -2521,7 +2458,7 @@ public class Solution {
     }
 
     // 621. 任务调度器 好难  http://bit.ly/2LxLShE [经典] https://www.youtube.com/watch?v=YCD_iYxyXoo
-    public int leastInterval(char[] tasks, int n) {
+    public int leastInterval01(char[] tasks, int n) {
         int[] cnt = new int[26];
         for (char c : tasks) {
             cnt[c - 'A']++;
@@ -2534,30 +2471,36 @@ public class Solution {
         return Math.max(tasks.length, (cnt[25] - 1) * (n + 1) + 25 - i);
     }
 
-    // http://bit.ly/2LxLShE
-    public int leastInterval1(char[] tasks, int n) {
-        int mx = 0;
-        int mxCnt = 0;
-        int[] cnt = new int[26];
+    // round-robin 算法
+    public int leastInterval02(char[] tasks, int n) {
+        Map<Character, Integer> counts = new HashMap<>();
         for (char c : tasks) {
-            cnt[c - 'A']++;
-            if (mx == cnt[c - 'A']) {
-                mxCnt++;
-            } else if (mx < cnt[c - 'A']) {
-                mx = cnt[c - 'A'];
-                mxCnt = 1;
-            }
+            counts.put(c, counts.getOrDefault(c, 0) + 1);
         }
+        PriorityQueue<Integer> pq = new PriorityQueue<Integer>((o1, o2) -> o2 - o1);
+        pq.addAll(counts.values());
+        int allTime = 0;
+        int cycle = n + 1;
+        while (!pq.isEmpty()) {
+            int workTime = 0;
+            List<Integer> tmp = new ArrayList<>();
+            for (int i = 0; i < cycle; i++) {
+                if (!pq.isEmpty()) {
+                    tmp.add(pq.poll());
+                    workTime++;
+                }
 
-        //     return Math.max(tasks.length, (mx - 1) * (n + 1) + mxCnt);
-
-        int partCnt = mx - 1;
-        int partLen = n - (mxCnt - 1);
-        int emptySlot = partCnt * partLen;
-        int taskLeft = tasks.length - mx * mxCnt;
-        int idles = Math.max(0, emptySlot - taskLeft);
-        return tasks.length + idles;
+                for (int cnt : tmp) {
+                    if (--cnt > 0) {
+                        pq.offer(cnt);
+                    }
+                }
+            }
+            allTime += !pq.isEmpty() ? cycle : workTime;
+        }
+        return allTime;
     }
+
 
     // ② 252. 会议室 排个序,比较相邻的位置大小即可.
     public boolean canAttendMeetings(int[][] intervals) {
