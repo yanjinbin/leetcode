@@ -991,12 +991,13 @@ public class Microsoft {
     // https://www.geeksforgeeks.org/k-th-element-two-sorted-arrays/
     // 解法3 分治 divide and conquer
     // 参考这个  http://bit.ly/2YUmy9F  http://bit.ly/34uQudj
+
     /**
      * @param start1 inclusive
-     * @param end1 inclusive
+     * @param end1   inclusive
      * @param start2 inclusive
-     * @param end2 inclusive
-     * @param k  KthSmallest
+     * @param end2   inclusive
+     * @param k      KthSmallest
      * @return
      */
     public int FindKth(int[] nums1, int start1, int end1, int[] nums2, int start2, int end2, int k) {
@@ -1005,19 +1006,58 @@ public class Microsoft {
         //让 len1 的长度小于 len2，这样就能保证如果有数组空了，一定是 len1
         if (len1 > len2) return FindKth(nums2, start2, end2, nums1, start1, end1, k);
         if (len1 == 0) return nums2[start2 + k - 1];
-       // if (k == 1) return Math.min(nums1[start1], nums2[start2]);
+        // if (k == 1) return Math.min(nums1[start1], nums2[start2]);
 
         int i = start1 + Math.min(len1, k / 2) - 1;
         int j = start2 + Math.min(len2, k / 2) - 1;
 
         if (nums1[i] > nums2[j]) {
             return FindKth(nums1, start1, end1, nums2, j + 1, end2, k - (j - start2 + 1));
-        }
-        else {
+        } else {
             return FindKth(nums1, i + 1, end1, nums2, start2, end2, k - (i - start1 + 1));
         }
     }
 
+    // ③ 301 删除最小数量的无效括号  tag:BFS
+    public List<String> removeInvalidParentheses(String str) {
+        List<String> ans = new ArrayList<>();
+        if (str == null) return ans;
+        Set<String> seen = new HashSet<>();
+        Queue<String> q = new LinkedList<>();
+        seen.add(str);
+        q.add(str);
+        boolean found = false;
+        while (!q.isEmpty()) {
+            String s = q.poll();
+            if (isValid(s)) {
+                ans.add(s);
+                found = true;
+            }
+            if (found) continue;
+            for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
+                String tmp = s.substring(0, i) + s.substring(i + 1);
+                if ((c == '(' || c == ')') && !seen.contains(tmp)) {
+                    seen.add(tmp);
+                    q.add(tmp);
+                }
+            }
+        }
+        return ans;
+    }
+
+
+    // 注意 这里 有效性验证 !!
+    public boolean isValid(String s) {
+        int count = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '(') count++;
+            // 左右括号存在顺序性
+            if (c == ')' && --count < 0) return false;
+        }
+        return count == 0;
+    }
 
 
 }
