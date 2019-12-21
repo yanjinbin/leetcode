@@ -2457,13 +2457,9 @@ public class Solution {
         return new ArrayList<>(m.values());
     }
 
-    // LC 358   todo K距离间隔重排字符串
-    public String rearrangeString(String s, int k) {
-        return "";
-    }
 
     // 621. 任务调度器  参考: http://bit.ly/2MdJkUu
-    public int leastInterval01(char[] tasks, int n) {
+    /*public int leastInterval01(char[] tasks, int n) {
         int[] cnt = new int[26];
         for (char c : tasks) {
             cnt[c - 'A']++;
@@ -2475,7 +2471,7 @@ public class Solution {
         // if n =0; 取task.length
         return Math.max(tasks.length, (cnt[25] - 1) * (n + 1) + 25 - i);
     }
-
+*/
     // round-robin 算法
     public int leastInterval02(char[] tasks, int n) {
         Map<Character, Integer> counts = new HashMap();
@@ -2507,7 +2503,7 @@ public class Solution {
     }
 
 
-    // ② 252. 会议室 排个序,比较相邻的位置大小即可.
+    // ③ 252. 会议室 排个序,比较相邻的位置大小即可.
     public boolean canAttendMeetings(int[][] intervals) {
         Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
         for (int i = 1; i < intervals.length; i++) {
@@ -2518,7 +2514,8 @@ public class Solution {
     }
 
     // 253. 会议室 II
-    //② interview friendly 参考这个视频 https://youtu.be/wB884_Os58U  主要是人脑怎么处理的问题
+    //③ interview friendly 参考这个视频 https://youtu.be/wB884_Os58U  主要是人脑怎么处理的问题
+    // 如何复用最先空出来的房间
     public int minMeetingRooms1(int[][] intervals) {
         if (intervals.length == 0) return 0;
         Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
@@ -2534,6 +2531,7 @@ public class Solution {
         return pq.size();
     }
 
+    //③  忘记没看懂
     public int minMeetingRooms0(int[][] intervals) {
         Map<Integer, Integer> map = new TreeMap<>();
         for (int[] interval : intervals) {
@@ -2557,17 +2555,17 @@ public class Solution {
             cnt.put(num, cnt.getOrDefault(num, 0) + 1);
         }
         // 最小堆
-        PriorityQueue<Map.Entry<Integer, Integer>> pq = new PriorityQueue<>((o1, o2) -> o1.getValue() - o2.getValue());
+        PriorityQueue<Map.Entry<Integer, Integer>> minHeap = new PriorityQueue<>((o1, o2) -> o1.getValue() - o2.getValue());
         for (Map.Entry<Integer, Integer> item : cnt.entrySet()) {
-            pq.offer(item);
+            minHeap.offer(item);
             // 剔除 最小k
-            if (pq.size() > k) pq.poll();
+            if (minHeap.size() > k) minHeap.poll();
         }
 
         List<Integer> res = new LinkedList<>();
-        while (!pq.isEmpty()) {
-            Map.Entry<Integer, Integer> item = pq.poll();
-            res.add(0, item.getKey());
+        while (!minHeap.isEmpty()) {
+            Map.Entry<Integer, Integer> item = minHeap.poll();
+            res.add(0, item.getKey());//注意下tips
         }
         return res;
     }
@@ -2644,6 +2642,7 @@ public class Solution {
                 }
                 if ((i - dp[i - 1] - 1 >= 0) && str.charAt(i - dp[i - 1] - 1) == '(') {
                     // 就是这个状态转移方程比较难推到了...
+                    // 分为2部分 dp[i]= dp[i-1]+2+还有要加上dp[i-dp[i-1]-2]这部分。
                     dp[i] = dp[i - 1] + ((i - dp[i - 1]) >= 2 ? dp[i - dp[i - 1] - 2] : 0) + 2;
                 }
             }
@@ -2652,23 +2651,22 @@ public class Solution {
         return ans;
     }
 
-    // 这个各种条件处理起来比较复杂
-    public int longestValidParentheses02(String s) {
-        int res = 0, start = 0;
-        Stack<Integer> m = new Stack<>();
-        for (int i = 0; i < s.length(); ++i) {
-            if (s.charAt(i) == '(') m.push(i);
-            else if (s.charAt(i) == ')') {
-                if (m.empty()) start = i + 1;
-                else {
-                    m.pop();
-                    res = m.empty() ? Math.max(res, i - start + 1) : Math.max(res, i - m.peek());
-                }
+    public int longestValidParentheses02(String str) {
+        int ans = 0;
+        Stack<Integer> s = new Stack<>();
+        s.push(-1);//  特殊case "()"
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '(') {
+                s.push(i);
+            } else {
+                s.pop();
+                if (s.isEmpty()){ // 特殊case ")()"
+                    s.push(i);
+                } else ans = Math.max(ans, i - s.peek());
             }
         }
-        return res;
+        return ans;
     }
-
 
     // 7. 整数反转  ② 注意下边界条件即可
     public int reverse(int x) {
@@ -5602,6 +5600,11 @@ public class Solution {
     }
 
     // 25 k个一组翻转链表
+
+    // LC 358   todo K距离间隔重排字符串
+    public String rearrangeString(String s, int k) {
+        return "";
+    }
 }
 
 
