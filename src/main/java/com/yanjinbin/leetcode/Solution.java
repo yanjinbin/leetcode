@@ -3691,7 +3691,7 @@ public class Solution {
     }
 
     // 计算器系列 224 227  772    // 770 真心没意思
-    //② 224. 基本计算器  没有优先级了 我真滴服了 审题要仔细哦
+    //③ 224. 基本计算器  没有优先级了 我真滴服了 审题要仔细哦
     public int calculate224(String str) {
         int ans = 0, sign = 1, num = 0, n = str.length();
         Stack<Integer> s = new Stack();
@@ -3722,7 +3722,7 @@ public class Solution {
         return ans;
     }
 
-    // ② 227. 基本计算器 II
+    // ③ 227. 基本计算器 II
     public int calculate227(String str) {
         Stack<Integer> s = new Stack<>();
         int ans = 0, sign = 1, num = 0, N = str.length();
@@ -3774,7 +3774,7 @@ public class Solution {
         return ans;
     }
 
-    // 772 基本运算器Ⅲ
+    //③  772 基本运算器Ⅲ 和227方法类似,  递归调用注意break
     public int calculate772(String str) {
         Stack<Integer> s = new Stack<>();
         int ans = 0, sign = 1, num = 0, N = str.length();
@@ -3842,7 +3842,7 @@ public class Solution {
     }
 
     // ② 54. 螺旋矩阵
-    public List<Integer> spiralOrder(int[][] matrix) {
+    public List<Integer> spiralOrder54(int[][] matrix) {
         List<Integer> res = new ArrayList();
         if (matrix.length == 0) return res;
         int colBegin = 0, colEnd = matrix[0].length - 1, rowBegin = 0, rowEnd = matrix.length - 1;
@@ -3877,46 +3877,44 @@ public class Solution {
         }
         return res;
     }
-    // follow up 59 螺旋矩阵2
-    /*  public List<List<Integer>> getSkyline(int[][] building) {
-          throw new IllegalStateException("扫描线方法 todo 有点难啊");
-          List<List<Integer>> res = new ArrayList();
-          int n = building.length;
-          Arrays.sort(building, (a, b) -> {
-              return a[0] - b[0];
-          });
-          for (int i = 0; i < n; i++) {
-              List<Integer> sub = new ArrayList();
-              // adjacent building
-              while (building[i + 1][0] <= building[i][1]) {
-                  int[] a = building[i];
-                  int[] b = building[i + 1];
-                  int aLi = building[i][0], aHi = building[i][1], aRi = building[i][2];
-                  int bLi = building[i + 1][0], bHi = building[i + 1][1], bRi = building[i + 1][2];
-                  //  第二轮的时候 你会发现情况越来越复杂了
-                  if (bRi > aRi) {
-                      if (bHi > aHi) {
-                          aLi, bLi, bRi;
-                      } else (bHi<aHi) {
-                              aLi, aRi, bRi;
-                      }else if (bHi == aHi) {
-                          aLi, bRi;
-                      }
-                  } else {
-                      if (bHi > aHi) {
-                          aLi, bLi, bRi, aRi;
-                      } else if (bHi == aHi) {
-                          aLi, bRi
-                      } else {
-                          aLi, bRi
-                      }
-                  }
 
-              }
-              res.add(sub);
-          }
-          return res;
-      }*/
+    // follow up 59 螺旋矩阵2
+    public int[][] spiralOrder59(int N) {
+        int[][] matrix = new int[N][N];
+        int cur = 1;
+        int colBegin = 0, colEnd = matrix[0].length - 1, rowBegin = 0, rowEnd = matrix.length - 1;
+        while (rowBegin <= rowEnd && colBegin <= colEnd) {
+            // right
+            for (int j = colBegin; j <= colEnd; j++) {
+                matrix[rowBegin][j] = cur++;
+            }
+            rowBegin++;
+            // down
+            for (int j = rowBegin; j <= rowEnd; j++) {
+                matrix[j][colEnd] = cur++;
+            }
+            colEnd--;
+
+            // left check rowBegin<=rowEnd
+            if (rowBegin <= rowEnd) {
+                for (int j = colEnd; j >= colBegin; j--) {
+                    matrix[rowEnd][j] = cur++;
+                }
+            }
+            // break contract rowBegin > rowEnd
+            rowEnd--;
+            // up
+            if (colBegin <= colEnd) {
+                for (int j = rowEnd; j >= rowBegin; j--) {
+                    matrix[j][colBegin] = cur++;
+                }
+            }
+            // break contract colBegin > colEnd
+            colBegin++;
+        }
+        return matrix;
+    }
+
 
     // 227 搜寻名人
     public int findCelebrity(int n) {
