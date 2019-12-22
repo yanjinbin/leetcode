@@ -2868,7 +2868,7 @@ public class Solution {
         return ans * sign;
     }
 
-    // ③ 解法2 二进制表示， a = b *2的0次+ b*2的1次+。。。+b*2的n次。
+    // ③ 解法2 二进制表示， a = b *2的0次+ b*2的1次+。。。+b*2的n次。  O(lg(dividend))
     public int divide02(int dividend, int divisor) {
         if (dividend == 1 << 31 && divisor == -1) return (1 << 31) - 1;
         int a = Math.abs(dividend), b = Math.abs(divisor), ans = 0;
@@ -2890,21 +2890,21 @@ public class Solution {
     // 质数是指在大于1的自然数中，除了1和它本身以外不再有其他因数的自然数
     // 2是最小的质数,质数乘以任何数的积 就不是质数
     public int countPrimes(int n) {
-        // 非质素素组
-        boolean[] notPrime = new boolean[n];
+        // 非质数数组
+        boolean[] dp = new boolean[n];
         int count = 0;
         for (int i = 2; i < n; i++) {
-            if (!notPrime[i]) {
+            if (!dp[i]) {
                 count++;
                 for (int j = 2; j * i < n; j++) {
-                    notPrime[i * j] = true;
+                    dp[i * j] = true;
                 }
             }
         }
         return count;
     }
 
-    // ② 14 最长公共前缀
+    // ③ 14 最长公共前缀， 第一个作为公共前缀，不断减小if  others.indexOf（prefix） ！= 0
     public String longestCommonPrefix(String[] strs) {
         if (strs.length == 0) return "";
         String prefix = strs[0];
@@ -2918,8 +2918,9 @@ public class Solution {
     }
 
 
-    // ② 69 x 平方根 利用牛顿求根法来做[http://bit.ly/2ypO02m] 牛顿求根法视频讲解 https://youtu.be/VUpQwEVsyFk
+    // ③ 69 x 平方根 利用牛顿求根法来做[http://bit.ly/2ypO02m] 牛顿求根法视频讲解 https://youtu.be/VUpQwEVsyFk
     // f(x1)-f(x2) / x1-x2 = f'(x1) 令 f(x2)=0 即可求出
+    //  f(x1)-f(x2)  / x1-x2 = f'(x2) , 令 f(x1) =  0;
     public int mySqrt(int x) {
         if (x <= 1) return x;
         double last = 0;
@@ -2932,7 +2933,7 @@ public class Solution {
         return (int) res;
     }
 
-    //② 解法2 二分法求
+    // ③  解法2 二分法求 lg(x)
     public int mySqrt1(int x) {
         // 无法处理x= Integer.MAX_VALUE;
         long l = 1;
@@ -2973,7 +2974,7 @@ public class Solution {
     }
 
     // 错误哎
-    public int strStr_bad(String haystack, String needle) {
+    public int strStr_wrong(String haystack, String needle) {
         int i = 0;
         int j = 0;
         while (i < haystack.length() && j < needle.length()) {
@@ -2984,9 +2985,8 @@ public class Solution {
         return j == needle.length() ? i - j : -1;
     }
 
-
-    // ② 172. 阶乘后的零  tips:连续5的前缀后数列
-    public int trailingZeroes2(int n) {
+    // ② 172. 阶乘后的零  tips:连续5的前缀后数列 O(N/5)
+    public int trailingZeroes(int n) {
         int count = 0;
         while (n != 0) {
             count += n / 5; // 算出 5倍数的个数了
@@ -2995,10 +2995,10 @@ public class Solution {
         return count;
     }
 
-    // ② 26. 删除排序数组中的重复项
+    // ③ 26. 删除排序数组中的重复项
     public int removeDuplicates(int[] nums) {
-        int i = 0;
-        int j = 0;
+        int i = 0; // i作为非重复元素的坐标。
+        int j = 0;// j作为检查员
         while (j < nums.length)
             if (nums[i] == nums[j]) {
                 j++;
@@ -3009,6 +3009,7 @@ public class Solution {
         return i + 1;
     }
 
+    // 重复元素系列 217 219 220
     // ② 217. 存在重复元素
     public boolean containsDuplicate(int[] nums) {
         Set<Integer> set = new HashSet<>();
@@ -3164,7 +3165,6 @@ public class Solution {
         return num & ~(num - 1);
     }
 
-
     // ②  137. 只出现一次的数字 II
     // 解法1 重新定义运算规则
     public int singleNumberⅡ0(int[] nums) {
@@ -3206,7 +3206,7 @@ public class Solution {
         return A | B;
     }
 
-    // 解法2 有点玄学了 但是复杂度O(N²)
+    // 解法2 有点玄学了 但是复杂度O(N²) 还是真值表来得易懂
     public int singleNumberⅡ2(int[] nums) {
         int res = 0;
         for (int i = 0; i < 32; i++) {
@@ -3249,7 +3249,7 @@ public class Solution {
         return index;
     }
 
-    // ② 189. 旋转数组
+    // ③ 189. 旋转数组
     public void rotate(int[] nums, int k) {
         int[] tmp = Arrays.copyOf(nums, nums.length);
         for (int i = 0; i < tmp.length; i++) {
@@ -3273,7 +3273,7 @@ public class Solution {
         }
     }
 
-    // 来自 http://bit.ly/2KkELWH  ,并不推荐 说真的  太难看了
+    // 👎🏻 来自 http://bit.ly/2KkELWH  ,并不推荐 说真的 太难看了
     public void rotate2(int[] nums, int k) {
         if (nums == null || (k %= nums.length) == 0) return;
         int start = 0, idx = 0, pre = 0, cur = nums[0], n = nums.length;
@@ -3304,7 +3304,8 @@ public class Solution {
 
     }
 
-    // ✅ 买卖股票系列问题 参考 http://bit.ly/333JDIm
+    // ③ ✅ 买卖股票系列问题 121 122 123  188 参考 http://bit.ly/333JDIm
+    //  dp[N][k+1][2]
     // dp[i][k][0]=Math.max(dp[i-1][k][0],dp[i-1][k][1]+prices[i]);
 
     // dp[i][k][1]=Math.max(dp[i-1][k][1],dp[i-1][k-1][0]-prices[i]);
@@ -3475,32 +3476,6 @@ public class Solution {
         return dp[n - 1][0];
     }
 
-    // ② [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
-    // 8  字符串转换整数 (atoi)
-    public int myAtoi(String str) {
-        int sign = 1;
-        int i = 0;
-        int n = str.length();
-        int ret = 0;
-        if (str == null || str.isEmpty()) return 0;
-
-        while (i < n && str.charAt(i) == ' ') i++;
-        // 加上逻辑或的时候 并没有注意 整体IF 条件属性改变
-        if (i < n && (str.charAt(i) == '+' || str.charAt(i) == '-')) {
-            sign = str.charAt(i) == '+' ? 1 : -1;
-            i++;
-        }
-        while (i < n && str.charAt(i) >= '0' && str.charAt(i) <= '9') {
-            // 防止int越界问题  int   [  214748364 7 ]
-            if (ret > Integer.MAX_VALUE / 10 || (ret == Integer.MAX_VALUE / 10 && str.charAt(i) - '0' > 7)) {
-                return (sign == 1) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
-            }
-            ret = ret * 10 + str.charAt(i) - '0';
-            i++;
-        }
-        return sign * ret;
-    }
-
     //② 36 验证是否是有效的数独   // interview friendly  构建 col row group坐标系即可
     public boolean isValidSudoku(char[][] board) {
         Map<String, Boolean> map = new HashMap<>();
@@ -3528,10 +3503,11 @@ public class Solution {
         return true;
     }
 
-    // ② 50 pow(x,n) 注意这道题目 是能用基本算术运算的!!
+    // ③ 50 pow(x,n) 注意这道题目 是能用基本算术运算的!!
     public double myPow(double x, int n) {
         if (n == 0) return 1;
         double half = myPow(x, n / 2);
+        // 分奇偶
         if (n % 2 == 0) return half * half;
         if (n > 0) return half * half * x;
         // 负数情况下  -5  =  -2 -2 -1  -1 看做 /x即可!
@@ -3566,7 +3542,7 @@ public class Solution {
         return ret.charAt(0) == '0' ? "0" : ret;
     }
 
-    //② 328 奇偶链表
+    //③ 328 奇偶链表 题解： 奇偶都走2部，奇数尾.next = 偶数头
     public ListNode oddEvenList(ListNode head) {
         if (head == null || head.next == null) return head;
         ListNode oddTail = head;
@@ -3584,55 +3560,7 @@ public class Solution {
 
     // [tag:微软面经] https://www.1point3acres.com/bbs/thread-506842-1-1.html
     // 329. 矩阵中的最长递增路径
-    /*public int longestIncreasingPath(int[][] matrix) {
-        if (matrix == null || matrix.length == 0 || matrix[0].length == 0) return 0;
-        int res = 1, m = matrix.length, n = matrix[0].length;
-        int[][] dp = new int[m][n];
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                res = Math.max(res, dfs(matrix, dp, i, j));
-            }
-        }
-        return res;
-    }
-
-    public int dfs(int[][] matrix, int[][] dp, int i, int j) {
-        if (dp[i][j] != 0) return dp[i][j];
-        int mx = 1, m = matrix.length, n = matrix[0].length;
-        for (int[] a : dirs) {
-            int x = i + a[0], y = j + a[1];
-            if (x < 0 || x >= m)
-        }
-    }*/
-   /* public int longestIncreasingPath(int[][] matrix) {
-        if (matrix == null || matrix[0].length == 0) {
-            return 0;
-        }
-        int res = 1, m = matrix.length;
-        n = matrxi[0].length;
-        int[][] dp = new int[m][n];
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                res = Math.max(res, dfsSearchPath(matrix, dp, i, j));
-            }
-        }
-        return res;
-    }
-
-    public int dfsSearchPath(int[][] matrix, int[][] dp, int i, int j) {
-        if (dp[i][j]!=0) return dp[i][j];
-        int mx = 1, m = matrix.size(), n = matrix[0].size();
-        for (auto a : dirs) {
-            int x = i + a[0], y = j + a[1];
-            if (x < 0 || x >= m || y < 0 | a | y >= n || matrix[x][y] <= matrix[i][j]) continue;
-            int len = 1 + dfs(matrix, dp, x, y);
-            mx = max(mx, len);
-        }
-        dp[i][j] = mx;
-        return mx;
-    }
-*/
-
+    //
     public static final int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 
     // 解法 1
@@ -3652,16 +3580,16 @@ public class Solution {
     }
 
     // 单调最长路径
-    public int dfsSearchPath(int[][] matrix, int[][] dp, int i, int j, int m, int n) {
-        if (dp[i][j] != 0) return dp[i][j];
+    public int dfsSearchPath(int[][] matrix, int[][] memo, int i, int j, int m, int n) {
+        if (memo[i][j] != 0) return memo[i][j];
         int len = 1;
         for (int[] dir : dirs) {
             int x = i + dir[0], y = j + dir[1];
             if (x >= 0 && x < m && y >= 0 && y < n && matrix[i][j] < matrix[x][y]) {
-                len = Math.max(len, 1 + dfsSearchPath(matrix, dp, x, y, m, n));
+                len = Math.max(len, 1 + dfsSearchPath(matrix, memo, x, y, m, n));
             }
         }
-        dp[i][j] = len;
+        memo[i][j] = len;
         return len;
     }
 
@@ -3681,14 +3609,17 @@ public class Solution {
         return dp[i][j] = len;
     }
 
-    // 解法2 https://youtu.be/yKr4iyQnBpY  bottom up方法
+    // ③ 解法2 https://youtu.be/yKr4iyQnBpY  bottom up方法
     public int longestIncreasingPath1(int[][] matrix) {
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0)
             return 0;
         int m = matrix.length;
         int n = matrix[0].length;
         int[][] dp = new int[m][n];
-        PriorityQueue<int[]> minHeap = new PriorityQueue<>((a, b) -> (matrix[a[0]][a[1]] - matrix[b[0]][b[1]]));
+        PriorityQueue<int[]> minHeap = new PriorityQueue<>(
+                //
+                (a, b) -> (matrix[a[0]][a[1]] - matrix[b[0]][b[1]])
+        );
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
                 minHeap.offer(new int[]{i, j});
@@ -3700,23 +3631,21 @@ public class Solution {
             int[] cur = minHeap.poll();
             int i = cur[0];
             int j = cur[1];
-            //  System.out.println("=====:\t" + matrix[i][j]);
             dp[i][j] = 1;
-            if (i - 1 >= 0 && matrix[i - 1][j] < matrix[i][j])
+            if (i - 1 >= 0 && matrix[i - 1][j] > matrix[i][j])
                 dp[i][j] = Math.max(dp[i][j], dp[i - 1][j] + 1);
-            if (i + 1 < m && matrix[i + 1][j] < matrix[i][j])
+            if (i + 1 < m && matrix[i + 1][j] > matrix[i][j])
                 dp[i][j] = Math.max(dp[i][j], dp[i + 1][j] + 1);
-            if (j - 1 >= 0 && matrix[i][j - 1] < matrix[i][j])
+            if (j - 1 >= 0 && matrix[i][j - 1] > matrix[i][j])
                 dp[i][j] = Math.max(dp[i][j], dp[i][j - 1] + 1);
-            if (j + 1 < n && matrix[i][j + 1] < matrix[i][j])
+            if (j + 1 < n && matrix[i][j + 1] > matrix[i][j])
                 dp[i][j] = Math.max(dp[i][j], dp[i][j + 1] + 1);
             longest = Math.max(dp[i][j], longest);
         }
         return longest;
     }
 
-    // 解法3 topological sort 构建拓扑排序, 问题转换为 有向图的中的拓扑排序下的最长路径
-    // todo  还是不会阿
+    //  没看懂！！ 解法3 topological sort 构建拓扑排序, 问题转换为 有向图的中的拓扑排序下的最长路径
     public int longestIncreasingPath2(int[][] matrix) {
         int[] shift = {0, 1, 0, -1, 0};
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
@@ -3761,10 +3690,10 @@ public class Solution {
         return len;
     }
 
-    // 计算器系列
+    // 计算器系列 224 227  772    // 770 真心没意思
     //② 224. 基本计算器  没有优先级了 我真滴服了 审题要仔细哦
     public int calculate224(String str) {
-        int res = 0, sign = 1, num = 0, n = str.length();
+        int ans = 0, sign = 1, num = 0, n = str.length();
         Stack<Integer> s = new Stack();
         for (int i = 0; i < n; i++) {
             char c = str.charAt(i);
@@ -3772,68 +3701,117 @@ public class Solution {
                 num = num * 10 + c - '0';
             }
             if (c == '+' || c == '-') {
-                res += sign * num;
+                ans += sign * num;
                 num = 0;
                 sign = (c == '+') ? 1 : -1;
             }
             if (c == '(') {
-                s.push(res); // 左括号外的res 压入
+                s.push(ans); // 左括号外的res 压入
                 s.push(sign); // 左括号外的+还是-sign 压入
-                res = 0;
+                ans = 0;
                 sign = 1;
             }
             if (c == ')') {
-                res += sign * num;
+                ans += sign * num;
                 num = 0;
-                res *= s.pop();// sign
-                res += s.pop(); // 左括号外的res
+                ans *= s.pop();// sign
+                ans += s.pop(); // 左括号外的res
             }
         }
-        res += sign * num;
-        return res;
+        ans += sign * num; // edge case ---> "1 + 1" ,头补上 0 + rest
+        return ans;
     }
 
     // ② 227. 基本计算器 II
-    public int calculate227(String s) {
-        // 用栈的思想来做
-        Stack<Integer> stack = new Stack<>();
+    public int calculate227(String str) {
+        Stack<Integer> s = new Stack<>();
+        int ans = 0, sign = 1, num = 0, N = str.length();
         char op = '+';
-        int n = s.length();
-        int res = 0;
-        int num = 0;
         Set<Character> ops = new HashSet<>();
-        ops.add('-');
         ops.add('+');
-        ops.add('*');
+        ops.add('-');
         ops.add('/');
-        for (int i = 0; i < n; i++) {
-            if (s.charAt(i) >= '0' && s.charAt(i) <= '9') {
-                num = num * 10 + s.charAt(i) - '0';
+        ops.add('*');
+        for (int i = 0; i < N; i++) {
+            char c = str.charAt(i);
+            if ('0' <= c && c <= '9') {
+                num = num * 10 + c - '0';
+            }
+            if (c == '(') {
+                int j = i, cnt = 0;
+                while (i < N) {
+                    if (str.charAt(i) == '(') cnt++;
+                    if (str.charAt(i) == ')') cnt--;
+                    if (cnt == 0) {
+                        num = calculate772(str.substring(j + 1, i));
+                        break;
+                    }
+                    i++;
+                }
             }
 
-            if (ops.contains(s.charAt(i)) || i == n - 1) {
-                // 并没有让op成为前置数字的运算符?? 而是后置运算符了
+            if (ops.contains(c) || i == N - 1) {
                 if (op == '+') {
-                    stack.push(num);
+                    s.push(num);
                 }
                 if (op == '-') {
-                    stack.push(-num);
+                    s.push(-num);
                 }
-                if (op == '*' || op == '/') {
-                    int tmp = (op == '*') ? stack.peek() * num : stack.peek() / num;
-                    stack.pop();
-                    stack.push(tmp);
+                if (op == '*') {
+                    s.push(s.pop() * num);
                 }
-                // update
-                op = s.charAt(i);
+                if (op == '/') {
+                    s.push(s.pop() / num);
+                }
+                // 更新前置运算符
+                op = c;
                 num = 0;
             }
         }
-        while (!stack.isEmpty()) {
-            res += stack.pop();
+        while (!s.isEmpty()) {
+            ans = ans + s.pop();
         }
-        return res;
+        return ans;
     }
+
+    // 772 基本运算器Ⅲ
+    public int calculate772(String str) {
+        Stack<Integer> s = new Stack<>();
+        int ans = 0, sign = 1, num = 0, N = str.length();
+        char op = '+';
+        Set<Character> ops = new HashSet<>();
+        ops.add('+');
+        ops.add('-');
+        ops.add('/');
+        ops.add('*');
+        for (int i = 0; i < N; i++) {
+            char c = str.charAt(i);
+            if ('0' <= c && c <= '9') {
+                num = num * 10 + c - '0';
+            }
+            if (ops.contains(c) || i == N - 1) {
+                if (op == '+') {
+                    s.push(num);
+                }
+                if (op == '-') {
+                    s.push(-num);
+                }
+                if (op == '*') {
+                    s.push(s.pop() * num);
+                }
+                if (op == '/') {
+                    s.push(s.pop() / num);
+                }
+                op = c;
+                num = 0;
+            }
+        }
+        while (!s.isEmpty()) {
+            ans = ans + s.pop();
+        }
+        return ans;
+    }
+
 
     public int cnt;
 
