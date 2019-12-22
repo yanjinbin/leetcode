@@ -2660,7 +2660,7 @@ public class Solution {
                 s.push(i);
             } else {
                 s.pop();
-                if (s.isEmpty()){ // 特殊case ")()"
+                if (s.isEmpty()) { // 特殊case ")()"
                     s.push(i);
                 } else ans = Math.max(ans, i - s.peek());
             }
@@ -2668,7 +2668,7 @@ public class Solution {
         return ans;
     }
 
-    // 7. 整数反转  ② 注意下边界条件即可
+    // 7. 整数反转  ③ 注意下边界条件即可
     public int reverse(int x) {
         int res = 0;
         while (x != 0) {
@@ -2679,7 +2679,7 @@ public class Solution {
         return res;
     }
 
-    // ② 88. 合并两个有序数组
+    //③ 88. 合并两个有序数组
     public void merge(int[] nums1, int m, int[] nums2, int n) {
         int i1 = m - 1;
         int i2 = n - 1;
@@ -2695,14 +2695,7 @@ public class Solution {
     }
 
 
-    public void merge1(int[] nums1, int m, int[] nums2, int n) {
-        int i1 = m - 1;
-        int i2 = n - 1;
-        int k = m + n - 1;
-        while (i2 >= 0) nums1[k--] = (i1 >= 0 && nums1[i1] > nums2[i2]) ? nums1[i1--] : nums2[i2--];
-    }
-
-    // ② 237. 删除链表中的节点
+    // ③ 237. 删除链表中的节点
     public void deleteNode(ListNode node) {
         node.val = node.next.val;
         ListNode tmp = node.next;
@@ -2710,10 +2703,20 @@ public class Solution {
         tmp.next = null;
     }
 
-    // ② 326. 3的幂
+    // ③ 326. 3的幂
     public boolean isPowerOfThree0(int n) {
         // 1162261467 is 3^19,  3^20 is bigger than int
-        return (n > 0 && 1162261467 % n == 0);
+        // int x = 1162261467;
+        int x = maxPowerUnderN(Integer.MAX_VALUE, 3);
+        return (n > 0 && x % n == 0);
+    }
+
+    public int maxPowerUnderN(int n, int expBase) {
+        int ans = 1;
+        while (ans < n / expBase) {
+            ans = ans * expBase;
+        }
+        return ans;
     }
 
     public boolean isPowerOfThree1(int n) {
@@ -2743,6 +2746,7 @@ public class Solution {
         }
         return res;
     }
+
 
     //② 13. 罗马数字转整数
     public int romanToInt(String s) {
@@ -2787,14 +2791,14 @@ public class Solution {
         return Arrays.asList(ret);
     }
 
-    //② 202 快乐数
+    //② 202 快乐数 解题关键 set 记录出现过的数字
     public boolean isHappy(int n) {
         Set<Integer> set = new HashSet<>();
         int ret = n;
         while (true) {
             ret = square(ret);
             if (ret == 1) return true;
-            if (!set.contains(ret)) set.add(ret);
+            if (!set.contains(ret)) set.add(ret);// 不要出现循环，出现循环了就不是快乐数了
             else return false;
         }
     }
@@ -2810,7 +2814,7 @@ public class Solution {
         return res;
     }
 
-    // 快慢指针方法 if存在环
+    //解法2 快慢指针方法 if存在环
     public boolean isHappy1(int n) {
         int slow = n, fast = n;
         while (true) {
@@ -2849,74 +2853,38 @@ public class Solution {
 
     }
 
-    // 29. 两数相除 这个放弃 太难了
-    // 这个方法是最好的  但是也是听难理解的 放弃
-    public int divide2(int dividend, int divisor) {
-        if (dividend == 1 << 31 && divisor == -1) return (1 << 31) - 1;
-        int a = Math.abs(dividend), b = Math.abs(divisor), res = 0, x = 0;
-        while (a - b >= 0) {
-            for (x = 0; a - (b << x << 1) >= 0; x++) ;
-            res += 1 << x;
-            a -= b << x;
-        }
-        return (dividend > 0) == (divisor > 0) ? res : -res;
-    }
-
-    public int divide3(int dividend, int divisor) {
-        if (dividend == 1 << 31 && divisor == -1) return (1 << 31) - 1;
-        int a = Math.abs(dividend), b = Math.abs(divisor), res = 0, x = 0;
-        while (a - b >= 0) {
-            for (x = 0; a - (b << x << 1) >= 0; x++) ;
-            res += 1 << x;
-            // 错误 运算符优先级 - 比 << 先执行
-            a = a - b << x;
-        }
-        return (dividend > 0) == (divisor > 0) ? res : -res;
-    }
-
-
-    public int divide0(int dividend, int divisor) {
-        // 这个除法挺lowB的
-        if (dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE;
-        int sign = ((dividend < 0) ^ (divisor < 0)) ? -1 : 1;
+    // ③ 29. 两数相除 这个放弃 太难了
+    // ③ dividend 被除数， divisor 除数
+    public int divide01(int dividend, int divisor) {
+        if (dividend == Integer.MIN_VALUE && divisor == -1) return Integer.MAX_VALUE; //corner case,防止 ans 溢出
+        int sign = (dividend < 0) ^ (divisor < 0) ? -1 : 1;
         long x = Math.abs(((long) dividend));
         long y = Math.abs(((long) divisor));
-        int result = 0;
+        int ans = 0;//result越界问题
         while (x >= y) {
             x -= y;
-            result++;
+            ans++;
         }
-        return result * sign;
+        return ans * sign;
     }
 
-    public int divide1(int dividend, int divisor) {// 这个方法不行 会存在 int 越界问题
-        if (dividend == Integer.MIN_VALUE && divisor == -1)
-            return Integer.MAX_VALUE;
-
-        boolean sign = (dividend < 0) ^ (divisor < 0);
-        dividend = Math.abs(dividend);
-        divisor = Math.abs(divisor);
-        int count = 0;
-        while (dividend >= divisor) {
-            // 会存在int越界问题 divisor ---> 0
-            count++;
-            divisor <<= 1;
-            if (divisor == 0) return -1;
-        }
-        int result = 0;
-        while (count > 0) {
-
-            count--;
-            divisor >>= 1;
-            int temp = dividend;
-            if (divisor <= dividend) {
-                result = result + 1 << count;
-                dividend = dividend - divisor;
+    // ③ 解法2 二进制表示， a = b *2的0次+ b*2的1次+。。。+b*2的n次。
+    public int divide02(int dividend, int divisor) {
+        if (dividend == 1 << 31 && divisor == -1) return (1 << 31) - 1;
+        int a = Math.abs(dividend), b = Math.abs(divisor), ans = 0;
+        while (a - b >= 0) {
+            int x = 0;
+            // <<1 是为了 直接获取x的值，而不用取 x-1
+            while (a - ((b << x) << 1) >= 0) {
+                x++;
             }
+            ans = ans + (1 << x);
+            a = a - (b << x);
         }
-        if (sign) result = -result;
-        return result;
+        int sign = (dividend > 0) ^ (divisor > 0) ? -1 : 1;
+        return ans * sign;
     }
+
 
     // ② 204 质数计数
     // 质数是指在大于1的自然数中，除了1和它本身以外不再有其他因数的自然数
@@ -5605,6 +5573,8 @@ public class Solution {
     public String rearrangeString(String s, int k) {
         return "";
     }
+
+    // 354 俄罗斯套娃信封问题
 }
 
 
