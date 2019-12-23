@@ -4141,28 +4141,27 @@ public class Solution {
         if (j < (board[i].length - 2)) dfsSolve(board, i, j + 1);
     }
 
-    // ② 131 分割回文串
+    // ③  131 分割回文串
     // 验证回文串. 收集回文串
     public List<List<String>> partition(String s) {
-        List<List<String>> res = new ArrayList<>();
-        List<String> sub = new ArrayList<>();
-        hasCycle(s, 0, sub, res);
-        return res;
+        List<List<String>> ans = new ArrayList<>();
+        LinkedList<String> sub = new LinkedList<>();
+        hasCycle(s, 0, sub, ans);
+        return ans;
     }
 
-    public void hasCycle(String s, int pos, List<String> sub, List<List<String>> res) {
+    public void hasCycle(String s, int pos, LinkedList<String> sub, List<List<String>> ans) {
         if (pos == s.length()) {
-            res.add(new ArrayList<>(sub));
+            ans.add(new ArrayList<>(sub));
             sub.clear();
             return;
         }
         for (int i = pos; i < s.length(); i++) {
             if (isPal(s, pos, i)) {
-                sub.add(s.substring(pos, i + 1));
-                hasCycle(s, i + 1, sub, res);
-                // sub.remove(sub.size() - 1); // TODO  移除之后,
+                sub.addLast(s.substring(pos, i + 1));
+                hasCycle(s, i + 1, sub, ans);
+                sub.pollLast();
             }
-
         }
     }
 
@@ -4172,6 +4171,7 @@ public class Solution {
         }
         return true;
     }
+    // 132 分割回文串Ⅱ
 
     //212 单词搜索Ⅱ 构造单词表, 并通过前缀树 及时停止无效DFS.
     public Set<String> result212 = new HashSet();
