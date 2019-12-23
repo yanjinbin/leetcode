@@ -19,6 +19,14 @@ import java.util.stream.Collectors;
 
 public class Solution {
 
+    public void show2DArray(int[][] board) {
+        System.out.println("==============");
+        for (int i = 0; i < board.length; i++) {
+            System.out.println(Arrays.toString(board[i]));
+        }
+        System.out.println("==============");
+    }
+
     public boolean isAscendSort(int[] arr) {
         if (arr == null || arr.length == 1) return true;
         int i = 0;
@@ -4171,7 +4179,7 @@ public class Solution {
         }
         return true;
     }
-    // 132 分割回文串Ⅱ
+    // 132 分割回文串Ⅱ dp
 
     //212 单词搜索Ⅱ 构造单词表, 并通过前缀树 及时停止无效DFS.
     public Set<String> result212 = new HashSet();
@@ -4212,9 +4220,10 @@ public class Solution {
     }
 
 
-    // ② 134 加油站⛽
+    // ③  134 加油站⛽
     public int canCompleteCircuit(int[] gas, int[] cost) {
-        // 遍历的时候 if sum <0 说明这段区间内 均不行, 那么再下个起点继续  下个起点 if sum < 0 那么就下个起点再继续下去哦
+        // 遍历的时候 if sum <0 说明这段区间内 均不行,
+        // 那么再下个起点继续  下个起点 if sum < 0 那么就下个起点再继续下去哦
         int total = 0, sum = 0, start = 0;
         for (int i = 0; i < gas.length; i++) {
             int tmp = gas[i] - cost[i];
@@ -4336,12 +4345,12 @@ public class Solution {
         // fraction part
         res.append(".");
         Map<Long, Integer> map = new HashMap();
-        map.put(num, res.length());
+        map.put(num, res.length()); // 建立数和index的映射关系。
         while (num != 0) {
             num = num * 10;
             res.append(num / den);
             num = num % den;
-            if (map.containsKey(num)) {
+            if (map.containsKey(num)) {// 出现循环了
                 int index = map.get(num);
                 res.insert(index, "(");
                 res.append(")");
@@ -4353,7 +4362,8 @@ public class Solution {
         return res.toString();
     }
 
-    //② 334 递增的三元子序列 注意关键字 是 3哦  想想为什么呢
+    //③ 334 递增的三元子序列 注意关键字 是 3哦  想想为什么呢
+    // 解法1
     public boolean increasingTriplet(int[] nums) {
         // start with two largest values, as soon as we find a number bigger than both, while both have been updated, return true.
         int small = Integer.MAX_VALUE, big = Integer.MAX_VALUE;
@@ -4365,7 +4375,7 @@ public class Solution {
         return false;
     }
 
-    // dp 解决
+    // 解法2 dp
     public boolean increasingTriplet01(int[] nums) {
         int N = nums.length;
         int[] dp = new int[N];
@@ -4494,31 +4504,9 @@ public class Solution {
         return cnt;
     }
 
-    public void show2DArray(int[][] board) {
-        System.out.println("==============");
-        for (int i = 0; i < board.length; i++) {
-            System.out.println(Arrays.toString(board[i]));
-        }
-        System.out.println("==============");
-    }
-
     // 315 计算右侧小于当前元素的个数  O(N²)  不符合 [2,0,1]
-    /*public List<Integer> countSmaller0(int[] nums) {
-        int n = nums.length;
-        int[] dp = new int[n];
-        for (int i = n - 1; i >= 0; i--) {
-            for (int j = n - 1; j > i; j--) {
-                if (nums[i] > nums[j]) {
-                    // 错误的 状态转移方程不成立
-                    dp[i] = Math.max(dp[i], dp[j] + 1);
-                }
-            }
-        }
-        return Arrays.stream(dp).boxed().collect(Collectors.toList());
-    }*/
-
     // 解法1 二分法
-    public List<Integer> countSmaller(int[] nums) {
+    public List<Integer> countSmaller01(int[] nums) {
         int n = nums.length;
         Integer[] ans = new Integer[n];
         List<Integer> sorted = new ArrayList();
@@ -4534,26 +4522,20 @@ public class Solution {
     // http://bit.ly/32512ix
     // ②  二分查找小于target的个数 即是 index  ✅interview friendly
     public int findIndex(List<Integer> sorted, int target) {
-        int i = 0;
-        int j = sorted.size();
-        // this is the right way to binary search ,idea from c++ lower_bound()  method
-        // range from i (inclusive) to j (exclusive)  ----->   [i,j)
-        while (i < j) {
-            int mid = i + (j - i) / 2;
-            // sorted.get(mid) <= target is wrong , when duplicate nums exist
+        int lo = 0, hi = sorted.size();
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
             if (sorted.get(mid) < target) {
-                // i is assigned to mid+1 ,prevent  infinite cycle and out of range  error
-                i = mid + 1;
+                lo = mid + 1;
             } else {
-                j = mid;
+                hi = mid;
             }
         }
-        // no matter return i or j  ,  which is same value
-        return i;
+        return lo;
     }
 
     // 解法2  BST 解法  只能作为参考 不能拿来当做面试用 http://bit.ly/326UjoA
-    public List<Integer> countSmaller1(int[] nums) {
+    public List<Integer> countSmaller02(int[] nums) {
         int n = nums.length;
         int[] ans = new int[n];
         TreeNode root = null;
@@ -4577,8 +4559,8 @@ public class Solution {
     }
 
     // ③  324 摆动排序Ⅱ
-    // 已经排好序的数组 前半部分和后半部分  对折之后  交替插入
-    public void wiggleSort(int[] nums) {
+    // 👍🏻 interview friendly 已经排好序的数组 前半部分和后半部分  对折之后  交替插入
+    public void wiggleSort01(int[] nums) {
         int len = nums.length;
         int[] bak = Arrays.copyOf(nums, len);
         Arrays.sort(bak);
@@ -4600,7 +4582,7 @@ public class Solution {
     }
 
     //② 解法1 快排最佳实践 http://bit.ly/353KVnO  http://bit.ly/354yckZ  三项快速排序 需要构造newIdx, 需要一次中值切分
-    public void wiggleSort01(int[] nums) {
+    public void wiggleSort02(int[] nums) {
         int median = findKthLargest01(nums, (nums.length + 1) / 2);
         int n = nums.length;
         int lt = 0, i = 0, gt = n - 1;
@@ -4622,13 +4604,12 @@ public class Solution {
     }
 
     private int newIndex(int index, int n) {
-
         int var = (1 + 2 * index) % (n | 1);
         return var;
     }
 
-    //  解法2 错误的 无法处理带有重复元素的
-    public void wiggleSort2(int[] nums) {
+   /* //  解法3 错误的 无法处理带有重复元素的
+    public void wiggleSort03(int[] nums) {
         int n = nums.length;
         if (n <= 1) return;
         Arrays.sort(nums);
@@ -4637,7 +4618,7 @@ public class Solution {
             if (i < nums.length - 1) swap(nums, i, i + 1);
             i = i + 2;
         }
-    }
+    }*/
 
     // ③ 454  四数相加Ⅱ
     public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
@@ -4663,28 +4644,11 @@ public class Solution {
     // for the nth number, you just need to count characters of the (n-1)th number,
     // for the (n-1)th number, you just need to count characters of  the (n-2)th number,
     // 解法1 递归
-    public String countAndSay(int n) {
+    public String countAndSay01(int n) {
         if (n == 1) return "1";
         StringBuilder res = new StringBuilder();
         // recursively call for (n-1) th number, "0" is only for the edge case at the end of the loop with `s.charAt(i+1)`
-        String s = countAndSay(n - 1) + "0";
-        for (int i = 0, c = 1; i < s.length() - 1; i++, c++) {
-            // if next digit is different, then append the count so far `c` and the digit itself, then set count `c` to zero
-            if (s.charAt(i + 1) != s.charAt(i)) {
-                res.append(c).append(s.charAt(i));
-                c = 0;
-            }
-        }
-
-        return res.toString();
-    }
-
-    // 解法1 递归
-    public String countAndSay1(int n) {
-        if (n == 1) return "1";
-        StringBuilder res = new StringBuilder();
-        String s = countAndSay1(n - 1) + "0";// edge case   len-1  len-2
-
+        String s = countAndSay01(n - 1) + "0";// edge case   len-1  len-2
         for (int i = 0, c = 1; i < s.length() - 1; i++) {
             if (s.charAt(i) != s.charAt(i + 1)) {
                 res.append(c).append(s.charAt(i));
@@ -4697,7 +4661,7 @@ public class Solution {
     }
 
     //解法2  迭代
-    public String countAndSay2(int n) {
+    public String countAndSay02(int n) {
         String s = "1";
         for (int i = 1; i < n; i++) {
             s = cntMap(s);
@@ -4723,12 +4687,7 @@ public class Solution {
     //②  378 有序矩阵中 第K小的元素
     public int kthSmallest(int[][] matrix, int k) {
         // 最大堆 max heap
-        PriorityQueue<Integer> pq = new PriorityQueue(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return o2.compareTo(o1);
-            }
-        });
+        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o2 - o1);
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {
                 pq.add(matrix[i][j]);
@@ -4765,9 +4724,7 @@ public class Solution {
 
     // ② 230 二叉搜索树中第k小 通用方法
     public int kthSmallest(TreeNode root, int k) {
-        PriorityQueue<Integer> pq = new PriorityQueue<Integer>((o1, o2) -> {
-            return o2.compareTo(o1);
-        });
+        PriorityQueue<Integer> pq = new PriorityQueue<Integer>((o1, o2) -> o2 - o1);
         traversal(root, pq, k);
         return pq.peek();
     }
@@ -4782,11 +4739,11 @@ public class Solution {
 
     //② 解法2  中序遍历  也是B+数range查询的基本原理了
     public int count230;
-    public int res230 = 0;
+    public int ans230 = 0;
 
     public int kthSmallest1(TreeNode root, int k) {
         inorder(root, k);
-        return res230;
+        return ans230;
     }
 
     public void inorder(TreeNode root, int k) {
@@ -4796,7 +4753,7 @@ public class Solution {
         inorder(root.left, k);
         count230 = count230 + 1;
         if (count230 == k) {
-            res230 = root.val;
+            ans230 = root.val;
             return;
         }
         inorder(root.right, k);
@@ -4837,7 +4794,7 @@ public class Solution {
         return lengthOfLongestSubstringKDistinct(s, 2);
     }
 
-    // 解法3 不需要额外空间的做法 参考解法4 http://bit.ly/2ZMzCws 类似于leetcode 904
+    // 解法3 不需要额外空间的做法 参考解法4 http://bit.ly/2ZMzCws 类似于LC 904
     public int lengthOfLongestSubstringTwoDistinct1(String s) {
         int res = 0, cur = 0, cntLast = 0;
         char first = 0, second = 0;
@@ -4858,28 +4815,28 @@ public class Solution {
     }
 
     // [tag: 微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
-    // ② 340 至多包含k个不同字符的最长子串
+    // ② 340 至多包含k个不同字符的最长子串  滑动窗口双指针法
     public int lengthOfLongestSubstringKDistinct(String s, int k) {
-        Map<Character, Integer> map = new HashMap();
-        int left = 0;
-        int res = 0;
+        if (s == null || s.length() == 0) return 0;
+        Map<Character, Integer> counts = new HashMap();
+        int l = 0, ans = Integer.MIN_VALUE;
         for (int i = 0; i < s.length(); i++) {
             char key = s.charAt(i);
-            map.put(key, map.getOrDefault(key, 0) + 1);
-            while (map.size() > k) {
-                char leftKey = s.charAt(left);
-                map.put(leftKey, map.get(leftKey) - 1);
-                if (map.get(leftKey) == 0) {
-                    map.remove(leftKey);
+            counts.put(key, counts.getOrDefault(key, 0) + 1);
+            while (counts.size() > k) {
+                char leftKey = s.charAt(l);
+                counts.put(leftKey, counts.get(leftKey) - 1);
+                if (counts.get(leftKey) == 0) {
+                    counts.remove(leftKey);
                 }
-                left++;
+                l++;
             }
-            res = Math.max(res, i - left + 1);
+            ans = Math.max(ans, i - l + 1);
         }
-        return res;
+        return ans;
     }
 
-    // 解法2
+    /*// 解法2
     public int lengthOfLongestSubstringKDistinct1(String s, int k) {
         Map<Character, Integer> map = new HashMap<>();
         int left = 0, res = 0;
@@ -4893,7 +4850,7 @@ public class Solution {
             res = Math.max(res, i - left + 1);
         }
         return res;
-    }
+    }*/
 
     // ② 395 至少有k个重复的字符的最长子串
     public int longestSubstring(String s, int k) {
