@@ -4928,7 +4928,8 @@ public class Solution {
         return p2 - p1 + 1;
     }
 
-    // ② 440 字典序第K小的数字 http://bit.ly/2nKscwE https://youtu.be/yMnR63e3KLo
+    // ③ 440 字典序第K小的数字 http://bit.ly/2nKscwE https://youtu.be/yMnR63e3KLo
+    // image成10叉树， 招到相连向量
     public int findKthNumber(int n, int k) {
         int cur = 1;
         k = k - 1;
@@ -4948,22 +4949,11 @@ public class Solution {
     public int findGap(int n, long cur, long neighbour) {  // [cur,neighbour)或者说(cur,Neighbour] 之间的距离
         int gap = 0;
         while (cur <= n) {
-            gap += Math.min(n + 1, neighbour) - cur;
+            gap += Math.min(n, neighbour) - cur;
             cur = cur * 10;
             neighbour = neighbour * 10;
         }
-        return gap;
-    }
-
-    //use long in case of overflow
-    public int calSteps(int n, long n1, long n2) { //计算curr开头和curr+1开头之间的字符串数量
-        int steps = 0;
-        while (n1 <= n) {
-            steps += Math.min(n + 1, n2) - n1;  //每次加上当前的字符串数量
-            n1 *= 10;       //每次均扩大10倍
-            n2 *= 10;
-        }
-        return steps;
+        return gap + 1;
     }
 
     // 类似于46的全排列问题
@@ -5054,30 +5044,30 @@ public class Solution {
     }
 
     // 解法2
-    public List<List<Integer>> zigzagLevelOrder1(TreeNode root) {
-        List<List<Integer>> ret = new ArrayList();
-        dfsZigzag(root, 0, ret);
-        return ret;
+    public List<LinkedList<Integer>> zigzagLevelOrder1(TreeNode root) {
+        List<LinkedList<Integer>> ans = new ArrayList();
+        dfsZigzag(root, 0, ans);
+        return ans;
     }
 
-    public void dfsZigzag(TreeNode root, int level, List<List<Integer>> ret) {
+    public void dfsZigzag(TreeNode root, int level, List<LinkedList<Integer>> ret) {
         if (root == null) return;
         if (ret.size() <= level) { // 这里比较trick 什么时候new 一个List
-            List<Integer> newLevel = new LinkedList<>();
+            LinkedList<Integer> newLevel = new LinkedList<>();
             ret.add(newLevel);
         }
-        List<Integer> sub = ret.get(level);
+        LinkedList<Integer> sub = ret.get(level);
         if ((level & 1) == 0) {
-            sub.add(root.val);
+            sub.addLast(root.val);
         } else {
-            sub.add(0, root.val);
+            sub.addFirst(root.val);
         }
         dfsZigzag(root.left, level + 1, ret);
         dfsZigzag(root.right, level + 1, ret);
 
     }
 
-    // ② 594 最长和谐子序列
+    // 三 594 最长和谐子序列
     public int findLHS(int[] nums) {
         Map<Integer, Integer> map = new HashMap();
         for (int i : nums) {
@@ -5092,29 +5082,29 @@ public class Solution {
         return ans;
     }
 
-    // ② 1027. 最长等差数列
+    // ③ 1027. 最长等差数列
     //  dp[i][step]=dp[j][step]+1;  j < i
     public int longestArithSeqLength(int[] A) {
         int res = 2, n = A.length;
         Map<Integer, Integer>[] dp = new HashMap[n];
-        for (int j = 0; j < A.length; j++) {
-            dp[j] = new HashMap<>();
-            for (int i = 0; i < j; i++) {
-                int d = A[j] - A[i];
-                dp[j].put(d, dp[i].getOrDefault(d, 1) + 1);
-                res = Math.max(res, dp[j].get(d));
+        for (int i = 0; i < A.length; i++) {
+            dp[i] = new HashMap<>();
+            for (int j = 0; j < i; j++) {
+                int d = A[i] - A[j];
+                dp[i].put(d, dp[j].getOrDefault(d, 1) + 1);
+                res = Math.max(res, dp[i].get(d));
             }
         }
         return res;
     }
 
-    // 最大公约数
+    // ③ 最大公约数
     // gcd(104,40) = 8  辗转相除法
     public int gcd(int a, int b) {
         return b == 0 ? a : gcd(b, a % b);
     }
 
-    // 最小公倍数 * 最大公约数 = a*b
+    // ③ 最小公倍数 * 最大公约数 = a*b
     public int lcm(int a, int b) {
         return (b) / Math.abs(gcd(a, b)) * a;
     }
@@ -5183,13 +5173,13 @@ public class Solution {
     int VISITED = -1;
     int VISITING = -2;
 
-    // 207 课程表  构建通topology sort
-    public boolean canFinish01(int numCourses, int[][] prerequisites) {
+    // 207 课程表  构建通topology sort  模板题。
+    public boolean canFinish01(int numCourses, int[][] prerequ) {
         Map<Integer, List<Integer>> map = new HashMap<>();
-        for (int i = 0; i < prerequisites.length; i++) {
-            int key = prerequisites[i][0];
+        for (int i = 0; i < prerequ.length; i++) {
+            int key = prerequ[i][0];
             List<Integer> arr = map.getOrDefault(key, new ArrayList<>());
-            arr.add(prerequisites[i][1]);
+            arr.add(prerequ[i][1]);
             map.put(key, arr);
         }
         int[] visit = new int[numCourses];
@@ -5212,40 +5202,9 @@ public class Solution {
         return false;
     }
 
-    // 207 BFS topology sort 参考链接：http://bit.ly/33SdXpG
-    // 210 也可以用这道题目来做呢
-    public boolean canFinish02(int numCourses, int[][] prerequisites) {
-        if (numCourses < 0) return false;
-        int plen = prerequisites.length;
-        if (plen < 0) return false;
-        if (plen == 0) return true;
-        int[] indegree = new int[numCourses];
-        for (int[] cp : prerequisites) {
-            indegree[cp[0]]++;
-        }
-        LinkedList<Integer> q = new LinkedList<>();
-        for (int i = 0; i < numCourses; i++) {
-            if (indegree[i] == 0) q.addLast(i);
-        }
-
-        List<Integer> res = new ArrayList<>();
-        while (!q.isEmpty()) {
-            int zero = q.pollFirst();
-            res.add(zero);
-            for (int[] cp : prerequisites) {
-                if (cp[1] == zero) {
-                    indegree[cp[0]]--; // 删除 zero的领标
-                    if (indegree[cp[0]] == 0) q.add(cp[0]);// 如果领边的节点indegree是0 ，那么入队
-                }
-            }
-        }
-        return res.size() == numCourses;
-    }
-
+    // 210 课程表Ⅱ
     // 花花的解法 用DFS也能做呢
     // http://zxi.mytechroad.com/blog/graph/leetcode-210-course-schedule-ii/
-
-    // 210
     public int[] findOrder(int numCourses, int[][] prerequisites) {
         Map<Integer, List<Integer>> map = new HashMap<>();
         for (int i = 0; i < prerequisites.length; i++) {
@@ -5258,7 +5217,7 @@ public class Solution {
         LinkedList<Integer> ans = new LinkedList<>();
         int[] ret = new int[numCourses];
         for (int i = 0; i < numCourses; i++) {
-            if (hasCycle03(map, i, visit, ans)) return ret;
+            if (hasCycle(map, i, visit, ans)) return ret;
         }
         for (int i = 0; i < ans.size(); i++) {
             ret[i] = ans.get(i);
@@ -5266,19 +5225,54 @@ public class Solution {
         return ret;
     }
 
-    public boolean hasCycle03(Map<Integer, List<Integer>> map, int key, int[] visit, LinkedList<Integer> ans) {
+    public boolean hasCycle(Map<Integer, List<Integer>> map, int key, int[] visit, LinkedList<Integer> ans) {
         if (visit[key] == VISITED) return false;
         if (visit[key] == VISITING) return true;
         visit[key] = VISITING;
         if (map.containsKey(key)) {
             for (Integer i : map.get(key)) {
-                if (hasCycle03(map, i, visit, ans)) return true;
+                if (hasCycle(map, i, visit, ans)) return true;
             }
         }
         visit[key] = VISITED;
         ans.addFirst(key);
         return false;
     }
+
+    // 207 BFS topology sort 参考链接：http://bit.ly/33SdXpG
+    // 210 也可以用这道题目来做呢
+    public boolean canFinish02(int numCourses, int[][] prerequisites) {
+        if (numCourses < 0) return false;
+        int plen = prerequisites.length;
+        if (plen == 0) return true;
+        int[] indegree = new int[numCourses];
+        for (int[] cp : prerequisites) {
+            indegree[cp[0]]++;
+        }
+        LinkedList<Integer> q = new LinkedList<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (indegree[i] == 0) q.addLast(i);
+        }
+
+        List<Integer> ans = new ArrayList<>();
+        while (!q.isEmpty()) {
+            int zero = q.pollFirst();
+            ans.add(zero);
+            for (int[] cp : prerequisites) {
+                if (cp[1] == zero) {
+                    indegree[cp[0]]--; // 入度减一
+                    if (indegree[cp[0]] == 0) {
+                        q.add(cp[0]);// 如果依赖节点indegree是0 ，那么入队，说明先导课程已经修完了
+                    }
+                }
+            }
+        }
+        return ans.size() == numCourses;
+    }
+
+
+
+
 
     // 链式前向星 excu me?  链式前向星介绍参见 https://oi-wiki.org/graph/basic/
     // http://bit.ly/2KfuHPN
@@ -5366,12 +5360,12 @@ public class Solution {
         return ans;
     }
 
-    // 547 朋友圈
+    // ③  547 朋友圈
     public int findCircleNum(int[][] M) {
-        int[] visited = new int[M.length];
+        boolean[] visited = new boolean[M.length];
         int count = 0;
         for (int i = 0; i < M.length; i++) {
-            if (visited[i] == 0) {
+            if (visited[i]) {
                 dfs(M, visited, i);
                 count++;
             }
@@ -5380,10 +5374,10 @@ public class Solution {
     }
 
 
-    public void dfs(int[][] M, int[] visited, int i) {
+    public void dfs(int[][] M, boolean[] visited, int i) {
         for (int j = 0; j < M.length; j++) {
-            if (M[i][j] == 1 && visited[j] == 0) {
-                visited[j] = 1;
+            if (M[i][j] == 1 && !visited[j]) {
+                visited[j] = true;
                 dfs(M, visited, j);
             }
         }
@@ -5471,7 +5465,7 @@ public class Solution {
     public String rearrangeString(String s, int k) {
         return "";
     }
-
+    // 630 课程表Ⅲ
     // 354 俄罗斯套娃信封问题
 }
 
