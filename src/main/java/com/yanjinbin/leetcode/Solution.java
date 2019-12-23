@@ -3916,7 +3916,7 @@ public class Solution {
     }
 
 
-    // 227 搜寻名人
+    // 277 搜寻名人
     public int findCelebrity(int n) {
         // 这道题 的解题步骤排除法 很多地方都会用到 假定均为true,然后遍历 根据条件去除 最后返回名人i
         boolean[] candidates = new boolean[n];
@@ -3937,7 +3937,7 @@ public class Solution {
         return -1;
     }
 
-    public int findCelebrity1(int n) {
+    /*public int findCelebrity1(int n) {
         for (int i = 0, j = 0; i < n; ++i) {
             for (j = 0; j < n; ++j) {
                 if (i != j && (knows(i, j) || !knows(j, i))) break;
@@ -3946,118 +3946,86 @@ public class Solution {
         }
         return -1;
     }
-
-
-    /*
-    public int findCelebrity(int n) {
-        // 思考错了   之前想的 col(j) 均为1 就是名人是错的. All col(j)=1 and row(j,j)=1 and row(i!=j,j)均为0
-        // 看看别人的思路
-        Map<Integer, Integer> memo = new HashMap();
-        for (int j = 0; j < n; j++) {
-            if (knows(0, j)) memo.put(j, 0);
-        }
-
-        Map<Integer, Integer> map = memo;
-        for (int i = 1; i < n; i++) {
-            memo = map;
-            map = new HashMap<>();
-            for (int j = 0; j < n; j++) {
-                if (knows(i, j) && memo.containsKey(j)) {
-                    map.put(j, i);
-                    System.out.println(j + " | " + i);
-                }
-            }
-        }
-        System.out.println(map);
-        Set<Integer> set = map.keySet();
-        Integer key = -1;
-        if (set.size() == 1) {
-            for (Integer i : set) {
-                key = i;
-            }
-        }
-        return key;
-    }*/
+*/
 
     public boolean knows(int a, int b) {
         return true;
     }
 
 
-    // ② 76 最小覆盖子串 http://bit.ly/2LvcJLu  双指针 滑动窗口方法  ✅  经典方法
-    public String minimumWindow0(String s, String t) {
-        int left = 0, right = 0, n = s.length(), start = 0, minLen = Integer.MAX_VALUE;
-        Map<Character, Integer> cntTable = new HashMap();
+    // ③ 76 最小覆盖子串 http://bit.ly/2LvcJLu  双指针 滑动窗口方法  ✅  经典方法
+    // 解法1
+    public String minWindow01(String s, String t) {
+        int count = 0, l = 0, r = 0, minLen = Integer.MAX_VALUE;
+        String ans = "";
+        int[] bank = new int[127];
         for (char c : t.toCharArray()) {
-            cntTable.put(c, cntTable.getOrDefault(c, 0) + 1);
+            bank[c - 'A']++;
         }
-        Map<Character, Integer> record = new HashMap();
+
+        while (r < s.length()) {
+            char c1 = s.charAt(r);
+            if (bank[c1 - 'A'] > 0) { // 匹配了
+                count++;
+            }
+            bank[c1 - 'A']--;
+            r++;
+            while (count == t.length()) {
+                if (minLen > r - l) {
+                    minLen = r - l;
+                    ans = s.substring(l, r);
+                }
+                char c2 = s.charAt(l);
+                if (bank[c2 - 'A'] == 0) {// 匹配了
+                    count--;
+                }
+                bank[c2 - 'A']++;
+                l++;
+            }
+        }
+        return ans;
+    }
+
+    // 解法2 最后一个case 没通过
+    public String minWindow02(String s, String t) {
+        int l = 0, r = 0, N = s.length(), start = 0, minLen = Integer.MAX_VALUE;
+        Map<Character, Integer> needs = new HashMap();
+        for (char c : t.toCharArray()) {
+            needs.put(c, needs.getOrDefault(c, 0) + 1);
+        }
+        Map<Character, Integer> windows = new HashMap();
         int match = 0;
-        while (right < n) {
-            // expend right
-            char c1 = s.charAt(right);
-            if (cntTable.containsKey(c1)) {
-                record.put(c1, record.getOrDefault(c1, 0) + 1);
-                if (record.get(c1) == cntTable.get(c1)) {
+        while (r < N) {
+            char c1 = s.charAt(r);
+            if (needs.containsKey(c1)) {
+                windows.put(c1, windows.getOrDefault(c1, 0) + 1);
+                if (windows.get(c1).equals(needs.get(c1))) {
+                    //用equals不用Integer的原因是因为cache   http://bit.ly/2ZgAomJ
                     match++;
                 }
             }
-            right++;
-
+            r++;
             // find 可行解, pursue 最优解
-            while (match == cntTable.size()) {
+            while (match == needs.size()) {
                 // update
-                if (right - left < minLen) {
-                    start = left;
-                    minLen = right - left;
+                if (r - l < minLen) {
+                    start = l;
+                    minLen = r - l;
                 }
-                char c2 = s.charAt(left);
-                if (cntTable.containsKey(c2)) {
-                    record.put(c2, record.getOrDefault(c2, 0) - 1);
-                    if (record.get(c2) < cntTable.get(c2)) {
+                char c2 = s.charAt(l);
+                if (needs.containsKey(c2)) {
+                    windows.put(c2, windows.get(c2) - 1);
+                    if (windows.get(c2) < needs.get(c2)) {
                         match--;
                     }
                 }
-                left++;
+                l++;
             }
         }
         return minLen == Integer.MAX_VALUE ? "" : s.substring(start, start + minLen);
     }
 
-    // 解法2
-    public String minimumWindow(String s, String t) {
-        if (s == null || t == null || s.length() == 0 || t.length() == 0 || s.length() < t.length()) return "";
-        int[] bank = new int[27];
-        int left = 0, right = 0, count = 0;
-        int min = Integer.MAX_VALUE;
-        String minStr = "";
-        for (int i = 0; i < t.length(); i++) {
-            bank[t.charAt(i) - 'A']++;
-        }
-        while (right < s.length()) {
-            // if = 1 then bank--, count++
-            // if =0 then bank--  go next
-            if (bank[s.charAt(right++) - 'A']-- > 0) {
-                count++;
-            }
-            //可行解
-            while (count == t.length()) {
-                if (min > right - left) {
-                    min = right - left;
-                    minStr = s.substring(left, right);
-                }
-                // 这里需要解释下
-                // narrow left
-                if (bank[s.charAt(left) - 'A']++ == 0) {
-                    count--;
-                }
-                left++;
-            }
-        }
-        return minStr;
-    }
-
-    //②  162 寻找峰值
+    //③  162 寻找峰值 二分确定 二分的条件
     public int findPeakElement1(int[] nums) {
         int l = 0, r = nums.length - 1;
         while (l < r) {
@@ -4071,7 +4039,7 @@ public class Solution {
         return l;
     }
 
-    // 二分法 logN
+    /*// 二分法 logN
     public int findPeakElement0(int[] nums) {
         return binarySearch0(nums, 0, nums.length - 1);
     }
@@ -4091,7 +4059,7 @@ public class Solution {
         }
     }
 
-
+*/
     public int findPeakElement2(int[] nums) {
         return binarySearch2(nums, 0, nums.length - 1);
     }
@@ -4107,7 +4075,7 @@ public class Solution {
         }
     }
 
-    // 91 解码方法 ✅ DP  斐波那些数列翻版  dp[i] 表示 前I个表示方法;
+    // ③ 91 解码方法 ✅ DP  斐波那些数列翻版  dp[i] 表示 前I个表示方法;
     // dp解决  状态转移方程式: if 1<= s[i-1] <=9, dp[i]+=dp[i-1],if 10<=s[i-2:i)<=26 dp[i] +=dp[i-2]
     public int numDecodings(String s) {
         if (s == null || s.length() == 0) return 0;
@@ -4129,7 +4097,8 @@ public class Solution {
     }
 
 
-    // ②  用@字符暂时替代下 130 被围绕的区域  http://bit.ly/2L0HsND
+    // ②  130 被围绕的区域  http://bit.ly/2L0HsND
+    // 解题思路: 从四条边的O除法,用@字符暂时替代下 dfs完毕后, 还有O的地方用X,@ 用回0
     public void solve(char[][] board) {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
@@ -4260,12 +4229,12 @@ public class Solution {
     }
 
 
-    //② 150 逆波兰表达式求值
+    //③ 150 逆波兰表达式求值
     public int evalRPN(String[] tokens) {
         Stack<Integer> s = new Stack();
         for (int i = 0; i < tokens.length; i++) {
             String token = tokens[i];
-            if (!isOp(tokens[i])) {
+            if (!isOp(token)) {
                 int tmp = decodeStr(tokens[i]);
                 s.push(tmp);
             } else {
@@ -4273,8 +4242,8 @@ public class Solution {
                 int n = s.pop();
                 // res = op(m, n, token);
                 // 注意左右操作数
-                res = op(n, m, token);
-                s.push(res);
+                int ans = op(n, m, token);
+                s.push(ans);
 
             }
         }
@@ -4308,15 +4277,11 @@ public class Solution {
             sign = -1;
             s = s.substring(1);
         }
-        int res = 0;
+        int ans = 0;
         for (char c : s.toCharArray()) {
-            res = res * 10 + c - '0';
+            ans = ans * 10 + c - '0';
         }
-        return res * sign;
-    }
-
-    public boolean isNumber(char c) {
-        return c >= '0' && c <= '9';
+        return ans * sign;
     }
 
     // ②  73 矩阵置零
@@ -4611,7 +4576,7 @@ public class Solution {
         return root;
     }
 
-    // 324 摆动排序Ⅱ
+    // ③  324 摆动排序Ⅱ
     // 已经排好序的数组 前半部分和后半部分  对折之后  交替插入
     public void wiggleSort(int[] nums) {
         int len = nums.length;
@@ -4674,7 +4639,7 @@ public class Solution {
         }
     }
 
-    // ② 454  四数相加Ⅱ
+    // ③ 454  四数相加Ⅱ
     public int fourSumCount(int[] A, int[] B, int[] C, int[] D) {
         int res = 0;
         Map<Integer, Integer> map = new HashMap();
