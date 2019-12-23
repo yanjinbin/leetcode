@@ -4852,33 +4852,53 @@ public class Solution {
         return res;
     }*/
 
-    // ② 395 至少有k个重复的字符的最长子串
-    public int longestSubstring(String s, int k) {
-        int res = 0, i = 0, N = s.length();
-        while (i + k - 1 < N) {
+    // ③ 395 至少有k个重复的字符的最长子串   双指针法 i,j
+    public int longestSubstring01(String s, int k) {
+        int ans = 0, i = 0, N = s.length();
+        while (i < N - k + 1) {
             int[] m = new int[26];
             int mask = 0;
-            int maxIdx = i;
+            int separator = i;
             for (int j = i; j < N; j++) {
                 int idx = s.charAt(j) - 'a';
                 m[idx]++;
                 if (m[idx] < k) {
-                    mask = mask | (1 << idx);
+                    mask = mask | (1 << idx); // 指定位掩码 BitOp
                 } else {
-                    mask = mask & (~(1 << idx));
+                    mask = mask & (~(1 << idx));// 指定位掩码 BitOp
                 }
                 if (mask == 0) {
-                    res = Math.max(res, j - i + 1);
-                    maxIdx = j;
+                    ans = Math.max(ans, j - i + 1);
+                    separator = j;
                 }
             }
-            i = maxIdx + 1;
+            i = separator + 1;
         }
-        return res;
+        return ans;
     }
 
-    // ② 解法2 递归迭代解法
-    public int longestSubstring1(String s, int k) {
+    // 👍🏻 interview friendly ③ 解法3 DP
+    public int longestSubstring02(String s, int k) {
+        int res = 0, N = s.length(), maxIdx = 0;
+        int[] times = new int[26];
+        boolean ok = true;
+        for (int i = 0; i < N; i++) {
+            times[s.charAt(i) - 'a']++;
+        }
+        for (int i = 0; i < N; i++) {
+            if (times[s.charAt(i) - 'a'] < k) {
+                // 子递归的第一种情况
+                res = Math.max(res, longestSubstring02(s.substring(maxIdx, i), k));
+                maxIdx = i + 1;
+                ok = false;
+            }
+        }
+        // 子递归的第二种情况
+        return ok ? N : Math.max(res, longestSubstring02(s.substring(maxIdx, N), k));
+    }
+
+    // ② 解法3 递归迭代解法
+    public int longestSubstring03(String s, int k) {
         int len = s.length();
         if (len == 0 || k > len) return 0;
         if (k < 2) return len;
@@ -4908,41 +4928,21 @@ public class Solution {
         return p2 - p1 + 1;
     }
 
-    //②  解法3 DP 解法interview friendly
-    public int longestSubstring2(String s, int k) {
-        int res = 0, N = s.length(), maxIdx = 0;
-        int[] times = new int[128];
-        boolean ok = true;
-        for (int i = 0; i < N; i++) {
-            times[s.charAt(i) - 'a']++;
-        }
-        for (int i = 0; i < N; i++) {
-            if (times[s.charAt(i) - 'a'] < k) {
-                // 子递归的第一种情况
-                res = Math.max(res, longestSubstring2(s.substring(maxIdx, i), k));
-                maxIdx = i + 1;
-                ok = false;
-            }
-        }
-        // 子递归的第二种情况
-        return ok ? N : Math.max(res, longestSubstring2(s.substring(maxIdx, N), k));
-    }
-
     // ② 440 字典序第K小的数字 http://bit.ly/2nKscwE https://youtu.be/yMnR63e3KLo
     public int findKthNumber(int n, int k) {
-        int curr = 1;
+        int cur = 1;
         k = k - 1;
         while (k > 0) { // if n=1;k=1;
-            int gap = findGap(n, curr, curr + 1);
+            int gap = findGap(n, cur, cur + 1);
             if (gap <= k) {// 在隔壁子树节点下
-                curr = curr + 1;
+                cur = cur + 1;
                 k = k - gap;
             } else {// 在当前节点子树下
-                curr = curr * 10;
+                cur = cur * 10;
                 k = k - 1;
             }
         }
-        return curr;
+        return cur;
     }
 
     public int findGap(int n, long cur, long neighbour) {  // [cur,neighbour)或者说(cur,Neighbour] 之间的距离
@@ -4973,20 +4973,20 @@ public class Solution {
     public List<List<String>> solveNQueens(int n) {
         List<List<String>> ans = new ArrayList();
         boolean[][] matrix = new boolean[n][n];
-        backTrack(ans, new ArrayList(), matrix, 0, n);
+        backTrack(ans, new LinkedList<>(), matrix, 0, n);
         return ans;
     }
 
-    public void backTrack(List<List<String>> ans, List<String> track, boolean[][] matrix, int row, int n) {
+    public void backTrack(List<List<String>> ans, LinkedList<String> track, boolean[][] matrix, int row, int n) {
         if (track.size() == row) {
             ans.add(new ArrayList(track));
         } else {
             for (int j = 0; j < n; j++) {
                 if (!isValid(row, j, matrix, n)) continue;
-                track.add(convert(n, j));
+                track.addLast(convert(n, j));
                 matrix[row][j] = true;
                 backTrack(ans, track, matrix, row + 1, n);// 放置Q, track.add() 撤销Q,track.remove
-                track.remove(track.size() - 1);
+                track.pollLast();
                 matrix[row][j] = false;
             }
         }
@@ -5017,7 +5017,7 @@ public class Solution {
         return ret.toString();
     }
 
-    // 516  [tag:微软面筋]  https://www.1point3acres.com/bbs/thread-541121-1-1.html
+    //③ 516  [tag:微软面筋]  https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // 求M的N次方的后3位
     public int getLastThreeNum(int m, int n) {
         int res = 1;
@@ -5027,7 +5027,7 @@ public class Solution {
         return res;
     }
 
-    //② 103 二叉树的锯齿形层遍历
+    //③ 103 二叉树的锯齿形层遍历
     public List<List<Integer>> zigzagLevelOrder0(TreeNode root) {
         List<List<Integer>> ret = new ArrayList<>();
         if (root == null) return ret;
