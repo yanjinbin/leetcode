@@ -14,6 +14,27 @@ import java.util.Stack;
 
 public class TreeSP {
 
+    // 104. 二叉树的最大深度
+    // 解法1
+    public int maxDepth0(TreeNode root) {
+        return dfsDepthHelper(root, 0);
+    }
+
+    public int dfsDepthHelper(TreeNode root, int level) {
+        if (root == null) return level;
+        return Math.max(dfsDepthHelper(root.left, level + 1), dfsDepthHelper(root.right, level + 1));
+    }
+
+    public int count(TreeNode root) {
+        if (root == null) return 0;
+        return 1 + count(root.left) + count(root.right);
+    }
+
+    public int dfsHeight(TreeNode root) {
+        if (root == null) return 0;
+        return Math.max(dfsHeight(root.left), dfsHeight(root.right)) + 1;
+    }
+
     //  接下去 进入 二叉树专题
     // ③ 94. 二叉树的中序遍历 递归做法
     // tips: 搞清楚 树的迭代是有轮回的 也就是说 中序遍历的左右子树要看清楚是哪个部分,子树层层递进的起点
@@ -293,6 +314,7 @@ public class TreeSP {
 
 
     Stack<Integer> seen;
+
     public boolean checkEqualTree02(TreeNode root) {
         seen = new Stack<>();
         int total = sum(root);
@@ -318,10 +340,10 @@ public class TreeSP {
     Map<TreeNode, List<TreeNode>> map = new HashMap();
 
     public List<Integer> distanceK(TreeNode root, TreeNode target, int K) {
-        List<Integer> res = new ArrayList<>();
-        if (root == null || K < 0) return res;
+        List<Integer> ans = new ArrayList<>();
+        if (root == null || K < 0) return ans;
         buildEdges(root, null);
-        if (!map.containsKey(target)) return res;
+        if (!map.containsKey(target)) return ans;
 
         Set<TreeNode> visited = new HashSet<>();
         Queue<TreeNode> q = new LinkedList<>();
@@ -330,8 +352,8 @@ public class TreeSP {
         while (!q.isEmpty()) {
             int size = q.size();
             if (K == 0) {
-                for (int i = 0; i < size; i++) res.add(q.poll().val);
-                return res;
+                for (int i = 0; i < size; i++) ans.add(q.poll().val);
+                return ans;
             }
             for (int i = 0; i < size; i++) {// BFS遍历
                 TreeNode elem = q.poll();
@@ -343,7 +365,7 @@ public class TreeSP {
             }
             K--;
         }
-        return res;
+        return ans;
     }
 
     public void buildEdges(TreeNode c, TreeNode p) {
@@ -359,7 +381,7 @@ public class TreeSP {
         }
     }
 
-    // 662. 二叉树最大宽度  // 思路: 给节点编号  i 2i,2i+1;  起点
+    // ③ 662. 二叉树最大宽度  // 思路: 给节点编号  i 2i,2i+1;  起点
     public int widthOfBinaryTree(TreeNode root) {
         if (root == null) return 0;
         Deque<TreeNode> q = new LinkedList<>();
@@ -394,26 +416,9 @@ public class TreeSP {
         else return false;
     }
 
-    public int dfsHeight(TreeNode root) {
-        if (root == null) return 0;
-        return Math.max(dfsHeight(root.left), dfsHeight(root.right)) + 1;
-    }
-
-
-    // 104. 二叉树的最大深度
-    // 解法1
-    public int maxDepth0(TreeNode root) {
-        return dfsDepthHelper(root, 0);
-    }
-
-    public int dfsDepthHelper(TreeNode root, int level) {
-        if (root == null) return level;
-        return Math.max(dfsDepthHelper(root.left, level + 1), dfsDepthHelper(root.right, level + 1));
-    }
-
     // 111. 二叉树的最小深度 出题定义的最小深度是有问题的!  [1] 深度居然是1 明显就是0啊
+    // // http://bit.ly/2ov18lf
     public int minDepth(TreeNode root) {
-        // http://bit.ly/2ov18lf
         if (root == null) return 0;
         if (root.left == null && root.right == null) return 1;
         int l = minDepth(root.left);
@@ -469,11 +474,10 @@ public class TreeSP {
         sum = sum - root.val;
         if (root.left == null && root.right == null && sum == 0) {
             ans.add(new ArrayList<>(sub));
-            // return; 不然 return提早返回,sub多余的元素没去除
+            // return;  不要添加return! return提早返回,sub多余的元素没去除
             // 或者 在return前 pollLast()
-           /* sub.pollLast();
-            return;*/
-
+            sub.pollLast();
+            return;
         }
         dfsHelp(root.left, sum, ans, sub);
         dfsHelp(root.right, sum, ans, sub);
@@ -492,7 +496,7 @@ public class TreeSP {
         return (sum == 0 ? 1 : 0) + pathHelper(root.left, sum) + pathHelper(root.right, sum);
     }
 
-
+    //③ 解题思路类似 验证二叉树，保存左右边界。
     // 1026 节点与祖先最大差值  update diff = cur = max(abs(root.val-min),abs(root.val-max)) ,then   pass min,max to left and right;
     // update diff= cur = max(cur,dfs(root.left) dfs(root.right) ) again;
     public int maxAncestorDiff(TreeNode root) {
@@ -508,8 +512,7 @@ public class TreeSP {
         return Math.max(cur, Math.max(dfs(root.left, min, max), dfs(root.right, min, max)));
     }
 
-
-    // 235/236  二叉搜索树的最近公共祖先
+    // 235/236  二叉搜索树的最近公共祖先 (LCA)
     // O(N)
     public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
         if (root == null || root.val == p.val || root.val == q.val) return root;
@@ -536,8 +539,6 @@ public class TreeSP {
         else return connected(root.left, p) || connected(root.right, p);
     }
 
-    // 742 314 垂直遍历
-
     // 235  BST 特有的方法 log(N)
     public TreeNode lowestCommonAncestor01(TreeNode root, TreeNode p, TreeNode q) {
         while (root != null) {
@@ -552,10 +553,6 @@ public class TreeSP {
         return root;
     }
 
-    public int count(TreeNode root) {
-        if (root == null) return 0;
-        return 1 + count(root.left) + count(root.right);
-    }
 
     // N叉树的前序
     // 589
@@ -607,5 +604,7 @@ public class TreeSP {
         }
         return ans;
     }
+
+    // 742 314 垂直遍历
 
 }
