@@ -14,11 +14,10 @@ import java.util.Stack;
 
 public class TreeSP {
 
-
     //  接下去 进入 二叉树专题
-    // 94. 二叉树的中序遍历 递归做法
+    // ③ 94. 二叉树的中序遍历 递归做法
     // tips: 搞清楚 树的迭代是有轮回的 也就是说 中序遍历的左右子树要看清楚是哪个部分,子树层层递进的起点
-    public List<String> inorderTraversal0(TreeNode root) {
+    public List<String> inorder01(TreeNode root) {
         List<String> ret = new ArrayList<>();
         inorderHelper(root, ret);
         return ret;
@@ -31,26 +30,28 @@ public class TreeSP {
         inorderHelper(root.right, ret);
     }
 
-    // 解法2  栈来做
-    public List<Integer> inorderTraversal1(TreeNode root) {
-        List<Integer> ret = new ArrayList<>();
-        Stack<TreeNode> stack = new Stack<>();
+    // ③ 解法2  栈来做
+    public List<Integer> inorder02(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        Stack<TreeNode> s = new Stack<>();
         TreeNode cur = root;
-        while (cur != null || !stack.isEmpty()) {
-            while (cur != null) {
-                stack.push(cur);
+        while (!s.isEmpty() || cur != null) {
+            if (cur != null) {
+                s.push(cur);
                 cur = cur.left;
+            } else {
+                TreeNode node = s.pop();
+                ans.add(node.val);  // Add after all left children
+                cur = node.right;
             }
-            cur = stack.pop();
-            ret.add(cur.val);
-            cur = cur.right;
         }
-        return ret;
+        return ans;
     }
 
-    // 解法 3 Morris遍历算法 todo 有点绕 ,  理解起来很麻烦 http://bit.ly/2jXmyW5
-    public List<Integer> inorderTraversal2(TreeNode root) {
-        // morris 遍历 核心 就是简历  root和 左子树 最右边节点的关系 pre = root.left; pre.right = root;
+    //③ morris 要回答 什么时候访问节点,左子树没有的时候,左子树有的时候,访问玩pre前驱节点,断开,然后访问root节点
+    // 解法 3 Morris遍历算法  理解起来很麻烦 http://bit.ly/2jXmyW5,
+    public List<Integer> inorderTraversal04(TreeNode root) {
+        // morris 遍历 核心 就是建立 root和 左子树 最右边节点的关系 pre = root.left; pre.right = root;
         List<Integer> ret = new ArrayList();
         while (root != null) {
             if (root.left == null) {
@@ -77,51 +78,9 @@ public class TreeSP {
         return ret;
     }
 
-    // 102. 二叉树的层次遍历
-    public List<List<Integer>> levelOrder0(TreeNode root) {
-        LinkedList<TreeNode> queue = new LinkedList<>();
-        queue.add(root);
-        List<List<Integer>> ret = new ArrayList<>();
-        while (!queue.isEmpty()) {
-            List<Integer> subSet = new ArrayList<>();
-            int len = queue.size();
-            for (int i = 0; i < len; i++) {
-                TreeNode node = queue.poll();
-                subSet.add(node.val);
-                if (node.left != null) queue.add(node.left);
-                if (node.right != null) queue.add(node.right);
+    // ③ 144. 二叉树的前序遍历 递归玩法
 
-            }
-            if (!subSet.isEmpty()) {
-                ret.add(subSet);
-            }
-        }
-        return ret;
-    }
-
-    // 递归做法
-    public List<List<Integer>> levelOrder1(TreeNode root) {
-        List<List<Integer>> ret = new ArrayList<>();
-        levelHelper(root, 0, ret);
-        return ret;
-    }
-
-    public void levelHelper(TreeNode root, int level, List<List<Integer>> ret) {
-        if (root == null) {
-            return;
-        }
-        // 为什么要加上这一判断呢 因为阿  index >= size的时候 就会包index out of range 错误了 tips 值得注意的点
-        if (ret.size() == level) {
-            ret.add(new ArrayList<>());
-        }
-
-        ret.get(level).add(root.val);
-        levelHelper(root.left, level + 1, ret);
-        levelHelper(root.right, level + 1, ret);
-    }
-
-    // 144. 二叉树的前序遍历 递归玩法
-    public List<Integer> preorderTraversal0(TreeNode root) {
+    public List<Integer> preorder01(TreeNode root) {
         List<Integer> ret = new ArrayList<>();
         preorderHelper(root, ret);
         return ret;
@@ -134,8 +93,25 @@ public class TreeSP {
         preorderHelper(root.right, ret);
     }
 
-    // morris 前序遍历
-    public List<Integer> morrisPreorder(TreeNode root) {
+    public List<Integer> preorder02(TreeNode root) {
+        List<Integer> ans = new ArrayList<>();
+        Stack<TreeNode> s = new Stack<>();
+        TreeNode cur = root;
+        while (!s.isEmpty() || cur != null) {
+            if (cur != null) {
+                s.push(cur);
+                ans.add(cur.val);  // Add before going to children
+                cur = cur.left;
+            } else {
+                TreeNode node = s.pop();
+                cur = node.right;
+            }
+        }
+        return ans;
+    }
+
+    // ③ morris 前序遍历
+    public List<Integer> preOrder03(TreeNode root) {
         List<Integer> ret = new ArrayList<>();
         while (root != null) {
             if (root.left == null) {
@@ -149,7 +125,7 @@ public class TreeSP {
                 if (pre.right == null) {
                     // 建立morris 关系
                     pre.right = root;
-                    // 先访问 root
+                    // 先访问 root!!!
                     ret.add(root.val);
                     root = root.left;
                 } else {
@@ -162,28 +138,8 @@ public class TreeSP {
         return ret;
     }
 
-    // 144. 二叉树的前序遍历 栈的做法
-    public List<Integer> preorderTraversal1(TreeNode root) {
-        if (root == null) return Collections.EMPTY_LIST;
-        Stack<TreeNode> stack = new Stack<>();
-        stack.add(root);
-        List<Integer> ret = new ArrayList<>();
-        while (!stack.isEmpty()) {
-            TreeNode cur = stack.pop();
-            ret.add(cur.val);
-            // 先压入右边的因为右边的后访问阿
-            if (cur.right != null) {
-                stack.push(cur.right);
-            }
-            if (cur.left != null) {
-                stack.push(cur.left);
-            }
-        }
-        return ret;
-    }
-
-    // 145. 二叉树的后序遍历 http://bit.ly/2SodiqQ
-    public List<Integer> postorderTraversal0(TreeNode root) {
+    // ③ 145. 二叉树的后序遍历 http://bit.ly/2SodiqQ
+    public List<Integer> postorder01(TreeNode root) {
         List<Integer> ret = new ArrayList<>();
         postorderHelper(root, ret);
         return ret;
@@ -196,93 +152,52 @@ public class TreeSP {
         ret.add(root.val);
     }
 
-    public List<Integer> postorderTraversal1(TreeNode root) {
-        List<Integer> ret = new ArrayList<>();
-        if (root == null) return ret;
-        Stack<TreeNode> stack = new Stack<>();
-        stack.push(root);
-        // 后续遍历可以首先想到的就是 左右子树均为null--->向上搜寻
-        // 出现 左右子树一个为空的时候 你需要 标识上次的递归 必须是左右子树为null
-        TreeNode flag = root;
-        while (!stack.isEmpty()) {
-            TreeNode t = stack.peek();
-            if ((t.right == null && t.left == null) || t.left == flag || t.right == flag) {
-                ret.add(t.val);
-                stack.pop();
-                flag = t;
-            } else {
-                if (t.right != null) stack.push(t.right);
-                if (t.left != null) stack.push(t.left);
-            }
-        }
-        return ret;
-    }
-
-
-    // time complexity O(2N)
-    public List<Integer> postorderTraversal2(TreeNode root) {
-        List<Integer> ret = new ArrayList<>();
-        if (root == null) return ret;
-        Stack<TreeNode> s1 = new Stack();
-        Stack<TreeNode> s2 = new Stack();
-        s1.push(root);
-        while (!s1.isEmpty()) {
-            TreeNode cur = s1.pop();
-            s2.push(cur);
-            if (cur.left != null) s1.push(cur.left);
-            if (cur.right != null) s1.push(cur.right);
-        }
-        // 和 下面的add First 异曲同工
-        while (!s2.isEmpty()) {
-            ret.add(s2.pop().val);
-        }
-        return ret;
-    }
-
-    public List<Integer> postorderTraversal3(TreeNode root) {
-        LinkedList<Integer> ret = new LinkedList();
-        if (root == null) return ret;
-        Stack<TreeNode> s = new Stack();
-        s.push(root);
-        while (!s.isEmpty()) {
-            TreeNode cur = s.pop();
-            // addFirst 关键
-            ret.addFirst(cur.val);
-            if (cur.right != null) s.push(cur.right);
-            if (cur.left != null) s.push(cur.left);
-        }
-        return ret;
-    }
-
-    // 后续遍历 这是最好的 也是最棒的
-    public List<Integer> postorderTraversal4(TreeNode root) {
-        List<Integer> ret = new LinkedList<>();
-        if (root == null) return ret;
+    // 解法 2 栈
+    public List<Integer> postorder02(TreeNode root) {
+        LinkedList<Integer> ans = new LinkedList<>();
         Stack<TreeNode> s = new Stack<>();
-
-        TreeNode cur = null;
-        s.push(root);
-        s.push(root);
-        while (!s.isEmpty()) {
-            cur = s.pop();
-            if (s.isEmpty() || cur != s.peek()) {
-                ret.add(cur.val);
+        TreeNode cur = root;
+        while (!s.isEmpty() || cur != null) {
+            if (cur != null) {
+                s.push(cur);
+                ans.addFirst(cur.val);  // Reverse the process of preorder
+                cur = cur.right;             // Reverse the process of preorder
             } else {
-                if (cur.right != null) {
-                    s.push(cur.right);
-                    s.push(cur.right);
+                TreeNode node = s.pop();
+                cur = node.left;           // Reverse the process of preorder
+            }
+        }
+        return ans;
+    }
+
+    // morris遍历
+    public List<Integer> postorder03(TreeNode root) {
+        LinkedList<Integer> ans = new LinkedList<>();
+        TreeNode cur = root;
+        while (cur != null) {
+            if (cur.right == null) {
+                ans.addFirst(cur.val);
+                cur = cur.left;
+            } else {
+                TreeNode prev = cur.right;
+                while (prev.left != null && prev.left != cur) {
+                    prev = prev.left;
                 }
-                if (cur.left != null) {
-                    s.push(cur.left);
-                    s.push(cur.left);
+                if (prev.left == null) {
+                    prev.left = cur;
+                    ans.addFirst(cur.val);
+                    cur = cur.right;
+                } else {
+                    prev.left = null;
+                    cur = cur.left;
                 }
             }
         }
-        return ret;
+        return ans;
     }
 
 
-    // 199. 二叉树的右视图
+    // ③ 199. 二叉树的右视图
     public List<Integer> rightSideView(TreeNode root) {
         List<Integer> ans = new ArrayList();
         if (root == null) return ans;
@@ -301,7 +216,7 @@ public class TreeSP {
         return ans;
     }
 
-    // 333. 最大 BST 子树
+    // 333. 在二叉树中找到最大 BST 子树
     public int ans = 0;
 
     public int largestBSTSubTree(TreeNode root) {
@@ -331,8 +246,9 @@ public class TreeSP {
         return left + right + 1;
     }
 
-    // 426. 将二叉搜索树转化为排序的双向链表
+    // ③ 426. 将二叉搜索树转化为排序的双向链表
     // 构建一个引子节点，指向head，遍历完, prev is tail ,然后首尾相连即可
+    // 中序遍历即可完成
     public TreeNode treeToDoublyList(TreeNode root) {
         if (root == null) return null;
         // pre 上一次迭代的节点，
@@ -345,9 +261,11 @@ public class TreeSP {
                 cur = cur.left;
             } else {
                 cur = s.pop();
+
                 pre.right = cur;
                 cur.left = pre;
                 pre = cur;
+
                 cur = cur.right;
             }
         }
@@ -358,39 +276,45 @@ public class TreeSP {
         return head;
     }
 
-    // 663. 均匀树划分
-    public boolean checkEqualTree(TreeNode root) {
-        root = rebuild(root);
-        return help(root);
+    //③ 663. 均匀树划分
+    public boolean checkEqualTree01(TreeNode root) {
+        if (root == null) return false;
+        int sum = count(root);
+        if (sum % 2 != 0) return false;
+        return dfs(root, sum / 2);
     }
 
-    public boolean help(TreeNode root) {
-        if (root == null || root.val % 2 == 1) return false;
-        if (root.left != null && root.val / 2 == root.left.val) {
-            return true;
+    public boolean dfs(TreeNode root, int sum) {
+        if (root == null) return false;
+        if (root.left != null && count(root.left) == sum) return true;
+        if (root.right != null && count(root.right) == sum) return true;
+        return dfs(root.left, sum) || dfs(root.right, sum);
+    }
+
+
+    Stack<Integer> seen;
+    public boolean checkEqualTree02(TreeNode root) {
+        seen = new Stack<>();
+        int total = sum(root);
+        seen.pop();
+        if (total % 2 == 0) {
+            for (int s : seen) {
+                if (s == total / 2) {
+                    return true;
+                }
+            }
         }
-        if (root.right != null && root.val / 2 == root.right.val) {
-            return true;
-        } else return help(root.left) || help(root.right);
+        return false;
     }
 
     public int sum(TreeNode root) {
         if (root == null) return 0;
-        int left = sum(root.left);
-        int right = sum(root.right);
-        return left + right + root.val;
-    }
-
-    public TreeNode rebuild(TreeNode root) {
-        if (root == null) return new TreeNode(0);
-        TreeNode left = rebuild(root.left);
-        TreeNode right = rebuild(root.right);
-        root.val += left.val + right.val;
-        return root;
+        seen.push(sum(root.left) + sum(root.right) + root.val);
+        return seen.peek();
     }
 
     // 863. 二叉树中所有距离为 K 的结点
-    // 图的遍历
+    // 图的遍历 BFS
     Map<TreeNode, List<TreeNode>> map = new HashMap();
 
     public List<Integer> distanceK(TreeNode root, TreeNode target, int K) {
@@ -435,12 +359,6 @@ public class TreeSP {
         }
     }
 
-    // 889. 根据前序和后序遍历构造二叉树
-
-    // 606. 根据二叉树创建字符串
-
-    // 988. 从叶结点开始的最小字符串
-
     // 662. 二叉树最大宽度  // 思路: 给节点编号  i 2i,2i+1;  起点
     public int widthOfBinaryTree(TreeNode root) {
         if (root == null) return 0;
@@ -465,15 +383,6 @@ public class TreeSP {
         }
         return max;
     }
-
-
-    // 654. 最大二叉树
-    public TreeNode constructMaximumBinaryTree(int[] nums) {
-        // 分治法
-        return null;
-    }
-
-    // 637. 二叉树的层平均值
 
 
     // 110. 平衡二叉树
@@ -529,15 +438,6 @@ public class TreeSP {
         if (root == null) return 0;
         return 1 + Math.max(maxDepth1(root.left), maxDepth1(root.right));
     }*/
-
-
-    // 864. 获取所有钥匙的最短路径
-
-    // 847. 访问所有节点的最短路径
-
-    // 797. 所有可能的路径
-
-    // 1091. 二进制矩阵中的最短路径
 
     //  112. 路径总和
     public boolean hasPathSum(TreeNode root, int sum) {
@@ -636,6 +536,7 @@ public class TreeSP {
         else return connected(root.left, p) || connected(root.right, p);
     }
 
+    // 742 314 垂直遍历
 
     // 235  BST 特有的方法 log(N)
     public TreeNode lowestCommonAncestor01(TreeNode root, TreeNode p, TreeNode q) {
@@ -707,5 +608,4 @@ public class TreeSP {
         return ans;
     }
 
-    // 834. 树中距离之和
 }
