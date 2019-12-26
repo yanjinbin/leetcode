@@ -28,7 +28,7 @@ public class Microsoft {
         PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> (o2 - o1));
         // init
         for (int i = 0; i < k; i++) {
-            pq.add(nums[i]);
+            pq.offer(nums[i]);
         }
         res[0] = pq.peek();
         for (int i = k; i < nums.length; i++) {
@@ -105,25 +105,6 @@ public class Microsoft {
     }
 
     // [tag:微软 2019-2-8] https://www.1point3acres.com/bbs/thread-479082-1-1.html
-    // #19. 删除链表的倒数第N个节点
-    /*// 无法处理 corner case,
-    public ListNode removeNthFromEnd_poor(ListNode head, int n) {
-        ListNode delayNode = head, startNode = head;
-        int start = 0;
-        while (startNode.next != null) {
-            startNode = startNode.next;
-            start++;
-            if (start > n) {
-                delayNode = delayNode.next;
-            }
-        }
-        // 只有一个节点的情况下 就很难处理了 NPE
-        ListNode next = delayNode.next.next;
-        delayNode.next.next = null;
-        delayNode.next = next;
-        return head;
-    }*/
-
     //② #19. 删除链表的倒数第N个节点, 完美处理corner case
     public ListNode removeNthFromEnd(ListNode head, int n) {
         // init dummy node
@@ -142,12 +123,6 @@ public class Microsoft {
         // return head; 错误的原因在于head 节点也有可能Update 为Null阿  在更新code---> " delayNode.next = delayNode.next.next; "
         return dummyNode.next;
     }
-
-    // [tag:微软 2019-8-7]https://www.1point3acres.com/bbs/thread-541862-1-1.html
-    // 285 510  类似139 单次拆分
-
-    // [tag:微软 2019-10-10] https://www.1point3acres.com/bbs/thread-558573-1-1.html
-    // 74 124 239
 
     // 74
     // ② 240 搜索二维矩阵 Ⅱ
@@ -242,51 +217,6 @@ public class Microsoft {
         ans124 = Math.max(ans124, sum);
         return Math.max(l, r) + root.val;
     }
-    // [tag:微软 2019-2-17] https://www.1point3acres.com/bbs/thread-482753-1-1.html
-    // 74 240
-
-
-    // [tag:微软 2019-8-16] https://www.1point3acres.com/bbs/thread-543569-1-1.html
-
-    // 缺失的第一个正数  鸽巢原理
-    // 字符串解码和压缩
-    // 306. 累加数  大数相加
-
-    // https://www.1point3acres.com/bbs/thread-482779-1-1.html
-    // LC 117 40   |  删除 BST 节点并rebalance。| bfs 求最短路径+
-
-
-    // 设计 hashMap 和twitter ，java多继承 菱形问题 GC
-    // [tag:微软 2018-12-28] https://www.1point3acres.com/bbs/thread-468068-1-1.html
-    // 450 79 215
-
-
-    // [tag:微软 2018-4-23] https://www.1point3acres.com/bbs/thread-407652-1-1.html
-    // lc 494
-
-    //[tag:微软 2019-8-17] https://www.1point3acres.com/bbs/thread-543800-1-1.html
-    // LC31 LC 126 410
-
-    //[tag:微软  2019-4-10 实习] https://www.1point3acres.com/bbs/thread-512316-1-1.html
-    // LC 53 91   BST 先序遍历 找比target小的最大的数字
-
-    // [tag:微软 2019-4-20] https://www.1point3acres.com/bbs/thread-517289-1-1.html
-    // https://www.techiedelight.com/find-pair-array-minimum-absolute-sum/
-    // LC 208
-
-    //[tag:微软 实习 2019-04-05] https://www.1point3acres.com/bbs/thread-510474-1-1.html
-
-
-    // https://www.1point3acres.com/bbs/thread-513482-1-1.html
-    // 93 468
-
-    //[tag:微软 2018-4-26] https://www.1point3acres.com/bbs/thread-411805-1-1.html
-    // 第一轮上来就做题，介绍都不用。 find k th smallest element in N sorted array
-    //第二轮： find the target number in BST，return target后一个的数。 follow up: 有parent 怎么写
-
-    // [tag:微软 ] https://www.1point3acres.com/bbs/thread-462940-1-1.html
-    // LC 297 428 449  LC 83
-
 
     // 83
     public ListNode deleteDuplicates(ListNode head) {
@@ -300,26 +230,6 @@ public class Microsoft {
         }
         return head;
     }
-
-    // [tag:微软]https://www.1point3acres.com/bbs/thread-460409-1-1.html
-    // LC 98 285
-
-    // [tag：微软实习] https://www.1point3acres.com/bbs/thread-506392-1-1.html
-    // lc235 236
-
-    // [tag:微软] https://www.1point3acres.com/bbs/thread-551057-1-1.html
-    // http://ddrv.cn/a/84771  IP判定  给定一个有序数组，建立一颗高度最小的搜索二叉树
-
-    // https://www.1point3acres.com/bbs/thread-479082-1-1.html
-    // LC 53  239 https://www.cnblogs.com/kexianting/p/8744241.html https://www.cnblogs.com/sxmcACM/p/4803047.html
-    // 数组中元素差的最大值
-    // 最大子数组和 整数相除 链表倒数第K个节点
-
-    // 全职 2019-7-9 https://www.1point3acres.com/bbs/thread-536123-1-1.html
-
-    // https://leetcode.com/discuss/interview-question/398023/Microsoft-Online-Assessment-Questions
-
-    // =================
 
     // 实现字符串分隔
     // https://www.geeksforgeeks.org/split-string-substrings-using-delimiter/
@@ -344,16 +254,17 @@ public class Microsoft {
         boolean hint = false;
         TreeNode cur = root;
         while (cur != null || !s.isEmpty()) {
-            while (cur != null) {
+            if (cur != null) {
                 s.push(cur);
                 cur = cur.left;
+            } else {
+                cur = s.pop();
+                if (hint) return cur;
+                if (cur.val == p.val) {
+                    hint = true;
+                }
+                cur = cur.right;
             }
-            cur = s.pop();
-            if (hint) return cur;
-            if (cur.val == p.val) {
-                hint = true;
-            }
-            cur = cur.right;
         }
         return null;
     }
@@ -909,14 +820,6 @@ public class Microsoft {
         // 找出 reverse 和 swap的种类，先reverse之后 再swap ，存在顺序依赖关系
     }
 
-    // 887. 鸡蛋掉落
-
-    // 426 426. 将二叉搜索树转化为排序的双向链表
-
-    // 1044. 最长重复子串
-
-    // https://www.geeksforgeeks.org/k-th-element-two-sorted-arrays//
-
     // 第K小
     // 解法1 sort  S: O(M+N),  T: O(k)
     public int kthElements01(int[] arr1, int[] arr2, int k) {
@@ -1000,21 +903,21 @@ public class Microsoft {
      * @param k      KthSmallest
      * @return
      */
-    public int FindKth(int[] nums1, int start1, int end1, int[] nums2, int start2, int end2, int k) {
+    public int FindKthSmallest(int[] nums1, int start1, int end1, int[] nums2, int start2, int end2, int k) {
         int len1 = end1 - start1 + 1;
         int len2 = end2 - start2 + 1;
         //让 len1 的长度小于 len2，这样就能保证如果有数组空了，一定是 len1
-        if (len1 > len2) return FindKth(nums2, start2, end2, nums1, start1, end1, k);
+        if (len1 > len2) return FindKthSmallest(nums2, start2, end2, nums1, start1, end1, k);
         if (len1 == 0) return nums2[start2 + k - 1];
-        // if (k == 1) return Math.min(nums1[start1], nums2[start2]);
+        if (k == 1) return Math.min(nums1[start1], nums2[start2]);
 
         int i = start1 + Math.min(len1, k / 2) - 1;
         int j = start2 + Math.min(len2, k / 2) - 1;
 
         if (nums1[i] > nums2[j]) {
-            return FindKth(nums1, start1, end1, nums2, j + 1, end2, k - (j - start2 + 1));
+            return FindKthSmallest(nums1, start1, end1, nums2, j + 1, end2, k - (j - start2 + 1));
         } else {
-            return FindKth(nums1, i + 1, end1, nums2, start2, end2, k - (i - start1 + 1));
+            return FindKthSmallest(nums1, i + 1, end1, nums2, start2, end2, k - (i - start1 + 1));
         }
     }
 
@@ -1060,4 +963,162 @@ public class Microsoft {
     }
 
 
+    // ② [tag:微软面筋] https://www.1point3acres.com/bbs/thread-541121-1-1.html
+    // 8  字符串转换整数 (atoi)
+    public int myAtoi(String str) {
+        int sign = 1, i = 0, N = str.length(), ans = 0;
+        if (str == null || str.isEmpty()) return 0;
+
+        while (i < N && str.charAt(i) == ' ') i++;
+        if (i < N && (str.charAt(i) == '+' || str.charAt(i) == '-')) {
+            sign = str.charAt(i) == '+' ? 1 : -1;
+            i++;
+        }
+        while (i < N && str.charAt(i) >= '0' && str.charAt(i) <= '9') {
+            // 防止int越界问题  int   [  214748364 7 ]
+            if (ans > Integer.MAX_VALUE / 10 || (ans == Integer.MAX_VALUE / 10 && str.charAt(i) - '0' > 7)) {
+                return (sign == 1) ? Integer.MAX_VALUE : Integer.MIN_VALUE;
+            }
+            ans = ans * 10 + str.charAt(i) - '0';
+            i++;
+        }
+        return sign * ans;
+    }
+
+    // 1292
+    public int maxSideLength01(int[][] mat, int k) {
+        int M = mat.length, N = mat[0].length;
+        int[][] dp = new int[M + 1][N + 1];
+        for (int i = 1; i <= M; i++) {
+            for (int j = 1; j <= N; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1] - dp[i - 1][j - 1] + mat[i - 1][j - 1];
+            }
+        }
+        int ans = 0;
+        for (int i = 1; i <= M; i++) {
+            for (int j = 1; j <= N; j++) {// 优化点len = ans + 1
+                for (int len = ans + 1; i + len - 1 <= M && j + len - 1 <= N; len++) {
+                    if (len <= ans) continue;
+                    int val = rangeSum(dp, i, j, len);
+                    if (val <= k) {
+                        ans = Math.max(ans, len);
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+
+    public int rangeSum(int[][] dp, int i, int j, int len) {
+        return dp[i + len - 1][j + len - 1] - dp[i + len - 1][j - 1] - dp[i - 1][j + len - 1] + dp[i - 1][j - 1];
+    }
+
+    // T: M*N*lg(Min(M,N))
+    public int maxSideLength02(int[][] mat, int k) {
+        int M = mat.length, N = mat[0].length;
+        int[][] dp = new int[M + 1][N + 1];
+        for (int i = 1; i <= M; i++) {
+            for (int j = 1; j <= N; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1] - dp[i - 1][j - 1] + mat[i - 1][j - 1];
+            }
+        }
+        
+        int lo = 1, hi = Math.min(M, N) + 1, ans = 0;
+        while (lo < hi) {
+            int mid = (hi - lo) / 2 + lo;
+            boolean OK = false;
+            for (int i = 1; i + mid - 1 <= M; i++) {
+                for (int j = 1; j + mid - 1 <= N; j++) {
+                    if (rangeSum(dp, i, j, mid) <= k) {
+                        OK = true;
+                    }
+                }
+            }
+            if (OK) {
+                ans = Math.max(ans, mid);
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return ans;
+    }
+
+
+    // 887. 鸡蛋掉落
+
+    // 1044. 最长重复子串
+
+    // https://www.geeksforgeeks.org/k-th-element-two-sorted-arrays//
+
+    // [tag:微软 2019-2-17] https://www.1point3acres.com/bbs/thread-482753-1-1.html
+    // 74 240
+
+
+    // [tag:微软 2019-8-16] https://www.1point3acres.com/bbs/thread-543569-1-1.html
+
+    // 缺失的第一个正数  鸽巢原理
+    // 字符串解码和压缩
+    // 306. 累加数  大数相加
+
+    // https://www.1point3acres.com/bbs/thread-482779-1-1.html
+    // LC 117 40   |  删除 BST 节点并rebalance。| bfs 求最短路径+
+
+
+    // 设计 hashMap 和twitter ，java多继承 菱形问题 GC
+    // [tag:微软 2018-12-28] https://www.1point3acres.com/bbs/thread-468068-1-1.html
+    // 450 79 215
+
+
+    // [tag:微软 2018-4-23] https://www.1point3acres.com/bbs/thread-407652-1-1.html
+    // lc 494
+
+    //[tag:微软 2019-8-17] https://www.1point3acres.com/bbs/thread-543800-1-1.html
+    // LC31 LC 126 410
+
+    //[tag:微软  2019-4-10 实习] https://www.1point3acres.com/bbs/thread-512316-1-1.html
+    // LC 53 91   BST 先序遍历 找比target小的最大的数字
+
+    // [tag:微软 2019-4-20] https://www.1point3acres.com/bbs/thread-517289-1-1.html
+    // https://www.techiedelight.com/find-pair-array-minimum-absolute-sum/
+    // LC 208
+
+    //[tag:微软 实习 2019-04-05] https://www.1point3acres.com/bbs/thread-510474-1-1.html
+
+
+    // https://www.1point3acres.com/bbs/thread-513482-1-1.html
+    // 93 468
+
+    //[tag:微软 2018-4-26] https://www.1point3acres.com/bbs/thread-411805-1-1.html
+    // 第一轮上来就做题，介绍都不用。 find k th smallest element in N sorted array
+    //第二轮： find the target number in BST，return target后一个的数。 follow up: 有parent 怎么写
+
+    // [tag:微软 ] https://www.1point3acres.com/bbs/thread-462940-1-1.html
+    // LC 297 428 449  LC 83
+
+    // [tag:微软]https://www.1point3acres.com/bbs/thread-460409-1-1.html
+    // LC 98 285
+
+    // [tag：微软实习] https://www.1point3acres.com/bbs/thread-506392-1-1.html
+    // lc235 236
+
+    // [tag:微软] https://www.1point3acres.com/bbs/thread-551057-1-1.html
+    // http://ddrv.cn/a/84771  IP判定  给定一个有序数组，建立一颗高度最小的搜索二叉树
+
+    // https://www.1point3acres.com/bbs/thread-479082-1-1.html
+    // LC 53  239 https://www.cnblogs.com/kexianting/p/8744241.html https://www.cnblogs.com/sxmcACM/p/4803047.html
+    // 数组中元素差的最大值
+    // 最大子数组和 整数相除 链表倒数第K个节点
+
+    // 全职 2019-7-9 https://www.1point3acres.com/bbs/thread-536123-1-1.html
+
+    // https://leetcode.com/discuss/interview-question/398023/Microsoft-Online-Assessment-Questions
+
+    // =================
+
+    // [tag:微软 2019-8-7]https://www.1point3acres.com/bbs/thread-541862-1-1.html
+    // 285 510  类似139 单次拆分
+
+    // [tag:微软 2019-10-10] https://www.1point3acres.com/bbs/thread-558573-1-1.html
+    // 74 124 239
 }
