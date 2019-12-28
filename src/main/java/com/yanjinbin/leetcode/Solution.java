@@ -2,6 +2,7 @@ package com.yanjinbin.leetcode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -99,35 +100,6 @@ public class Solution {
         return dummyNode.next;
     }
 
-   /* // wrong
-    public ListNode addTwoNumber(ListNode l1, ListNode l2) {
-        // 这种方法有个缺陷是无法处理 111  88999999 这样的
-        ListNode dummy = new ListNode(0);
-        ListNode cur = dummy;
-        int sum = 0, carry = 0;
-        while (l1 != null && l2 != null) {
-            sum = l1.val + l2.val + carry;
-            carry = sum >= 10 ? 1 : 0;
-            int newVal = sum % 10;
-            cur.next = new ListNode(newVal);
-            cur = cur.next;
-            l1 = l1.next;
-            l2 = l2.next;
-        }
-        if (l1 == null && l2 == null && carry == 1) {
-            cur.next = new ListNode(carry);
-        }
-        if (l1 == null && l2 != null) {
-            l2.val += carry;
-            cur.next = l2;
-        }
-        if (l1 != null && l2 == null) {
-            l1.val += carry;
-            cur.next = l1;
-        }
-        return dummy.next;
-    }*/
-
 
     // ③ 141. Linked List Cycle
     public boolean hasCycle(ListNode head) {
@@ -200,9 +172,9 @@ public class Solution {
         return helper(head);
     }
 
-    public boolean helper(ListNode node) {
-        if (node == null) return true;
-        boolean res = helper(node.next) && (node.val == cur.val);
+    public boolean helper(ListNode root) {
+        if (root == null) return true;
+        boolean res = helper(root.next) && (root.val == cur.val);
         if (res) cur = cur.next;
         return res;
     }
@@ -278,7 +250,7 @@ public class Solution {
         return R - L - 1;
     }
 
-    // ③ 最长回文子串 最佳解法 中心扩散法
+    // 最长回文子串 最佳解法 中心扩散法
     // http://bit.ly/2KMyIgk
     public int lo, maxLen;
 
@@ -372,9 +344,7 @@ public class Solution {
 
     // 采用分治思想，递归解决此问题
     public ListNode mergeKLists(ListNode[] lists, int start, int end) {
-        if (start > end) {
-            return null;
-        } else if (start == end) {
+        if (start == end) {
             return lists[start];
         }
         int mid = (end - start) / 2 + start;
@@ -392,6 +362,7 @@ public class Solution {
         return ans;
     }
 
+    // DFS 不需要状态重置
     public void backtrack(List<String> ans, String cur, int open, int close, int max) {
         // 问题的解 达成
         if (cur.length() == max * 2) {
@@ -666,7 +637,7 @@ public class Solution {
         return res;
     }
 
-    // 解法2 dfs  d但是不让过 ，因为顺序不同
+    // 解法2 dfs  但是不让过 ，因为顺序不同
     public List<List<Integer>> subsets02(int[] nums) {
         List<List<Integer>> ans = new ArrayList<>();
         for (int i = 0; i <= nums.length; i++) {
@@ -726,7 +697,7 @@ public class Solution {
     public boolean exist(char[][] board, String word) {
         if (board == null || board.length == 0 || (board.length == 1 && board[0].length == 0)) return false;
         int collen = board.length;
-        int rowLen = board[collen - 1].length;
+        int rowLen = board[0].length;
         boolean[][] visited = new boolean[collen][rowLen];
         char[] words = word.toCharArray();
         for (int i = 0; i < collen; i++) {
@@ -743,15 +714,27 @@ public class Solution {
         if (i < 0 || j < 0 || i >= colLen || j >= rowLen || visited[i][j] || board[i][j] != word[macth]) return false;
 
         visited[i][j] = true;
+
+        // 为什么这么写就错了呢
+       /* int[] dirs = new int[]{-1, 0, 1, 0, -1};
+        boolean exist = false;
+        for (int k = 1; k < 4; k++) {
+            exist  |= dfsSearch(i + dirs[k], j + dirs[k + 1], colLen, rowLen, board, macth + 1, word, visited);
+        }*/
+
         boolean exist = dfsSearch(i + 1, j, colLen, rowLen, board, macth + 1, word, visited) ||
                 dfsSearch(i, j + 1, colLen, rowLen, board, macth + 1, word, visited) ||
                 dfsSearch(i - 1, j, colLen, rowLen, board, macth + 1, word, visited) ||
                 dfsSearch(i, j - 1, colLen, rowLen, board, macth + 1, word, visited);
+
+
         visited[i][j] = false;
         return exist;
     }
 
     // ③ 139 单词拆分 http://bit.ly/2Ld41Bt  0起点,长度为N的字符串 能否被words填充
+
+    // dp[j] 代表 第j个字符，故dp[i]=dp[j]&&s.substring(j,i); dp[0]= true;
     // S[0,i)= S[0,j) || S[j,i)  0 <= j < i <= s.length()
     public boolean wordBreak(String s, List<String> wordDict) {
         boolean[] dp = new boolean[s.length() + 1];
@@ -794,12 +777,13 @@ public class Solution {
 
     // ③  解法2  鸽巢原理
     public int findDuplicate02(int[] nums) {
-        int[] arr = new int[nums.length];
-        for (int j = 0; j < nums.length; j++) {
-            if (arr[nums[j] - 1] != 0) return nums[j];
-            arr[nums[j - 1]] = nums[j];
+        int n = nums.length;
+        for (int i = 0; i < n; i++) {
+            while (nums[i] > 0 && nums[i] <= n && nums[nums[i] - 1] != nums[i]) {
+                swap(nums, nums[i] - 1, i);
+            }
         }
-        return -1;
+        return nums[n - 1];
     }
 
     // 287 ③ 这种二分法还是比较少见的 但是也存在多钟限制阿 中间数的计算近似 median=(right+left)/2;
@@ -1027,15 +1011,15 @@ public class Solution {
     //自己可以 画个表格 列出nums[i] sum sum-k 函数count(k) count(sum-k)
     // 花花酱视频  http://bit.ly/2S3K2We
     public int subarraySum(int[] nums, int k) {
-        int count = 0, sum = 0;
+        int ans = 0, sum = 0;
         Map<Integer, Integer> map = new HashMap<>();
-        map.put(0, 1);// 比较tricky的啊
+        map.put(0, 1);// 比较tricky的啊,和为0的个数是1.
         for (int i = 0; i < nums.length; i++) {
             sum += nums[i];
-            if (map.containsKey(sum - k)) count += map.get(sum - k);
+            if (map.containsKey(sum - k)) ans += map.get(sum - k);
             map.put(sum, map.getOrDefault(sum, 0) + 1);
         }
-        return count;
+        return ans;
     }
 
     // ③ 56. 合并区间
@@ -3568,11 +3552,10 @@ public class Solution {
 
     // [tag:微软面经] https://www.1point3acres.com/bbs/thread-506842-1-1.html
     // 329. 矩阵中的最长递增路径
-    //
     public static final int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 
     // 解法 1
-    public int longestIncreasingPath(int[][] matrix) {
+    public int longestIncreasingPath01(int[][] matrix) {
         if (matrix.length == 0) return 0;
         int m = matrix.length;
         int n = matrix[0].length;
@@ -3580,8 +3563,7 @@ public class Solution {
         int res = 0;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                //  res = Math.max(res, dfsSearchPath(matrix, dp, i, j, m, n));
-                res = Math.max(res, dfsSearchPath1(matrix, dp, i, j, m, n));
+                res = Math.max(res, dfsSearchPath(matrix, dp, i, j, m, n));
             }
         }
         return res;
@@ -3590,9 +3572,10 @@ public class Solution {
     // 单调最长路径
     public int dfsSearchPath(int[][] matrix, int[][] memo, int i, int j, int m, int n) {
         if (memo[i][j] != 0) return memo[i][j];
+        int[] dirs = new int[]{0, 1, 0, -1, 0};
         int len = 1;
-        for (int[] dir : dirs) {
-            int x = i + dir[0], y = j + dir[1];
+        for (int k = 0; k < 4; k++) {
+            int x = i + dirs[k], y = j + dirs[k + 1];
             if (x >= 0 && x < m && y >= 0 && y < n && matrix[i][j] < matrix[x][y]) {
                 len = Math.max(len, 1 + dfsSearchPath(matrix, memo, x, y, m, n));
             }
@@ -3601,61 +3584,11 @@ public class Solution {
         return len;
     }
 
-    // 这个比较易懂!!!
-    public int dfsSearchPath1(int[][] matrix, int[][] dp, int i, int j, int m, int n) {
-        if (dp[i][j] != 0) return dp[i][j];
-        int len = 1;
-        if (i - 1 >= 0 && matrix[i - 1][j] > matrix[i][j])
-            len = Math.max(len, 1 + dfsSearchPath1(matrix, dp, i - 1, j, m, n));
-        if (i + 1 < m && matrix[i + 1][j] > matrix[i][j])
-            len = Math.max(len, 1 + dfsSearchPath1(matrix, dp, i + 1, j, m, n));
-        if (j - 1 >= 0 && matrix[i][j - 1] > matrix[i][j])
-            len = Math.max(len, 1 + dfsSearchPath1(matrix, dp, i, j - 1, m, n));
-        if (j + 1 < n && matrix[i][j + 1] > matrix[i][j]) {
-            len = Math.max(len, 1 + dfsSearchPath1(matrix, dp, i, j + 1, m, n));
-        }
-        return dp[i][j] = len;
-    }
 
-    // ③ 解法2 https://youtu.be/yKr4iyQnBpY  bottom up方法
-    public int longestIncreasingPath1(int[][] matrix) {
-        if (matrix == null || matrix.length == 0 || matrix[0].length == 0)
-            return 0;
-        int m = matrix.length;
-        int n = matrix[0].length;
-        int[][] dp = new int[m][n];
-        PriorityQueue<int[]> minHeap = new PriorityQueue<>(
-                //
-                (a, b) -> (matrix[a[0]][a[1]] - matrix[b[0]][b[1]])
-        );
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                minHeap.offer(new int[]{i, j});
-            }
-        }
-        int longest = 1;
-        // 最小堆  每次取最小, 有比她更小的则更新
-        while (!minHeap.isEmpty()) {
-            int[] cur = minHeap.poll();
-            int i = cur[0];
-            int j = cur[1];
-            dp[i][j] = 1;
-            if (i - 1 >= 0 && matrix[i - 1][j] > matrix[i][j])
-                dp[i][j] = Math.max(dp[i][j], dp[i - 1][j] + 1);
-            if (i + 1 < m && matrix[i + 1][j] > matrix[i][j])
-                dp[i][j] = Math.max(dp[i][j], dp[i + 1][j] + 1);
-            if (j - 1 >= 0 && matrix[i][j - 1] > matrix[i][j])
-                dp[i][j] = Math.max(dp[i][j], dp[i][j - 1] + 1);
-            if (j + 1 < n && matrix[i][j + 1] > matrix[i][j])
-                dp[i][j] = Math.max(dp[i][j], dp[i][j + 1] + 1);
-            longest = Math.max(dp[i][j], longest);
-        }
-        return longest;
-    }
-
-    //  没看懂！！ 解法3 topological sort 构建拓扑排序, 问题转换为 有向图的中的拓扑排序下的最长路径
-    public int longestIncreasingPath2(int[][] matrix) {
-        int[] shift = {0, 1, 0, -1, 0};
+    // http://bit.ly/2EXW1yR
+    // BFS   没看懂！！ 解法3 topological sort 构建拓扑排序, 问题转换为 有向图的中的拓扑排序下的最长路径
+    public int longestIncreasingPath03(int[][] matrix) {
+        int[] dirs = {0, 1, 0, -1, 0};
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
             return 0;
         }
@@ -3663,17 +3596,17 @@ public class Solution {
         int n = matrix[0].length;
         int[][] indegree = new int[m][n];
         Queue<int[]> queue = new LinkedList();
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (i - 1 >= 0 && matrix[i - 1][j] < matrix[i][j])
-                    indegree[i][j] += 1;
-                if (i + 1 < m && matrix[i + 1][j] < matrix[i][j])
-                    indegree[i][j] += 1;
-                if (j - 1 >= 0 && matrix[i][j - 1] < matrix[i][j])
-                    indegree[i][j] += 1;
-                if (j + 1 < n && matrix[i][j + 1] < matrix[i][j])
-                    indegree[i][j] += 1;
-                if (indegree[i][j] == 0) queue.offer(new int[]{i, j});
+        for (int x = 0; x < m; x++) {
+            for (int y = 0; y < n; y++) {
+                for (int i = 0; i < 4; i++) {
+                    int nx = dirs[i] + x;
+                    int ny = dirs[i + 1] + y;
+                    if (nx < 0 || ny < 0 || nx >= m || ny >= n) continue;
+                    if (matrix[x][y] > matrix[nx][ny]) indegree[x][y]++;
+                }
+                if (indegree[x][y] == 0) {
+                    queue.offer(new int[]{x, y});
+                }
             }
         }
         int len = 0;
@@ -3684,19 +3617,22 @@ public class Solution {
                 int x = pos[0];
                 int y = pos[1];
                 for (int k = 0; k < 4; k++) {
-                    int newX = x + shift[k];
-                    int newY = y + shift[k + 1];
-                    if (0 <= newX && newX < m && 0 <= newY && newY < n && matrix[x][y] < matrix[newX][newY]) {
-                        indegree[newX][newY]--;
-                        if (indegree[newX][newY] == 0)
-                            queue.offer(new int[]{newX, newY});
+                    int nx = x + dirs[k];
+                    int ny = y + dirs[k + 1];
+                    if (nx < 0 || ny < 0 || nx >= m || ny >= n || matrix[x][y] >= matrix[nx][ny]) continue;
+                    indegree[nx][ny]--;
+                    if (indegree[nx][ny] == 0) {
+                        queue.offer(new int[]{nx, ny});
                     }
+
                 }
             }
             len++;
         }
+
         return len;
     }
+
 
     // 计算器系列 224 227  772    // 770 真心没意思
     //③ 224. 基本计算器  没有优先级了 我真滴服了 审题要仔细哦
@@ -4824,10 +4760,10 @@ public class Solution {
             char key = s.charAt(i);
             counts.put(key, counts.getOrDefault(key, 0) + 1);
             while (counts.size() > k) {
-                char leftKey = s.charAt(l);
-                counts.put(leftKey, counts.get(leftKey) - 1);
-                if (counts.get(leftKey) == 0) {
-                    counts.remove(leftKey);
+                char lk = s.charAt(l);
+                counts.put(lk, counts.get(lk) - 1);
+                if (counts.get(lk) == 0) {
+                    counts.remove(lk);
                 }
                 l++;
             }
@@ -5271,9 +5207,6 @@ public class Solution {
     }
 
 
-
-
-
     // 链式前向星 excu me?  链式前向星介绍参见 https://oi-wiki.org/graph/basic/
     // http://bit.ly/2KfuHPN
     // 题目答案参见  http://bit.ly/2OdVc9c
@@ -5360,7 +5293,7 @@ public class Solution {
         return ans;
     }
 
-    // ③  547 朋友圈
+    // ③ 547 朋友圈
     public int findCircleNum(int[][] M) {
         boolean[] visited = new boolean[M.length];
         int count = 0;
@@ -5426,7 +5359,7 @@ public class Solution {
     }
 
 
-    // 366
+    // ③ 366 寻找完全二叉树的叶子节点
     public List<List<Integer>> findLeaves(TreeNode root) {
         // 用TreeMap代替,然后转换成ans
         Map<Integer, List<Integer>> map = new TreeMap<>();
@@ -5466,7 +5399,77 @@ public class Solution {
         return "";
     }
     // 630 课程表Ⅲ
+
     // 354 俄罗斯套娃信封问题
+
+    // 218
+    public List<int[]> getSkyline(int[][] buildings) {
+        List<int[]> ans = new ArrayList();
+        List<int[]> height = new ArrayList();
+        for (int[] b : buildings) {
+            height.add(new int[]{b[0], -b[2]});
+            height.add(new int[]{b[1], b[2]});
+        }
+        // 入点 降序， 出点 升序, 入点选高的，出点选低的
+        Collections.sort(height, (a, b) -> {
+            if (a[0] != b[0]) {
+                return a[0] - b[0];
+            } else {
+                return a[1] - b[1];
+            }
+        });
+        //构建最大堆
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<Integer>((a, b) -> b - a);
+        maxHeap.offer(0);
+        int prev = 0;
+        for (int[] h : height) {
+            if (h[1] < 0) {
+                maxHeap.offer(-h[1]);
+            } else {
+                // 删除 出点第一大的，保证出点是第二大的
+                maxHeap.remove(h[1]);
+            }
+            int cur = maxHeap.peek();
+            if (prev != cur) { // 若相等，说明 还在点内
+                ans.add(new int[]{h[0], cur});
+                prev = cur;
+            }
+        }
+        return ans;
+    }
+
+
+    // 1293 有障碍物的最短路径，拥有K个消除权力的
+    public int shortestPath(int[][] grid, int k) {
+        int[] dirs = new int[]{0, -1, 0, 1, 0};
+        int m = grid.length, n = grid[0].length;
+        int[] seen = new int[m * n];
+        Arrays.fill(seen, Integer.MAX_VALUE);
+        LinkedList<Tuple> q = new LinkedList<>();
+        int ans = 0;
+        q.add(new Tuple(0, 0, 0));
+        seen[0] = 0;
+        while (!q.isEmpty()) {
+            int size = q.size();
+            while (size-- > 0) {
+                Tuple t = q.poll();
+                int x = t.x, y = t.y, z = t.z;
+                if (x == m - 1 && y == n - 1) return ans;
+                for (int j = 0; j < 4; j++) {
+                    int nx = x + dirs[j];
+                    int ny = y + dirs[j + 1];
+                    if (nx < 0 || ny < 0 || nx >= m || ny >= n) continue;
+                    int ob = z + grid[x][y];
+                    if (ob >= seen[nx * n + ny] || ob > k) continue;
+                    seen[nx * n + ny] = ob;
+                    q.add(new Tuple(nx, ny, ob));
+                }
+            }
+            ans++;
+        }
+        return -1;
+    }
+
 }
 
 
