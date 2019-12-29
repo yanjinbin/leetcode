@@ -5469,6 +5469,138 @@ public class Solution {
         }
         return -1;
     }
+    // 1231 最大得分的路径数目
+    // 这里有意思的i，j 代表的不是坐标索引，而是第几个，差1的关系，和第二种方法一样用了padding
+    public int[] pathWithMaxScore01(List<String> board){
+        int kMod = (int)(1e9+7);
+        int m = board.size();
+        int[][] dp = new int[m+1][m+1];
+        int[][] cc = new int[m+1][m+1];
+        // init;
+        cc[1][1] = 1;
+        for(int i=1;i<=m;i++){
+            for(int j=1;j<=m;j++){
+                char c = board.get(i-1).charAt(j-1);
+                if(c=='S' || c=='E') c='0';
+                int val = Math.max(Math.max(dp[i-1][j],dp[i][j-1]),dp[i-1][j-1]);
+                dp[i][j]=m+c-'0';
+                if(val==dp[i-1][j]){
+                    cc[i][j] =(cc[i][j]+cc[i-1][j])%kMod;
+                }
+                if(val==dp[i][j-1]){
+                    cc[i][j]=(cc[i][j]+cc[i][j-1])%kMod;
+                }
+                if(val==dp[i-1][j-1]){
+                    cc[i][j]=(cc[i][j]+cc[i-1][j-1])%kMod;
+                }
+            }
+        }
+        return new int[]{cc[m][m]==0?0:dp[m][m],cc[m][m]};
+    }
+
+    public int[] pathsWithMaxScore02(List<String> board) {
+        int kMod = (int) (1e9 + 7);
+        int m = board.size();
+        int[][] dp = new int[m + 1][m + 1];
+        int[][] cc = new int[m + 1][m + 1];
+        // init
+        cc[m - 1][m - 1] = 1;
+        // dp
+        for (int i = m - 1; i >= 0; i--) {
+            for (int j = m - 1; j >= 0; j--) {
+                char c = board.get(i).charAt(j);
+                if (c == 'S' || c == 'E') c = '0';// 起点和終点的处理
+                if (c == 'X') continue;
+                int val = Math.max(Math.max(dp[i + 1][j], dp[i][j + 1]), dp[i + 1][j + 1]);
+                dp[i][j] = val + c - '0';
+                if (val == dp[i + 1][j]) {
+                    cc[i][j] = (cc[i][j] + cc[i + 1][j]) % kMod;
+                }
+                if (val == dp[i][j + 1]) {
+                    cc[i][j] = (cc[i][j] + cc[i][j + 1]) % kMod;
+                }
+                if (val == dp[i + 1][j + 1]) {
+                    cc[i][j] = (cc[i][j] + cc[i + 1][j + 1]) % kMod;
+                }
+            }
+        }
+        return new int[]{cc[0][0] == 0 ? 0 : dp[0][0], cc[0][0]};
+    }
+
+    // ❓
+    public int[] pathsWithMaxScore03(List<String> board) {
+        int m = board.size();
+        char ob = 'X';
+        int[] dirs = new int[]{0, -1, -1, 0};
+        PriorityQueue<Tuple> q = new PriorityQueue<>((a, b) -> a.z - b.z);
+        int ans = 0, count = 0;
+        q.add(new Tuple(m - 1, m - 1, 0));
+        while (!q.isEmpty()) {
+            int size = q.size();
+            while (size-- > 0) {
+                Tuple t = q.poll();
+                int x = t.x, y = t.y, z = t.z;
+                for (int k = 0; k < 3; k++) {
+                    int nx = x + dirs[k];
+                    int ny = y + dirs[k + 1];
+                    if (nx < 0 || ny < 0 || nx >= m || ny >= m || board.get(nx).charAt(ny) == ob) continue;
+                    if (nx == 0 && ny == 0) {
+                        if (ans == z) count++;
+                        if (ans < z) {
+                            count = 1;
+                            ans = z;
+                        }
+                    } else {
+                        int update = board.get(nx).charAt(ny) - '0' + z;
+                        if (update >= ans) q.offer(new Tuple(nx, ny, update));
+                    }
+
+                }
+
+            }
+        }
+        return new int[]{ans, count};
+
+    }
+
+
+    // 55 跳跃游戏
+    public boolean canJump(int[] nums) {
+        int N = nums.length;
+        boolean[] dp = new boolean[N];
+        dp[0] = nums[0] > 0;
+        for (int i = 1; i < N; i++) {
+            for (int j = 0; j < i; j++) {
+                if (!dp[i]) dp[i] = (dp[j] && (i - j) <= nums[j]);
+            }
+        }
+        return dp[N - 1];
+    }
+
+    // 1298 BFS  S:O(盒子个数） T(盒子个数）
+    public int maxCandies(int[] status, int[] candies, int[][] keys, int[][] containedBoxes, int[] initialBoxes) {
+        int ans = 0;
+        int open = 1, closed = 0;
+        boolean[] seen = new boolean[status.length];
+        LinkedList<Integer> q = new LinkedList<>();
+        for (int i : initialBoxes) {
+            seen[i] = true;
+            if (status[i] == open) q.push(i);
+        }
+        while (!q.isEmpty()) {
+            int b = q.poll();
+            ans += candies[b];
+            for (int t : containedBoxes[b]) { // 内嵌的盒子找到了，如果是出于打开状态，那么入列
+                seen[t] = true;
+                if (status[t] == open) q.push(t);
+            }
+            for (int t : keys[b]) { // 拥有打开盒子的钥匙，那么 1盒子需要招到了2没有打开过 ，那么才可以入列。
+                if (seen[t] && status[t] == closed) q.push(t);
+                status[t] = open;
+            }
+        }
+        return ans;
+    }
 
 }
 
