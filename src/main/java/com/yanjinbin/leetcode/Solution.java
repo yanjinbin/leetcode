@@ -5316,27 +5316,6 @@ public class Solution {
         }
     }
 
-    // 969 pancake
-    public List<Integer> pancakeSort(int[] A) {
-        List<Integer> res = new ArrayList<>();
-        for (int x = A.length, i; x > 0; --x) {
-            for (i = 0; A[i] != x; ++i) ;
-            reverse(A, i + 1);
-            res.add(i + 1);
-            reverse(A, x);
-            res.add(x);
-        }
-        return res;
-    }
-
-    public void reverse(int[] A, int k) {
-        for (int i = 0, j = k - 1; i < j; i++, j--) {
-            int tmp = A[i];
-            A[i] = A[j];
-            A[j] = tmp;
-        }
-    }
-
     //
     // https://www.geeksforgeeks.org/sort-linked-list-already-sorted-absolute-values/
     // HEAD>-- PREV --> CUR -->NEXT
@@ -5554,9 +5533,7 @@ public class Solution {
                         int update = board.get(nx).charAt(ny) - '0' + z;
                         if (update >= ans) q.offer(new Tuple(nx, ny, update));
                     }
-
                 }
-
             }
         }
         return new int[]{ans, count};
@@ -5601,6 +5578,37 @@ public class Solution {
         }
         return ans;
     }
+
+    // 969 https://youtu.be/RB9hlDDWQY0
+    public List<Integer> pancakeSort(int[] A) {
+        List<Integer> ans = new ArrayList<>();
+        int n = A.length, largest = n;
+        for (int i = 0; i < n; i++) {
+            int index = find(A, largest);
+            flip(A, index);//执行前index+1 flip
+            flip(A, largest - 1);// 执行largest个 flip.
+            ans.add(index + 1);
+            ans.add(largest--);
+        }
+        return ans;
+    }
+    private int find(int[] A, int target) {
+        for (int i = 0; i < A.length; i++) {
+            if (A[i] == target) {
+                return i;
+            }
+        }
+        return -1;
+    }
+    private void flip(int[] A, int index) {
+        int i = 0, j = index;
+        while (i < j) {
+            int temp = A[i];
+            A[i++] = A[j];
+            A[j--] = temp;
+        }
+    }
+
 
 }
 
