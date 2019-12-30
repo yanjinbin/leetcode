@@ -22,6 +22,8 @@ public class Microsoft {
     // 单调队列 http://poj.org/problem?id=2823
     // 239. 滑动窗口最大值 这道题目也是考察数据结构的熟悉程度了 大堆 优先队列
     // 也可以当做RMQ问题 ST解决 http://bit.ly/35lfJkh
+
+    // T:O(NlgN)
     public int[] maxSlidingWindow0(int[] nums, int k) {
         int[] res = new int[nums.length - k + 1];
         if (nums.length == 0 || nums == null) return new int[0];
@@ -1022,7 +1024,7 @@ public class Microsoft {
                 dp[i][j] = dp[i - 1][j] + dp[i][j - 1] - dp[i - 1][j - 1] + mat[i - 1][j - 1];
             }
         }
-        
+
         int lo = 1, hi = Math.min(M, N) + 1, ans = 0;
         while (lo < hi) {
             int mid = (hi - lo) / 2 + lo;
@@ -1031,6 +1033,7 @@ public class Microsoft {
                 for (int j = 1; j + mid - 1 <= N; j++) {
                     if (rangeSum(dp, i, j, mid) <= k) {
                         OK = true;
+                        break;
                     }
                 }
             }
@@ -1044,8 +1047,108 @@ public class Microsoft {
         return ans;
     }
 
+    // k=6,n=10000,递归时候栈过多. T(K*N2)
+    public int superEggDrop01(int k, int n) {
+        int[][] memo = new int[k + 1][n + 1];
+        return dp(k, n, memo);
+    }
 
-    // 887. 鸡蛋掉落
+    public int dp(int k, int n, int[][] memo) {
+        if (k == 1) return n;
+        if (n == 0) return 0;
+        if (memo[k][n] != 0) return memo[k][n];
+        int res = Integer.MAX_VALUE;
+        for (int i = 1; i <= n; i++) {
+            res = Math.min(res, Math.max(dp(k - 1, i - 1, memo), dp(k, n - i, memo)) + 1); // broken = dp(k-1,i-1),unbroken = dp(k,n-i);
+        }
+        memo[k][n] = res;
+        return res;
+    }
+
+    // T(K*N2) accept不了
+    public int superEggDrop02(int K, int N) {
+        int[][] dp = new int[K + 1][N + 1];
+        // init
+        for (int i = 0; i <= K; i++) Arrays.fill(dp[i], Integer.MAX_VALUE);
+        for (int i = 0; i <= N; i++) {
+            dp[1][i] = i; // k = 1,方案是N;
+            dp[0][i] = 0;
+        }
+        for (int i = 0; i <= K; i++) {
+            dp[i][0] = 0;
+        }
+        // DP
+        for (int k = 2; k <= K; k++) {
+            for (int n = 1; n <= N; n++) {
+                for (int i = 1; i <= n; i++) {
+                    dp[k][n] = Math.min(dp[k][n], Math.max(dp[k - 1][i - 1], dp[k][n - i]) + 1);
+                }
+            }
+        }
+        // ans
+        return dp[K][N];
+    }
+
+    // 时间复杂度 T(KNlgN)
+    public int superEggDrop03(int K, int N) {
+        int[][] dp = new int[K + 1][N + 1];
+        for (int i = 0; i <= N; i++) {
+            dp[1][i] = i; // k = 1,方案是N;
+        }
+        for (int i = 0; i <= K; i++) {
+            dp[i][0] = 0;
+        }
+
+        for (int k = 2; k <= K; k++) {
+            for (int n = 1; n <= N; n++) {
+                dp[k][n] = n; // 理论要尝试的最大次数n
+                int lo = 1, hi = n + 1; // 左闭右开
+                while (lo < hi) {
+                    int mid = lo + (hi - lo) / 2;
+                    int broken = dp[k - 1][mid - 1], unbroken = dp[k][n - mid];
+                    if (broken < unbroken) {
+                        lo = mid + 1;
+                    } else {
+                        hi = mid;
+                    }
+                }
+                dp[k][n] = Math.min(dp[k][n], Math.max(dp[k - 1][lo - 1], dp[k][n - lo]) + 1);
+            }
+        }
+        return dp[K][N];
+    }
+
+    // 现在，我们稍微修改dp数组的定义，确定当前的鸡蛋个数和最多允许的扔鸡蛋次数，就知道能够确定F的最高楼层数。
+    //
+    //有点绕口，具体来说是这个意思：
+    //
+    //dp[k][m] = n
+    //# 当前有 k 个鸡蛋，可以尝试扔 m 次鸡蛋
+    //# 这个状态下，最坏情况下最多能确切测试一栋 n 层的楼
+    //
+    //# 比如说 dp[1][7] = 7 表示：
+    //# 现在有 1 个鸡蛋，允许你扔 7 次;
+    //# 这个状态下最多给你 7 层楼，
+    //# 使得你可以确定楼层 F 使得鸡蛋恰好摔不碎
+    //# （一层一层线性探查嘛）
+    // 基于下面两个事实：
+    // 1、无论你在哪层楼扔鸡蛋，鸡蛋只可能摔碎或者没摔碎，碎了的话就测楼下，没碎的话就测楼上。
+    // 2、无论你上楼还是下楼，总的楼层数 = 楼上的楼层数 + 楼下的楼层数 + 1（当前这层楼）。
+    // 重写状态转移方程式 http://bit.ly/37gMGy8
+    // T:O(KN)
+    public int superEggDrop04(int K, int N) {
+        int[][] dp = new int[K + 1][N + 1];
+        int m = 0;
+        //   m 最多不会超过 N 次（线性扫描）
+        while (dp[K][m] < N) {
+            m++;
+            for (int k = 1; k <= K; k++) {
+                dp[k][m] = dp[k][m - 1] + dp[k - 1][m - 1] + 1;
+            }
+        }
+        return m;
+    }
+
 
     // 1044. 最长重复子串
 
@@ -1121,4 +1224,6 @@ public class Microsoft {
 
     // [tag:微软 2019-10-10] https://www.1point3acres.com/bbs/thread-558573-1-1.html
     // 74 124 239
+
+    // Min Moves to Obtain String Without 3 Identical Consecutive Letters
 }
