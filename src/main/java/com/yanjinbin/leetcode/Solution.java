@@ -2464,7 +2464,7 @@ public class Solution {
         return Math.max(tasks.length, (cnt[25] - 1) * (n + 1) + 25 - i);
     }
 */
-    // round-robin 算法
+    // round-robin 算法 BFS
     public int leastInterval02(char[] tasks, int n) {
         Map<Character, Integer> counts = new HashMap();
         for (char t : tasks) {
@@ -5448,33 +5448,34 @@ public class Solution {
         }
         return -1;
     }
+
     // 1231 最大得分的路径数目
     // 这里有意思的i，j 代表的不是坐标索引，而是第几个，差1的关系，和第二种方法一样用了padding
-    public int[] pathWithMaxScore01(List<String> board){
-        int kMod = (int)(1e9+7);
+    public int[] pathWithMaxScore01(List<String> board) {
+        int kMod = (int) (1e9 + 7);
         int m = board.size();
-        int[][] dp = new int[m+1][m+1];
-        int[][] cc = new int[m+1][m+1];
+        int[][] dp = new int[m + 1][m + 1];
+        int[][] cc = new int[m + 1][m + 1];
         // init;
         cc[1][1] = 1;
-        for(int i=1;i<=m;i++){
-            for(int j=1;j<=m;j++){
-                char c = board.get(i-1).charAt(j-1);
-                if(c=='S' || c=='E') c='0';
-                int val = Math.max(Math.max(dp[i-1][j],dp[i][j-1]),dp[i-1][j-1]);
-                dp[i][j]=m+c-'0';
-                if(val==dp[i-1][j]){
-                    cc[i][j] =(cc[i][j]+cc[i-1][j])%kMod;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= m; j++) {
+                char c = board.get(i - 1).charAt(j - 1);
+                if (c == 'S' || c == 'E') c = '0';
+                int val = Math.max(Math.max(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]);
+                dp[i][j] = m + c - '0';
+                if (val == dp[i - 1][j]) {
+                    cc[i][j] = (cc[i][j] + cc[i - 1][j]) % kMod;
                 }
-                if(val==dp[i][j-1]){
-                    cc[i][j]=(cc[i][j]+cc[i][j-1])%kMod;
+                if (val == dp[i][j - 1]) {
+                    cc[i][j] = (cc[i][j] + cc[i][j - 1]) % kMod;
                 }
-                if(val==dp[i-1][j-1]){
-                    cc[i][j]=(cc[i][j]+cc[i-1][j-1])%kMod;
+                if (val == dp[i - 1][j - 1]) {
+                    cc[i][j] = (cc[i][j] + cc[i - 1][j - 1]) % kMod;
                 }
             }
         }
-        return new int[]{cc[m][m]==0?0:dp[m][m],cc[m][m]};
+        return new int[]{cc[m][m] == 0 ? 0 : dp[m][m], cc[m][m]};
     }
 
     public int[] pathsWithMaxScore02(List<String> board) {
@@ -5609,6 +5610,96 @@ public class Solution {
         }
     }
 
+    // LC 815 公交线路
+    // 解法1 存 stop
+    public int numBusesToDestination01(int[][] routes, int S, int T) {
+        int op = 0;
+        if (S == T) return 0;
+        LinkedList<Integer> q = new LinkedList();// 公交车
+        Map<Integer, List<Integer>> m = buildEdges(routes);// 站-->公交车
+        q.push(S);
+        boolean[] seen = new boolean[routes.length];
+        int ans = 0;
+        while (!q.isEmpty()) {
+            int size = q.size();
+            ans++;
+            while (size-- > 0) {
+                int stop = q.poll();// 站点
+                for (int bus : m.get(stop)) {
+                    if (seen[bus]) continue;
+                    seen[bus] = true;
+                    for (int i : routes[bus]) {
+                        if (i == T) {
+                            System.out.println(op);
+                            return ans;
+                        }
+                        op++;
+                        q.add(i);
+                    }
+                }
+
+            }
+        }
+        System.out.println(op);
+        return -1;
+    }
+    // 解法2 存 bus
+    public int numBusesToDestination02(int[][] routes, int S, int T) {
+        int op = 0;
+        if (S == T) return 0;
+        LinkedList<Integer> q = new LinkedList();// 公交车
+        Map<Integer, List<Integer>> m = buildEdges(routes);// 站-->公交车
+        boolean[] seen = new boolean[routes.length];
+        Set<Integer> s = new HashSet();
+        s.add(S);
+        for (int bus : m.get(S)) {
+            seen[bus] = true;
+            q.add(bus);
+        }
+        int ans = 0;
+        while (!q.isEmpty()) {
+            int size = q.size();
+
+            ans++;
+            while (size-- > 0) {
+                int bus = q.poll();// 公交车
+                int[] stops = routes[bus];
+                for (int stop : stops) {
+                    if (stop == T) {
+                        System.out.println(op);
+                        return ans;
+                    }
+                    if (s.contains(stop)) continue;
+                    s.add(stop);
+                    List<Integer> buses = m.get(stop);
+                    for (int i : buses) {
+                        if (seen[i]) continue;
+                        op++;
+                        q.add(i);
+                    }
+
+                }
+            }
+
+        }
+        System.out.println(op);
+        return -1;
+    }
+
+
+    public Map<Integer, List<Integer>> buildEdges(int[][] routes) {
+        Map<Integer, List<Integer>> m = new HashMap();
+        for (int i = 0; i < routes.length; i++) {
+            for (int j = 0; j < routes[i].length; j++) {
+                int stop = routes[i][j];
+                List<Integer> buses = m.getOrDefault(stop, new ArrayList());
+                buses.add(i);
+                m.put(stop, buses);
+            }
+        }
+        return m;
+
+    }
 
 }
 
