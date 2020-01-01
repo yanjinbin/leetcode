@@ -99,114 +99,6 @@ public class MonotoneStack {
         return res;
     }
 
-    // 407 接雨水Ⅱ 优先队列+BFS https://youtu.be/7niUr7LlviY
-    public int trapRainWater(int[][] heightMap) {
-        PriorityQueue<Tuple> q = new PriorityQueue<Tuple>((o1, o2) -> o1.z - o2.z);
-        int m = heightMap.length;
-        int n = heightMap[0].length;
-        boolean[][] visited = new boolean[m][n];
-        for (int i = 0; i < m; i++) {
-            q.offer(new Tuple(i, 0, heightMap[i][0]));
-            q.offer(new Tuple(i, n - 1, heightMap[i][n - 1]));
-            visited[i][0] = true;
-            visited[i][n - 1] = true;
-        }
-        for (int j = 0; j < n; j++) {
-            q.offer(new Tuple(0, j, heightMap[0][j]));
-            q.offer(new Tuple(m - 1, j, heightMap[m - 1][j]));
-            visited[0][j] = true;
-            visited[m - 1][j] = true;
-        }
-
-        int[] dx = new int[]{1, -1, 0, 0};
-        int[] dy = new int[]{0, 0, 1, -1};
-        int water = 0;
-        while (!q.isEmpty()) {
-            Tuple p = q.poll();
-            int x = p.x, y = p.y, height = p.z;
-            for (int i = 0; i < 4; i++) {
-                int nx = dx[i] + x;
-                int ny = dy[i] + y;
-                if (nx >= 0 && nx < m && ny >= 0 && ny < n && !visited[nx][ny]) {
-                    visited[nx][ny] = true;
-                    if (height > heightMap[nx][ny]) {// 注意q存储的 tuple的height 是height还是heightMap[nx][ny]
-                        water += height - heightMap[nx][ny];
-                        q.offer(new Tuple(nx, ny, height));
-                    } else {
-                        q.offer(new Tuple(nx, ny, heightMap[nx][ny]));
-                    }
-                }
-            }
-        }
-        return water;
-    }
-
-    // https://youtu.be/umdk98ynLSY
-    // 778 解法1 dijkstra/优先队列+BFS ,总结:最大里面取最小!!(从小堆里面取留下的大元素)
-    public int swimInWater01(int[][] grid) {
-        PriorityQueue<Point> q = new PriorityQueue<Point>((o1, o2) -> o1.val - o2.val);
-        int N = grid.length;
-        boolean[] visited = new boolean[N * N];
-        q.offer(new Point(0, 0, grid[0][0]));
-        // x*n+y
-        visited[0] = true;
-        int[] dirs = new int[]{-1, 0, 1, 0, -1};
-        while (!q.isEmpty()) {
-            Point p = q.poll();
-            if (p.x == N - 1 && p.y == N - 1) return p.val;
-            for (int i = 0; i < 4; i++) {
-                int nx = p.x + dirs[i];
-                int ny = p.y + dirs[i + 1];
-                if (nx >= N || nx < 0 || ny >= N || ny < 0 || visited[nx * N + ny]) continue;
-                visited[nx * N + ny] = true;
-                //注意是取max哦.因为heap是minHeap
-                q.offer(new Point(nx, ny, Math.max(grid[nx][ny], p.val)));
-            }
-        }
-        return -1;
-    }
-
-    // 778 解法2 bfs+二分查找
-    public int swimInWater02(int[][] grid) {
-        int lo = 0, hi = grid.length * grid.length;
-        while (lo < hi) {
-            int mid = lo + (hi - lo) / 2;
-            if (hasPath(mid, grid.length, grid)) {
-                hi = mid;
-            } else {
-                lo = mid + 1;
-            }
-        }
-        return lo;
-
-    }
-
-    public boolean hasPath(int t, int N, int[][] grid) {
-        if (grid[0][0] > t) return false;
-        Queue<Integer> q = new LinkedList<>();
-        boolean[] seen = new boolean[N * N];
-        int[] dirs = new int[]{-1, 0, 1, 0, -1};
-        q.add(0);
-        while (!q.isEmpty()) {
-            int idx = q.poll();
-            int x = idx % N;
-            int y = idx / N;
-            if (x == N - 1 && y == N - 1) return true;
-            for (int i = 0; i < 4; i++) {
-                int nx = x + dirs[i];
-                int ny = y + dirs[i + 1];
-                if (nx < 0 || ny < 0 || nx >= N || ny >= N || grid[nx][ny] > t) continue;
-                int ndx = ny * N + nx;
-                if (seen[ndx]) continue;
-                seen[ndx] = true;
-                q.add(ndx);
-            }
-        }
-        return false;
-
-    }
-
-
     public static void main(String[] args) {
         PriorityQueue<Point> q = new PriorityQueue<Point>((o1, o2) -> o1.val - o2.val);
         q.offer(new Point(1, 1, 3));
@@ -376,9 +268,8 @@ public class MonotoneStack {
 
 
     public int largestRectangleArea04(int[] heights) {
-
         Stack<Integer> s = new Stack<>();
-        s.push(-1);
+        s.push(-1);//tricky
         int maxArea = 0;
         for (int i = 0; i < heights.length; ++i) {
             while (s.peek() != -1 && heights[s.peek()] >= heights[i])
@@ -391,57 +282,34 @@ public class MonotoneStack {
 
     }
 
-    /*
-    public int largestRectangleArea03(int[] heights) {
-        if (heights.length==1) return heights[0];// 错误 ,如果输入数据是[2,2]
-        Stack<Integer> s = new Stack<>();
-        int maxArea = 0;
-        for (int i=0;i<heights.length;i++){
-            while (!s.isEmpty()&&heights[s.peek()]>heights[i]){
-                maxArea = Math.max(maxArea,heights[s.pop()]*(i-(s.isEmpty()? 0:s.peek()+1)));
-            }
-            s.push(i);
-        }
-        return maxArea;
-    }*/
-
-    // 85. 最大矩形
-    public int maximalRectangle0(char[][] matrix) {
-        int res = 0;
-        int length = 0;
-        int[] height = new int[length];
-        for (int i = 0; i < matrix.length; i++) {
-            // reset
-            height = Arrays.copyOf(height, Math.max(length, matrix[i].length));
-            for (int j = 0; j < matrix[i].length; j++) {
-                height[j] = (matrix[i][j] == '0' ? 0 : (height[j] + 1));
-            }
-            res = Math.max(res, largestRectangleArea01(height));
-        }
-        return res;
-    }
-
-    //todo 其他解法待做 http://bit.ly/2Ga4HmE
+    // lc 85 T: O(MN²)
+    // dp[i][j] := max length of all 1 sequence ends with col j,     at the i-th row.
+    // transition:
+    // dp[i][j] = 0 if matrix[i][j] == ‘0’
+    //= dp[i][j-1] + 1 if matrix[i][j] == ‘1’
     public int maximalRectangle(char[][] matrix) {
-        if (matrix.length == 0 || matrix[0].length == 0) {
-            return 0;
-        }
-        int res = 0;
-        int[][] hMax = new int[matrix.length][];
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[i].length; j++) {
-                if (matrix[i][j] == '0') continue;
-                if (j > 0) {
-                    hMax[i][j] = hMax[i][j - 1] + 1;
-                } else {
-                    hMax[i][0] = 1;
+        int r = matrix.length;
+        int c = matrix[0].length;
+
+        int[][] dp = new int[r][c];
+        for (int i = 0; i < r; i++)
+            for (int j = 0; j < c; j++)
+                dp[i][j] = (matrix[i][j] == '1') ? (j == 0 ? 1 : dp[i][j - 1] + 1) : 0;
+
+        int ans = 0;
+
+        for (int i = 0; i < r; i++)
+            for (int j = 0; j < c; j++) {
+                int len = Integer.MAX_VALUE;
+                for (int k = i; k < r; k++) {
+                    len = Math.min(len, dp[k][j]);
+                    if (len == 0) break;
+                    ans = Math.max(len * (k - i + 1), ans);
                 }
             }
-        }
-        // todo 哈
-        return 1;
-    }
 
+        return ans;
+    }
 
     // 456
     // 给定一个整数序列：a1, a2, ..., an，一个132模式的子序列 ai, aj, ak 被定义为：
