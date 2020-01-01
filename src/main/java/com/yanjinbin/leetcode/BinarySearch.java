@@ -16,7 +16,9 @@ public class BinarySearch {
         long r = x + 1;
         while (l < r) {
             long mid = l + (r - l) / 2;
-            if (mid > x / mid) {//避免溢出
+            if (mid > x / mid) {
+                // 避免溢出 为什么不写成 mid<x/mid ，
+                // 因为现在要找到大于它 而非大于等于 的上边界，那么-1就是它的最后一个<= x的数字了
                 r = mid;
             } else {
                 l = mid + 1;
@@ -48,33 +50,6 @@ public class BinarySearch {
     }
 
 
-    // ② 378 有序矩阵中 第K小的元素
-    // 解法2 二分查找
-    public int kthSmallest(int[][] matrix, int k) {
-        int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1] + 1;
-        while (lo < hi) {
-            int mid = lo + (hi - lo) / 2;
-            int count = lessEqual(matrix, mid);
-            if (count < k) lo = mid + 1;
-                // 为什么是mid-1呢 而不是mid
-            else hi = mid;
-        }
-        return hi;
-    }
-
-    //  from left-bottom or right-top can count how much numbers are less equal then target
-    public int lessEqual(int[][] matrix, int target) {
-        int cnt = 0, N = matrix.length, i = N - 1, j = 0;
-        while (i >= 0 && j < N) {
-            if (matrix[i][j] > target) i--;
-            else {
-                cnt = cnt + i + 1;
-                j++;
-            }
-        }
-        return cnt;
-    }
-
     //②  162 寻找峰值
     public int findPeakElement1(int[] nums) {
         int l = 0, r = nums.length - 1;
@@ -96,13 +71,13 @@ public class BinarySearch {
         while (lo < hi) {
             int mid = lo + (hi - lo) / 2;
             if (x - arr[mid] > arr[mid + k] - x) {
-                lo = mid+1;
-            }else{
+                lo = mid + 1;
+            } else {
                 hi = mid;
             }
         }
         List<Integer> list = new ArrayList<>();
-        for (int j=lo;j<lo+k;j++){
+        for (int j = lo; j < lo + k; j++) {
             list.add(arr[j]);
         }
         return list;
@@ -126,6 +101,112 @@ public class BinarySearch {
             }
         }
         return lo;
+    }
+
+    // ② 378 有序矩阵中 第K小的元素
+    // 解法2 二分查找
+    public int kthSmallest(int[][] matrix, int k) {
+        int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1] + 1;
+        while (lo < hi) {
+            int mid = lo + (hi - lo) / 2;
+            int count = lessEqual(matrix, mid);
+            if (count < k) lo = mid + 1;
+            else hi = mid;
+        }
+        return hi;
+    }
+
+    //  from left-bottom or right-top can count how much numbers are less equal then target
+    public int lessEqual(int[][] matrix, int target) {
+        int cnt = 0, N = matrix.length, i = N - 1, j = 0;
+        while (i >= 0 && j < N) {
+            if (matrix[i][j] > target) i--;
+            else {
+                cnt = cnt + i + 1;
+                j++;
+            }
+        }
+        return cnt;
+    }
+
+    // LC 668
+    public int findKthNumber(int m, int n, int k) {
+        int lo = 1, hi = m * n + 1;
+        while (lo < hi) {
+            int mid = (hi - lo) / 2 + lo;
+            if (len(mid, m, n) < k) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
+    }
+
+    //通用项: 1*i ,2*i,3*i....m*i;
+    public int len(int target, int m, int n) {
+        int cnt = 0;
+        for (int i = 1; i <= m; i++) {
+            cnt += Math.min(n, target / i);
+        }
+        return cnt;
+    }
+
+    // ⚠️  注意 二分的条件函数f=g(M)是找到<= m 而不是 < m ,一定要包含m这个元素
+    // LC 786 第 K 个最小的素数分数
+    // 难点,二分分法,根据fraction表,往右和往上递减,计算元素个数
+    public int[] kthSmallestPrimeFraction(int[] A, int k) {
+        int n = A.length;
+        double lo = A[0] / A[n - 1], hi = 1.0;
+        while (lo < hi) {
+            double mid = (hi + lo) / 2;
+            double max_f = 0.0;
+            int cnt = 0, p = 0, q = 0;
+            for (int i = 0, j = 1; i < n - 1; i++) {
+                // find j坐标是的A[i]/A[j] <= mid
+                while (j < n && A[i] > mid * A[j]) j++;
+                cnt += n - j;
+                if (n == j) break;
+                double f = A[i] * 1.0 / A[j];
+                if (f > max_f) {
+                    p = i;
+                    q = j;
+                    max_f = f;
+                }
+            }
+            if (cnt == k) {
+                return new int[]{A[p], A[q]};
+            } else if (cnt > k) {
+                hi = mid;
+            } else {
+                lo = mid;
+            }
+        }
+        return new int[]{};
+    }
+
+
+    // LC 719
+    public int smallestDistancePair(int[] nums, int k) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int l = 0, r = nums[n - 1] - nums[0] + 1;
+        while (l < r) {
+            int count = 0;
+            int j = 0;
+            int m = (r - l) / 2 + l;
+            for (int i = 0; i < n; i++) {
+                while (j < n && nums[j] - nums[i] <= m) j++;
+                count += j - i - 1;
+            }
+
+            if (count < k) {
+                l = m + 1;
+            } else {
+                r = m;
+            }
+        }
+        return l;
     }
 
 }
