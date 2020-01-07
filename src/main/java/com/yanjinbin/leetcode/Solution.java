@@ -5705,6 +5705,7 @@ public class Solution {
         return res;
     }
 
+    // ⚠️  这是一个很强的小技巧
     public int dfs(List<Integer>[] map, int idx, boolean[] seen) {
         seen[idx] = true;
         List<Integer> edges = map[idx];
@@ -5844,6 +5845,49 @@ public class Solution {
         if (carry == 1) ans.append(carry);
         return ans.reverse().toString();
     }
+
+    // 55 BFS来做 O(N²)
+    public int jump01(int[] nums) {
+        int N = nums.length;
+        LinkedList<Pair> Q = new LinkedList<Pair>();
+        boolean[] seen = new boolean[N];
+        Q.add(new Pair(0, nums[0]));
+        int ans = 0;
+        while (!Q.isEmpty()) {
+            int size = Q.size();
+            for (int i = 0; i < size; i++) {
+                Pair p = Q.poll();
+                int start = p.key, step = p.val;
+                if (start == N - 1) return ans;
+                for (int k = Math.min(start + step, N - 1); k > start; k--) {
+                    if (!seen[k]) {
+                        Q.add(new Pair(k, nums[k]));
+                        seen[k] = true;
+                    }
+                }
+            }
+            ans++;
+        }
+        return -1;
+    }
+
+    // BFS O(n)
+    public int jump02(int[] nums) {
+        if (nums.length <= 1) return 0;
+        int start = 0, reach = 0, step = 0;
+        while (reach < nums.length - 1) {
+            if (start > reach) return -1;
+            int farest = 0;
+            for (int i = start; i <= reach; i++) {
+                farest = Math.max(farest, i + nums[i]);
+            }
+            start = reach + 1;
+            reach = farest;
+            step++;
+        }
+        return step;
+    }
+
 }
 
 
