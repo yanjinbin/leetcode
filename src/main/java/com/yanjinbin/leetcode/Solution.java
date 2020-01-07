@@ -5727,7 +5727,7 @@ public class Solution {
 
     // 25  K个一组翻转链表
     //1-2-3-4-5
-    // 2 
+    // 2
     // 2-1-4-3-5
     // http://bit.ly/2QuAULl 评论里面有更好的
     public ListNode reverseKGroup01(ListNode head, int k) {
@@ -5797,6 +5797,53 @@ public class Solution {
         return ans;
     }
 
+    // 27 原地移除元素
+    public int removeElement(int[] nums, int val) {
+        int count = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != val) {
+                nums[count] = nums[i];
+                count++;
+            }
+        }
+        return count;
+    }
+
+    // 这道题目其实很经典的，如何处理tradeoff http://bit.ly/2QPGTcx
+    // 9 是否是回文数字
+    public boolean isPalindrome(int x) {
+        if (x < 0 || (x % 10 == 0 && x != 0)) return false;
+        int revN = 0;
+        while (x > revN) {
+            revN = revN * 10 + x % 10;
+            x = x / 10;
+        }
+        // 奇偶
+        return x == revN / 10 || x == revN;
+    }
+
+    // 100 是否相同的树
+    public boolean isSameTree(TreeNode p, TreeNode q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null) return false;
+        if (p.val == q.val) return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+        return false;
+    }
+
+    // 67 二进制求和
+    public String addBinary(String a, String b) {
+        StringBuilder ans = new StringBuilder();
+        int carry = 0;
+        for (int i = a.length() - 1, j = b.length() - 1; i >= 0 || j >= 0; i--, j--) {
+            int sum = carry;
+            sum += i >= 0 ? a.charAt(i) - '0' : 0;
+            sum += j >= 0 ? b.charAt(j) - '0' : 0;
+            ans.append(sum % 2);
+            carry = sum / 2;
+        }
+        if (carry == 1) ans.append(carry);
+        return ans.reverse().toString();
+    }
 }
 
 
