@@ -5888,6 +5888,28 @@ public class Solution {
         return step;
     }
 
+    // 115 不同的子序列
+    public int numDistinct(String s, String t) {
+        // init
+        int N = s.length(), M = t.length();
+        int[][] dp = new int[M + 1][N + 1];
+        // ✨
+        Arrays.fill(dp[0], 1);
+
+        // transition
+        for (int i = 1; i <= M; i++) {
+            for (int j = 1; j <= N; j++) {
+                // if t[i]==s[j];
+                dp[i][j] += dp[i][j - 1];
+                if (t.charAt(i-1) == s.charAt(j-1)) {
+                    dp[i][j] += dp[i - 1][j - 1];
+                }
+            }
+        }
+        // return
+        return dp[M][N];
+    }
+
 }
 
 
