@@ -1842,10 +1842,10 @@ public class Solution {
     }
 
     public int dfsPostDiameter(TreeNode root) {
-        if (root == null) return 0;
+        if (root == null) return -1;
         int left = dfsPostDiameter(root.left);
         int right = dfsPostDiameter(root.right);
-        res = Math.max(res, left + right);
+        res = Math.max(res, left + right + 2);
         return Math.max(left, right) + 1;
     }
     // 上文的方法 较好
@@ -5593,6 +5593,7 @@ public class Solution {
         }
         return ans;
     }
+
     private int find(int[] A, int target) {
         for (int i = 0; i < A.length; i++) {
             if (A[i] == target) {
@@ -5601,6 +5602,7 @@ public class Solution {
         }
         return -1;
     }
+
     private void flip(int[] A, int index) {
         int i = 0, j = index;
         while (i < j) {
@@ -5613,7 +5615,6 @@ public class Solution {
     // LC 815 公交线路
     // 解法1 存 stop
     public int numBusesToDestination01(int[][] routes, int S, int T) {
-        int op = 0;
         if (S == T) return 0;
         LinkedList<Integer> q = new LinkedList();// 公交车
         Map<Integer, List<Integer>> m = buildEdges(routes);// 站-->公交车
@@ -5629,23 +5630,19 @@ public class Solution {
                     if (seen[bus]) continue;
                     seen[bus] = true;
                     for (int i : routes[bus]) {
-                        if (i == T) {
-                            System.out.println(op);
-                            return ans;
-                        }
-                        op++;
+                        if (i == T) return ans;
                         q.add(i);
                     }
                 }
 
             }
         }
-        System.out.println(op);
+
         return -1;
     }
+
     // 解法2 存 bus
     public int numBusesToDestination02(int[][] routes, int S, int T) {
-        int op = 0;
         if (S == T) return 0;
         LinkedList<Integer> q = new LinkedList();// 公交车
         Map<Integer, List<Integer>> m = buildEdges(routes);// 站-->公交车
@@ -5659,30 +5656,23 @@ public class Solution {
         int ans = 0;
         while (!q.isEmpty()) {
             int size = q.size();
-
             ans++;
             while (size-- > 0) {
                 int bus = q.poll();// 公交车
                 int[] stops = routes[bus];
                 for (int stop : stops) {
-                    if (stop == T) {
-                        System.out.println(op);
-                        return ans;
-                    }
+                    if (stop == T) return ans;
                     if (s.contains(stop)) continue;
                     s.add(stop);
                     List<Integer> buses = m.get(stop);
                     for (int i : buses) {
                         if (seen[i]) continue;
-                        op++;
                         q.add(i);
                     }
-
                 }
             }
 
         }
-        System.out.println(op);
         return -1;
     }
 
@@ -5698,7 +5688,113 @@ public class Solution {
             }
         }
         return m;
+    }
 
+    // LC 1245
+    public int treeDiameter(int[][] edges) {
+        int N = edges.length;
+        List<Integer>[] m = new ArrayList[N + 1];
+        Arrays.fill(m, new ArrayList<>());
+        boolean[] seen = new boolean[N + 1];
+        for (int[] edge : edges) {
+            int u = edge[0], v = edge[1];
+            m[u].add(v);
+            m[v].add(u);
+        }
+        dfs(m, 0, seen);
+        return res;
+    }
+
+    public int dfs(List<Integer>[] map, int idx, boolean[] seen) {
+        seen[idx] = true;
+        List<Integer> edges = map[idx];
+        int max1 = 0;
+        int max2 = 0;
+        for (int next : edges) {
+            if (!seen[next]) {
+                int num = dfs(map, next, seen);
+                if (num > max1) {
+                    max2 = max1;
+                    max1 = num;
+                } else if (num > max2) {
+                    max2 = num;
+                }
+            }
+        }
+        res = Math.max(res, max1 + max2);
+        return Math.max(max1, max2) + 1;
+    }
+
+    // 25  K个一组翻转链表
+    //1-2-3-4-5
+    // 2 
+    // 2-1-4-3-5
+    // http://bit.ly/2QuAULl 评论里面有更好的
+    public ListNode reverseKGroup01(ListNode head, int k) {
+        ListNode cur = head;
+        int count = 0;
+        while (count < k) { // 获取下一个节点
+            if (cur == null) return head;
+            cur = cur.next;
+            count++;
+        }
+        ListNode pre = reverseKGroup01(cur, k);// pre代表下一个一组的head节点
+        while (count > 0) {// pre和之前的head节点要进行reverse。
+            ListNode next = head.next;
+            head.next = pre;
+            pre = head;
+            head = next;
+            count--;
+        }
+        return pre;
+    }
+
+    // 解法2 非递归 todo
+    public ListNode reverseKGroup02(ListNode head, int k) {
+        if (head == null || k == 1) return head;
+        ListNode dummy = new ListNode(0);
+        dummy.next = head;
+        ListNode cur = dummy, nex = dummy, pre = dummy;
+        int count = 0;
+        while (cur.next != null) {
+            cur = cur.next;
+            count++;
+        }
+        while (count >= k) {
+            cur = pre.next;
+            nex = cur.next;
+            for (int i = 1; i < k; i++) {
+                cur.next = nex.next;
+                nex.next = pre.next;
+                pre.next = nex;
+                nex = cur.next;
+            }
+            pre = cur;
+            count -= k;
+        }
+        return dummy.next;
+    }
+
+    // 6 Z字形变换
+    public String zigzagConvert(String str, int rows) {
+        // init的时候 curR 应该从false-->true
+        if (rows == 1) return str;
+        String[] strs = new String[rows];
+        Arrays.fill(strs, "");
+        boolean down = false;
+        int curR = 0;
+        for (char c : str.toCharArray()) {
+            strs[curR] = strs[curR] + c;
+            if (curR == 0 || curR == rows - 1) {
+                down = !down;
+            }
+            curR += down ? 1 : -1;
+        }
+        String ans = "";
+        for (String s : strs) {
+            ans += s;
+        }
+        return ans;
     }
 
 }
