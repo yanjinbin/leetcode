@@ -2739,6 +2739,51 @@ public class Solution {
         return res;
     }
 
+    // 12 数字转罗马
+    public String intToRoman(int num) {
+        Map<Integer, String> dict = new HashMap();
+        dict.put(1000, "M");
+        dict.put(500, "D");
+        dict.put(100, "C");
+        dict.put(50, "L");
+        dict.put(10, "X");
+        dict.put(5, "V");
+        dict.put(1, "I");
+        StringBuilder ans = new StringBuilder();
+        int[] ints = new int[]{1000, 500, 100, 50, 10, 5, 1};
+        while (num != 0) {
+            for (int i = 0; i < ints.length; i++) {
+                int mod = ints[i];
+                int a = num / mod;
+                int b = num % mod;
+                if (num >= 900 && mod == 500) {
+                    ans.append("CM");
+                    num -= 900;
+                } else if (num >= 400 && mod == 100) {
+                    ans.append("CD");
+                    num -= 400;
+                } else if (num >= 90 && mod == 50) {
+                    ans.append("XC");
+                    num -= 90;
+                } else if (num >= 40 && mod == 10) {
+                    ans.append("XL");
+                    num -= 40;
+                } else if (num >= 9 && mod == 5) {
+                    ans.append("IX");
+                    num -= 9;
+                } else if (num >= 4 && mod == 1) {
+                    ans.append("IV");
+                    num -= 4;
+                } else if (a != 0) {
+                    num = b;
+                    while (a-- > 0) {
+                        ans.append(dict.get(mod));
+                    }
+                }
+            }
+        }
+        return ans.toString();
+    }
 
     //② 13. 罗马数字转整数
     public int romanToInt(String s) {
@@ -5901,7 +5946,7 @@ public class Solution {
             for (int j = 1; j <= N; j++) {
                 // if t[i]==s[j];
                 dp[i][j] += dp[i][j - 1];
-                if (t.charAt(i-1) == s.charAt(j-1)) {
+                if (t.charAt(i - 1) == s.charAt(j - 1)) {
                     dp[i][j] += dp[i - 1][j - 1];
                 }
             }
@@ -5909,6 +5954,44 @@ public class Solution {
         // return
         return dp[M][N];
     }
+
+    // 43 字符串数字相乘
+    public String multiply(String s1, String s2) {
+        if ("0".equals(s1) || "0".equals(s2)) return "0";
+        String ans = "0";
+        int m = s1.length(), n = s2.length();
+        for (int i = n - 1; i >= 0; i--) {
+            int carry = 0;
+            StringBuilder tmp = new StringBuilder();
+            for (int k = 0; k < n - 1 - i; k++) tmp.append("0");
+            int c = s2.charAt(i) - '0';
+            for (int j = m - 1; j >= 0; j--) {
+                int product = (s1.charAt(j) - '0') * c + carry;
+                tmp.append(product % 10);
+                carry = product / 10;
+
+            }
+            // carry可以是1-9
+            if (carry != 0) tmp.append(carry);
+            ans = add(ans, tmp.reverse().toString());
+        }
+        return ans;
+    }
+
+    public String add(String s1, String s2) {
+        int carry = 0, m = s1.length(), n = s2.length();
+        StringBuilder ans = new StringBuilder();
+        for (int i = m - 1, j = n - 1; i >= 0 || j >= 0; i--, j--) {
+            int sum = carry;
+            sum += i >= 0 ? s1.charAt(i) - '0' : 0;
+            sum += j >= 0 ? s2.charAt(j) - '0' : 0;
+            ans.append(sum % 10);
+            carry = sum / 10;
+        }
+        if (carry != 0) ans.append(carry);
+        return ans.reverse().toString();
+    }
+
 
 }
 
