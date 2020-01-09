@@ -5755,9 +5755,9 @@ public class Solution {
     public ListNode swapPairs(ListNode head) {
         ListNode cur = head;
         int count = 0;
-        int k=2;
+        int k = 2;
         while (count < k) {
-            if(cur==null) return head;
+            if (cur == null) return head;
             cur = cur.next;
             count++;
         }
@@ -5772,7 +5772,6 @@ public class Solution {
         }
         return pre;
     }
-
 
 
     // 25  K个一组翻转链表
@@ -6194,16 +6193,32 @@ public class Solution {
         return ans;
     }
 
-    // 30 . 串联所有单词的子串
+    // 30 . 串联所有单词的子串 这是一道题意都很难读懂的题目 可能读懂需要hard程序！
     public List<Integer> findSubstring(String s, String[] words) {
-        return null;
+        List<Integer> ans = new ArrayList<>();
+        if(s==null||s.length()==0||words==null||words.length==0)return ans;
+        int sLen = words[0].length();
+        int nums = words.length;
+        int len = sLen * nums;
+        Map<String, Integer> cnt = new HashMap<>();
+        for (String item : words) {
+            cnt.put(item, cnt.getOrDefault(item, 0) + 1);
+        }
+        for (int i = 0; i < s.length(); i++) {
+            if (i + len > s.length()) break;
+            String str = s.substring(i, i + len);
+            Map<String, Integer> freq = new HashMap<>();
+            for (int j = 0; j + sLen <= str.length(); j = j + sLen) {
+                String key = str.substring(j, j + sLen);
+                freq.put(key,freq.getOrDefault(key,0)+1);
+            }
+            if (freq.equals(cnt)) {
+                ans.add(i);
+            }
+        }
+        return ans;
     }
 
-
-    // 37 解数独 嗯
-    public void solveSudoku(char[][] board) {
-
-    }
 
 
 }
