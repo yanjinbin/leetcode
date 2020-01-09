@@ -5398,8 +5398,6 @@ public class Solution {
         return -1;
     }
 
-    // 25 k个一组翻转链表
-
     // LC 358   todo K距离间隔重排字符串
     public String rearrangeString(String s, int k) {
         return "";
@@ -5752,6 +5750,30 @@ public class Solution {
         res = Math.max(res, max1 + max2);
         return Math.max(max1, max2) + 1;
     }
+
+    // 24 两两交换链表中的节点
+    public ListNode swapPairs(ListNode head) {
+        ListNode cur = head;
+        int count = 0;
+        int k=2;
+        while (count < k) {
+            if(cur==null) return head;
+            cur = cur.next;
+            count++;
+        }
+
+        ListNode pre = swapPairs(cur);
+        while (count > 0) {
+            ListNode next = head.next;
+            head.next = pre;
+            pre = head;
+            head = next;
+            count--;
+        }
+        return pre;
+    }
+
+
 
     // 25  K个一组翻转链表
     //1-2-3-4-5
@@ -6146,6 +6168,42 @@ public class Solution {
     */
 
     // 16 最接近的3数之和
+    public int threeSumClosest(int[] nums, int target) {
+        if (nums == null || nums.length < 3) return -1;
+        Arrays.sort(nums);
+        int d = Integer.MAX_VALUE;
+        int N = nums.length;
+        int ans = 0;
+        for (int i = 0; i < N - 2; i++) {
+            int lo = i + 1, hi = N - 1;
+            while (lo < hi) {
+                int v = nums[i] + nums[lo] + nums[hi];
+                if (v == target) return target;
+                int diff = Math.abs(v - target);
+                if (diff < d) {
+                    d = diff;
+                    ans = v;
+                }
+                if (v < target) {
+                    lo++;
+                } else {
+                    hi--;
+                }
+            }
+        }
+        return ans;
+    }
+
+    // 30 . 串联所有单词的子串
+    public List<Integer> findSubstring(String s, String[] words) {
+        return null;
+    }
+
+
+    // 37 解数独 嗯
+    public void solveSudoku(char[][] board) {
+
+    }
 
 
 }
