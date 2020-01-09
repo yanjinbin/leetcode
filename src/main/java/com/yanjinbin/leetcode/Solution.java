@@ -54,19 +54,6 @@ public class Solution {
         }
     }
 
-    //③ #1
-    public int[] twoSum(int[] nums, int target) {
-        Map<Integer, Integer> map = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            int complement = target - nums[i];
-            if (map.containsKey(complement)) {
-                return new int[]{map.get(complement), i};
-            }
-            map.put(nums[i], i);
-        }
-        throw new IllegalArgumentException("No two sum solution");
-    }
-
     //② #2  两数相加
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         ListNode dummyNode = new ListNode(0);
@@ -195,30 +182,6 @@ public class Solution {
             }
         }
         return ans;
-    }
-
-    // ② 15 3数字和，先排序  i j k指针，跳过重复数
-    // http://bit.ly/2Sp1iFG
-    public List<List<Integer>> threeSum(int[] nums) {
-        List<List<Integer>> ret = new ArrayList();
-        if (nums.length < 3) return ret;
-        Arrays.sort(nums);
-        int i = 0;
-        while (i < nums.length - 2) {
-            if (nums[i] > 0) break;
-            int j = i + 1;
-            int k = nums.length - 1;
-            while (j < k) {
-                int sum = nums[i] + nums[j] + nums[k];
-                if (sum == 0) ret.add(Arrays.asList(nums[i], nums[j], nums[k]));
-                // 跳过重复数字 注意前置++ -- 运算符 运算好立即调用 而不是等到下一次
-                if (sum < 0) while (nums[j] == nums[++j] && j < k) ;
-                if (sum > 0) while (nums[k] == nums[--k] && j < k) ;
-            }
-            // 跳过重复数字
-            while (nums[i] == nums[++i] && i < nums.length - 2) ;
-        }
-        return ret;
     }
 
     //③  #5 最长回文字符串 5. Longest Palindromic Substring 官方题解垃圾的一点就是 start 和 end的更新问题 有问题
@@ -2740,7 +2703,7 @@ public class Solution {
     }
 
     // 12 数字转罗马
-    public String intToRoman(int num) {
+    public String intToRoman01(int num) {
         Map<Integer, String> dict = new HashMap();
         dict.put(1000, "M");
         dict.put(500, "D");
@@ -2783,7 +2746,26 @@ public class Solution {
             }
         }
         return ans.toString();
+
     }
+
+    // 解法2 http://bit.ly/2FxS6sN
+    public String intToRoman02(int num) {
+        StringBuilder ans = new StringBuilder();
+        String[] roman = {"M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"};
+        int[] arab = {1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1};
+        int index = 0;
+        while (num != 0) {
+            int count = num / arab[index];
+            while (count-- > 0) {
+                ans.append(roman[index]);
+            }
+            num = num % arab[index];
+            index++;
+        }
+        return ans.toString();
+    }
+
 
     //② 13. 罗马数字转整数
     public int romanToInt(String s) {
@@ -5991,6 +5973,179 @@ public class Solution {
         if (carry != 0) ans.append(carry);
         return ans.reverse().toString();
     }
+
+    //[KSUM系列] 1 两数之和 15 三数之和 18 四数之和 系列
+    //③ 1 两数之和
+    public int[] twoSum01(int[] nums, int target) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            int complement = target - nums[i];
+            if (map.containsKey(complement)) {
+                return new int[]{map.get(complement), i};
+            }
+            map.put(nums[i], i);
+        }
+        throw new IllegalArgumentException("No two sum solution");
+    }
+
+    // 解法2
+    public int[] twoSum02(int[] nums, int target) {
+        Arrays.sort(nums);
+        int lo = 0, hi = nums.length - 1;
+        while (lo < hi) {
+            int sum = nums[lo] + nums[hi];
+            if (sum < target) {
+                lo++;
+            } else if (sum > target) {
+                hi--;
+            } else {
+                return new int[]{nums[lo], nums[hi]};
+            }
+        }
+        return new int[]{};
+    }
+    //
+
+    // ② 15 3数字和，先排序  i j k指针，跳过重复数
+    // http://bit.ly/2Sp1iFG
+    public List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> ret = new ArrayList();
+        if (nums.length < 3) return ret;
+        Arrays.sort(nums);
+        int i = 0;
+        while (i < nums.length - 2) {
+            if (nums[i] > 0) break;
+            int j = i + 1;
+            int k = nums.length - 1;
+            while (j < k) {
+                int sum = nums[i] + nums[j] + nums[k];
+                if (sum == 0) ret.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                // 跳过重复数字 注意前置++ -- 运算符 运算好立即调用 而不是等到下一次
+                if (sum < 0) while (nums[j] == nums[++j] && j < k) ;
+                if (sum > 0) while (nums[k] == nums[--k] && j < k) ;
+            }
+            // 跳过重复数字
+            while (nums[i] == nums[++i] && i < nums.length - 2) ;
+        }
+        return ret;
+    }
+
+    // 18 四数之和
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> ans = new ArrayList<>();
+        if (nums == null || nums.length < 4) return ans;
+        Arrays.sort(nums);
+        int N = nums.length;
+        for (int i = 0; i < N - 3; i++) {
+            if (i == 0 || nums[i] != nums[i - 1]) {
+                for (int j = i + 1; j < N - 2; j++) {
+                    if (j == i + 1 || nums[j] != nums[j - 1]) {
+                        int lo = j + 1, hi = N - 1;
+                        int v = target - nums[i] - nums[j];
+                        while (lo < hi) {
+                            // edge case [-1,2,2,-5,0,-1,4],target =3 吧过滤重复元素放在这里就是错误了！！
+                            //  while (lo < hi && nums[lo] == nums[lo + 1]) lo++;
+                            //  while (lo < hi && nums[hi] == nums[hi - 1]) hi--;
+                            if (nums[lo] + nums[hi] == v) {
+                                ans.add(Arrays.asList(nums[i], nums[j], nums[lo], nums[hi]));
+                                // 跳过原有的
+                                while (lo < hi && nums[lo] == nums[lo + 1]) lo++;
+                                while (lo < hi && nums[hi] == nums[hi - 1]) hi--;
+                                lo++;
+                                hi--;
+                            } else if (nums[lo] + nums[hi] > v) {
+                                hi--;
+                            } else {
+                                lo++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return ans;
+    }
+
+    //
+    /*public List<List<Integer>> fourSum_(int[] arr, int target) {
+
+        List<List<Integer>> ans = new ArrayList<>();
+        if (arr == null || arr.length < 4) return ans;
+        Arrays.sort(arr);
+        int N = arr.length;
+        if (target > 4 * arr[N - 1] || target < 4 * arr[0]) return ans;
+        for (int i = 0; i <= N - 4; i++) {
+            if (i == 0 || arr[i] != arr[i - 1]) {
+                for (int j = i + 1; j <= N - 3; j++) {
+                    if (j == 0 || arr[j] != arr[j - 1]) {
+                        for (int k = j + 1; k <= N - 2; k++) {
+                            // 还是无法做到去重
+                            int t = target - arr[i] - arr[j] - arr[k];
+                            int idx = binarySearch(arr, k + 1, N, t);
+                            if (idx == N || arr[idx] != t) continue;
+                            ans.add(Arrays.asList(arr[i], arr[j], arr[k], t));
+                        }
+                    }
+                }
+            }
+        }
+        return ans;
+
+    }
+
+    public int binarySearch(int[] arr, int lo, int hi, int v) {
+        while (lo < hi) {
+            int mid = (hi - lo) / 2 + lo;
+            if (arr[mid] < v) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
+    }*/
+
+    // 错误思路，把他当做DFS了，回顾DFS，我们设定参数，start,sum,cnt,ans,sub,
+    // 然后进行DFS遍历，发现DFS遍历写错了， 举个例子{-2，-1，0，1，2} 我们要找到三数之和
+    // 下面的代码 并没有进行正确的DFS遍历 因为不会遍历到-2，0，2这样的，他只是进行连续遍历。
+    // 所以结果为空
+
+   /*
+   public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> ans = new ArrayList();
+        Arrays.sort(nums);
+        boolean[] seen = new boolean[nums.length];
+        for (int i = 0; i < nums.length; i++) {
+            dfs(nums, i, 0, seen, target, new LinkedList(), ans);
+        }
+        return ans;
+    }
+
+    public void dfs(int[] nums, int start, int cnt, boolean[] seen, int sum, LinkedList<Integer> sub, List<List<Integer>> ans) {
+        if (sum == 0 && cnt == 3) {
+            ans.add(new ArrayList(sub));
+            return;
+        }
+        if (sum < 0 && cnt == 3) {
+            return;
+        }
+        if (cnt > 3) {
+            return;
+        }
+        if (start < nums.length && !seen[start]) {
+            seen[start] = true;
+            sub.add(nums[start]);
+            cnt++;
+            dfs(nums, start + 1, cnt + 1, seen, sum - nums[start], sub, ans);
+            cnt--;
+            seen[start] = false;
+            sub.pollLast();
+
+        }
+    }
+    */
+
+    // 16 最接近的3数之和
 
 
 }
