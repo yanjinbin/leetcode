@@ -3505,7 +3505,7 @@ public class Solution {
                     String rowKey = i + "row" + c;
                     String colKey = j + "col" + c;
                     // group key 为什么没想出来呢  是因为没想出更具坐标系(i,j) 对属于同一个小方格的元素进行归约!!!
-                    String groupKey = (i / 3 + "_" + j / 3 * 3) + "group" + c;
+                    String groupKey = (i / 3 * 3 + j / 3) + "group" + c;
                     //寻找是否有重复的数字
                     if (map.getOrDefault(rowKey, false)
                             || map.getOrDefault(colKey, false)
@@ -3521,6 +3521,46 @@ public class Solution {
         }
         return true;
     }
+
+
+    // 37 解数独 填充
+    public void solveSudoku(char[][] board) {
+        boolean[][] cu = new boolean[9][10], ru = new boolean[9][10], bu = new boolean[9][10];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                int n = board[i][j] - '0';
+                if (1 <= n && n <= 9) {
+                    ru[i][n] = true;
+                    cu[j][n] = true;
+                    bu[(i / 3) * 3 + (j / 3)][n] = true;
+                }
+            }
+        }
+        fill(board, ru, cu, bu, 0, 0);
+    }
+    //  dfs回溯，只需要其中一种解，仔细体会与一般的DFS不同，加了个boolean返回值！！！http://bit.ly/2sThirj
+    public boolean fill(char[][] board, boolean[][] ru, boolean[][] cu, boolean[][] bu, int r, int c) {
+        if (r == 9) return true;
+        int nc = (c + 1) % 9;
+        int nr = (nc == 0) ? (r + 1) : r;
+        if (board[r][c] != '.') return fill(board, ru, cu, bu, nr, nc);
+        for (int i = 1; i <= 9; i++) {
+            int bIdx = ((r / 3) * 3) + (c / 3);
+            if (!ru[r][i] && !cu[c][i] && !bu[bIdx][i]) {
+                ru[r][i] = true;
+                cu[c][i] = true;
+                bu[bIdx][i] = true;
+                board[r][c] = (char) (i + '0');
+                if (fill(board, ru, cu, bu, nr, nc)) return true;
+                board[r][c] = '.';
+                bu[bIdx][i] = false;
+                cu[c][i] = false;
+                ru[r][i] = false;
+            }
+        }
+        return false;
+    }
+
 
     // ③ 50 pow(x,n) 注意这道题目 是能用基本算术运算的!!
     public double myPow(double x, int n) {
@@ -6196,7 +6236,7 @@ public class Solution {
     // 30 . 串联所有单词的子串 这是一道题意都很难读懂的题目 可能读懂需要hard程序！
     public List<Integer> findSubstring(String s, String[] words) {
         List<Integer> ans = new ArrayList<>();
-        if(s==null||s.length()==0||words==null||words.length==0)return ans;
+        if (s == null || s.length() == 0 || words == null || words.length == 0) return ans;
         int sLen = words[0].length();
         int nums = words.length;
         int len = sLen * nums;
@@ -6210,7 +6250,7 @@ public class Solution {
             Map<String, Integer> freq = new HashMap<>();
             for (int j = 0; j + sLen <= str.length(); j = j + sLen) {
                 String key = str.substring(j, j + sLen);
-                freq.put(key,freq.getOrDefault(key,0)+1);
+                freq.put(key, freq.getOrDefault(key, 0) + 1);
             }
             if (freq.equals(cnt)) {
                 ans.add(i);
@@ -6218,7 +6258,6 @@ public class Solution {
         }
         return ans;
     }
-
 
 
 }
