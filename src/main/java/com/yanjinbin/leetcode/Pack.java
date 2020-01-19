@@ -2,7 +2,9 @@ package com.yanjinbin.leetcode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 // https://oi-wiki.org/dp dp大纲
@@ -20,6 +22,7 @@ public class Pack {
         for (int i = 0; i < N; i++) {
             for (int j = 0; j <= V; j++) {
                 if (C[i] > j) dp[i + 1][j] = dp[i][j];
+                    // C[i]代表第i+1件
                 else dp[i + 1][j] = Math.max(dp[i][j], dp[i][j - C[i]] + W[i]);
             }
         }
@@ -670,14 +673,14 @@ public class Pack {
         double[][][] dp = new double[N][N][K + 1];
         for (int i = 0; i < N; i++) {
             for (int j = i; j < N; j++) {
-                dp[i][j][1] = 1.0 * prefixSum(i, j, preSum) / (j - i + 1);
+                dp[i][j][1] = 1.0 * preSum(i, j, preSum) / (j - i + 1);
             }
         }
         for (int len = 2; len <= K; len++) {
             for (int i = 0; i < N; i++) {
                 for (int j = i + len - 1; j < N; j++) {
                     for (int s = i; s < j; s++) {
-                        dp[i][j][len] = Math.max(dp[i][j][len], dp[i][s][len - 1] + prefixSum(s + 1, j, preSum) / (j - s));
+                        dp[i][j][len] = Math.max(dp[i][j][len], dp[i][s][len - 1] + preSum(s + 1, j, preSum) / (j - s));
                     }
                 }
             }
@@ -691,23 +694,23 @@ public class Pack {
      * @param preSum prefix sum for arr[0:N-1]
      * @return sum of arr[x:y]
      */
-    public int prefixSum(int x, int y, int[] preSum) {
+    public int preSum(int x, int y, int[] preSum) {
         return x == 0 ? preSum[y] : preSum[y] - preSum[x - 1];
     }
 
-    // 区间312. 戳气球 DP思想 迭代 http://bit.ly/2K4T01Z dp[i,j]
+    // 区间 312. 戳气球 DP思想 迭代 http://bit.ly/2K4T01Z dp[i,j]
     public int maxCoins(int[] arr) {
         // ready data
         int N = arr.length;
         int[] nums = new int[N + 2];
-        nums[0] = nums[nums.length - 1] = 1;
+        nums[0] = nums[N + 1] = 1;
         for (int i = 0; i < N; i++) {
             nums[i + 1] = arr[i];
         }
         int[][] dp = new int[N + 2][N + 2];
 
         for (int len = 1; len <= N; len++) {
-            for (int i = 1; i <= N - len + 1; i++) {
+            for (int i = 1; len <= N - i + 1; i++) {
                 int j = i + len - 1;
                 for (int k = i; k <= j; k++) {
                     // 求出dp[i,j]区间 第k个气球被打破时候的最大值Max(dp[i,j])
@@ -764,7 +767,7 @@ public class Pack {
         for (int len = 1; len < N; len++) {
             for (int i = 0; i < N - len; i++) {
                 int j = i + len;
-                dp[i][j] = Math.max(prefixSum(i, j, preSum) - dp[i + 1][j], prefixSum(i, j, preSum) - dp[i][j - 1]);
+                dp[i][j] = Math.max(preSum(i, j, preSum) - dp[i + 1][j], preSum(i, j, preSum) - dp[i][j - 1]);
             }
 
         }
@@ -802,7 +805,7 @@ public class Pack {
                 for (int k = 2; k <= K; k++) {
                     for (int m = i; m < j; m += K - 1) {
                         dp[i][j][k] = Math.min(dp[i][j][k], dp[i][m][1] + dp[m + 1][j][k - 1]);
-                        dp[i][j][1] = prefixSum(i, j, preSum) + dp[i][j][k];
+                        dp[i][j][1] = preSum(i, j, preSum) + dp[i][j][k];
                     }
                 }
             }
@@ -914,6 +917,159 @@ public class Pack {
     }
 
 
-    // 488
+    // DAG DP
+    // uva 437 巴比伦塔  the tower of babylon
+    // dp[i][r]=Math.max(dp[i][r],dp[j][r']+h') when  
+/*
+    int babylon(int[][] blocks) {
+        int ans = 0, N = blocks.length();
+        int[][] dp = new int[N][3];
+        for (int i = 0; i < N; i++) {
+            ans = Math.max(ans, babylon_sub(i, 0, n) + blocks[i][0]);
+            ans = Math.max(ans, babylon_sub(i, 1, n) + blocks[i][1]);
+            ans = Math.max(ans, babylon_sub(i, 2, n) + blocks[i][n]);
+        }
+    }
+
+    int babylon_sub(int c, int rh, int n) {
+        return dp[c][rh];
+    }
+
+    dp[c][rh]=0;
+    int base1 = blocks[c][(rh + 1) % 3]
+        for(
+    int i = 0;
+    i<n;i++)
+
+    {
+
+    }*/
+
+
+    // 矩形嵌套问题类似
+
+    // LC 1048 
+
+
+    // LC 691 
+
+
+    // 状压DP 638 464  691  1125
+
+
+    // LG P1896 [SCOI2005]互不侵犯
+
+    // DP: dp[i,j,k] = ∑dp[i-1,x,k-king(x)]
+    // state数组记录可用状态的十进制，king记录该状态的国王数。
+    // 我们用dp(i,j,k) 表示前 i 行，当前状态为 j ，且已经放置 k 个国王时的方案数。
+    public long nonAggression(int N, int K) {
+        // init 
+        int cnt = 0;
+        // based-1 index
+        Map<Integer, Long> state = new HashMap<>();
+        Map<Integer, Integer> king = new HashMap<>();
+        for (long i = 0; i < (1 << N); i++) {
+            if ((i & (i << 1 | i >> 1)) != 0) continue;//说明存在左右相邻元素有1，不满足方案，剔除。
+            int kings = 0;
+            for (long j = 0; j < N; j++) {
+                if ((i & (1 << j)) != 0) kings++;// 计算国王个数 就是i位1的个数
+            }
+            cnt++;
+            state.put(cnt, i);
+            king.put(cnt, kings);
+        }
+
+        // dp 
+        long[][][] dp = new long[N + 1][cnt + 1][K + 1];
+        // // 注意 后面的i,j,开头的时候，i可以取到0，j只能从1开始去，k可以取到0
+        // 也可以先枚举i=1，此时任何状态的方案个数均为1、这个符合人的一般思维
+        dp[0][1][0] = 1;
+        for (int i = 1; i <= N; i++) {
+            for (int j = 1; j <= cnt; j++) {
+                for (int k = 0; k <= K; k++) {
+                    if (k >= king.get(j)) {
+                        long s1 = state.get(j);
+                        for (int t = 1; t <= cnt; t++) {// 枚举上一行状态
+                            long s2 = state.get(t);
+                            if (((s2 | s2 >> 1 | s2 << 1) & s1) != 0) continue;
+                            dp[i][j][k] += dp[i - 1][t][k - king.get(j)];
+                        }
+                    }
+                }
+            }
+        }
+        long ans = 0;
+        for (int i = 1; i <= cnt; i++) { // 枚举 第N行，i状态下，已经放置k个国王数的方案总数
+            ans += dp[N][i][K];
+        }
+        return ans;
+    }
+
+    // P2704 [NOI2001]炮兵阵地
+    public int artilleryPermutation(){
+        int n , m ;
+        for(int i=1;i<=n;i++){
+            for(int j=0;j<m;j++){
+                char c ;
+                if(c=='H') map[i] = map[i]+1<<j
+            }
+        }
+        int k = 0;
+        for(int i=0;i<(1<<m);i++){
+            if( (i&(i<<1)==0) || ((i&(i<<2))==0) || ((i&(i>>1))==0) || ((i&(i>>2))==0)){
+                k++;
+                s[k]=i;
+                g[k]=getSum(i);
+                if((i&map[1])==0) f[1][0][k]=g[k];//初始化第一行
+            }
+        }
+        for(int i=1;i<=k;i++){
+            for(int j=1;j<=k;j++){
+                if(((s[i]&s[j])==0) &&((s[j]&map[2])==0)){
+                    f[2][i][j]=Math.max(f[2][i][j],f[1][0][i]+g[j]);//初始化第二行
+                }
+            }
+        }
+
+        //dp
+        for(int i=3;i<=n;i++){
+            for(int j=1;j<=k;j++){
+                if((map[i]&s[j])==0){
+                    for(int p=1;p<=k;p++){
+                        if(s[p]&s[j]==0){
+                            for(int q=1;q<=k;q++){
+                                if ( (s[q]&s[p])==0 &&  (s[q]&s[j])==0){// j p q
+                                    f[i][p][j]=Math.max(f[i][p][j],f[i-1][q][p]+g[j]);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        for(int i=1;i<=k;i++){
+            for(int j=1;j<=k;j++){
+                ans = Math.max(ans,f[n][i][j]);
+            }
+        }
+        return ans;
+    }
+
+    public int getSum(int x){
+        int cnt = 0;
+        while(x!=0){
+            if((x&1)!=0) cnt++;
+            x = x >>1;
+        }
+        return cnt;
+    }
+    
+    //P1879 [USACO06NOV]玉米田Corn Fields
+    public int cornField(int[][] grid){
+        return -1;
+    }
+
+
 
 }
