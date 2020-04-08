@@ -2,14 +2,15 @@ package com.yanjinbin.leetcode;
 
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Scanner;
 
 public class Graph {
 
 
-    // https://algs4.cs.princeton.edu/40graphs/
-    // 最短路径问题 
+    // 最短路径问题
     int[] dist;
 
     public boolean relax(int u, int v) {
@@ -20,6 +21,7 @@ public class Graph {
             return false;
         }
     }
+
 
     public int weight(int u, int v) {
         return -1;
@@ -66,15 +68,20 @@ public class Graph {
 
     }
 
+    // Bellman-Ford/SPFA 算法  wiki 定义： https://bit.ly/39z3lOr
+    // P1186 1144 1744 AT3883 AT2154 UVA721 p2419 P2910
+
     public int cnt;
     public Edge[] e1; // 1_based index
     public Edge[] e2;
-    public int[] h1;
+    public int[] h1; //另外还有一个数组head[],它是用来表示以i为起点的第一条边存储的位置,实际上你会发现这里的第一条边存储的位置其实
+    //在以i为起点的所有边的最后输入的那个编号.
     public int[] h2;
     public int[] d1;
     public int[] d2;
     public boolean[] in;
 
+    // P1821
     // 构建正向图和反向图，进行SPFA ,因为SPFA是单源最短路径
     public void silverCowParty() {
         int INF = 1000 * 100000 + 1;
@@ -125,13 +132,13 @@ public class Graph {
         in[s] = true;
         d1[s] = 0;
         while (!q.isEmpty()) {
-            int t = q.poll();
-            in[t] = false;
-            for (int i = h1[t]; i != -1; i = e1[i].next) {
+            int u = q.poll();
+            in[u] = false;
+            for (int i = h1[u]; i != -1; i = e1[i].next) {
                 int v = e1[i].to;
                 int w = e1[i].w;
-                if (d1[v] > d1[t] + w) {
-                    d1[v] = d1[t] + w;
+                if (d1[v] > d1[u] + w) {
+                    d1[v] = d1[u] + w;
                     if (!in[v]) {
                         in[v] = true;
                         q.add(v);
@@ -148,13 +155,13 @@ public class Graph {
         in[s] = true;
         d2[s] = 0;
         while (!q.isEmpty()) {
-            int t = q.poll();
-            in[t] = false;
-            for (int i = h2[t]; i != -1; i = e2[i].next) {
+            int u = q.poll();
+            in[u] = false;
+            for (int i = h2[u]; i != -1; i = e2[i].next) {
                 int v = e2[i].to;
                 int w = e2[i].w;
-                if (d2[v] > d2[t] + w) {
-                    d2[v] = d2[t] + w;
+                if (d2[v] > d2[u] + w) {
+                    d2[v] = d2[u] + w;
                     if (!in[v]) {
                         in[v] = true;
                         q.add(v);
@@ -164,23 +171,153 @@ public class Graph {
         }
     }
 
+    // dijkstra 算法  实现： https://bit.ly/3dJiPmk
+    // P5837
 
-    // p2419 [USACO08JAN]Cow Contest S
-    // P2910 Clear And Present Danger S
+   /* public Edge[] e;
+    public int[] limit;
+    public int[] d;
+    public boolean[] seen;
+    public int INF = 1001;
+    public int[] h;
 
-    // Bellman-Ford/SPFA 算法  wiki 定义： https://bit.ly/39z3lOr  https://algs4.cs.princeton.edu/44sp/BellmanFordSP.java.html
-    // P1186 1144 1744 AT3883 AT2154 UVA721
+    public int milkPumpingG() {
+        Scanner cin = new Scanner(System.in);
+        int n = cin.nextInt(), m = cin.nextInt();
+        // init
+        seen = new boolean[n + 1];
+        d = new int[n + 1];
+        e = new Edge[2 * n + 1];
+        limit = new int[n + 1];
+        int cnt = 0;
 
+        for (int i = 1; i <= m; i++) {
+            // 无向图，因故正相反向都需要构建
+            cnt++;
+            int a = cin.nextInt(), b = cin.nextInt(), c = cin.nextInt(), f = cin.nextInt();
+            limit[i] = f;
+            // 正向
+            e[cnt] = new Edge();
+            e[cnt].to = b;
+            e[cnt].next = h[a];
+            e[cnt].cost = c;
+            e[cnt].limit = f;
+            h[a] = cnt;
+            // 反向
+            cnt++;
+            e[cnt] = new Edge();
+            e[cnt].to = a;
+            e[cnt].next = h[b];
+            e[cnt].cost = c;
+            e[cnt].limit = f;
+            h[b] = cnt;
 
-    // dijkstra 算法  实现： https://bit.ly/3dJiPmk https://algs4.cs.princeton.edu/44sp/DijkstraSP.java.html
-    public int dijkstra() {
-        return -1;
+        }
+
+        // traversal
+        int ans = 0;
+        for (int i = 1; i <= m; i++) {
+            ans = Math.max(ans, limit[i] * 1000000 / dijkstra(limit[i], n));
+        }
+        System.out.println(ans);
+        return ans;
     }
 
 
-    // 最小生成树  
-    // Prim
+    public int dijkstra(int limit, int N) {
+        Queue<Edge> q = new PriorityQueue<>((o1, o2) -> (o1.cost - o2.cost));
+        Arrays.fill(seen, false);
+        Arrays.fill(d, INF);
+        d[1] = 0;
+        Edge eg = new Edge();
+        eg.limit = limit;
+        eg.cost = 0;
+        eg.to = 1;
+        q.add(eg);
+        while (!q.isEmpty()) {
+            int u = q.poll().to;
+            if (seen[u]) continue;
+            seen[u] = true;
+            for (int i = h[u]; i != -1; i = e[i].next) {
+                Edge v = e[i];
+                if (v.limit > limit && d[v.to] > d[u] + v.cost) {// relax
+                    d[v.to] = d[u] + v.cost;
+                    v.limit = limit;
+                    v.cost = d[v.to];
+                    q.add(v);
+                }
+            }
+        }
+        return d[N];
+    }
+*/
+
+    public static List<Node>[] e;
+    public static int[] limit;
+    public static int[] dis;
+    public static boolean[] seen;
+    public static int INF = 1001001;
+    // 1001 不行的原因 是数据范围不满足，假设经过说有点，1000*1000+1000=1000000
+    //                                                  dis[N]+N.cost = 1001000
 
 
-    // Kruskal 
+
+    public  void milkPumpingG() {
+        Scanner cin = new Scanner(System.in);
+        int N = cin.nextInt(), M = cin.nextInt();
+        limit = new int[M + 1];
+        e = new LinkedList[N + 1];
+        seen = new boolean[N + 1];
+        dis = new int[N + 1];
+
+        for (int i = 1; i <= M; i++) {
+            int a = cin.nextInt(), b = cin.nextInt(), x = cin.nextInt();
+            limit[i] = cin.nextInt();
+            if (e[a] == null) {
+                e[a] = new LinkedList<>();
+            }
+            e[a].add(new Node(b, x, limit[i]));
+            if (e[b] == null) {
+                e[b] = new LinkedList<>();
+            }
+            e[b].add(new Node(a, x, limit[i]));
+        }
+        int ans = 0;
+        for (int i = 1; i <= M; i++) {
+            ans = Math.max(ans, limit[i] * 1000000 / dijkstra(limit[i], N));
+        }
+        System.out.println(ans);
+    }
+
+    public static int dijkstra(int limit, int N) {
+        PriorityQueue<Node> Q = new PriorityQueue<>((o1, o2) -> (o1.cost - o2.cost));
+        Arrays.fill(seen, false);
+        Arrays.fill(dis, INF);
+        dis[1] = 0;
+        Q.add(new Node(1, 0, limit));
+        while (!Q.isEmpty()) {
+            int u = Q.poll().to;
+            if (seen[u]) continue;
+            seen[u] = true;
+            for (Node v : e[u]) {
+                if (v.limit >= limit && dis[v.to] > dis[u] + v.cost) {
+                    dis[v.to] = dis[u] + v.cost;
+                    Q.add(new Node(v.to, dis[v.to], limit));
+                }
+            }
+        }
+        return dis[N];
+    }
+
+    public static class Node {
+        public int to, cost, limit;
+
+        public Node(int to, int cost, int limit) {
+            this.to = to;
+            this.cost = cost;
+            this.limit = limit;
+        }
+    }
+
+    // 最小生成树
 }
