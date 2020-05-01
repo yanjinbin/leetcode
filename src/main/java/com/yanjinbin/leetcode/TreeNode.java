@@ -17,7 +17,7 @@ public class TreeNode {
     String name;
 
     public int val;
-    // for leetcode 315
+    // LC 315
     @Exclude
     public int count;
 

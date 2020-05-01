@@ -54,7 +54,7 @@ public class Microsoft {
                 q.pollLast();
             }
             q.addLast(i);
-            if (i >= k - 1) {
+            if (i > k) {
                 ans[i + 1 - k] = nums[q.peekFirst()];
             }
         }
@@ -130,7 +130,7 @@ public class Microsoft {
     // ② 240 搜索二维矩阵 Ⅱ
     // 错误思路  对角线对称部分 不能保证上半部分>下半部分  因为 是左至右递增 以及 上到下递增
     // 正确思路应该是 先判断他在上下半部分,然后 再判断他在左右半部分.
-    public boolean searchMatrix1(int[][] matrix, int target) {
+   /* public boolean searchMatrix1(int[][] matrix, int target) {
         if (matrix.length == 0 || matrix[0].length == 0 || matrix == null) return false;
         int m = matrix.length, n = matrix[0].length;
         if (matrix[0][0] > target || target > matrix[m - 1][n - 1]) return false;
@@ -185,7 +185,7 @@ public class Microsoft {
             } else return true;
         }
         return false;
-    }
+    }*/
 
     // ② 上面的2个方法都是异曲同工, 都是同样的错误思路!
     public boolean searchMatrix(int[][] matrix, int target) {
@@ -784,7 +784,6 @@ public class Microsoft {
     }
 
     //  https://www.hackerrank.com/challenges/almost-sorted/problem
-
 
     public static void main(String[] args) {
         /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution. */

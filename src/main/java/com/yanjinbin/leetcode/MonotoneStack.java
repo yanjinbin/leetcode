@@ -1,13 +1,11 @@
 package com.yanjinbin.leetcode;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.Stack;
 
 public class MonotoneStack {
@@ -315,7 +313,6 @@ public class MonotoneStack {
     // 给定一个整数序列：a1, a2, ..., an，一个132模式的子序列 ai, aj, ak 被定义为：
     // 当 i < j < k 时，ai < ak < aj。设计一个算法，
     // 当给定有 n 个数字的序列时，验证这个序列中是否含有132模式的子序列。
-
     public boolean find132pattern(int[] nums) {
         int N = nums.length;
         if (N < 3) return false;
@@ -394,4 +391,5 @@ public class MonotoneStack {
         }
         return ans;
     }
+
 }

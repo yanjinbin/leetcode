@@ -54,8 +54,24 @@ public class Solution {
         }
     }
 
-    //② #2  两数相加
-    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    //② #2  两数相加  更加紧凑的做法
+    public ListNode addTwoNumbers01(ListNode l1,ListNode l2){
+        ListNode dummyNode = new ListNode(0);
+        ListNode p= l1, q = l2;
+        int sum = 0;
+        ListNode cur = dummyNode;
+        while(p!=null||q!=null||sum>0){
+            sum +=(p!=null?p.val:0)+(q!=null?q.val:0);
+            cur.next = new ListNode(sum%10);
+            if(p!=null)p=p.next;
+            if(q!=null)q=q.next;
+            cur = cur.next;
+            sum = sum/10;
+        }
+        return dummyNode.next;
+    }
+
+    public ListNode addTwoNumbers02(ListNode l1, ListNode l2) {
         ListNode dummyNode = new ListNode(0);
         ListNode p = l1;
         ListNode q = l2;
@@ -1005,6 +1021,62 @@ public class Solution {
         return ret.toArray(new int[ret.size()][]);
     }
 
+
+    // LC 57 插入区间
+   /* public int[][] insert(int[][] intervals,int[][] newInterval){
+        // 处理起来有点麻烦 JAVA的头大 ,用Go写了
+    }*/
+
+    /**
+     * func insert(intervals [][]int, newInterval []int) [][]int {
+     * s := newInterval[0]
+     * e := newInterval[1]
+     * l := make([][]int, 0)
+     * r := make([][]int, 0)
+     * for _, v := range intervals {
+     * if v[1] < s {
+     * l = append(l, v)
+     * } else if v[0] > e {
+     * r = append(r, v)
+     * } else {
+     * s = min(s, v[0])
+     * e = max(e, v[1])
+     * }
+     * }
+     * ans := make([][]int, 0)
+     * ans = append(ans, l...)
+     * ans = append(ans, []int{s, e})
+     * ans = append(ans, r...)
+     * return ans
+     * }
+     * <p>
+     * <p>
+     * func min(a, b int) int {
+     * if a < b {
+     * return a
+     * }
+     * return b
+     * }
+     * <p>
+     * func max(a, b int) int {
+     * if a < b {
+     * return b
+     * } else {
+     * return a
+     * }
+     * }
+     */
+
+
+    // LC 58 最后一个单词
+    public int lengthOfLastWord(String str) {
+        int e = str.length() - 1;
+        while (e >= 0 && str.charAt(e) == ' ') e--;
+        int s = e;
+        while (s >= 0 && str.charAt(s) != ' ') s--;
+        return e - s;
+    }
+
     // ② 215. 数组中的第K个最大元素
     // quick sort思想
     public int findKthLargest01(int[] nums, int k) {
@@ -1292,8 +1364,48 @@ public class Solution {
     }
 
     // 63. 不同路径 II
+    int[][] f;
+
+    public int uniquePathsWithObstacles(int[][] grid) {
+        if (grid.length == 0) return 0;
+        int n = grid.length, m = grid[0].length;
+        f = new int[n + 1][m + 1];
+        // init 
+        for (int i = 0; i <= n; i++) {
+            Arrays.fill(f[i], Integer.MIN_VALUE);
+        }
+        // dp+memo
+        return path02(m, n, grid);
+    }
+
+    public int path02(int x, int y, int[][] grid) {
+        if (x <= 0 || y <= 0) return 0;
+        if (x == 1 && y == 1) return 1 - grid[0][0];
+        if (f[y][x] != Integer.MIN_VALUE) return f[y][x];
+        if (grid[y - 1][x - 1] == 1) {
+            f[y][x] = 0;
+        } else {
+            f[y][x] = path02(x - 1, y, grid) + path02(x, y - 1, grid);
+        }
+        return f[y][x];
+    }
 
     // 980 不同路径 III
+
+    // 80 删除排序数组中的重复项
+    public int removeDuplicates1(int[] nums) {
+        return -1;
+    }
+
+    // 81 搜索旋转排序数组Ⅱ
+    public boolean search1(int[] nums, int target) {
+        return false;
+    }
+
+    //82 删除排序链表中的重复元素Ⅱ
+    public ListNode deleteDuplicates(ListNode head) {
+        return null;
+    }
 
     // ② 77  组合
     public List<List<Integer>> combine(int n, int k) {
@@ -3538,6 +3650,7 @@ public class Solution {
         }
         fill(board, ru, cu, bu, 0, 0);
     }
+
     //  dfs回溯，只需要其中一种解，仔细体会与一般的DFS不同，加了个boolean返回值！！！http://bit.ly/2sThirj
     public boolean fill(char[][] board, boolean[][] ru, boolean[][] cu, boolean[][] bu, int r, int c) {
         if (r == 9) return true;
@@ -3890,7 +4003,7 @@ public class Solution {
     }
 
     // follow up 59 螺旋矩阵2
-    public int[][] spiralOrder59(int N) {
+    public int[][] generateMatrix(int N) {
         int[][] matrix = new int[N][N];
         int cur = 1;
         int colBegin = 0, colEnd = matrix[0].length - 1, rowBegin = 0, rowEnd = matrix.length - 1;
@@ -4959,56 +5072,6 @@ public class Solution {
         return gap + 1;
     }
 
-    // 类似于46的全排列问题
-    // 51 N皇后问题
-    char Queen = 'Q', Empty = '.';
-
-    public List<List<String>> solveNQueens(int n) {
-        List<List<String>> ans = new ArrayList();
-        boolean[][] matrix = new boolean[n][n];
-        backTrack(ans, new LinkedList<>(), matrix, 0, n);
-        return ans;
-    }
-
-    public void backTrack(List<List<String>> ans, LinkedList<String> track, boolean[][] matrix, int row, int n) {
-        if (track.size() == row) {
-            ans.add(new ArrayList(track));
-        } else {
-            for (int j = 0; j < n; j++) {
-                if (!isValid(row, j, matrix, n)) continue;
-                track.addLast(convert(n, j));
-                matrix[row][j] = true;
-                backTrack(ans, track, matrix, row + 1, n);// 放置Q, track.add() 撤销Q,track.remove
-                track.pollLast();
-                matrix[row][j] = false;
-            }
-        }
-    }
-
-    public boolean isValid(int row, int col, boolean[][] matrix, int n) {
-        // 正上方
-        for (int i = row - 1; i >= 0; i--) {
-            if (matrix[i][col]) return false;
-        }
-        // 左斜上方
-        for (int i = row - 1, j = col - 1; i >= 0 && j >= 0; i--, j--) {
-            if (matrix[i][j]) return false;
-        }
-        // 右斜上方
-        for (int i = row - 1, j = col + 1; i >= 0 && j < n; i--, j++) {
-            if (matrix[i][j]) return false;
-        }
-        return true;
-    }
-
-    public String convert(int n, int pos) {
-        StringBuilder ret = new StringBuilder();
-        for (int i = 0; i < n; i++) {
-            ret.append(Empty);
-        }
-        ret.setCharAt(pos, Queen);
-        return ret.toString();
-    }
 
     //③ 516  [tag:微软面筋]  https://www.1point3acres.com/bbs/thread-541121-1-1.html
     // 求M的N次方的后3位
@@ -5274,7 +5337,8 @@ public class Solution {
     }
 
 
-    // 链式前向星 excu me?  链式前向星介绍参见 https://oi-wiki.org/graph/basic/
+    // 链式前向星 excu me?  链式前向星介绍参见 https://malash.me/200910/linked-forward-star/
+    // https://oi-wiki.org/graph/basic/
     // http://bit.ly/2KfuHPN
     // 题目答案参见  http://bit.ly/2OdVc9c
     // 链式前向星据说是来自OI圈的叫法，不过换成边，比之前的容易理解
@@ -6257,6 +6321,113 @@ public class Solution {
             }
         }
         return ans;
+    }
+
+
+    // LC 51 N皇后问题
+    public boolean[] cols;
+    public boolean[] diag1;
+    public boolean[] diag2;
+    public char[][] board;
+    List<List<String>> ans;
+
+    public List<List<String>> solveNQueens(int n) {
+        cols = new boolean[n];
+        diag1 = new boolean[2 * n - 1];
+        diag2 = new boolean[2 * n - 1];
+        board = new char[n][n];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(board[i], '.');
+        }
+        ans = new ArrayList();
+        nqueen(n, 0);
+        return ans;
+    }
+
+    public void nqueen(int n, int r) {
+        if (r == n) {
+            List<String> sub = new ArrayList<>();
+            for (char[] chrs : board) {
+                sub.add(String.valueOf(chrs));
+            }
+            ans.add(sub);
+            count52++;
+            return;
+        }
+
+        for (int c = 0; c < n; c++) {
+            if (!isAvailable(r, c, n)) continue;
+            update(r, c, n, true);
+            nqueen(n, r + 1);
+            update(r, c, n, false);
+        }
+    }
+
+    public boolean isAvailable(int r, int c, int n) {
+        return !cols[c] && !diag1[c + r] && !diag2[r - c + n - 1];
+    }
+
+    public void update(int r, int c, int n, boolean put) {
+        cols[c] = put;
+        diag1[r + c] = put;
+        diag2[r - c + n - 1] = put;
+        board[r][c] = put ? 'Q' : '.';
+    }
+
+    // LC 52 N皇后方案个数
+    public int count52;
+
+    public int totalNQueens(int n) {
+        cols = new boolean[n];
+        diag1 = new boolean[2 * n - 1];
+        diag2 = new boolean[2 * n - 1];
+        nqueen(n, 0);
+        return count52;
+    }
+
+    // 60 第K个排列  T O(N) S O(N)
+    public String getPermutation(int n, int k) {
+        int[] fact = new int[n + 1];
+        Arrays.fill(fact, 1);
+        List<Integer> nums = new ArrayList();
+        for (int i = 1; i <= n; i++) {
+            fact[i] = fact[i - 1] * i;
+            nums.add(i);
+        }
+        StringBuilder ans = new StringBuilder();
+        for (int i = 0, l = k - 1; i < n; i++) {
+            int index = l / fact[n - 1 - i];
+            ans.append(nums.remove(index));
+            l = l - index * fact[n - 1 - i];
+        }
+        return ans.toString();
+    }
+
+    // 61旋转链表
+    public ListNode rotateRight(ListNode head, int k) {
+        if (head == null)
+            return null;
+        ListNode cur = head;
+        int len = 1;// len代表节点的个数，也就是链表的长度
+        while (cur.next != null) {
+            len++;
+            cur = cur.next;
+        }
+        cur.next = head;
+        // 这是关键点，成环就不一样了。这点小技巧在另外几道题目中也碰到过。
+        k = k % len;
+        int m = (len - k) % len;
+        for (int i = 0; i < m; i++) {
+            cur = cur.next;
+        }
+        ListNode ans = cur.next;
+        cur.next = null;
+        return ans;
+    }
+
+    //402. 移掉K位数字
+    public String removeKdigits(String num, int k) {
+        return "";
     }
 
 

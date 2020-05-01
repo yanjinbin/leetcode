@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 // https://oi-wiki.org/dp dp大纲
 // dp 比较经典的 01背包问题 完全背包问题 多重背包问题 区间dp
-// 背包问题九讲 https://drive.google.com/file/d/1VTBouzm_LrpTGdbQ8PtWg5P96CAo4hiu/view?usp=sharing
+// 背包问题九讲:https://drive.google.com/file/d/1VTBouzm_LrpTGdbQ8PtWg5P96CAo4hiu/view?usp=sharing
 public class Pack {
 
 
@@ -918,52 +918,53 @@ public class Pack {
 
 
     // DAG DP
-    // uva 437 巴比伦塔  the tower of babylon
-    // dp[i][r]=Math.max(dp[i][r],dp[j][r']+h') when  
-/*
-    int babylon(int[][] blocks) {
-        int ans = 0, N = blocks.length();
-        int[][] dp = new int[N][3];
-        for (int i = 0; i < N; i++) {
-            ans = Math.max(ans, babylon_sub(i, 0, n) + blocks[i][0]);
-            ans = Math.max(ans, babylon_sub(i, 1, n) + blocks[i][1]);
-            ans = Math.max(ans, babylon_sub(i, 2, n) + blocks[i][n]);
-        }
-    }
-
-    int babylon_sub(int c, int rh, int n) {
-        return dp[c][rh];
-    }
-
-    dp[c][rh]=0;
-    int base1 = blocks[c][(rh + 1) % 3]
-        for(
-    int i = 0;
-    i<n;i++)
-
-    {
-
-    }*/
-
+    // uva 437 巴比伦塔  the tower of babylon  暂时C++展示
 
     // 矩形嵌套问题类似
 
-    // LC 1048 
+    // LC 1048
 
 
-    // LC 691 
+    // LC 691
 
 
     // 状压DP 638 464  691  1125
+ /*   // 完全背包问题
+    public int shoppingOffers(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
 
+    }
+
+    // LC 464  https://www.acwing.com/solution/LeetCode/content/6911/
+    // https://blog.csdn.net/zhaohaibo_/article/details/85345229
+    public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
+
+    }
+
+   // 691  http://www.voidcn.com/article/p-vldwpvis-boa.html
+    public int minStickers(String[] stickers, String target) {
+
+    }
+
+    // 背包dp 1125
+  //  https://leetcode-cn.com/problems/smallest-sufficient-team/solution/bei-bao-wen-ti-by-mike-meng/
+    public int[] smallestSufficientTeam(String[] req_skills, List<List<String>> people) {
+
+    }*/
+
+    // 943 473 1125
+    // 状压DP 1349
+    public int maxStudents(char[][] seats) {
+        return -1;
+    }
 
     // LG P1896 [SCOI2005]互不侵犯
 
     // DP: dp[i,j,k] = ∑dp[i-1,x,k-king(x)]
     // state数组记录可用状态的十进制，king记录该状态的国王数。
     // 我们用dp(i,j,k) 表示前 i 行，当前状态为 j ，且已经放置 k 个国王时的方案数。
+
     public long nonAggression(int N, int K) {
-        // init 
+        // init
         int cnt = 0;
         // based-1 index
         Map<Integer, Long> state = new HashMap<>();
@@ -979,7 +980,7 @@ public class Pack {
             king.put(cnt, kings);
         }
 
-        // dp 
+        // dp
         long[][][] dp = new long[N + 1][cnt + 1][K + 1];
         // // 注意 后面的i,j,开头的时候，i可以取到0，j只能从1开始去，k可以取到0
         // 也可以先枚举i=1，此时任何状态的方案个数均为1、这个符合人的一般思维
@@ -1005,41 +1006,45 @@ public class Pack {
         return ans;
     }
 
-    // P2704 [NOI2001]炮兵阵地
-    public int artilleryPermutation(){
-        int n , m ;
-        for(int i=1;i<=n;i++){
-            for(int j=0;j<m;j++){
-                char c ;
-                if(c=='H') map[i] = map[i]+1<<j
+    // LG P2704 [NOI2001]炮兵阵地
+    public int artilleryPermutation(int n, int m) {
+        int[] map = new int[100];
+        int[] s = new int[1000];
+        int[] g = new int[1000];
+        int[][][] f = new int[1000][1000][1000];
+        Scanner cin = new Scanner(System.in);
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j < m; j++) {
+                char c = (char) cin.nextByte();
+                if (c == 'H') map[i] = map[i] + 1 << j;
             }
         }
         int k = 0;
-        for(int i=0;i<(1<<m);i++){
-            if( (i&(i<<1)==0) || ((i&(i<<2))==0) || ((i&(i>>1))==0) || ((i&(i>>2))==0)){
+        for (int i = 0; i < (1 << m); i++) {
+            if (((i & (i << 1)) == 0) || ((i & (i << 2)) == 0) || ((i & (i >> 1)) == 0) || ((i & (i >> 2)) == 0)) {
                 k++;
-                s[k]=i;
-                g[k]=getSum(i);
-                if((i&map[1])==0) f[1][0][k]=g[k];//初始化第一行
+                s[k] = i;
+                g[k] = getSum(i);
+                if ((i & map[1]) == 0) f[1][0][k] = g[k];//初始化第一行
             }
         }
-        for(int i=1;i<=k;i++){
-            for(int j=1;j<=k;j++){
-                if(((s[i]&s[j])==0) &&((s[j]&map[2])==0)){
-                    f[2][i][j]=Math.max(f[2][i][j],f[1][0][i]+g[j]);//初始化第二行
+        for (int i = 1; i <= k; i++) {
+            for (int j = 1; j <= k; j++) {
+                if (((s[i] & s[j]) == 0) && ((s[j] & map[2]) == 0)) {
+                    f[2][i][j] = Math.max(f[2][i][j], f[1][0][i] + g[j]);//初始化第二行
                 }
             }
         }
 
         //dp
-        for(int i=3;i<=n;i++){
-            for(int j=1;j<=k;j++){
-                if((map[i]&s[j])==0){
-                    for(int p=1;p<=k;p++){
-                        if(s[p]&s[j]==0){
-                            for(int q=1;q<=k;q++){
-                                if ( (s[q]&s[p])==0 &&  (s[q]&s[j])==0){// j p q
-                                    f[i][p][j]=Math.max(f[i][p][j],f[i-1][q][p]+g[j]);
+        for (int i = 3; i <= n; i++) {
+            for (int j = 1; j <= k; j++) {
+                if ((map[i] & s[j]) == 0) {
+                    for (int p = 1; p <= k; p++) {
+                        if ((s[p] & s[j]) == 0) {
+                            for (int q = 1; q <= k; q++) {
+                                if ((s[q] & s[p]) == 0 && (s[q] & s[j]) == 0) {// j p q
+                                    f[i][p][j] = Math.max(f[i][p][j], f[i - 1][q][p] + g[j]);
                                 }
                             }
                         }
@@ -1047,29 +1052,151 @@ public class Pack {
                 }
             }
         }
-
-        for(int i=1;i<=k;i++){
-            for(int j=1;j<=k;j++){
-                ans = Math.max(ans,f[n][i][j]);
+        int ans = 0;
+        for (int i = 1; i <= k; i++) {
+            for (int j = 1; j <= k; j++) {
+                ans = Math.max(ans, f[n][i][j]);
             }
         }
         return ans;
     }
 
-    public int getSum(int x){
+    public int getSum(int x) {
         int cnt = 0;
-        while(x!=0){
-            if((x&1)!=0) cnt++;
-            x = x >>1;
+        while (x != 0) {
+            if ((x & 1) != 0) cnt++;
+            x = x >> 1;
         }
         return cnt;
     }
-    
+
     //P1879 [USACO06NOV]玉米田Corn Fields
-    public int cornField(int[][] grid){
+    // dp(i,j)=∑dp(i-1,k),k和j状态不互斥
+    public long cornField() {
+        Scanner cin = new Scanner(System.in);
+        int m = cin.nextInt(), n = cin.nextInt();
+        int mod = 100000000;
+        int[] F = new int[m + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                F[i] = (F[i] << 1) + cin.nextInt();
+            }
+        }
+        long[][] f = new long[m + 1][1 << n + 1];
+        f[0][0] = 1;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 0; j < (1 << n); j++) {
+                if ((j & (j << 1)) == 0 && (j & (j >> 1)) == 0 && (j & F[i]) == j) {
+                    for (int k = 0; k < (1 << n); k++) {
+                        // 最内层循环要求前一层 k和j不互斥即可，也就是说 可以允许k自身可以有公共边或者完全荒废，这是和互不侵犯以及炮兵阵地不同的地方
+                        if ((k & j) == 0) {
+                            f[i][j] = (f[i][j] + f[i - 1][k]) % mod;
+                        }
+                    }
+                }
+            }
+        }
+
+        long ans = 0;
+        for (int i = 0; i < (1 << n); i++) {
+            ans = (ans + f[m][i]) % mod;
+        }
+        System.out.println(ans);
+        return ans;
+    }
+
+
+    //数位dp
+    // [SCOI2009]windy数 https://www.luogu.com.cn/problem/P2657
+    // https://www.luogu.com.cn/problemnew/solution/P2657
+    public static int[][] dp = new int[15][15];
+    public static int[] a = new int[15];
+
+    /*
+    public static void main(String[] args) {
+        Scanner cin = new Scanner(System.in);
+        int lo = cin.nextInt(), hi = cin.nextInt();
+        init();
+        int ans = work(hi + 1) - work(lo);
+        System.out.println(ans);
+    }
+    */
+
+    public static void init() {
+        for (int i = 0; i <= 9; i++) dp[1][i] = 1;
+        for (int i = 2; i <= 10; i++) {
+            for (int j = 0; j <= 9; j++) {
+                for (int k = 0; k <= 9; k++) {
+                    if (Math.abs(j - k) >= 2) {
+                        dp[i][j] += dp[i - 1][k];
+                    }
+                }
+            }
+        }
+    }
+
+    public static int work(int x) {
+        int len = 0, ans = 0;
+        while (x != 0) {
+            len++;
+            a[len] = x % 10;
+            x = x / 10;
+        }
+        for (int i = 1; i <= len - 1; i++) {
+            for (int j = 1; j <= 9; j++) {
+                ans += dp[i][j];
+            }
+        }
+        for (int i = 1; i < a[len]; i++) {
+            ans += dp[len][i];
+        }
+        for (int i = len - 1; i >= 1; i--) {
+            for (int j = 0; j <= a[i] - 1; j++) {
+                if (Math.abs(j - a[i + 1]) >= 2) ans += dp[i][j];
+            }
+            if (Math.abs(a[i + 1] - a[i]) < 2) break;
+        }
+        return ans;
+    }
+
+    // 233
+    public int countDigitOne(int n) {
         return -1;
     }
 
+    //LC 1012 233
+
+    // 233 https://www.acwing.com/solution/LeetCode/content/280/
+    // 1012 https://www.acwing.com/solution/LeetCode/content/1184/
+
+
+    // HDU 6148 Valley Number
+
+// CF55D Beautiful numbers
+
+// CF628D Magic Numbers
+
+// CF401D Roman and Numbers
+
+//概率dp lc 1230
+
+//树形dp 337 124 https://www.cnblogs.com/hanruyun/p/9788170.html
+
+//字符串
+
+//trie kmp AC自动机 LC 30 1032
+
+// KMP算法与AC自动机. KMP算法(28 459)——用于单模匹配。 AC自动机——用于多模匹配，需要了解KMP原理和Trie树。
+
+
+    // graph
+// 拓扑排序（207，210，269，329，444，1203，802）
+    // 最短路径 743 flyod 和dikstra算法 787 Bellman-Ford算法
+    // 最短路径743，505，787，847，1091，
+
+    // 最小生成树 kruskal prim Boruvka 算法 (1130,  https://www.acwing.com/file_system/file/content/whole/index/content/160894/ 1135 https://www.okcode.net/article/43507)  tarjan联通
+// 卡特兰数96 等差等比数列 413 素数筛法 204 欧拉定理 507 1015 费马小定理 372
+    // 剩余定理/贝祖定理 1250
 
 
 }

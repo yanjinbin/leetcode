@@ -1,6 +1,7 @@
 package com.yanjinbin.leetcode;
 
 import java.util.Arrays;
+import java.util.PriorityQueue;
 
 public class WeeklyContest {
 
@@ -23,4 +24,18 @@ public class WeeklyContest {
         }
         return ans;
     }
+
+    public static void main(String[] args) {
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>((o1,o2)-> o1-o2);
+        for (int i=1;i<10;i++){
+            if (minHeap.size()>5){
+                minHeap.poll();
+            }
+            minHeap.add(i);
+
+        }
+        System.out.println(minHeap.peek());
+    }
+
+
 }

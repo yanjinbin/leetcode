@@ -48,7 +48,7 @@ public class BFS {
     }
 
     // https://youtu.be/umdk98ynLSY
-    // 778 解法1 dijkstra/优先队列+BFS ,总结:最大里面取最小!!(从小堆里面取留下的大元素)
+    // 778 解法1 优先队列+BFS ,总结:最大里面取最小!!(从小堆里面取留下的大元素)
     public int swimInWater01(int[][] grid) {
         PriorityQueue<Point> minHeap = new PriorityQueue<Point>((o1, o2) -> o1.val - o2.val);
         int M = grid.length;

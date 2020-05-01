@@ -40,7 +40,6 @@ public class MaxStack {
         Stack<Integer> buffer = new Stack<>();
         while (top() != max){
             //出栈元素转移buf
-            System.out.println("=======");
             buffer.push(pop());}
         // 相等的时候pop
         pop();

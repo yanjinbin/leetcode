@@ -1,5 +1,4 @@
-import java.io.*;
-import java.util.*;
+import java.util.Scanner;
 
 public class Main {
     // 落谷OI提交用的模版
@@ -25,26 +24,26 @@ public class Main {
 
     }
 
-    public int RMQ(int L, int R,int[][] dp) {
+    public int RMQ(int L, int R, int[][] dp) {
         int k = 0;
         while (1 << (k + 1) <= R - L + 1) {
             k++;
         }
-        return Math.min(dp[L][k],dp[R-(1<<k)+1][k]);
+        return Math.min(dp[L][k], dp[R - (1 << k) + 1][k]);
     }
 
     // 区间DP https://oi-wiki.org/dp/interval/
     // 石子合并 https://www.luogu.org/problem/P1880
     public static int[] mergeStone(int N, int[] stones) {
         int[] _2Stone = new int[2 * N];
-        int[] prefixSum = new int[2 * N];
+        int[] preSum = new int[2 * N];
         for (int i = 0; i < N; i++) {
             _2Stone[i] = stones[i];
             _2Stone[i + N] = stones[i];
         }
-        prefixSum[0] = _2Stone[0];
+        preSum[0] = _2Stone[0];
         for (int i = 1; i < _2Stone.length; i++) {
-            prefixSum[i] = prefixSum[i - 1] + _2Stone[i];
+            preSum[i] = preSum[i - 1] + _2Stone[i];
         }
 
         int[][] f1 = new int[2 * N][2 * N];
@@ -54,8 +53,8 @@ public class Main {
                 f2[i][j] = Integer.MAX_VALUE;
                 f1[i][j] = Integer.MIN_VALUE;
                 for (int k = i; k < j; k++) {
-                    f1[i][j] = Math.max(f1[i][j], f1[i][k] + f1[k + 1][j] + prefixSum[j] - prefixSum[i - 1]);
-                    f2[i][j] = Math.min(f2[i][j], f2[i][k] + f2[k + 1][j] + prefixSum[j] - prefixSum[i - 1]);
+                    f1[i][j] = Math.max(f1[i][j], f1[i][k] + f1[k + 1][j] + preSum[j] - preSum[i - 1]);
+                    f2[i][j] = Math.min(f2[i][j], f2[i][k] + f2[k + 1][j] + preSum[j] - preSum[i - 1]);
                 }
             }
         }

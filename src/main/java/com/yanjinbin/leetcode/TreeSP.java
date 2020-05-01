@@ -605,6 +605,27 @@ public class TreeSP {
         return ans;
     }
 
+    // "((())"
+    public int maxLength(String s) {
+        char[] chars = s.toCharArray();
+        int len = chars.length;
+        int[] dp = new int[len];
+        int ans = 0;
+        for (int i = 0; i < len; i++) {
+            if (i >= 1 && s.charAt(i) == ')' && s.charAt(i - 1) == '(') {
+                dp[i] = dp[i - 1] + 2;
+            } else if (i >= 1 && (i - dp[i - 1] - 1) >= 0 && s.charAt(i) == ')' && s.charAt(i - dp[i - 1] - 1) == '(') {
+                dp[i] = dp[i - 1] + 2;
+            } else if (i >= 1) {
+                dp[i] = dp[i - 1];
+            }
+        }
+        for (int i = 0; i < len; i++) {
+            ans = Math.max(ans, dp[i]);
+        }
+        return ans;
+    }
+
     // 742 314 垂直遍历
 
 }

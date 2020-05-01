@@ -46,7 +46,7 @@ public class BinaryIndexedTree {
         }
     }
 
-    public int prefixSum(int idx) {
+    public int preSum(int idx) {
         idx++;
         int ans = 0;
         while (idx > 0) {
@@ -66,7 +66,7 @@ public class BinaryIndexedTree {
      * @return
      */
     public int rangeSum(int from, int to) {
-        return prefixSum(to) - prefixSum(from - 1);
+        return preSum(to) - preSum(from - 1);
     }
 
     // 参考：http://bit.ly/2L7PiWO

@@ -29,11 +29,11 @@ public class DPTest {
         int[] arr = new int[]{3, -1, -4, 9, 8, 7};
         Solution.shuffle(arr, 0, arr.length);
         System.out.println(Arrays.toString(arr));
-        assert DP.maxConsecutiveSum1(arr) == SOLUTION.maxSubArray01(arr);
+        assert DP.maxConsecutiveSum01(arr) == SOLUTION.maxSubArray01(arr);
         System.out.println("====解法2====");
-        assert DP.maxConsecutiveSum2(arr) == SOLUTION.maxSubArray01(arr);
+        assert DP.maxConsecutiveSum02(arr) == SOLUTION.maxSubArray01(arr);
         System.out.println("====解法3====");
-        assert DP.maxConsecutiveSum3(arr) == SOLUTION.maxSubArray01(arr);
+        assert DP.maxConsecutiveSum03(arr) == SOLUTION.maxSubArray01(arr);
 
     }
 
@@ -114,8 +114,8 @@ public class DPTest {
         assert Arrays.equals(PACK.mergeStone(n, stones), new int[]{43, 54});
         assert PACK.isScramble("great", "rgeat") == true;
 
-        int[] nums = new int[]{9,1,2,3,9};
-        int k =3;
+        int[] nums = new int[]{9, 1, 2, 3, 9};
+        int k = 3;
         assert PACK.largestSumOfAverages(nums, k) == 20;
         int[] boxes = new int[]{1, 3, 2, 2, 2, 3, 4, 3, 1};
         assert PACK.removeBoxes(boxes) == 23;
@@ -123,16 +123,16 @@ public class DPTest {
         String data = "aaa";
         assert PACK.countSubstrings(data) == 6;
 
-        int[] piles= new int[]{5,3,4,5};
+        int[] piles = new int[]{5, 3, 4, 5};
         assert PACK.stoneGame(piles) == true;
 
-        stones = new int[]{3,2,4,1};
+        stones = new int[]{3, 2, 4, 1};
         k = 2;
         assert PACK.mergeStone(stones, k) == 20;
 
-        stones = new int[] {3,5,1,2,6};
+        stones = new int[]{3, 5, 1, 2, 6};
         k = 3;
-        assert  PACK.mergeStone(stones,k)==25;
+        assert PACK.mergeStone(stones, k) == 25;
     }
 
     @Test
@@ -170,8 +170,9 @@ public class DPTest {
         assert PACK.change(amount, coins) == 4;
 
         assert PACK.combinationSum4(new int[]{1, 2, 3}, 4) == 7;
+        assert PACK.combinationSum4_(new int[]{1, 2, 3}, 4) == 4;
 
-        System.out.println("leetcode 698 分隔为k个等和子集 这道题 只是一道回溯法而已");
+        System.out.println("698 分隔为k个等和子集 这道题 只是一道回溯法而已");
         int[] nums = {4, 3, 2, 3, 5, 2, 1};
         int k = 4;
         assert PACK.canPartitionKSubsets(nums, k) == true;
@@ -188,20 +189,23 @@ public class DPTest {
     }
 
     @Test
-    public void ClassicDP(){
+    public void ClassicDP() {
         assert PACK.longestPalindromeSubseq("bbbab") == 4;
         assert PACK.longestPalindrome("abbcbb").equalsIgnoreCase("bbcbb");
-     //   PACK.longestPalindrome01("abbcbb");
-        assert PACK.longestCommonSubsequence("abcdegf", "acedf")==4;
+        //   PACK.longestPalindrome01("abbcbb");
+        assert PACK.longestCommonSubsequence("abcdegf", "acedf") == 4;
 
         int[] nums = {6, 3, 5, 10, 2, 9, 7, 4, 8};
         assert PACK.lengthOfLIS(nums) == 4;
-        assert PACK.lengthOfLIS01(nums)==4;
-        nums=new int[]{2,3,4,1,5,7,2,4,6,8,11,9};
-        assert PACK.findLengthOfLCIS(nums)==5;
-        assert PACK.findLengthOfLCIS01(nums)==5;
 
+        nums = new int[]{2, 3, 4, 1, 5, 7, 2, 4, 6, 8, 11, 9};
+        assert PACK.findLengthOfLCIS(nums) == 5;
+        assert PACK.findLengthOfLCIS01(nums) == 5;
 
+    }
+
+    @Test
+    public  void misc(){
 
     }
 }

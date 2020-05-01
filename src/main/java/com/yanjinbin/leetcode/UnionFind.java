@@ -18,7 +18,7 @@ public class UnionFind {
     private int[] fa;
     private int[] rank;
 
-    public UnionFind(int n) {
+    public UnionFind(int n) {// 冗余0index
         fa = new int[n + 1];
         rank = new int[n + 1];
         for (int i = 0; i < fa.length; ++i) {
@@ -172,12 +172,5 @@ public class UnionFind {
 
     public static void main(String[] args) {
         int[] pa = new int[]{0, 4, 1, 2, 5, 5};
-        // find02(1,pa); // 就是成员变量和局部变量的
-//        find01(1, pa);
-//        System.out.println(Arrays.toString(pa));
-//        fa = pa;
-//        find(1);
-//        System.out.println(Arrays.toString(fa));
-
     }
 }

@@ -1,13 +1,12 @@
 package com.yanjinbin.leetcode;
 
-
-// 最后看这篇文章，才能弄懂哦 http://bit.ly/2QPXVZK
-
 import java.util.Arrays;
-
+// 最后看这篇文章，才能弄懂哦 http://bit.ly/2QPXVZK
 // http://bit.ly/2qNlirY
 // http://bit.ly/2XNgUoV
 public class KMP {
+
+
     // 暴力匹配算法
     public int violentMatch(String s, String p) {
         int sLen = s.length();

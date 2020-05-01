@@ -22,7 +22,6 @@ public class DivideConquer {
         //让 len1 的长度小于 len2，这样就能保证如果有数组空了，一定是 len1
         if (len1 > len2) return getKth(nums2, start2, end2, nums1, start1, end1, k);
         if (len1 == 0) return nums2[start2 + k - 1];
-
         if (k == 1) return Math.min(nums1[start1], nums2[start2]);
 
         // 不然的话i或者j会有可能变为负数。
@@ -46,9 +45,7 @@ public class DivideConquer {
 
     // 采用分治思想，递归解决此问题
     public ListNode mergeKLists(ListNode[] lists, int start, int end) {
-        if (start > end) {
-            return null;
-        } else if (start == end) {
+         if (start == end) {
             return lists[start];
         }
         int mid = (end - start) / 2 + start;

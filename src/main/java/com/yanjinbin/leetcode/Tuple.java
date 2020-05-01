@@ -5,12 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @Data
 @NoArgsConstructor
 @Builder
 public class Tuple {
-    public int  x;
-    public int  y;
-    public int  z;
+    public int  x,y,z;
+    public Tuple(int x,int y,int z){
+        this.x=x;this.y=y;this.z=z;
+    }
 }

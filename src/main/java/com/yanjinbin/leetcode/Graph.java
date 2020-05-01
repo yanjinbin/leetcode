@@ -256,13 +256,11 @@ public class Graph {
     public static int[] limit;
     public static int[] dis;
     public static boolean[] seen;
-    public static int INF = 1001001;
+    public static int INF = 0x7F7F7F7F;
     // 1001 不行的原因 是数据范围不满足，假设经过说有点，1000*1000+1000=1000000
     //                                                  dis[N]+N.cost = 1001000
 
-
-
-    public  void milkPumpingG() {
+    public void milkPumpingG() {
         Scanner cin = new Scanner(System.in);
         int N = cin.nextInt(), M = cin.nextInt();
         limit = new int[M + 1];
@@ -319,5 +317,63 @@ public class Graph {
         }
     }
 
-    // 最小生成树
+    // 最小生成树 minimum spanning tree, MST
+    // Kruskal 算法
+    // P2212  https://www.luogu.com.cn/problemnew/solution/P2212
+
+    public static class Point {
+        public int u, v, w;
+    }
+
+    public int[] fa;
+    public int N, C;
+
+    public int WateringTheFields() {
+        Scanner cin = new Scanner(System.in);
+        N = cin.nextInt();
+        C = cin.nextInt();
+        int[] X = new int[N + 1], Y = new int[N + 1];
+        int count = 0;
+        Point[] e = new Point[N * N + 1];
+        for (int i = 1; i <= N; i++) {
+            X[i] = cin.nextInt();
+            Y[i] = cin.nextInt();
+            for (int j = 1; j <= i; j++) {
+                int distance = (X[i] - X[j]) * (X[i] - X[j]) + (Y[i] - Y[j]) * (Y[i] - Y[j]);
+                if (distance > C) {
+                    e[++count] = new Point();
+                    e[count].u = i;
+                    e[count].v = j;
+                    e[count].w = distance;
+                }
+            }
+        }
+        Arrays.sort(e, (o1, o2) -> o1.w - o2.w);
+        return 0;
+    }
+
+
+    public void kruskal() {
+        int u, v, dis;
+        int cnt = 0, ans = 0;
+        for (int i = 1; i <= N; i++);
+    }
+
+
+    // P2387
+
+    // prim算法
+
+
+    // boruvka算法
+
+
+    // 最小生成树唯一性问题
+
+
+    // 瓶颈生成树 最小瓶颈路
+
+    // 忽略  次小生成树（非严格次小生成树，严格次小生成树）
+
+
 }

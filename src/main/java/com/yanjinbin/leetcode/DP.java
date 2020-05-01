@@ -76,9 +76,9 @@ public class DP {
     // 取上一件房间第二小成本的颜色Min2,否则取min1
     public int minCostⅡ(int[][] cost) {
         if (cost == null || cost.length == 0) return 0;
-        int n = costs.length, k = costs[0].length;
-        int[][] dp = new int[n][m];
-        int min1 = -1, min = -2;// min1 和 min2代表刷成min1和min2颜色的成本第一小和第二小
+        int n = cost.length, k = cost[0].length;
+        int[][] dp = new int[n][k];
+        int min1 = -1, min2 = -2;// min1 和 min2代表刷成min1和min2颜色的成本第一小和第二小
         for (int i = 0; i < n; i++) {
             // 暂时存储上一次存储的颜色
             int last1 = min1, last2 = min2;
@@ -89,7 +89,7 @@ public class DP {
                 if (j != last1) {// 颜色不同
                     dp[i][j] = cost[i][j] + last1 < 0 ? 0 : dp[i - 1][last1];
                 } else {// 颜色相同
-                    dp[i][j] = last2 < 0 ? dp[i - 1][last2] + cost[i][j];
+                    dp[i][j] = (last2 < 0 ? 0:dp[i - 1][last2] )+ cost[i][j];
                 }
                 if (min1 < 0 || dp[i][j] < dp[i][min1]) { // 当前刷成j色的成本比之前的min1开销成本还低
                     min2 = min1;
@@ -101,6 +101,5 @@ public class DP {
         }
         return dp[n - 1][min1];
     }
-
 
 }

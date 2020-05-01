@@ -1,7 +1,7 @@
 package com.yanjinbin.leetcode;
 
 // https://oi-wiki.org/ds/sparse-table/
-// [tag：高级数据结构]
+// [tag：高级数据结构] todo
 // https://www.cnblogs.com/zwfymqz/p/8581995.html
 // https://zh.wikipedia.org/wiki/%E8%8C%83%E5%9B%B4%E6%9C%80%E5%80%BC%E6%9F%A5%E8%AF%A2
 public class SparseTable {

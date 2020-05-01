@@ -6,9 +6,8 @@ import java.util.Random;
 
 public class Sort {
 
-    // shuffle linkedList
+    // shuffle linkedList.
     // shuffle array lower bound  inclusive   upper bound exclusive
-
     public void shuffle(ListNode head) {
         Random random = new Random();
         ListNode cur = head;
@@ -28,6 +27,7 @@ public class Sort {
             cur = cur.next;
         }
     }
+    // shuffle array.
     public void shuffle(int[] nums, int lower, int upper) {
         Random rand = new Random();
         for (int i = lower; i < upper; i++) {
@@ -164,7 +164,8 @@ public class Sort {
         return dummy.next;
     }
 
-    // 鸡尾酒🍸排序  左右两个方向进行交换   对 [2,3,4,5,1]  只需要 遍历2次即可, 数字随机排列情况下,都比较差
+    // 鸡尾酒🍸排序  左右两个方向进行交换
+    // 对 [2,3,4,5,1]  只需要 遍历2次即可, 数字随机排列情况下,都比较差
     public void cocktailSort(int[] nums) {
         // 注意 r的取值
         int l = 0, r = nums.length - 1;
@@ -445,24 +446,25 @@ public class Sort {
         quickSort(head, slow);
         quickSort(slow.next, tail);*/
     }
+
     // 三项快速排序
-    public  void _3waySort(int[] nums,int lo,int hi){
-        if(hi<=lo) return;
+    public void _3waySort(int[] nums, int lo, int hi) {
+        if (hi <= lo) return;
         int pivot = nums[lo];
-        int lt = lo,gt = hi;
-        int i = lo+1;
-        while (i<=gt){
-            int cmp = nums[i]-pivot;
-            if (cmp<0){
-                swap(nums,lt++,i++);
-            }else if (cmp>0){
-                swap(nums,i,gt--);
+        int lt = lo, gt = hi;
+        int i = lo + 1;
+        while (i <= gt) {
+            int cmp = nums[i] - pivot;
+            if (cmp < 0) {
+                swap(nums, lt++, i++);
+            } else if (cmp > 0) {
+                swap(nums, i, gt--);
             } else {
                 i++;
             }
         }
-        _3waySort(nums,lo,lt-1);
-        _3waySort(nums,gt+1,hi);
+        _3waySort(nums, lo, lt - 1);
+        _3waySort(nums, gt + 1, hi);
 
     }
 
@@ -475,29 +477,13 @@ public class Sort {
         int n = nums.length;
         if (n <= 1) return;
         if (l < r) {
-            int j = partition0(nums, l, r);
+            int j = partition01(nums, l, r);
             quickSort(nums, l, j - 1);
             quickSort(nums, j + 1, r);
         }
     }
 
-    public int partition1(int[] nums, int l, int r) {
-        //  要将pivotIdx 移到最左边或者最右边  否则的话 会出现死循环的情况出现
-        int pivotIdx = l;
-        l = l + 1;
-        while (l <= r) {
-            if (nums[l] > nums[pivotIdx] && nums[pivotIdx] > nums[r]) {
-                swap(nums, l++, r--);
-            }
-            if (nums[l] < nums[pivotIdx]) l++;
-            if (nums[r] > nums[pivotIdx]) r--;
-        }
-        // System.out.println("l:" + l + "r:" + r); // l -r = 1; 很有趣的发现
-        swap(nums, pivotIdx, r);
-        return r;
-    }
-
-    public int partition0(int[] nums, int l, int r) {
+    public int partition01(int[] nums, int l, int r) {
         int pivotIdx = l;
         l = l + 1;
         // 左右两边扫描
@@ -512,7 +498,7 @@ public class Sort {
         return r;
     }
 
-    public int partition2(int[] nums, int l, int r) {
+    public int partition02(int[] nums, int l, int r) {
         int pivotIdx = l;
         int index = l + 1;
         // 从左至右遍历
@@ -527,7 +513,8 @@ public class Sort {
     }
 
     // 返回 链表中点
-    public ListNode midNode(ListNode head) {
+    //中点位置 奇数(2n+1) n+1,偶数(2n) n+1,
+    public ListNode getMid01(ListNode head) {
         ListNode slow = head, fast = head;
         while (fast != null && fast.next != null) {
             slow = slow.next;
@@ -536,7 +523,8 @@ public class Sort {
         return slow;
     }
 
-    public ListNode getMid1(ListNode head) {
+    //中点位置 奇数(2n+1) n,偶数(2n) n,
+    public ListNode getMid02(ListNode head) {
         ListNode slow = head, fast = head;//区别在于fast的初始化
         ListNode prev = slow;
         while (fast != null && fast.next != null) {
@@ -547,7 +535,10 @@ public class Sort {
         return prev;
     }
 
-    public ListNode getMid(ListNode head) { // 当 链表长度为2的时候, -1-->1 那么 永远在次循环
+    //中点位置 奇数(2n+1) n+1,偶数(2n) n,
+    public ListNode getMid03(ListNode head) {
+        // 当 链表长度为2的时候, -1-->1 那么 永远在次循环
+        if (head == null) return null;
         ListNode slow = head, fast = head.next;
 
         while (fast != null && fast.next != null) {
@@ -557,10 +548,9 @@ public class Sort {
         return slow; // 元素个数为偶数如6的时候返回2 ,本题目需要断开 所以返回slow即可  看起来是不是有点tricky呢 毕竟fast =head.next
     }
 
-
     public ListNode mergeSort(ListNode head) {
         if (head == null || head.next == null) return head;
-        ListNode mid = getMid(head), secondHead = mid.next;
+        ListNode mid = getMid03(head), secondHead = mid.next;
         mid.next = null;
         ListNode r1 = mergeSort(head);
         ListNode r2 = mergeSort(secondHead);
