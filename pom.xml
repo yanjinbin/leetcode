@@ -22,6 +22,7 @@
 
     <dependencies>
 
+	    
         <dependency>
             <groupId>com.yanjinbin.leetcode</groupId>
             <artifactId>algorithm4</artifactId>
