@@ -2,11 +2,8 @@ package com.yanjinbin.leetcode;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 public class BinarySearch {
 
@@ -213,31 +210,23 @@ public class BinarySearch {
     // P2115 [USACO14MAR]Sabotage G https://www.luogu.com.cn/problem/solution/P2115
     public int N;
     public int[] S;
+
+
     public double[] hmax, qmin, C;
-    public boolean check(double m) {
+
+    public boolean check01(double m) {
         for (int i = 0; i <= N; i++) C[i] = S[i] - m * i;
         qmin[1] = C[1];
         for (int i = 2; i <= N; i++) qmin[i] = Math.min(qmin[i - 1], C[i]);
         hmax[N - 1] = C[N - 1];
         for (int i = N - 2; i >= 1; i--) hmax[i] = Math.max(hmax[i + 1], C[i]);
-        for (int i = 2; i <= N - 1; i++) {
+        for (int i = 2; i < N; i++) {
             if (hmax[i] - qmin[i - 1] > C[N]) return false;
         }
         return true;
     }
 
-    public boolean check1(double x)
-    {
-        double minv = S[1]-x*1;
-        for (int i=2; i<N; ++i)
-        {
-            if (S[N]-x*N-(S[i]-x*i)+minv<=0) return true ;
-            minv = Math.min(minv,S[i]-x*i);
-        }
-        return false ;
-    }
-
-    public double SabotagG() {
+    public double SabotagG01() {
         Scanner cin = new Scanner(System.in);
         N = cin.nextInt();
         S = new int[N + 1];
@@ -245,17 +234,48 @@ public class BinarySearch {
         qmin = new double[N + 1];
         C = new double[N + 1];
         for (int i = 1; i <= N; i++) {
-            S[i] = cin.nextInt();
+            S[i] = S[i - 1] + cin.nextInt();
         }
-        double l = 0L, r = 10000;
-        double m = 0L;
-        while (r - l > 1e6) {
+
+        double l = 0L, r = 1e4 + 100;
+        double m;
+        // 相当于 直接给你预估二分次数了 60
+        for (int i = 1; i <= 60; i++) {
             m = (l + r) / 2;
-            if (check1(m)) l = m;
+            if (check01(m)) l = m;
             else r = m;
         }
-        System.out.printf("%0.3f", l);
+        System.out.printf("%.3f", l);
         return 0L;
+    }
+
+    // 解法2
+    public boolean check02(double x) {
+        double minv = S[1] - x * 1;
+        for (int i = 2; i < N; ++i) {
+            if (S[N] - x * N - (S[i] - x * i) + minv <= 0) return true;
+            minv = Math.min(minv, S[i] - x * i);
+        }
+        return false;
+    }
+
+    public double SabotagG02() {
+        Scanner cin = new Scanner(System.in);
+        N = cin.nextInt();
+        S = new int[N + 1];
+        for (int i = 1; i <= N; i++) {
+            S[i] = S[i - 1] + cin.nextInt();
+        }
+        System.out.println(Arrays.toString(S));
+        double l = 0L, r = 10000;
+        while (r - l > 1e-5) {
+            double m = (l + r) / 2;
+            if (check02(m)) r = m;
+            else l = m;
+        }
+        System.out.printf("%.3f", l);
+        return 0L;
+
     }
 
 }
