@@ -1,6 +1,9 @@
 package com.yanjinbin.leetcode;
 
+import lombok.Data;
+
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -9,6 +12,10 @@ import java.util.Scanner;
 
 public class Graph {
 
+    public static void main(String[] args) {
+        Graph g = new Graph();
+        g.WateringTheFields();
+    }
 
     // 最短路径问题
     int[] dist;
@@ -72,8 +79,8 @@ public class Graph {
     // P1186 1144 1744 AT3883 AT2154 UVA721 p2419 P2910
 
     public int cnt;
-    public Edge[] e1; // 1_based index
-    public Edge[] e2;
+    public com.yanjinbin.leetcode.Edge[] e1; // 1_based index
+    public com.yanjinbin.leetcode.Edge[] e2;
     public int[] h1; //另外还有一个数组head[],它是用来表示以i为起点的第一条边存储的位置,实际上你会发现这里的第一条边存储的位置其实
     //在以i为起点的所有边的最后输入的那个编号.
     public int[] h2;
@@ -96,19 +103,19 @@ public class Graph {
         in = new boolean[N + 1];
         Arrays.fill(h1, -1);
         Arrays.fill(h2, -1);
-        e1 = new Edge[M + 1];
-        e2 = new Edge[M + 1];
+        e1 = new com.yanjinbin.leetcode.Edge[M + 1];
+        e2 = new com.yanjinbin.leetcode.Edge[M + 1];
 
         for (int i = 1; i <= M; i++) {
             int a = cin.nextInt(), b = cin.nextInt(), l = cin.nextInt();
             cnt++;
-            e1[cnt] = new Edge(); // 要new一个阿 别忘记了 否则NPE
+            e1[cnt] = new com.yanjinbin.leetcode.Edge(); // 要new一个阿 别忘记了 否则NPE
             e1[cnt].to = b;
             e1[cnt].next = h1[a];
             h1[a] = cnt;
             e1[cnt].w = l;
 
-            e2[cnt] = new Edge();
+            e2[cnt] = new com.yanjinbin.leetcode.Edge();
             e2[cnt].to = a;
             e2[cnt].next = h2[b];
             e2[cnt].w = l;
@@ -317,11 +324,15 @@ public class Graph {
         }
     }
 
+
+    // https://oi-wiki.org/graph/mst/
     // 最小生成树 minimum spanning tree, MST
+    // kruskal 和 prim 比较  https://www.luogu.com.cn/blog/80049/template-Minimum-Spanning-Tree
+
+
     // Kruskal 算法
     // P2212  https://www.luogu.com.cn/problemnew/solution/P2212
-
-    public static class Point {
+    public static class Edge {
         public int u, v, w;
     }
 
@@ -333,37 +344,98 @@ public class Graph {
         N = cin.nextInt();
         C = cin.nextInt();
         int[] X = new int[N + 1], Y = new int[N + 1];
-        int count = 0;
-        Point[] e = new Point[N * N + 1];
+        fa = new int[N + 1];
+        Arrays.fill(fa, -1);
         for (int i = 1; i <= N; i++) {
             X[i] = cin.nextInt();
             Y[i] = cin.nextInt();
-            for (int j = 1; j <= i; j++) {
-                int distance = (X[i] - X[j]) * (X[i] - X[j]) + (Y[i] - Y[j]) * (Y[i] - Y[j]);
-                if (distance > C) {
-                    e[++count] = new Point();
-                    e[count].u = i;
-                    e[count].v = j;
-                    e[count].w = distance;
+            fa[i] = i;
+        }
+
+        int cnt = 0;
+        Edge[] e = new Edge[N * N + 1];
+        // 直角三角形的遍历,复杂度降低1/2;
+        for (int i = 1; i <= N; i++) {
+            for (int j = i + 1; j <= N; j++) {
+                int dis = (X[i] - X[j]) * (X[i] - X[j]) + (Y[i] - Y[j]) * (Y[i] - Y[j]);
+                if (dis >= C) {
+                    e[++cnt] = new Edge();
+                    e[cnt].u = i;
+                    e[cnt].v = j;
+                    e[cnt].w = dis;
                 }
             }
         }
-        Arrays.sort(e, (o1, o2) -> o1.w - o2.w);
+        // 排序  MlgM 复杂度
+        Arrays.sort(e, 1, cnt + 1, (o1, o2) -> o1.w - o2.w);
+        int p = 0;
+        int ans = 0;
+        for (int i = 1; i <= cnt; i++) {
+            int ru = find(e[i].u);
+            int rv = find(e[i].v);
+            if (ru != rv) {
+                p++;
+                fa[ru] = rv;
+                ans += e[i].w;
+                if (p == N - 1) break;
+            }
+        }
+        if (p == N - 1) System.out.printf("%d", ans);
+        else System.out.printf("-1");
         return 0;
     }
 
-
-    public void kruskal() {
-        int u, v, dis;
-        int cnt = 0, ans = 0;
-        for (int i = 1; i <= N; i++);
+    // 查找带路径压缩
+    public int find(int u) {
+        if (u != fa[u]) {
+            fa[u] = find(fa[u]);
+        }
+        // 不要写成 return u了。
+        return fa[u];
     }
 
 
-    // P2387
+    // prim
 
-    // prim算法
+    // SCOI2005  https://www.luogu.com.cn/problem/P2330
+    // 繁忙都市
+    public void BusyCity() {
+        Scanner cin = new Scanner(System.in);
+        //  step 1, 构建链式前向星
+        int N = cin.nextInt(), M = cin.nextInt();
+        com.yanjinbin.leetcode.Edge[] edges = new com.yanjinbin.leetcode.Edge[M + 1];
+        int[] h = new int[N + 1];
+        boolean[] seen = new boolean[N + 1];
+        Arrays.fill(h, -1);
+        int cnt = 0;
+        for (int i = 1; i <= M; i++) {
+            int u = cin.nextInt(), v = cin.nextInt(), w = cin.nextInt();
+            edges[++cnt] = new com.yanjinbin.leetcode.Edge();
+            edges[cnt].to = v;
+            edges[cnt].w = w;
+            edges[cnt].next = h[u];
+            h[u] = cnt++;
+        }
 
+        Queue<com.yanjinbin.leetcode.Edge> Q = new PriorityQueue<>((o1, o2) -> o1.w - o2.w);
+        for (int i = h[1]; i != -1; i = edges[i].next) {
+            Q.add(edges[i]);
+        }
+        int ans = 0;
+        while (!Q.isEmpty()) {
+            com.yanjinbin.leetcode.Edge tmp = Q.poll();
+            if (seen[tmp.to]) continue;
+            seen[tmp.to] = true;
+            ans = Math.max(ans, tmp.w);
+            for (int i = h[tmp.to]; i != -1; i = edges[i].next) {
+                if (!seen[edges[i].to]) Q.add(edges[i]);
+            }
+
+        }
+    }
+
+
+    //
 
     // boruvka算法
 
