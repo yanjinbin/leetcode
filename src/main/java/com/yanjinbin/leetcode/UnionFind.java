@@ -15,16 +15,34 @@ import java.util.Set;
 // 花花酱UNION FIND  https://youtu.be/VJnUwsE4fWA?list=WL
 @NoArgsConstructor
 public class UnionFind {
-    private int[] fa;
-    private int[] rank;
+    public int[] fa;
+    public int[] rank;
 
-    public UnionFind(int n) {// 冗余0index
+    public UnionFind(int n) {// 冗余 0index
         fa = new int[n + 1];
         rank = new int[n + 1];
-        for (int i = 0; i < fa.length; ++i) {
+        for (int i = 0; i < fa.length; i++) {
             fa[i] = i;
             rank[i] = 1;
         }
+    }
+
+    // 递归版本
+    public int find(int u, int[] fa) {
+        if (u != fa[u]) {
+            fa[u] = find(fa[u], fa);
+        }
+        return fa[u];
+    }
+
+
+    // 非递归版本
+    public int find02(int u, int[] fa) {
+        while (u != fa[u]) {
+            fa[u] = fa[fa[u]];
+            u = fa[u];
+        }
+        return u;
     }
 
     // 查找带路径压缩
@@ -106,24 +124,6 @@ public class UnionFind {
     }
 
 
-    // 递归版本
-    public int find(int u, int[] fa) {
-        if (u != fa[u]) {
-            fa[u] = find(fa[u], fa);
-        }
-        return fa[u];
-    }
-
-    // 非递归版本
-    public int find02(int u, int[] fa) {
-        while (u != fa[u]) {
-            fa[u] = fa[fa[u]];
-            u = fa[u];
-        }
-        return u;
-    }
-
-
     // 547 朋友圈 也可以DFS遍历，记录一个访问数组即可。
     public int findCircleNum(int[][] M) {
         int N = M.length;
@@ -170,7 +170,4 @@ public class UnionFind {
         return true;
     }
 
-    public static void main(String[] args) {
-        int[] pa = new int[]{0, 4, 1, 2, 5, 5};
-    }
 }
