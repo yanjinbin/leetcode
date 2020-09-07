@@ -1,21 +1,6 @@
 package com.yanjinbin.leetcode;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Random;
-import java.util.Set;
-import java.util.Stack;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Solution {
@@ -55,18 +40,18 @@ public class Solution {
     }
 
     //② #2  两数相加  更加紧凑的做法
-    public ListNode addTwoNumbers01(ListNode l1,ListNode l2){
+    public ListNode addTwoNumbers01(ListNode l1, ListNode l2) {
         ListNode dummyNode = new ListNode(0);
-        ListNode p= l1, q = l2;
+        ListNode p = l1, q = l2;
         int sum = 0;
         ListNode cur = dummyNode;
-        while(p!=null||q!=null||sum>0){
-            sum +=(p!=null?p.val:0)+(q!=null?q.val:0);
-            cur.next = new ListNode(sum%10);
-            if(p!=null)p=p.next;
-            if(q!=null)q=q.next;
+        while (p != null || q != null || sum > 0) {
+            sum += (p != null ? p.val : 0) + (q != null ? q.val : 0);
+            cur.next = new ListNode(sum % 10);
+            if (p != null) p = p.next;
+            if (q != null) q = q.next;
             cur = cur.next;
-            sum = sum/10;
+            sum = sum / 10;
         }
         return dummyNode.next;
     }
@@ -880,6 +865,7 @@ public class Solution {
         int count = 1, candidate = nums[0];
         for (int i = 1; i < nums.length; i++) {
             if (count == 0) {
+                // RESET
                 candidate = nums[i];
                 count = 1;
             } else if (nums[i] == candidate) {
@@ -1114,16 +1100,16 @@ public class Solution {
     // ② 大小堆来做
     public int findKthLargest02(int[] nums, int k) {
         // init heap 'the smallest element first'
-        PriorityQueue<Integer> heap = new PriorityQueue<Integer>(((o1, o2) -> o1 - o2));
+        PriorityQueue<Integer> minHeap = new PriorityQueue<Integer>(((o1, o2) -> o1 - o2));
 
         // keep k largest elements in the heap
         for (int n : nums) {
-            heap.add(n);
-            if (heap.size() > k)
-                heap.poll();
+            minHeap.add(n);
+            if (minHeap.size() > k)
+                minHeap.poll();
         }
         // output
-        return heap.peek();
+        return minHeap.peek();
     }
 
     //② 148 排序链表  归并排序  O(NlgN)
@@ -1370,7 +1356,7 @@ public class Solution {
         if (grid.length == 0) return 0;
         int n = grid.length, m = grid[0].length;
         f = new int[n + 1][m + 1];
-        // init 
+        // init
         for (int i = 0; i <= n; i++) {
             Arrays.fill(f[i], Integer.MIN_VALUE);
         }
@@ -2276,9 +2262,7 @@ public class Solution {
         int count = 0;
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                if (grid[i][j] == '0' || visited[i][j]) {
-                    continue;
-                }
+                if (grid[i][j] == '0' || visited[i][j]) continue;
                 dfsIslandHelper(grid, visited, i, j);
                 count++;//key
             }
@@ -2547,7 +2531,7 @@ public class Solution {
         }
         PriorityQueue<Integer> maxHeap = new PriorityQueue<>((a, b) -> b - a);
         maxHeap.addAll(counts.values());
-        int alltime = 0;
+        int ans = 0;
         int cycleLen = n + 1;
         while (!maxHeap.isEmpty()) {
             int roundTime = 0;
@@ -2564,9 +2548,9 @@ public class Solution {
                     maxHeap.offer(freq);
                 }
             }
-            alltime += maxHeap.isEmpty() ? roundTime : cycleLen;
+            ans += maxHeap.isEmpty() ? roundTime : cycleLen;
         }
-        return alltime;
+        return ans;
     }
 
 
@@ -3102,18 +3086,6 @@ public class Solution {
             }
         }
         return -1;
-    }
-
-    // 错误哎
-    public int strStr_wrong(String haystack, String needle) {
-        int i = 0;
-        int j = 0;
-        while (i < haystack.length() && j < needle.length()) {
-            if (haystack.charAt(i++) != needle.charAt(j++)) {
-                j = 0;
-            }
-        }
-        return j == needle.length() ? i - j : -1;
     }
 
     // ② 172. 阶乘后的零  tips:连续5的前缀后数列 O(N/5)
@@ -4110,7 +4082,7 @@ public class Solution {
         return ans;
     }
 
-    // 解法2 最后一个case 没通过
+    // 解法2
     public String minWindow02(String s, String t) {
         int l = 0, r = 0, N = s.length(), start = 0, minLen = Integer.MAX_VALUE;
         Map<Character, Integer> needs = new HashMap();
@@ -5349,7 +5321,9 @@ public class Solution {
     void add(int u, int v) {
         edges[cnt] = new Edge();
         edges[cnt].to = v;
-        edges[cnt].next = head[u];//理解这个是关键点啊
+        // 理解这个是关键点啊 head[u] 表示顶点`u`的第一条边的数组下标，-1表示顶点`u`没有边
+        // 新增的边要成为顶点 `u'的第一条边，而不是最后一条边
+        edges[cnt].next = head[u];
         head[u] = cnt++;
     }
 
@@ -5377,11 +5351,11 @@ public class Solution {
 
     public boolean canFinish(int numCourses, int[][] prerequisites) {
         int n = prerequisites.length;
-        int l = Math.max(numCourses, n); //取大
+        int len = Math.max(numCourses, n); //取大
         cnt = 0;
-        edges = new Edge[l];
-        head = new int[l];
-        deg = new int[l];
+        edges = new Edge[len];
+        head = new int[len];
+        deg = new int[len];
         Arrays.fill(head, -1);
         for (int i = 0; i < n; ++i) {
             add(prerequisites[i][1], prerequisites[i][0]); //建图
@@ -5509,6 +5483,32 @@ public class Solution {
     // 630 课程表Ⅲ
 
     // 354 俄罗斯套娃信封问题
+    public int maxEnvelope(int[][] grid) {
+        Arrays.sort(grid, (o1, o2) -> o1[0] == o2[0] ? o1[0] - o2[0] : o2[1] - o1[1]);
+        int len = grid.length;
+        int[] height = new int[len];
+        for (int i = 0; i < len; i++) {
+            height[i] = grid[i][1];
+        }
+        return lengthOfLIS(height);
+    }
+
+    public int lengthOfLIS(int[] nums) {
+        int N = nums.length;
+        int[] dp = new int[N];
+        int len = 0;
+        for (int num : nums) {
+            int index = Arrays.binarySearch(dp, 0, len, num);
+            if (index < 0) {
+                index = -(index + 1);
+            }
+            dp[index] = num;
+            if (index == len) {
+                len++;
+            }
+        }
+        return len;
+    }
 
     // 218
     public List<int[]> getSkyline(int[][] buildings) {
@@ -5887,7 +5887,7 @@ public class Solution {
         ListNode cur = head;
         int count = 0;
         while (count < k) { // 获取下一个节点
-            if (cur == null) return head;
+            if (cur == null) return head;// return cur; 会丢失最后不足K长度的链表节点
             cur = cur.next;
             count++;
         }
@@ -6134,8 +6134,8 @@ public class Solution {
     // ② 15 3数字和，先排序  i j k指针，跳过重复数
     // http://bit.ly/2Sp1iFG
     public List<List<Integer>> threeSum(int[] nums) {
-        List<List<Integer>> ret = new ArrayList();
-        if (nums.length < 3) return ret;
+        List<List<Integer>> ans = new ArrayList();
+        if (nums.length < 3) return ans;
         Arrays.sort(nums);
         int i = 0;
         while (i < nums.length - 2) {
@@ -6144,7 +6144,7 @@ public class Solution {
             int k = nums.length - 1;
             while (j < k) {
                 int sum = nums[i] + nums[j] + nums[k];
-                if (sum == 0) ret.add(Arrays.asList(nums[i], nums[j], nums[k]));
+                if (sum == 0) ans.add(Arrays.asList(nums[i], nums[j], nums[k]));
                 // 跳过重复数字 注意前置++ -- 运算符 运算好立即调用 而不是等到下一次
                 if (sum < 0) while (nums[j] == nums[++j] && j < k) ;
                 if (sum > 0) while (nums[k] == nums[--k] && j < k) ;
@@ -6152,7 +6152,7 @@ public class Solution {
             // 跳过重复数字
             while (nums[i] == nums[++i] && i < nums.length - 2) ;
         }
-        return ret;
+        return ans;
     }
 
     // 18 四数之和
@@ -6425,16 +6425,153 @@ public class Solution {
         return ans;
     }
 
-    //402. 移掉K位数字
-    public String removeKdigits(String num, int k) {
-        return "";
+    // 65 有效数字
+    // https://bit.ly/3gXJIUo
+    public boolean isNumber(String s) {
+        int state = 0;
+        int finals = 0b101101000;// 最终有效状态 todo 这里看不懂finals代表的含义
+        int[][] transfer = new int[][]{
+                {0, 1, 6, 2, -1},
+                {-1, -1, 6, 2, -1},
+                {-1, -1, 3, -1, -1},
+                {8, -1, 3, -1, 4},
+                {-1, 7, 5, -1, -1},
+                {8, -1, 5, -1, -1},
+                {8, -1, 6, 3, 4},
+                {-1, -1, 5, -1, -1},
+                {8, -1, -1, -1, -1}
+        };
+
+        char[] ss = s.toCharArray();
+        for (int i = 0; i < ss.length; i++) {
+            int id = make(ss[i]);
+            if (id < 0) return false;
+            state = transfer[state][id];
+            if (state < 0) return false;
+        }
+        return (finals & (1 << state)) > 0;
+    }
+
+    public int make(char c) {
+        switch (c) {
+            case ' ':
+                return 0;
+            case '+':
+                ;
+            case '-':
+                return 1;
+            case '.':
+                return 3;
+            case 'e':
+                return 4;
+            default:
+                if (c >= 48 && c <= 57) return 2;
+        }
+        return -1;
     }
 
 
+    // 93. 复原IP地址
+    public List<String> restoreIpAddresses(String s) {
+        List<String> ans = new ArrayList();
+        int len = s.length();
+        if (len > 12 || len < 4) return ans;
+        dfs(0, 0, s, "", ans);
+        return ans;
+    }
+
+    public void dfs(int pos, int depth, String str, String ip, List<String> ans) {
+        if (depth > 4) return;
+        if (depth == 4 && pos == str.length()) {
+            ans.add(ip);
+        }
+        for (int i = 1; i < 4; i++) {
+            if (pos + i > str.length()) break;
+            String sub = str.substring(pos, pos + i);
+            if ((sub.charAt(0) == '0' && sub.length() > 1) || (i == 3 && atoi(sub) > 255)) continue;
+            dfs(pos + i, depth + 1, str, ip + sub + (depth == 3 ? "" : "."), ans);// 犯的错误 depth++
+        }
+    }
+
+    public int atoi(String s) {
+        int ans = 0;
+        for (int i = 0; i < s.length(); i++) {
+            ans = ans * 10 + s.charAt(i) - '0';
+        }
+        return ans;
+    }
+
+    //718. 最长重复子数组
+    //❌，这个是求子序列了，不是求子数组了
+
+    public int findLength_wrong(int[] A, int[] B) {
+        int lenA = A.length;
+        int ans = Integer.MIN_VALUE;
+        int lenB = B.length;
+        int[][] dp = new int[lenA + 1][lenB + 1];
+        for (int i = 1; i <= lenA; i++) {
+            for (int j = 1; j <= lenB; j++) {
+                if (A[i - 1] == B[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+                }
+                ans = Math.max(ans, dp[i][j]);
+            }
+        }
+        System.out.println(ans);
+        for (int[] ints : dp) {
+            System.out.println(Arrays.toString(ints));
+        }
+        return dp[lenA][lenB];
+    }
+
+    public int findLength(int[] A, int[] B) {
+        int lenA = A.length;
+        int ans = Integer.MIN_VALUE;
+        int lenB = B.length;
+        int[][] dp = new int[lenA + 1][lenB + 1];
+        for (int i = 1; i <= lenA; i++) {
+            for (int j = 1; j <= lenB; j++) {
+                if (A[i - 1] == B[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                }
+                ans = Math.max(ans, dp[i][j]);
+            }
+        }
+        System.out.println(ans);
+        for (int[] ints : dp) {
+            System.out.println(Arrays.toString(ints));
+        }
+        return ans;
+    }
+
+    // 1122. 数组的相对排序
+    // 计数排序,1先 排序给定的排序规则,再排序剩余的
+    public int[] relativeSortArray(int[] arr1, int[] arr2) {
+        int[] count = new int[1001];
+        for (int i : arr1) {
+            count[i]++;
+        }
+        int idx = 0;
+        for (int i : arr2) {
+            while (count[i] > 0) {
+                arr1[idx++] = i;
+                count[i]--;
+            }
+        }
+        for (int i = 0; i < count.length; i++) {
+            while (count[i] > 0) {
+                arr1[idx++] = i;
+                count[i]--;
+            }
+        }
+        return arr1;
+    }
+
+
+
 }
-
-
-
 
 
 
