@@ -11,7 +11,6 @@ import java.util.*;
  * // 375 猜数字大小Ⅱ
  * // 464 我能赢么
  * // 486 预测赢家
- * // 843 猜猜单词
  * // 913
  * // 石头系列
  * // 877
@@ -44,19 +43,19 @@ public class GameTheory {
     //  dp[n] = !(dp[n-1]  && dp[n-2] && dp[n-3])
     // // 数据规模过大，TLE
     public boolean canWinNim02(int n) {
-        boolean[] dp = new boolean[n + 1];
+        boolean[] dp = new boolean[4];
         for (int i = 1; i < n; i++) {
             boolean ans = true;
-            ans &= dp[i - 1];
+            ans &= dp[(i - 1) % 4];
             if (i >= 2) {
-                ans &= dp[i - 2];
+                ans &= dp[(i - 2) % 4];
             }
             if (i >= 3) {
-                ans &= dp[i - 3];
+                ans &= dp[(i - 3) % 4];
             }
-            dp[i] = !ans;
+            dp[i % 4] = !ans;
         }
-        return dp[n];
+        return dp[n % 4];
     }
 
     // 375 猜数字大小Ⅱ，就是一道区间dp题目 tag:区间DP
@@ -145,108 +144,146 @@ public class GameTheory {
         int guess(String word);
     }
 
-    // 843 猜猜这个单词 todo
-
-    int[][] H;
-
-    //  https://youtu.be/2j_9YWgTxHk
-    public void findSecretWord(String[] wordlist, Master master) {
-        int N = wordlist.length;
-        H = new int[N][N];
-        for (int i = 0; i < N; ++i)
-            for (int j = i; j < N; ++j) {
-                int match = 0;
-                for (int k = 0; k < 6; ++k)
-                    if (wordlist[i].charAt(k) == wordlist[j].charAt(k))
-                        match++;
-                H[i][j] = H[j][i] = match;
+    // 913 猫和老鼠 tag: dp
+    // 1 🐭  2 🐱 3 平局
+    // https://bit.ly/3gZU3Pa
+    int[][][] f;
+    public int catMouseGame02(int[][] graph) {
+        int n = graph.length;
+        f = new int[n * 2][n][n];
+        for (int[][] i : f) {
+            for (int[] j : i) {
+                Arrays.fill(j, -1);
             }
+        }
+        return solve(graph, 0, 1, 2);// 起始状态
+    }
 
-        List<Integer> possible = new ArrayList();
-        List<Integer> path = new ArrayList();
-        for (int i = 0; i < N; ++i) possible.add(i);
-        while (!possible.isEmpty()) {
-            int guess = solve(possible, path);
-            int matches = master.guess(wordlist[guess]);
-            if (matches == wordlist[0].length()) return;
-            List<Integer> possible2 = new ArrayList();
-            for (Integer j : possible) if (H[guess][j] == matches) possible2.add(j);
-            possible = possible2;
-            path.add(guess);
+    int solve(int[][] graph, int t, int x, int y) {
+        if (t == graph.length * 2) return 0;
+        if (x == y) return f[t][x][x] = 2;
+        if (x == 0) return f[t][x][y] = 1;
+        if (f[t][x][y] != -1) return f[t][x][y];
+
+        int who = t % 2;
+        boolean flag;
+        if (who == 0) { // 老鼠先走 偶数
+            flag = true;
+            for (int i = 0; i < graph[x].length; i++) {
+                int nxt = solve(graph, t + 1, graph[x][i], y);
+                if (nxt == 1) {// 有1选1
+                    return f[t][x][y] = 1;
+                } else if (nxt != 2) {// 有 0 选 0
+                    flag = false;
+                }
+            }
+            if (flag) {
+                return f[t][x][y] = 2;
+            } else {
+                return f[t][x][y] = 0;
+            }
+        } else {
+            flag = true;
+            for (int i = 0; i < graph[y].length; i++) {
+                if (graph[y][i] != 0) {// 不进洞
+                    int next = solve(graph, t + 1, x, graph[y][i]);
+                    if (next == 2) {// 有2选2
+                        return f[t][x][y] = 2;
+                    } else if (next != 1) {// 有0选0
+                        flag = false;
+                    }
+                }
+            }
+            if (flag) {
+                return f[t][x][y] = 1;
+            } else {
+                return f[t][x][y] = 0;
+            }
         }
     }
 
-    public int solve(List<Integer> possible, List<Integer> path) {
-        if (possible.size() <= 2) return possible.get(0);
-        List<Integer> ansgrp = possible;
-        int ansguess = -1;
+    // https://bit.ly/35eiR3N
+    // time complexity O(n * n * 2)
+    public int catMouseGame01(int[][] adj) {
+        int n = adj.length;
+        // 1. initial
+        // status[i][j][k] 表示老鼠在i位置， 猫在j位置，k表示下一步由谁移动(0表示鼠移动， 1表示猫移动)
+        // 结果为0，1，2(1表示鼠胜，2表示猫胜，0表示平局)
+        int[][][] status = new int[n][n][2];
+        Queue<int[]> queue = new ArrayDeque<>();
+        // status[i][i][k] 表示鼠猫同位置，猫胜；
+        // status[0][i][k] 表示鼠进洞，鼠胜；
+        for (int i = 1; i < n; i++) {
+            status[i][i][0] = 2;
+            status[i][i][1] = 2;
+            status[0][i][0] = 1;
+            status[0][i][1] = 1;
+            queue.add(new int[]{i, i, 0});
+            queue.add(new int[]{i, i, 1});
+            queue.add(new int[]{0, i, 0});
+            queue.add(new int[]{0, i, 1});
+        }
 
-        for (int guess = 0; guess < H.length; ++guess) {
-            if (!path.contains(guess)) {
-                ArrayList<Integer>[] groups = new ArrayList[7];
-                for (int i = 0; i < 7; ++i) groups[i] = new ArrayList<Integer>();
-                for (Integer j : possible)
-                    if (j != guess) {
-                        groups[H[guess][j]].add(j);
+        // 2. BFS 搜索
+        while (!queue.isEmpty()) {
+            int[] cur = queue.poll();
+            int i = cur[0], j = cur[1], k = cur[2];
+            if (k == 0) { // 鼠行动，说明上一次是猫行动
+                // 在倒推上一步的猫状态时需要确保满足题意，猫不会在0位置处
+                if (status[i][j][0] == 2) { // 猫胜利，那么根据最优玩法，上次的猫行动可以直接选择胜利的玩法
+                    for (int pre : adj[j]) {
+                        if (pre != 0 && status[i][pre][1] == 0) {
+                            status[i][pre][1] = 2;
+                            queue.add(new int[]{i, pre, 1});
+                        }
                     }
-                ArrayList<Integer> maxgroup = groups[0];
-                for (int i = 0; i < 7; ++i)
-                    if (groups[i].size() > maxgroup.size())// max
-                        maxgroup = groups[i];
-
-                if (maxgroup.size() < ansgrp.size()) {// min
-                    ansgrp = maxgroup;
-                    ansguess = guess;
+                } else { // 鼠胜利，那么只有当上次猫的所有行动下都是鼠胜利，猫才稳输
+                    for (int pre : adj[j]) {
+                        if (pre != 0 && status[i][pre][1] == 0) {
+                            boolean canMouseWin = true;
+                            for (int next : adj[pre]) {
+                                if (next != 0 && status[i][next][0] != 1) {
+                                    canMouseWin = false;
+                                    break;
+                                }
+                            }
+                            if (canMouseWin) {
+                                status[i][pre][1] = 1;
+                                queue.add(new int[]{i, pre, 1});
+                            }
+                        }
+                    }
+                }
+            } else { // 猫行动，说明上次是鼠行动
+                if (status[i][j][1] == 1) { // 鼠胜利，那么上次的鼠直接通过这次的选择即可确保胜利
+                    for (int pre : adj[i]) {
+                        if (status[pre][j][0] == 0) {
+                            status[pre][j][0] = 1;
+                            queue.add(new int[]{pre, j, 0});
+                        }
+                    }
+                } else { //猫胜利，那么当且仅当上次的鼠的所有行动都为猫胜利，鼠才稳输
+                    for (int pre : adj[i]) {
+                        if (status[pre][j][0] == 0) {
+                            boolean canCatWin = true;
+                            for (int next : adj[pre]) {
+                                if (status[next][j][1] != 2) {
+                                    canCatWin = false;
+                                    break;
+                                }
+                            }
+                            if (canCatWin) {
+                                status[pre][j][0] = 2;
+                                queue.add(new int[]{pre, j, 0});
+                            }
+                        }
+                    }
                 }
             }
         }
-        return ansguess;
+        return status[1][2][0];
     }
 
-    // 913 猫和老鼠
-    @AllArgsConstructor
-    class Node {
-        int i, j, turn;// x-> 🐭 ，y->🐱，turn 0表示老鼠先走，1表示猫先走
-    }
-
-    Queue<Node> q;
-    int[][] g;
-    int n;
-    int[][][] ans = new int[205][205][2];
-    int[][][] indeg = new int[205][205][2];
-
-    public int catMouseGame(int[][] graph) {
-        g = graph;
-        n = graph.length;
-        q = new LinkedList<>();
-        while (!q.isEmpty()) q.poll();
-        bfs();
-        bbfs();
-        return ans[1][2][0];
-    }
-
-    public void bfs() {
-        for (int i = 0; i < n; i++) {
-            if (i != 0) {
-                q.add(new Node(i, i, 0));
-                q.add(new Node(i, i, 1));
-                q.add(new Node(0, i, 0));
-                q.add(new Node(0, i, 1));
-                ans[i][i][0] = ans[i][i][1] = 2; // 猫必胜局面
-                ans[0][i][0] = ans[0][i][1] = 1; // 老鼠必胜局面
-                indeg[i][i][0] = indeg[i][i][1] = 1; // 只是为了防止再次进队
-            }
-        }
-        while (!q.isEmpty()) {
-            Node front = q.poll();
-
-        }
-
-    }
-
-    public void bbfs() {
-
-    }
 
     // 877 石头游戏  tag: min-max dp
     int[][] mem;
@@ -363,21 +400,7 @@ public class GameTheory {
     }
 
     // 从前面的递归也可以推导出dp状态转移方程式 https://bit.ly/3lOsDiI
-    public String stoneGameIII02(int[] stoneValue) {
-        int len = stoneValue.length;
-        int[] dp = new int[len + 1];
-        Arrays.fill(dp, Integer.MIN_VALUE);
-        for (int i = len - 1; i >= 0; i--) {
-            int take = 0;
-            for (int j = i; j < Math.min(i + 3, n); j++) {
-                take += stoneValue[j];
-                dp[i] = Math.max(dp[i], take - (j + 1) < len ? dp[j + 1] : 0);
-            }
-        }
-        int diff = dp[0];
-        return diff > 0 ? "Alice" : (diff == 0 ? "Tie" : "Bob");
-        /*
-        // 这个方法也可以
+    public String stoneGameIII(int[] stoneValue) {
         int len = stoneValue.length;
         int[] dp = new int[len];
         Arrays.fill(dp, Integer.MIN_VALUE);
@@ -385,16 +408,17 @@ public class GameTheory {
             int take = 0;
             for (int j = i; j < Math.min(i + 3, len); j++) {
                 take += stoneValue[j];
-                dp[i] = Math.max(dp[i], take - ( (j + 1) < len ? dp[j + 1] : 0));
+                dp[i] = Math.max(dp[i], take - ((j + 1) < len ? dp[j + 1] : 0));
             }
         }
         int diff = dp[0];
         return diff > 0 ? "Alice" : (diff == 0 ? "Tie" : "Bob");
-         */
     }
 
-    // 1563. 石子游戏 V https://bit.ly/2DpykSU 区间DP
-    public int stoneGameV(int[] stoneValue) {
+
+    // 1563. 石子游戏 V
+    // ① https://bit.ly/2DpykSU 区间DP
+    public int stoneGameV01(int[] stoneValue) {
         int n = stoneValue.length;
         int[] preSum = new int[n];
         int[][] dp = new int[n][n];
@@ -408,7 +432,7 @@ public class GameTheory {
                 for (int k = i; k < j; k++) {
                     int l = dp[i][k];
                     int r = dp[k + 1][j];
-                    int ls = preSum[k] - (i>=1 ? preSum[i-1]:0);
+                    int ls = preSum[k] - (i >= 1 ? preSum[i - 1] : 0);
                     int rs = preSum[j] - preSum[k];
                     if (ls == rs) {
                         int score = Math.max(l, r) + rs;
@@ -423,6 +447,90 @@ public class GameTheory {
                 }
             }
         }
-        return dp[0][n-1];
+        return dp[0][n - 1];
     }
+
+    // 1563. 石子游戏 V ②
+    int[] preSum;
+
+    // int[][] cache;
+    public int stoneGameV(int[] stoneValue) {
+        int n = stoneValue.length;
+        cache = new int[n][n];
+        preSum = new int[n + 1];
+        for (int i = 0; i < n; i++) {
+            preSum[i + 1] = preSum[i] + stoneValue[i];
+        }
+        return dp(0, n - 1);
+    }
+
+    public int dp(int l, int r) {
+        if (l == r) return 0;
+        if (cache[l][r] > 0) return cache[l][r];//剪枝
+        int ans = 0;
+        for (int k = l; k < r; k++) {
+            int left = preSum[k + 1] - preSum[l];
+            int right = preSum[r + 1] - preSum[k + 1];
+            if (left <= right) {
+                ans = Math.max(ans, left + dp(l, k));
+            }
+            if (left >= right) {
+                ans = Math.max(ans, right + dp(k + 1, r));
+            }
+        }
+        return cache[l][r] = ans;
+    }
+
+
+    /*
+    // 值得研究
+    public int stoneGameV(int[] stoneValue) {
+        if (stoneValue == null || stoneValue.length <= 1) return 0;
+        int n = stoneValue.length;
+        int[][] sum = new int[n][n], pt = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                if (i == j) {
+                    sum[i][j] = stoneValue[i];
+                    pt[i][j] = i;
+                } else {
+                    sum[i][j] = sum[i][j - 1] + stoneValue[j];
+                    int mid = pt[i][j - 1];
+                    while (sum[i][j] - sum[i][mid] > sum[i][mid]) {
+                        mid++;
+                    }
+                    pt[i][j] = mid;
+                }
+            }
+        }
+
+        int[][] dp = new int[n][n], maxL = new int[n][n], maxR = new int[n][n];
+        for (int i = n - 1; i >= 0; i--) {
+            for (int j = i; j < n; j++) {
+                if (i == j) {
+                    dp[i][j] = 0;  //只有一个石堆，得到0
+                    maxL[i][j] = sum[i][j]; //dp[i][j] = 0
+                    maxR[i][j] = sum[i][j];
+                    continue;
+                }
+                int mid = pt[i][j];
+                int sl = sum[i][mid], sr = mid < j ? sum[mid + 1][j] : 0;
+                //左右相等
+                if (sl == sr) {
+                    dp[i][j] = Math.max(maxL[i][mid], maxR[mid + 1][j]);
+                } else {
+                    if (mid > i) {
+                        dp[i][j] = Math.max(dp[i][j], maxL[i][mid - 1]);
+                    }
+                    if (mid < j) {
+                        dp[i][j] = Math.max(dp[i][j], maxR[mid + 1][j]);
+                    }
+                }
+                maxL[i][j] = Math.max(maxL[i][j - 1], sum[i][j] + dp[i][j]);
+                maxR[i][j] = Math.max(maxR[i + 1][j], sum[i][j] + dp[i][j]);
+            }
+        }
+        return dp[0][n - 1];
+    }*/
+
 }
