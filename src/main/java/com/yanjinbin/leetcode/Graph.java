@@ -1,21 +1,13 @@
 package com.yanjinbin.leetcode;
 
-import lombok.Data;
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
-import java.util.Scanner;
+import java.util.*;
 
 public class Graph {
 
-    public static void main(String[] args) {
+  /*  public static void main(String[] args) {
         Graph g = new Graph();
         g.WateringTheFields();
-    }
+    }*/
 
     // 最短路径问题
     int[] dist;
@@ -78,7 +70,7 @@ public class Graph {
     // Bellman-Ford/SPFA 算法  wiki 定义： https://bit.ly/39z3lOr
     // P1186 1144 1744 AT3883 AT2154 UVA721 p2419 P2910
 
-    public int cnt;
+    //public int cnt;
     public com.yanjinbin.leetcode.Edge[] e1; // 1_based index
     public com.yanjinbin.leetcode.Edge[] e2;
     public int[] h1; //另外还有一个数组head[],它是用来表示以i为起点的第一条边存储的位置,实际上你会发现这里的第一条边存储的位置其实
@@ -327,7 +319,7 @@ public class Graph {
 
     // https://oi-wiki.org/graph/mst/
     // 最小生成树 minimum spanning tree, MST
-    // kruskal 和 prim 比较  https://www.luogu.com.cn/blog/80049/template-Minimum-Spanning-Tree
+    // kruskal 和 prim 比较   最小生成树模版---> https://www.luogu.com.cn/blog/80049/template-Minimum-Spanning-Tree
 
 
     // Kruskal 算法
@@ -434,18 +426,73 @@ public class Graph {
         }
     }
 
+    public static int cnt = 1;
+    public static com.yanjinbin.leetcode.Edge[] edges;
+    public static int[] head;
+   // public static boolean[] seen;
+    static Pre[] p;
 
-    //
+    public class Pre {
+        int next; // 增广路 靠近S点反向的前一个点
+        int eIdx;// edges数组的index
+    }
 
-    // boruvka算法
+    public static void addEdge(int u, int v, int w) {
+        edges[++cnt].to = v;
+        edges[cnt].w = w;
+        edges[cnt].next = head[u];
+        head[u] = cnt;
+    }
 
+    public static boolean bfs(int n, int m, int s, int t) {
+        Arrays.fill(seen, false);
+        seen[s] = true;
+        Queue<Integer> q = new LinkedList<>();
+        q.offer(s);
+        while (!q.isEmpty()) {
+            int u = q.poll();
+            for (int i = head[u]; i != -1; i = edges[i].next) {
+                int v = edges[i].to;
+                if (!seen[v] && edges[i].w != 0) {
+                    p[v].next = u;
+                    p[v].eIdx = i;
+                    //判断 是不是 t点放前面
+                    if (v == t) {
+                        return true;
+                    }
+                    seen[v] = true;
+                    q.offer(v);
+                }
+            }
+        }
+        return false;
+    }
 
-    // 最小生成树唯一性问题
+    static int EK(int n, int m, int s, int t) {
+        int ans = 0;
+        while (bfs(n, m, s, t)) {
+            int min = Integer.MAX_VALUE;
+            for (int i = t; i != s; i = p[i].next) {
+                min = Math.min(min, edges[p[i].eIdx].w);
+            }
+            for (int i = t; i != s; i = p[i].next) {
+                edges[p[i].eIdx].w -= min;
+                edges[p[i].eIdx ^ 1].w += min;
+            }
+        }
+        return ans;
+    }
 
-
-    // 瓶颈生成树 最小瓶颈路
-
-    // 忽略  次小生成树（非严格次小生成树，严格次小生成树）
-
+    public static void main(String[] args) {
+        Scanner cin = new Scanner(System.in);
+        int n = cin.nextInt(), m = cin.nextInt(), s = cin.nextInt(), t = cin.nextInt();
+        for (int i = 1; i <= m; i++) {
+            int u = cin.nextInt(), v = cin.nextInt(), w = cin.nextInt();
+            addEdge(u, v, w);
+            addEdge(v, w, 0);
+        }
+        Arrays.fill(head, -1);
+        EK(n,m,s,t);
+    }
 
 }
