@@ -6569,8 +6569,270 @@ public class Solution {
         return arr1;
     }
 
+    // 119 杨辉三角
+    public List<Integer> getRow(int rowIndex) {
+        List<Integer> ans = new ArrayList<>();
+        if (rowIndex < 0) return ans;
+        ans.add(1);
+        return dfsRow(0, rowIndex, ans);
+    }
+
+    public List<Integer> dfsRow(int cur, int rowIndex, List<Integer> ans) {
+        if (cur == rowIndex) return ans;
+        List<Integer> tmp = new ArrayList<>();
+        tmp.add(1);
+        for (int i = 1; i < ans.size(); i++) {
+            tmp.add(ans.get(i) + ans.get(i - 1));
+        }
+        tmp.add(1);
+        return dfsRow(cur + 1, rowIndex, tmp);
+    }
+
+    // 231. 2的幂
+    public boolean isPowerOfTwo(int n) {
+        return n > 0 && (n & n - 1) == 0;
+    }
+
+    // 342. 4的幂 https://bit.ly/3lXPDvP
+    public boolean isPowerOfFour01(int n) {
+        return n > 0 && (n & (n - 1)) == 0 && ((n & 0xaaaaaaaa) == 0);
+    }
+
+    public boolean isPowerOfFour02(int n) {
+        return n > 0 && (n & (n - 1)) == 0 && (n % 3 == 1);
+    }
 
 
+    // 258. 各位相加  概念:数根 https://bit.ly/3m2CFgv
+    public int addDigit01(int n) {
+        return (n - 1) % 9 + 1;
+    }
+
+    public int addDigits02(int num) {
+        while (num >= 10) {
+            int tot = 0;
+            while (num != 0) {
+                tot += num % 10;
+                num = num / 10;
+            }
+            num = tot;
+        }
+        return num;
+    }
+
+    public int addDigits03(int num) {
+        if (num < 10) return num;
+        int tot = 0;
+        while (num != 0) {
+            tot += num % 10;
+            num = num / 10;
+        }
+        return addDigits03(tot);
+    }
+
+    // 263. 丑数
+    public boolean isUgly01(int num) {
+        if (num == 0) return false;
+        if (num == 1) return true;
+        if (num % 2 == 0) return isUgly01(num / 2);
+        if (num % 3 == 0) return isUgly01(num / 3);
+        if (num % 5 == 0) return isUgly01(num / 5);
+        return false;
+    }
+
+    public boolean isUgly02(int num) {
+        if (num == 0) return false;
+        while (num % 2 == 0) num = num / 2;
+        while (num % 3 == 0) num = num / 3;
+        while (num % 5 == 0) num = num / 5;
+        if (num == 1) return true;
+        else return false;
+    }
+
+    // 203. 移除链表元素
+    public ListNode removeElements(ListNode head, int val) {
+        ListNode dummyNode = new ListNode(-1);
+        ListNode pre = dummyNode;
+        ListNode cur = head;
+        dummyNode.next = cur;
+        while (cur != null) {
+            if (cur.val == val) {
+                pre.next = cur.next;
+            } else {
+                pre = cur;
+            }
+            cur = cur.next;
+        }
+        return dummyNode.next;
+    }
+
+    // 168. Excel表列名称 https://bit.ly/3jZ3IXU,分析的不错 tag:进制相关
+    public String convertToTitle(int n) {
+        StringBuilder sb = new StringBuilder();
+        while (n != 0) {
+            n--;
+            sb.append((char) ('A' + (n) % 26));
+            n /= 26;
+        }
+        return sb.reverse().toString();
+    }
+
+    // 405. 数字转换为十六进制数 tag:进制相关
+    public String toHex(int num) {
+        StringBuilder ans = new StringBuilder();
+        char[] arr = "0123456789abcdef".toCharArray();
+        if (num == 0) return "0";
+        while (num != 0) {
+            int idx = num & 15;
+            ans.append(arr[idx]);
+            num = num >>> 4;
+        }
+        return ans.reverse().toString();
+    }
+
+    // 409. 最长回文串长度
+    public int longestPalindrome_(String s) {
+        /*
+        int[] cnt = new int[58];
+        for (char c : s.toCharArray()) {
+            cnt[c - 'A'] += 1;
+        }
+        */
+        int[] cnt = new int[128];
+        for (char c : s.toCharArray()) {
+            cnt[c]++;
+        }
+        int ans = 0;
+        for (int i : cnt) {
+            ans += i / 2 * 2;
+        }
+        return ans < s.length() ? ans + 1 : ans;
+    }
+
+    // 389. 找不同 异或法 / ASCII法
+    public char findTheDifference01(String s, String t) {
+        int ans = 0;
+        for (int i = 0; i < s.length(); i++) {
+            ans ^= s.charAt(i) ^ t.charAt(i);
+        }
+        ans ^= t.charAt(t.length() - 1);
+        return (char) ans;
+    }
+
+    public char findTheDifference(String s, String t) {
+        int t1 = 0, t2 = 0;
+        for (int i = 0; i < s.length(); i++) {
+            t1 += s.charAt(i);
+            t2 += t.charAt(i);
+        }
+        return (char) (t2 + t.charAt(t.length() - 1) - t1);
+    }
+
+    // 414. 第三大的数
+    public int thirdMax(int[] arr) {
+        int len = arr.length;
+        long INF = Long.MIN_VALUE;// 避免NT测试数据 [2,1,INT.MIN_VALUE]
+        long m1 = INF, m2 = INF, m3 = INF;
+        for (int i = 0; i < len; i++) {
+            int cmp = arr[i];
+            if (cmp > m1) {
+                m3 = m2;
+                m2 = m1;
+                m1 = cmp;
+            } else if (cmp > m2 && cmp < m1) {
+                m3 = m2;
+                m2 = cmp;
+            } else if (cmp > m3 && cmp < m2) {
+                m3 = cmp;
+            }
+        }
+        return (m3 == INF || m2 == m3) ? (int) m1 : (int) m3;
+    }
+
+    //415. 字符串相加
+    public String addStrings(String s1, String s2) {
+        int i = s1.length() - 1, j = s2.length() - 1, carry = 0;
+        StringBuilder ans = new StringBuilder();
+        while (i >= 0 || j >= 0) {
+            int x = i >= 0 ? s1.charAt(i) - '0' : 0;
+            int y = j >= 0 ? s2.charAt(j) - '0' : 0;
+            int res = x + y + carry;
+            ans.append(res % 10);
+            carry = res / 10;
+            i--;
+            j--;
+        }
+        if (carry > 0) {
+            ans.append(carry);
+        }
+        return ans.reverse().toString();
+    }
+
+    // 401. 二进制手表
+    public List<String> readBinaryWatch(int num) {
+        List<String> ans = new ArrayList();
+        for (int i = 0; i < 12; i++) {
+            for (int j = 0; j < 60; j++) {
+                if (Integer.bitCount(i) + Integer.bitCount(j) == num) {
+                    ans.add(String.format("%d:%02d", i, j));
+                }
+            }
+        }
+        return ans;
+    }
+
+    //
+    public int arrangeCoins(int n) {
+        long lo = 0;
+        long hi = (long) n + 1;
+        while (lo < hi) {
+            long mid = (hi - lo) / 2 + lo;
+            if ((mid + 1) * mid / 2 <= n) {
+                lo = (mid + 1);
+            } else {
+                hi = mid;
+            }
+        }
+        return (int) (lo - 1);
+    }
+
+    // 475. 供暖器 tag:二分
+    public int findRadius(int[] houses, int[] heaters) {
+        int len = heaters.length;
+        int ans = 0;
+        Arrays.sort(heaters);
+        for (int h : houses) {
+            int idx = bs(heaters, h);
+            if (!(idx != len && h == heaters[idx])) {// 没找到，所以要规划半径
+                int ld = idx - 1 >= 0 ? h - heaters[idx - 1] : Integer.MAX_VALUE;// MAX_VALUE，代表没有可行方案
+                int rd = idx != len ? heaters[idx] - h : Integer.MAX_VALUE;
+                ans = Math.max(ans, Math.min(ld, rd));// 取min是因为2个，满足其中一个就可以了
+            }
+        }
+        return ans;
+    }
+
+    int bs(int[] arr, int target) {
+        int lo = 0, hi = arr.length;
+        while (lo < hi) {
+            int mid = (hi - lo) / 2 + lo;
+            if (arr[mid] < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+        return lo;
+    }
+
+    //504. 七进制数 tag:进制 位运算
+    public String convertToBase7(int n) {
+        if (n < 0) return "-" + convertToBase7(-n);
+        if (n < 7) return n + "";
+        return convertToBase7(n / 7) + "" + (n % 7);
+    }
+
+    // 541. 反转字符串 II
 }
 
 
