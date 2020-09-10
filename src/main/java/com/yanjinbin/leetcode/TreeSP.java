@@ -626,6 +626,50 @@ public class TreeSP {
         return ans;
     }
 
-    // 742 314 垂直遍历
+    // 257. 二叉树的所有路径
+    public List<String> binaryTreePaths(TreeNode root) {
+        List<String> ans = new ArrayList<>();
+        dfsPath(root, "", ans);
+        return ans;
+    }
 
+    public void dfsPath(TreeNode root, String str, List<String> ans) {
+        if (root == null) return;
+        str += (root.val);
+        if (root.left == null && root.right == null) {
+            ans.add(str);
+        } else {
+            str += "->";
+            dfsPath(root.left, str, ans);
+            dfsPath(root.right, str, ans);
+        }
+    }
+
+    // 404. 左叶子之和
+    public int sumOfLeftLeaves(TreeNode root) {
+        return dfsSumLeave(root, false);
+    }
+    public int dfsSumLeave(TreeNode root, boolean isleft) {
+        if (root == null) return 0;
+        if (root.left == null && root.right == null && isleft) {
+            return root.val;
+        }
+        return dfsSumLeave(root.left, true) + dfsSumLeave(root.right, false);
+    }
+
+
+    // 572. 另一个树的子树
+    public boolean isSubtree(TreeNode s, TreeNode t) {
+        if(t==null) return true;
+        if(s==null)  return false;
+        return isSame(s,t)|| isSubtree(s.right,t)||isSubtree(s.left,t);
+    }
+
+    public boolean isSame(TreeNode s,TreeNode t){
+        if(s==null&&t==null)return true;
+        if(s==null||t==null)return false;
+        if(s.val==t.val) return isSame(s.right,t.right) && isSame(s.left,t.left);
+        else return false;
+    }
+    // 742 314 垂直遍历
 }
