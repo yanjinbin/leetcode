@@ -18,7 +18,7 @@ public class AutocompleteSystem {
 
     class Trie {
         int times;
-        Trie[] branches = new Trie[27];
+        Trie[] branches = new Trie[26];// 字母只有26个
     }
 
     public int _int_(char c) {

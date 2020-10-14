@@ -1,6 +1,6 @@
-import com.yanjinbin.leetcode.WeeklyContest;
 import org.junit.Test;
 
+/*
 public class ContestTest {
     private static WeeklyContest CONTEST = new WeeklyContest();
 
@@ -10,3 +10,5 @@ public class ContestTest {
         assert CONTEST.maximumSum(arr) == 4;
     }
 }
+*/
+p

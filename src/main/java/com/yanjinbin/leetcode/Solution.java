@@ -6832,7 +6832,29 @@ public class Solution {
         return convertToBase7(n / 7) + "" + (n % 7);
     }
 
-    // 541. 反转字符串 II
+    // 670
+    public int maximumSwap(int num) {
+        char[] chrs = String.valueOf(num).toCharArray();
+        int[] lastIdx = new int[10];
+        for (int i = 0; i < chrs.length; i++) {
+            lastIdx[chrs[i] - '0'] = i;
+        }
+        for (int i = 0; i < chrs.length; i++) {
+            for (int d = 9; d > chrs[i] - '0'; d--) {
+                if (lastIdx[d]>i){
+                    swapChars(chrs,lastIdx[d],i);
+                    return Integer.valueOf(String.valueOf(chrs));
+                }
+            }
+        }
+        return num;
+    }
+
+   public void  swapChars(char[] chrs,int i,int j){
+        char tmp = chrs[i];
+        chrs[i]=chrs[j];
+        chrs[j]=tmp;
+   }
 }
 
 

@@ -102,4 +102,9 @@ public class DP {
         return dp[n - 1][min1];
     }
 
+    //p2365 CDQ分治/斜率优化/单调队列 https://www.luogu.com.cn/problem/P2365
+    public void taskAssigned(){
+
+    }
+
 }

@@ -35,6 +35,8 @@ public class SolutionTest {
 
     private static Microsoft MS = new Microsoft();
 
+    private static GameTheory GS = new GameTheory();
+
     @Before()
     public void init() {
 
@@ -587,7 +589,7 @@ public class SolutionTest {
     @Test
     public void lengthOfLIS() {
         int[] nums = {10, 9, 2, 5, 3, 7, 101, 18};
-        System.out.println(PACK.lengthOfLIS(nums));
+        //System.out.println(PACK.lengthOfLIS01(nums));
     }
 
     @Test
@@ -1327,6 +1329,7 @@ public class SolutionTest {
         System.out.println(21 % 10);
         System.out.println(21 / 10);
         System.out.println(2 / 10);
+
     }
 
     @Test
@@ -1447,8 +1450,8 @@ public class SolutionTest {
     @Test
     public void strStr() {
         // ississ连续重复导致 无法识别
-        assert INSTANCE.strStr_wrong("mississippi", "issip")
-                != INSTANCE.strStr1("mississippi", "issip");
+//        //assert INSTANCE.strStr_wrong("mississippi", "issip")
+//                != INSTANCE.strStr1("mississippi", "issip");
     }
 
     @Test(timeout = 6000)
@@ -1578,7 +1581,6 @@ public class SolutionTest {
 
     @Test
     public void isValidSudoku() {
-
         char[][] boards = {{'5', '3', '.', '.', '7', '.', '.', '.', '.'}, {'6', '.', '.', '1', '9', '5', '.', '.', '.'}, {'.', '9', '8', '.', '.', '.', '.', '6', '.'}, {'8', '.', '.', '.', '6', '.', '.', '.', '3'}, {'4', '.', '.', '8', '.', '3', '.', '.', '1'}, {'7', '.', '.', '.', '2', '.', '.', '.', '6'}, {'.', '6', '.', '.', '.', '.', '2', '8', '.'}, {'.', '.', '.', '4', '1', '9', '.', '.', '5'}, {'.', '.', '.', '.', '8', '.', '.', '7', '9'}};
         INSTANCE.isValidSudoku(boards);
     }
@@ -2621,12 +2623,12 @@ public class SolutionTest {
         assert BS.kthSmallest(arr, 8) == 13;
         assert BS.mySqrt1(8) == 2;*/
         for (int i = 1; i < 5000000; i++) {
-            double res = BS.mySqrt2(i);
-            System.out.println((res-BS.mySqrt1(i))/.03125);
-            double ans = res+.03125;
-           // System.out.println(res+"  "+ans);
-            assert res*res<=i;
-            assert ans*ans>i;
+            double res = BS.mySqrt1(i);
+            System.out.println((res - BS.mySqrt1(i)) / .03125);
+            double ans = res + .03125;
+            // System.out.println(res+"  "+ans);
+            assert res * res <= i;
+            assert ans * ans > i;
         }
 
 
@@ -2667,21 +2669,20 @@ public class SolutionTest {
     @Test
     public void BusRoute() {
         int[] arr = new int[]{1, 2, 3, 4, 5};
-        System.out.println(binarySearch(arr, 7));
+        System.out.println(binarySearch(arr, -1));
 
     }
 
     public int binarySearch(int[] arr, int v) {
-        int lo = 0, hi = arr.length - 1;
-        while (lo <= hi) {
+        int lo = 0, hi = arr.length;
+        while (lo < hi) {
             int mid = (hi - lo) / 2 + lo;
             if (arr[mid] < v) {
                 lo = mid + 1;
-            } else if (arr[mid] > v) {
-                hi = mid - 1;
-            } else return mid;
+            } else {
+                hi = mid;
+            }
         }
-        System.out.println(lo + " " + hi);
         return lo;
     }
 
@@ -2750,5 +2751,50 @@ public class SolutionTest {
         System.out.println(Arrays.toString(head));
     }
 
+    @Test
+    public void op() {
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>((o1, o2) -> o2 - o1);
+        minHeap.add(1);
+        minHeap.add(4);
+        minHeap.add(2);
+        System.out.println(minHeap.peek());
+        int[] nums = new int[]{2, 3, 5};
+        int k = 12;
+        // System.out.println(INSTANCE.solution(nums, k));
+    }
 
+    @Test
+    public void stoneGameSeries() {
+        int[] piles = {1, 2, 3, -1, -2, -3, 7};
+        // GS.stoneGameIII01(piles);
+        piles = new int[]{39994, 3, 4, 10000, 10000, 10000, 10000, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1000000};
+        GS.stoneGameV(piles);
+    }
+
+    @Test
+    public void findLength() {
+        int[] A = {0, 1, 1, 1, 1};
+        int[] B = {1, 0, 1, 0, 1};
+        assert INSTANCE.findLength(A, B) == 2;
+        assert INSTANCE.findLength_wrong(A, B) == 2;
+    }
+
+    @Test
+    public void relativeSortArray() {
+        int[][] graph = new int[][]{{2, 5}, {3}, {0, 4, 5}, {1, 4, 5}, {2, 3}, {0, 2, 3}};
+        assert GS.catMouseGame02(graph) == GS.catMouseGame01(graph);
+    }
+
+    @Test
+    public void getRow() {
+        // System.out.println(INSTANCE.getRow(3));
+        // System.out.println(Integer.toBinaryString(218));
+        //  System.out.println(INSTANCE.convertToTitle(701));
+        int[] arr = new int[]{2, 1, 1};
+        // System.out.println(INSTANCE.thirdMax(arr));
+        //  System.out.println(Integer.MAX_VALUE);
+        int n = 1;
+        System.out.println(INSTANCE.arrangeCoins(n));
+
+    }
 }

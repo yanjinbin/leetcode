@@ -92,7 +92,7 @@ public class Pack {
     }
 
     // 完全背包问题 https://www.luogu.org/problem/P1616
-    // 问题描述: 此时问题的问法变化了, N种物品,容量V,每种物品的费用Ci,价值Wi,如何装入(第I种物品数量不限), 才能使得价值最大
+    // 问题描述: 此时问题的问法变化了, N种物品,容量V,每种物品的费用Ci,价值Wi,如何装入(第I种物品数量不限!!), 才能使得价值最大
     // 提交记录: https://www.luogu.org/record/24014209
     public int CompletePack_Original(int N, int V, int[] C, int[] W) {
         int[][] dp = new int[N + 1][V + 1];
@@ -159,7 +159,7 @@ public class Pack {
         while (k < mi) {
             ZeroOnePack(ci * k, wi * k, dp, V);
             mi = mi - k;
-            k = 2 * k;
+            k = k >> 1;
         }
         ZeroOnePack(ci * mi, wi * mi, dp, V);
         return dp[V];
@@ -479,15 +479,13 @@ public class Pack {
     }
 
     // follow up 优化
-
-
     // ② 300 最长上升子序列 复杂度 O(N²)
     //  花花讲解 http://bit.ly/2Oga3BP
     //  http://bit.ly/2S18Z4A 看动画就能理解为什么了 哈哈
     //  [tag:面筋  很容易会被问到]
 
     // dp[i]=Max(dp[i],dp[j]+1),0<=j<i<N,以i结尾
-    public int lengthOfLIS(int[] nums) {
+    public int lengthOfLIS01(int[] nums) {
         int N = nums.length;
         if (N == 0 || N == 1) return N;
         int[] dp = new int[N];
@@ -505,30 +503,23 @@ public class Pack {
         return ans;
     }
 
-    /*
-    //  divide and conquer  分治法求 复杂度 O(NlgN) 二分法解决
-    //  参考如下  http://bit.ly/2kSr74M
-    //  ❌ 面试不友好，想不出。
-    public int lengthOfLIS01(int[] nums) {
+    public int lengthOfLIS02(int[] nums) {
         int N = nums.length;
-        int[] top = new int[N];
-        int piles = 0;
-        for (int i = 0; i < N; i++) {
-            int poker = nums[i];
-            int l = 0, r = piles;
-            while (l < r) {
-                int mid = (r - l) / 2 + l;
-                if (top[mid] < poker) {
-                    l = mid + 1;
-                } else {
-                    r = mid;
-                }
+        int[] dp = new int[N];
+        int len = 0;
+        for (int num : nums) {
+            int index = Arrays.binarySearch(dp, 0, len, num);
+            if (index < 0) {
+                index = -(index + 1);
             }
-            if (l == piles) piles++;
-            top[l] = poker;
+            dp[index] = num;
+            if (index == len) {
+                len++;
+            }
         }
-        return piles;
-    }*/
+        return len;
+    }
+
 
     // ③ 674  最长连续递增序列
     public int findLengthOfLCIS(int[] nums) {
@@ -658,7 +649,7 @@ public class Pack {
         return dp[0][N - 1];
     }
 
-    // 813 最大平均值和的分组
+    // 813 最大平均值和的分组 s切割点
     // dp(i,j,k) = max(dp(i,s,k-1)+dp(s+1,j,1),dp(i,j,k));
     // 0<=i<=s<j<N;
     public double largestSumOfAverages(int[] nums, int K) {
@@ -751,12 +742,12 @@ public class Pack {
     //  877 石子游戏 区间DP
     // dp(i,j)表示区间(i,j)呢 先手的人能获得最大石子数
     // dp(i,j) = Max{ sum[i,j]-dp(i+1,j),sum[i,j]-dp(i,j-1) }
-    public boolean stoneGame(int[] piles) {
+    /*public boolean stoneGame(int[] piles) {
         int N = piles.length;
-        int[] preSum = new int[N];
-        preSum[0] = piles[0];
+        int[] preS = new int[N];
+        preS[0] = piles[0];
         for (int i = 1; i < N; i++) {
-            preSum[i] = preSum[i - 1] + piles[i];
+            preS[i] = preS[i - 1] + piles[i];
         }
         int[][] dp = new int[N][N];
         // init
@@ -767,13 +758,13 @@ public class Pack {
         for (int len = 1; len < N; len++) {
             for (int i = 0; i < N - len; i++) {
                 int j = i + len;
-                dp[i][j] = Math.max(preSum(i, j, preSum) - dp[i + 1][j], preSum(i, j, preSum) - dp[i][j - 1]);
+                dp[i][j] = Math.max(preSum(i, j, preS) - dp[i + 1][j], preSum(i, j, preS) - dp[i][j - 1]);
             }
 
         }
-        return dp[0][N - 1] > (preSum[N - 1] / 2);
+        return dp[0][N - 1] > (preS[N - 1] / 2);
 
-    }
+    }*/
 
     // LC  1000  合并石头的最低成本
     // 0<=i<=t<j<N  1<=k<=K

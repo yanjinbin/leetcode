@@ -1,9 +1,11 @@
 package com.yanjinbin.leetcode;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 
 // https://oi-wiki.org/ds/seg/
 // 307 315
+@Data
 public class SegmentTree {
 
     @AllArgsConstructor
@@ -31,7 +33,7 @@ public class SegmentTree {
         int mid = (end - start) / 2 + start;
         SegmentTreeNode left = buildTree(start, mid, vals);
         SegmentTreeNode right = buildTree(mid + 1, end, vals);
-        return new SegmentTreeNode(start, end, left.sum + right.sum, left, right);
+        return new SegmentTreeNode(start, end, left.sum + right.sum);
     }
 
 

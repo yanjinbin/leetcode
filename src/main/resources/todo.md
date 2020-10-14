@@ -105,3 +105,8 @@ DP :  514 自由之路  265 粉刷房子2
           return num & ~(num - 1);
      }
 ```
+
+//402. 移掉K位数字
+    public String removeKdigits(String num, int k) {
+        return "";
+    }

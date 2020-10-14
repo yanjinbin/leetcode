@@ -31,14 +31,19 @@
 // 链式前向星  避免排序
 
 ```java
+    // 构建 链式前向星
     int[] head  = Arrays.fill(head,-1);
     void add(int u,int v,int w){   
         edge[cnt].to=v;
         edge[cnt].w=w;
-        edge[cnt].next = head[u]
+        edge[cnt].next = head[u] // head[i] 表示顶点`i`的第一条边的数组下标，-1表示顶点`i`没有边
         head[u]=cnt++;
-
     }
+    // 遍历
+    for(int i =head[u];i!=-1;i=head[u].next){
+    
+    
+    }   
 ```
 
 

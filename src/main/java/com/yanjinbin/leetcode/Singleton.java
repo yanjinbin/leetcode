@@ -6,12 +6,7 @@ public class Singleton {
     private Singleton() {
     }
 
-    public static Singleton getInstance() {
-        return INSTANCE;
-    }
-
     public static void main(String[] args) {
-        System.out.println(Singleton.getInstance());
         System.out.println(Singleton.instance());
     }
 
