@@ -20,8 +20,9 @@ public class ShuffleArray {
     public ShuffleArray(int[] nums) {
         this.nums = nums;
         this.random = new Random();
-
     }
+
+    public ShuffleArray(){}
 
     /**
      * Resets the array to its original configuration and return it.
@@ -48,5 +49,15 @@ public class ShuffleArray {
         nums[i] = nums[j];
         nums[j] = temp;
     }
+    // 三种洗牌算法实现 https://bit.ly/2HkLTEH
+    public int[] FisherYates(int[] input) {
+        int len = input.length;
+        for (int i = len - 1; i >= 0; i--) {
+            int randIdx = new Random().nextInt(i+1);
+            swap(input,randIdx,i);
+        }
+        return input;
+    }
+    // INSIDE_OUT算法 其实就是保留原始数组，然后在新数组实现i和k位置值得交换
 
 }

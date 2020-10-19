@@ -37,6 +37,8 @@ public class SolutionTest {
 
     private static GameTheory GS = new GameTheory();
 
+    private static ShuffleArray SA = new ShuffleArray();
+
     @Before()
     public void init() {
 
@@ -2796,5 +2798,12 @@ public class SolutionTest {
         int n = 1;
         System.out.println(INSTANCE.arrangeCoins(n));
 
+
+    }
+
+    @Test
+    public void shuffleAlgo(){
+        int[] input = {8,2,3,4,5,6,7,1};
+        System.out.println(Arrays.toString(SA.FisherYates(input)));
     }
 }
