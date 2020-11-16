@@ -1,6 +1,8 @@
 package com.yanjinbin.leetcode;
 
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 
 public class Solution {
@@ -340,7 +342,6 @@ public class Solution {
             backtrack(ans, cur + "(", open + 1, close, max);
     }
 
-    // ② [tag: 字节面筋 http://bit.ly/2Na3nW1]
     // 11. 盛最多水的容器  T:O(N)
     // 双指针法，左右移动时候，选择移动 高度短的 可能能增加面积 如果是盛水最少的容器呢
     public int maxArea(int[] height) {
@@ -402,7 +403,7 @@ public class Solution {
 
 
     // ③ 31. 下一个排列 首先理解字典序   找下一个字典序更大的 如果最大了 就全局升序排列了
-    //  题解连接 http://bit.ly/2RS8Wbd
+    //  题解连接 https://youtu.be/1ja5s9TmwZM  1274311
     public void nextPermutation(int[] nums) {
         if (nums == null || nums.length == 0) return;
         int i = nums.length - 2;
@@ -604,38 +605,21 @@ public class Solution {
     // 解法2 dfs  但是不让过 ，因为顺序不同
     public List<List<Integer>> subsets02(int[] nums) {
         List<List<Integer>> ans = new ArrayList<>();
-        for (int i = 0; i <= nums.length; i++) {
-            dfsComb(nums, i, 0, ans, new LinkedList<>());
+        for (int len = 0; len <= nums.length; len++) {
+            dfsSubset(nums, len, 0, ans, new LinkedList<>());
         }
         return ans;
     }
 
-    public void dfsComb(int[] nums, int len, int start, List<List<Integer>> ans, LinkedList<Integer> sub) {
+    public void dfsSubset(int[] nums, int len, int i, List<List<Integer>> ans, LinkedList<Integer> sub) {
         if (sub.size() == len) {
             ans.add(new ArrayList<>(sub));
             return;
         }
-        for (int i = start; i < nums.length; i++) {
-            sub.add(nums[i]);
-            dfsComb(nums, len, i + 1, ans, sub);
-            // 不要写错了，poll是pollFirst而不是pollLast
-            sub.pollLast();
-        }
-    }
-
-    // 解法3
-    public List<List<Integer>> subsets03(int[] nums) {
-        List<List<Integer>> ans = new ArrayList<>();
-        dfsComb78(nums, 0, new LinkedList<>(), ans);
-        return ans;
-    }
-
-    private void dfsComb78(int[] nums, int start, LinkedList<Integer> sub, List<List<Integer>> ans) {
-        ans.add(new ArrayList<>(sub));
-        for (int i = start; i < nums.length; i++) {
-            sub.add(nums[i]);
-            dfsComb78(nums, i + 1, sub, ans);
-            sub.pollLast();
+        for (int j = i; j < nums.length; j++) {
+            sub.addLast(nums[j]);// 选
+            dfsSubset(nums, len, j + 1, ans, sub);
+            sub.pollLast();// 不选
         }
     }
 
@@ -2406,6 +2390,7 @@ public class Solution {
             int replaceCnt = dfsMinDistanceHelper(word1, i + 1, word2, j + 1, memo);
             res = Math.min(insertCnt, Math.min(deleteCnt, replaceCnt)) + 1;
         }
+
         return memo[i][j] = res;
     }
 
@@ -3738,7 +3723,7 @@ public class Solution {
 
 
     // http://bit.ly/2EXW1yR
-    // BFS   没看懂！！ 解法3 topological sort 构建拓扑排序, 问题转换为 有向图的中的拓扑排序下的最长路径
+    // BFS  没看懂！！ 解法3 topological sort 构建拓扑排序, 问题转换为 有向图的中的拓扑排序下的最长路径
     public int longestIncreasingPath03(int[][] matrix) {
         int[] dirs = {0, 1, 0, -1, 0};
         if (matrix == null || matrix.length == 0 || matrix[0].length == 0) {
@@ -5212,12 +5197,12 @@ public class Solution {
     int VISITING = -2;
 
     // 207 课程表  构建通topology sort  模板题。
-    public boolean canFinish01(int numCourses, int[][] prerequ) {
+    public boolean canFinish01(int numCourses, int[][] prerequisites) {
         Map<Integer, List<Integer>> map = new HashMap<>();
-        for (int i = 0; i < prerequ.length; i++) {
-            int key = prerequ[i][0];
+        for (int i = 0; i < prerequisites.length; i++) {
+            int key = prerequisites[i][0];
             List<Integer> arr = map.getOrDefault(key, new ArrayList<>());
-            arr.add(prerequ[i][1]);
+            arr.add(prerequisites[i][1]);
             map.put(key, arr);
         }
         int[] visit = new int[numCourses];
@@ -5227,6 +5212,7 @@ public class Solution {
         return true;
     }
 
+    // visited 代表 先前的DFS遍历 可以找到无环的遍历路径/先修课程， 下一轮的时候 再次遇到visited代表
     public boolean hasCycle(Map<Integer, List<Integer>> map, int key, int[] visit) {
         if (visit[key] == VISITED) return false;
         if (visit[key] == VISITING) return true;
@@ -5241,7 +5227,7 @@ public class Solution {
     }
 
     // 210 课程表Ⅱ
-    // 花花的解法 用DFS也能做呢
+    // 花花的解法 用DFS+topology sort
     // http://zxi.mytechroad.com/blog/graph/leetcode-210-course-schedule-ii/
     public int[] findOrder(int numCourses, int[][] prerequisites) {
         Map<Integer, List<Integer>> map = new HashMap<>();
@@ -5257,9 +5243,8 @@ public class Solution {
         for (int i = 0; i < numCourses; i++) {
             if (hasCycle(map, i, visit, ans)) return ret;
         }
-        for (int i = 0; i < ans.size(); i++) {
-            ret[i] = ans.get(i);
-        }
+
+        ret = ans.stream().mapToInt(Integer::valueOf).toArray();// convert list to int[]
         return ret;
     }
 
@@ -5273,13 +5258,13 @@ public class Solution {
             }
         }
         visit[key] = VISITED;
-        ans.addFirst(key);
+        ans.addFirst(key);// ⭐
         return false;
     }
 
     // 207 BFS topology sort 参考链接：http://bit.ly/33SdXpG
     // 210 也可以用这道题目来做呢
-    public boolean canFinish02(int numCourses, int[][] prerequisites) {
+   /* public boolean canFinish02(int numCourses, int[][] prerequisites) {
         if (numCourses < 0) return false;
         int plen = prerequisites.length;
         if (plen == 0) return true;
@@ -5297,7 +5282,7 @@ public class Solution {
             int zero = q.pollFirst();
             ans.add(zero);
             for (int[] cp : prerequisites) {
-                if (cp[1] == zero) {
+                if (cp[1] == zero) {// 这道题目解法有问题的！！！！ 参考下面的
                     indegree[cp[0]]--; // 入度减一
                     if (indegree[cp[0]] == 0) {
                         q.add(cp[0]);// 如果依赖节点indegree是0 ，那么入队，说明先导课程已经修完了
@@ -5306,10 +5291,10 @@ public class Solution {
             }
         }
         return ans.size() == numCourses;
-    }
+    }*/
 
 
-    // 链式前向星 excu me?  链式前向星介绍参见 https://malash.me/200910/linked-forward-star/
+    // 链式前向星介绍参见 https://malash.me/200910/linked-forward-star/
     // https://oi-wiki.org/graph/basic/
     // http://bit.ly/2KfuHPN
     // 题目答案参见  http://bit.ly/2OdVc9c
@@ -5317,14 +5302,16 @@ public class Solution {
     public Edge[] edges;
     public int[] head;
     public int[] deg; //记录入度
+    public int cnt210;
+    public List<Integer> ans210 = new ArrayList<>();
 
     void add(int u, int v) {
-        edges[cnt] = new Edge();
-        edges[cnt].to = v;
+        edges[cnt210] = new Edge();
+        edges[cnt210].to = v;
         // 理解这个是关键点啊 head[u] 表示顶点`u`的第一条边的数组下标，-1表示顶点`u`没有边
         // 新增的边要成为顶点 `u'的第一条边，而不是最后一条边
-        edges[cnt].next = head[u];
-        head[u] = cnt++;
+        edges[cnt210].next = head[u];
+        head[u] = cnt210++;
     }
 
     public boolean solve(int n) {
@@ -5338,27 +5325,28 @@ public class Solution {
         while (!queue.isEmpty()) {
             int u = queue.poll();
             ++k;  //记录入度为0的个数
+            ans210.add(u);// 添加排序
             for (int i = head[u]; i != -1; i = edges[i].next) { //循环与其相连的点
                 int v = edges[i].to;
                 --deg[v];
-                if (deg[v] == 0) { //入度为0加入队列中
+                if (deg[v] == 0) { //入度为0加入队列中 说明没有其他依赖的先导课程了
                     queue.offer(v);
                 }
             }
         }
         return k == n; //若为n说明不存在环
     }
-
+    // 207 BFS 下的拓扑排序 // 210 下的BFS topology sort
     public boolean canFinish(int numCourses, int[][] prerequisites) {
         int n = prerequisites.length;
         int len = Math.max(numCourses, n); //取大
-        cnt = 0;
+        cnt210 = 0;
         edges = new Edge[len];
         head = new int[len];
         deg = new int[len];
         Arrays.fill(head, -1);
         for (int i = 0; i < n; ++i) {
-            add(prerequisites[i][1], prerequisites[i][0]); //建图
+            add(prerequisites[i][1], prerequisites[i][0]); //构建链式前向星
             ++deg[prerequisites[i][0]]; //记录入度
         }
         return solve(numCourses);
@@ -6841,8 +6829,8 @@ public class Solution {
         }
         for (int i = 0; i < chrs.length; i++) {
             for (int d = 9; d > chrs[i] - '0'; d--) {
-                if (lastIdx[d]>i){
-                    swapChars(chrs,lastIdx[d],i);
+                if (lastIdx[d] > i) {
+                    swapChars(chrs, lastIdx[d], i);
                     return Integer.valueOf(String.valueOf(chrs));
                 }
             }
@@ -6850,11 +6838,46 @@ public class Solution {
         return num;
     }
 
-   public void  swapChars(char[] chrs,int i,int j){
+    public void swapChars(char[] chrs, int i, int j) {
         char tmp = chrs[i];
-        chrs[i]=chrs[j];
-        chrs[j]=tmp;
-   }
+        chrs[i] = chrs[j];
+        chrs[j] = tmp;
+    }
+
+    // 1642
+    public int furthestBuilding(int[] heights, int brick, int ladder) {
+        int l = ladder, r = heights.length;
+        while (l < r) {
+            int mid = (r - l) / 2 + l;
+            if (ok(heights, mid, brick, ladder)) {
+                l = mid + 1;
+            } else {
+                r = l;
+            }
+
+        }
+        return l - 1;
+    }
+
+    public boolean ok(int[] heights, int pos, int bricks, int ladders) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < pos; i++) {
+            if (heights[i + 1] - heights[i] > 0) {
+                list.add(heights[i + 1] - heights[i]);
+            }
+        }
+        Collections.sort(list);
+        int sum = 0;
+        for (int i = 0; i < list.size() - ladders; i++) {
+            sum += list.get(i);
+            if (sum > bricks) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
 }
 
 
