@@ -1,6 +1,7 @@
 package com.yanjinbin.leetcode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -27,6 +28,7 @@ public class Sort {
             cur = cur.next;
         }
     }
+
     // shuffle array.
     public void shuffle(int[] nums, int lower, int upper) {
         Random rand = new Random();
@@ -208,6 +210,36 @@ public class Sort {
             }
         }
     }
+
+    // https://www.cnblogs.com/zer0Black/p/6169858.html
+    // 计数排序是桶排序的一种特殊情况，可以把计数排序当成每个桶里只有一个元素的情况
+    public void bucketSort(int[] arr) {
+        int min = Integer.MAX_VALUE;
+        int max = Integer.MIN_VALUE;
+        for (int i = 0; i < arr.length; i++) {
+            max = Math.max(arr[i], max);
+            min = Math.min(arr[i], min);
+        }
+        int bucket_num = (max - min) / arr.length + 1;// ceil num
+        ArrayList<ArrayList<Integer>> bucketArr = new ArrayList<>(bucket_num);
+        for (int i = 0; i < bucket_num; i++) {
+            bucketArr.add(new ArrayList<>());
+        }
+
+        // 将每个元素放入桶
+        for (int i = 0; i < arr.length; i++) {
+            int num = (arr[i] - min) / bucket_num;
+            bucketArr.get(num).add(arr[i]);
+        }
+
+        // 对于每个桶进行排序
+        for(int i=0;i<bucketArr.size();i++){
+            Collections.sort(bucketArr.get(i));
+        }
+        System.out.println(bucketArr.toString());
+
+    }
+
 
     // 理解二叉堆的表示法 https://www.cnblogs.com/skywang12345/p/3610187.html
     // 二叉堆从 索引0开始  child = 2i+1,2i+2, parent = (child-1)/2;
@@ -584,6 +616,7 @@ public class Sort {
         mergeSort(nums, aux, 0, nums.length - 1);
 
     }
+
     // 递归版本
     public void mergeSort(int[] nums, int[] aux, int l, int r) {
         if (l >= r) return;
