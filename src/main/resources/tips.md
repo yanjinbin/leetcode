@@ -2,7 +2,7 @@
 存图方式： https://oi-wiki.org/graph/save/#_12   http://bit.ly/2KfuHPN 
 反向建图
 
-前向星/链式前向星 https://www.cnblogs.com/Roni-i/p/9291763.html
+前向星/链式前向星 
 // 构建前向星代码
 用len[i]来记录所有以i为起点的边在数组中的存储长度.
 用head[i]记录以i为边集在数组中的第一个存储位置.

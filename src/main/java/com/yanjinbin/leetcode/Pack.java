@@ -498,7 +498,7 @@ public class Pack {
                     dp[i] = Math.max(dp[i], dp[j] + 1);
                 }
             }
-            ans = Math.max(ans, i);
+            ans = Math.max(ans, dp[i]);// typo error
         }
         return ans;
     }
@@ -919,34 +919,6 @@ public class Pack {
     // LC 691
 
 
-    // 状压DP 638 464  691  1125
- /*   // 完全背包问题
-    public int shoppingOffers(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
-
-    }
-
-    // LC 464  https://www.acwing.com/solution/LeetCode/content/6911/
-    // https://blog.csdn.net/zhaohaibo_/article/details/85345229
-    public boolean canIWin(int maxChoosableInteger, int desiredTotal) {
-
-    }
-
-   // 691  http://www.voidcn.com/article/p-vldwpvis-boa.html
-    public int minStickers(String[] stickers, String target) {
-
-    }
-
-    // 背包dp 1125
-  //  https://leetcode-cn.com/problems/smallest-sufficient-team/solution/bei-bao-wen-ti-by-mike-meng/
-    public int[] smallestSufficientTeam(String[] req_skills, List<List<String>> people) {
-
-    }*/
-
-    // 943 473 1125
-    // 状压DP 1349
-    public int maxStudents(char[][] seats) {
-        return -1;
-    }
 
     // LG P1896 [SCOI2005]互不侵犯
 
@@ -1149,45 +1121,5 @@ public class Pack {
         }
         return ans;
     }
-
-    // 233
-    public int countDigitOne(int n) {
-        return -1;
-    }
-
-    //LC 1012 233
-
-    // 233 https://www.acwing.com/solution/LeetCode/content/280/
-    // 1012 https://www.acwing.com/solution/LeetCode/content/1184/
-
-
-    // HDU 6148 Valley Number
-
-// CF55D Beautiful numbers
-
-// CF628D Magic Numbers
-
-// CF401D Roman and Numbers
-
-//概率dp lc 1230
-
-//树形dp 337 124 https://www.cnblogs.com/hanruyun/p/9788170.html
-
-//字符串
-
-//trie kmp AC自动机 LC 30 1032
-
-// KMP算法与AC自动机. KMP算法(28 459)——用于单模匹配。 AC自动机——用于多模匹配，需要了解KMP原理和Trie树。
-
-
-    // graph
-// 拓扑排序（207，210，269，329，444，1203，802）
-    // 最短路径 743 flyod 和dikstra算法 787 Bellman-Ford算法
-    // 最短路径743，505，787，847，1091，
-
-    // 最小生成树 kruskal prim Boruvka 算法 (1130,  https://www.acwing.com/file_system/file/content/whole/index/content/160894/ 1135 https://www.okcode.net/article/43507)  tarjan联通
-// 卡特兰数96 等差等比数列 413 素数筛法 204 欧拉定理 507 1015 费马小定理 372
-    // 剩余定理/贝祖定理 1250
-
 
 }

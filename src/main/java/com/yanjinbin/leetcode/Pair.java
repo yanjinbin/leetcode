@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Data
-public class Pair {
-    public int key;
-    public int  val;
+public class Pair<K,V> {
+    public K key;
+    public V val;
 }

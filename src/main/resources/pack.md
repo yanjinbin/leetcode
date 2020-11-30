@@ -82,3 +82,29 @@ https://leetcode.com/problems/shortest-subarray-with-sum-at-least-k/discuss/2042
 
 常用行业俗语:
 剪枝==相当于求DP重叠子问题时候记忆化搜索
+
+p2365 CDQ分治/斜率优化/单调队列 https://www.luogu.com.cn/problem/P2365
+// HDU 6148 Valley Number
+
+// CF55D Beautiful numbers
+
+// CF628D Magic Numbers
+
+// CF401D Roman and Numbers
+
+
+//字符串
+
+//trie kmp AC自动机 LC 30 1032
+
+// KMP算法与AC自动机. KMP算法(28 459)——用于单模匹配。 AC自动机——用于多模匹配，需要了解KMP原理和Trie树。
+
+
+    // graph
+//   拓扑排序（207，210，269，329，444，1203，802）
+    // 最短路径 743 flyod 和dikstra算法 787 Bellman-Ford算法
+    // 最短路径743，505，787，847，1091，
+
+    // 最小生成树 kruskal prim Boruvka 算法 (1130,  https://www.acwing.com/file_system/file/content/whole/index/content/160894/ 1135 https://www.okcode.net/article/43507)  tarjan联通
+// 卡特兰数96 等差等比数列 413 素数筛法 204 欧拉定理 507 1015 费马小定理 372
+    // 剩余定理/贝祖定理 1250

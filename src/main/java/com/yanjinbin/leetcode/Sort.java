@@ -113,7 +113,7 @@ public class Sort {
     }
 
     // 选择排序
-    public void selectSort(ListNode head) {
+    public ListNode selectSort(ListNode head) {
         ListNode tail = null;
         for (ListNode i = head; i != tail; i = i.next) {
             ListNode min = i;
@@ -122,6 +122,7 @@ public class Sort {
             }
             swap(i, min);
         }
+        return head;
     }
 
     // 插入排序  sorted[0,i-1] , insert unordered  [i,n-1]
@@ -233,7 +234,7 @@ public class Sort {
         }
 
         // 对于每个桶进行排序
-        for(int i=0;i<bucketArr.size();i++){
+        for (int i = 0; i < bucketArr.size(); i++) {
             Collections.sort(bucketArr.get(i));
         }
         System.out.println(bucketArr.toString());

@@ -39,6 +39,8 @@ public class SolutionTest {
 
     private static ShuffleArray SA = new ShuffleArray();
 
+    private static BFS BFS = new BFS();
+
     @Before()
     public void init() {
 
@@ -431,10 +433,7 @@ public class SolutionTest {
     public void subset() {
         int[] sums = {1, 3, 7};
         List<List<Integer>> res = INSTANCE.subsets01(sums);
-
         res = INSTANCE.subsets02(sums);
-        res = INSTANCE.subsets03(sums);
-        System.out.println(res);
 
         sums = new int[]{1, 2, 2};
         res = INSTANCE.subsetsWithDup(sums);
@@ -1221,7 +1220,8 @@ public class SolutionTest {
     public void maxSlidingWindow() {
         int[] nums = {1, 3, -1, -3, 5, 3, 6, 7};
         int k = 3;
-        assert Arrays.equals(MONOTONESTACK.maxSlidingWindow0(nums, k), MONOTONESTACK.maxSlidingWindow1(nums, k));
+        int[] ans = MONOTONESTACK.maxSlidingWindow1(nums, k);
+        assert Arrays.equals(MONOTONESTACK.maxSlidingWindow0(nums, k), ans);
     }
 
     @Test
@@ -2795,15 +2795,91 @@ public class SolutionTest {
         int[] arr = new int[]{2, 1, 1};
         // System.out.println(INSTANCE.thirdMax(arr));
         //  System.out.println(Integer.MAX_VALUE);
-        int n = 1;
-        System.out.println(INSTANCE.arrangeCoins(n));
+//        System.out.println(INSTANCE.arrangeCoins(n));
+//        int n = 1;
 
 
     }
 
     @Test
-    public void shuffleAlgo(){
-        int[] input = {8,2,3,4,5,6,7,1};
-        System.out.println(Arrays.toString(SA.FisherYates(input)));
+    public void shuffleAlgo() {
+        PriorityQueue<Integer> pq = new PriorityQueue<>(((o1, o2) -> o1 - o2));
+        pq.add(9);
+        pq.add(4);
+        pq.add(6);
+        int val = pq.poll();
+        System.out.println(val);
     }
+
+    @Test
+    public void topology() {
+        String[] words = new String[]{"wrt", "wrf", "er", "ett", "rftt"};
+        String ans = BFS.alienOrder(words);
+        System.out.println("结果\t" + ans);
+        List<List<Integer>> seqs = new ArrayList<>();
+        seqs.add(Lists.newArrayList(5, 2, 6, 3));
+        seqs.add(Lists.newArrayList(4, 1, 5, 2));
+        System.out.println(BFS.sequenceReconstruction(new int[]{4, 1, 5, 2, 6, 3}, seqs));
+        int[][] graph = {{1, 2}, {2, 3}, {5}, {0}, {5}, {}, {}};
+        System.out.println(BFS.eventualSafeNodes(graph));
+    }
+
+    @Test
+    public void mis() {
+        long ans = 1l << 32;
+        System.out.println(ans);
+        System.out.println(Math.pow(2, 32));
+        System.out.println(Math.pow(2, 32) == (ans));
+        String s = "banana";
+        System.out.println(BFS.longestDupSubstring(s));
+        int[][] grid = new int[][]{{1, 1}, {0, 1}};
+        System.out.println(BFS.largestIsland(grid));
+
+        List<Integer> sorted = Lists.newArrayList(1, 3, 4, 6, 7, 10);
+        int i = Collections.binarySearch(sorted, 12);
+        if (i < 0) System.out.println(-i - 1);
+
+        i = Collections.binarySearch(sorted, -3);
+        if (i < 0) System.out.println(-i - 1);
+        i = Collections.binarySearch(sorted, 8);
+        if (i < 0) System.out.println(-i - 1);
+        sorted.add(-i - 1, 8);
+        System.out.println(sorted);
+        i = Collections.binarySearch(sorted, 6);
+        if (i < 0) System.out.println(-i - 1);
+
+    }
+
+    @Test
+    public void removeDup() {
+        int[] nums = new int[]{1, 1, 1, 2, 3};
+        assert INSTANCE.removeDuplicatesⅡ(nums) == INSTANCE.removeDuplicatesⅡ(nums, 2);
+    }
+
+    @Test
+    public void BFSExample() {
+        int n = 4995;
+
+        BFS.minimumSemesters(n, null);
+    }
+
+    @Test
+    public void reverseListNode() {
+        ListNode head = ListNode.builder().val(1).next(
+                ListNode.builder().val(2).next(
+                        ListNode.builder().val(3).next(
+                                ListNode.builder().val(4).next(
+                                        ListNode.builder().val(5).build()).build()).build()).build()).build();
+       // System.out.println(head);
+        ListNode root = INSTANCE.reverseBetween(head, 2, 4);
+        System.out.println(root);
+    }
+
+    @Test
+    public void reconstructString(){
+        String ans = INSTANCE.reorganizeString("aaabbbcd");
+
+        System.out.println(ans);
+    }
+
 }

@@ -27,7 +27,7 @@ public class Microsoft {
         return res;
     }
 
-    // 单调递减队列 用这个比较好
+    //0(N) 单调递减队列 用这个比较好
     public int[] maxSlidingWindow1(int[] nums, int k) {
         if (nums == null || k <= 0) return new int[0];
         int N = nums.length;
@@ -40,12 +40,59 @@ public class Microsoft {
                 q.pollLast();
             }
             q.addLast(i);
-            if (i > k) {
+            if (i >= k - 1) {
                 ans[i + 1 - k] = nums[q.peekFirst()];
             }
         }
         return ans;
     }
+
+    // 480 滑动窗口中位数
+    public double[] medianSlidingWindow(int[] nums, int k) {
+        if (k == 0) return new double[0];
+        double[] ans = new double[nums.length - k + 1];
+        int[] window = new int[k];
+        for (int i = 0; i < k; i++) window[i] = nums[i];
+        Arrays.sort(window);
+        for (int i = k; i <= nums.length; ++i) {
+            ans[i - k] = ((double) window[k / 2] + window[(k - 1) / 2]) / 2;// 注意去中位数和第4题不一样的原因是因为。这里取得是索引位置，不是个数
+            if (i == nums.length) break;
+            remove(window, nums[i - k]);
+            insert(window, nums[i]);
+        }
+        return ans;
+    }
+
+    // Insert val into window, window[k - 1] is empty before inseration
+    private void insert(int[] window, int val) {
+        int i = Arrays.binarySearch(window, val);
+        if (i < 0) i = -i - 1;
+        int j = window.length - 1;
+        while (j > i) window[j] = window[--j];
+        window[j] = val;
+    }
+
+    // Remove val from window and shrink it.
+    private void remove(int[] window, int val) {
+        int i = Arrays.binarySearch(window, val);
+        while (i < window.length - 1) window[i] = window[++i];
+    }
+    /*// Insert val into window, window[k - 1] is empty before inseration
+    private void insert(int[] window, int val) {
+        int i = 0;
+        while (i < window.length - 1 && val > window[i]) ++i;
+        int j = window.length - 1;
+        while (j > i) window[j] = window[--j];
+        window[j] = val;
+    }
+
+    // Remove val from window and shrink it.
+    private void remove(int[] window, int val) {
+        int i = 0;
+        while (i < window.length && val != window[i]) ++i;
+        while (i < window.length - 1) window[i] = window[++i];
+    }*/
+
 
     // [tag:微软 2019-3-5] https://www.1point3acres.com/bbs/thread-490657-1-1.html
     // https://www.geeksforgeeks.org/largest-independent-set-problem-dp-26/
