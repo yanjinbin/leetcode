@@ -1,5 +1,7 @@
 package com.yanjinbin.leetcode;
 
+import java.util.Arrays;
+
 // dp专题 背包问题九讲
 public class DP {
 
@@ -78,23 +80,21 @@ public class DP {
         if (cost == null || cost.length == 0) return 0;
         int n = cost.length, k = cost[0].length;
         int[][] dp = new int[n][k];
-        int min1 = -1, min2 = -2;// min1 和 min2代表刷成min1和min2颜色的成本第一小和第二小
+        int min1 = -1, min2 = -1;
         for (int i = 0; i < n; i++) {
-            // 暂时存储上一次存储的颜色
             int last1 = min1, last2 = min2;
             min1 = -1;
             min2 = -1;
-            // 比对当前房间和上间房间刷成的颜色相同和不同的成本
             for (int j = 0; j < k; j++) {
-                if (j != last1) {// 颜色不同
-                    dp[i][j] = cost[i][j] + last1 < 0 ? 0 : dp[i - 1][last1];
-                } else {// 颜色相同
-                    dp[i][j] = (last2 < 0 ? 0:dp[i - 1][last2] )+ cost[i][j];
+                if (j != last1) {
+                    dp[i][j] = cost[i][j] + (last1 < 0 ? 0 : dp[i - 1][last1]);
+                } else {
+                    dp[i][j] = (last2 < 0 ? 0 : dp[i - 1][last2]) + cost[i][j];
                 }
-                if (min1 < 0 || dp[i][j] < dp[i][min1]) { // 当前刷成j色的成本比之前的min1开销成本还低
+                if (min1 < 0 || dp[i][j] < dp[i][min1]) {
                     min2 = min1;
                     min1 = j;
-                } else if (min2 < 0 || dp[i][j] < dp[i][min2]) {// 介于 min1和min2志坚
+                } else if (min2 < 0 || dp[i][j] < dp[i][min2]) {
                     min2 = j;
                 }
             }
@@ -102,9 +102,82 @@ public class DP {
         return dp[n - 1][min1];
     }
 
-    //p2365 CDQ分治/斜率优化/单调队列 https://www.luogu.com.cn/problem/P2365
-    public void taskAssigned(){
+    // 1289  和 265 一模一样
+    public int minFallingPathSum(int[][] arr) {
+        int min1 = -2, min2 = -1;
+        int m = arr.length, n = arr[0].length;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            int last1 = min1, last2 = min2;
+            min1 = -2;
+            min2 = -1; // reset;
+            for (int j = 0; j < n; j++) {
+                if (j != last1) {// 不同列
+                    dp[i][j] = arr[i][j] + (last1 < 0 ? 0 : dp[i - 1][last1]);
+                } else {// 同一列
+                    dp[i][j] = arr[i][j] + (last2 < 0 ? 0 : dp[i - 1][last2]);
+                }
+                // update min1 min2;
+                if (min1 < 0 || dp[i][min1] > dp[i][j]) {
+                    min2 = min1;
+                    min1 = j;
+                } else if (min2 < 0 || dp[i][min2] > dp[i][j]) {
+                    min2 = j;
+                }
+            }
+        }
+        return dp[m - 1][min1];
+    }
 
+    // 1473 给房子涂色
+    public int minCost(int[] houses, int[][] cost, int m, int n, int target) {
+        int INF = 0x3F3F3F3F, s = 1;
+        // init
+        int[][][] dp = new int[target + 1][m + 1][n + 1];
+        for (int i = 0; i <= target; i++) {
+            for (int j = 0; j <= m; j++) {
+                Arrays.fill(dp[i][j], INF);
+            }
+        }
+        Arrays.fill(dp[0][0], 0);
+        for (int k = 1; k <= target; k++) {
+            for (int i = k; i <= m; i++) {
+                int hi = houses[i - 1];
+                int hj = (i >= 2 ? houses[i - 2] : 0);
+                int si, ei;
+                if (hi != 0) {
+                    si = hi;
+                    ei = hi;
+                } else {
+                    si = s;
+                    ei = n;
+                }
+                int sj, ej;
+                if (hj != 0) {
+                    sj = hj;
+                    ej = hj;
+                } else {
+                    sj = s;
+                    ej = n;
+                }
+
+                for (int ci = si; ci <= ei; ci++) {
+                    int v = ci == hi ? 0 : cost[i - 1][ci - 1];
+                    for (int cj = sj; cj <= ej; cj++) {
+                        if (ci == cj) {
+                            dp[k][i][ci] = Math.min(dp[k][i][ci], dp[k][i - 1][cj] + v);
+                        } else {
+                            dp[k][i][ci] = Math.min(dp[k][i][ci], dp[k - 1][i - 1][cj] + v);
+                        }
+                    }
+                }
+            }
+        }
+        int ans  = Integer.MAX_VALUE;
+        for (int i = 0; i < dp[target][m].length; i++) {
+            ans = Math.min(ans,dp[target][m][i]);
+        }
+        return ans >=INF ? -1:ans;
     }
 
 }
