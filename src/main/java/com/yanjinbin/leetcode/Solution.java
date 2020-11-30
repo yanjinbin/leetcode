@@ -955,7 +955,8 @@ public class Solution {
     // corner case
     // map.put(0,1) 这个为什么需要呢
     //比如 [2,2,2,2,2] k=4 ; [1,3,2,2,4] k=4 ; 以及 [0,0,0,0] k=0
-    //就是从起始数开始求的连续和为K 那么 这种corner case 你就需要 放上map.put(0,1) 0 1可以理解为0出现的次数为1 相当于 sum(0,i)=k --> sum(0,i)-k =0
+    //就是从起始数开始求的连续和为K 那么 这种corner case 你就需要 放上map.put(0,1)
+    // 0 1可以理解为0出现的次数为1 相当于 sum(0,i)=k --> sum(0,i)-k =0
     //同理 count +=map.get(sum-k) 而不是count++哈哈
     //自己可以 画个表格 列出nums[i] sum sum-k 函数count(k) count(sum-k)
     // 花花酱视频  http://bit.ly/2S3K2We
@@ -2158,7 +2159,7 @@ public class Solution {
 
 
     // ③ 337. 打家劫舍 III  看懂比较模型即可 http://bit.ly/2LtppCe
-    // dfs 做比较下即可.
+    // dfs 做比较下即可. 树形dp
     public int rob4(TreeNode root) {
         Map<TreeNode, Integer> map = new HashMap<>();
         return dfsRobHelper(root, map);
@@ -2167,14 +2168,14 @@ public class Solution {
     public int dfsRobHelper(TreeNode root, Map<TreeNode, Integer> map) {
         if (root == null) return 0;
         if (map.containsKey(root)) return map.get(root);
-        int val = 0;
+        int val = root.val;
         if (root.left != null) {
             val += dfsRobHelper(root.left.left, map) + dfsRobHelper(root.left.right, map);
         }
         if (root.right != null) {
             val += dfsRobHelper(root.right.left, map) + dfsRobHelper(root.right.right, map);
         }
-        val = Math.max(val + root.val, dfsRobHelper(root.left, map) + dfsRobHelper(root.right, map));
+        val = Math.max(val, dfsRobHelper(root.left, map) + dfsRobHelper(root.right, map));
         map.put(root, val);
         return val;
     }
@@ -5336,6 +5337,7 @@ public class Solution {
         }
         return k == n; //若为n说明不存在环
     }
+
     // 207 BFS 下的拓扑排序 // 210 下的BFS topology sort
     public boolean canFinish(int numCourses, int[][] prerequisites) {
         int n = prerequisites.length;
@@ -5352,38 +5354,23 @@ public class Solution {
         return solve(numCourses);
     }
 
-    public int[] smallestRange(List<List<Integer>> nums) {
-        //小根堆，堆顶为各列表最小当前元素 二维坐标
-        Queue<int[]> minQueue = new PriorityQueue<>(Comparator.comparingInt(arr -> nums.get(arr[0]).get(arr[1])));
-        //大根堆，堆顶为各列表最大当前元素 二维坐标
-        Queue<int[]> maxQueue = new PriorityQueue<>((arr1, arr2) -> nums.get(arr2[0]).get(arr2[1]) - nums.get(arr1[0]).get(arr1[1]));
-        int[] ans = new int[]{Integer.MIN_VALUE, Integer.MAX_VALUE};
-        for (int i = 0; i < nums.size(); i++) {
-            //初始化各列表第一个元素，小根堆&大根堆添加同一个对象，方便后面remove
-            int[] arr = new int[]{i, 0};
-            minQueue.offer(arr);
-            maxQueue.offer(arr);
-        }
-        while (minQueue.size() == nums.size()) {
-            //推出小根堆顶元素，小根堆size-1
-            int[] minArr = minQueue.poll();
-            //小根堆顶元素与大根堆顶元素区间，每个列表至少有一个数包含在其中
-            int[] maxArr = maxQueue.peek();
-            //注意此处相减值溢出，需要转成long
-            if ((long) nums.get(maxArr[0]).get(maxArr[1]) - (long) nums.get(minArr[0]).get(minArr[1]) < (long) ans[1] - (long) ans[0]) {
-                ans[0] = nums.get(minArr[0]).get(minArr[1]);
-                ans[1] = nums.get(maxArr[0]).get(maxArr[1]);
-            }
-            //丢弃小根堆顶元素，取其所在列表下一元素重新构建堆
-            if (minArr[1] < nums.get(minArr[0]).size() - 1) {
-                int[] newArr = new int[]{minArr[0], minArr[1] + 1};
-                minQueue.offer(newArr);
-                //因为添加相同对象，可以直接remove
-                maxQueue.remove(minArr);
-                maxQueue.offer(newArr);
+    // 630
+    public int scheduleCourse(int[][] courses) {
+
+        Arrays.sort(courses, (a, b) -> a[1] - b[1]);
+        PriorityQueue<Integer> queue = new PriorityQueue<>((a, b) -> b - a);
+        int time = 0;
+        for (int[] c : courses) {
+            if (time + c[0] <= c[1]) {
+                queue.offer(c[0]);
+                time += c[0];
+            } else if (!queue.isEmpty() && queue.peek() > c[0]) {
+                time += c[0] - queue.poll();
+                queue.offer(c[0]);
             }
         }
-        return ans;
+        return queue.size();
+
     }
 
     // ③ 547 朋友圈
@@ -5429,7 +5416,6 @@ public class Solution {
         }
         return head;
     }
-
 
     // ③ 366 寻找完全二叉树的叶子节点
     public List<List<Integer>> findLeaves(TreeNode root) {
@@ -5916,6 +5902,48 @@ public class Solution {
         return dummy.next;
     }
 
+
+    // 92
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        ListNode pre = dummy, cur = dummy;
+        for (int i = 1; i < m; i++) {
+            cur = cur.next;
+        }
+        pre = cur;
+        cur = cur.next;
+        for (int i = m; i < n; i++) {// cur牵引下，每翻转1次，cur前进1位.
+            ListNode nxt = cur.next;
+            cur.next = nxt.next;
+            nxt.next = pre.next;
+            pre.next = nxt;
+        }
+        return dummy.next;
+    }
+
+    // 143 链表重排序
+    public void reorderList(ListNode head) {
+        if (head == null) return;
+        ListNode mid = middleNode(head);
+        ListNode l1 = head;
+        ListNode l2 = mid.next;
+        mid.next = null;// 断开
+        l2 = reverseList(l2);
+        mergeHelp(l1, l2);
+    }
+
+    public void mergeHelp(ListNode l1, ListNode l2) {
+        while (l1 != null && l2 != null) {
+            ListNode l1_nxt = l1.next;
+            ListNode l2_nxt = l2.next;
+            l1.next = l2;
+            l1 = l1_nxt;
+            l2.next = l1;
+            l2 = l2_nxt;
+        }
+    }
+
     // 6 Z字形变换
     public String zigzagConvert(String str, int rows) {
         // init的时候 curR 应该从false-->true
@@ -5989,14 +6017,14 @@ public class Solution {
     // 55 BFS来做 O(N²)
     public int jump01(int[] nums) {
         int N = nums.length;
-        LinkedList<Pair> Q = new LinkedList<Pair>();
+        LinkedList<Pair<Integer, Integer>> Q = new LinkedList<>();
         boolean[] seen = new boolean[N];
         Q.add(new Pair(0, nums[0]));
         int ans = 0;
         while (!Q.isEmpty()) {
             int size = Q.size();
             for (int i = 0; i < size; i++) {
-                Pair p = Q.poll();
+                Pair<Integer, Integer> p = Q.poll();
                 int start = p.key, step = p.val;
                 if (start == N - 1) return ans;
                 for (int k = Math.min(start + step, N - 1); k > start; k--) {
@@ -6877,6 +6905,294 @@ public class Solution {
         return true;
     }
 
+
+    // 632
+    public int[] smallestRange(List<List<Integer>> nums) {
+        //小根堆，堆顶为各列表最小当前元素 二维坐标
+        Queue<int[]> minQueue = new PriorityQueue<>(Comparator.comparingInt(arr -> nums.get(arr[0]).get(arr[1])));
+        //大根堆，堆顶为各列表最大当前元素 二维坐标
+        Queue<int[]> maxQueue = new PriorityQueue<>((arr1, arr2) -> nums.get(arr2[0]).get(arr2[1]) - nums.get(arr1[0]).get(arr1[1]));
+        int[] ans = new int[]{Integer.MIN_VALUE, Integer.MAX_VALUE};
+        for (int i = 0; i < nums.size(); i++) {
+            //初始化各列表第一个元素，小根堆&大根堆添加同一个对象，方便后面remove
+            int[] arr = new int[]{i, 0};
+            minQueue.offer(arr);
+            maxQueue.offer(arr);
+        }
+        while (minQueue.size() == nums.size()) {
+            //推出小根堆顶元素，小根堆size-1
+            int[] minArr = minQueue.poll();
+            //小根堆顶元素与大根堆顶元素区间，每个列表至少有一个数包含在其中
+            int[] maxArr = maxQueue.peek();
+            //注意此处相减值溢出，需要转成long
+            if ((long) nums.get(maxArr[0]).get(maxArr[1]) - (long) nums.get(minArr[0]).get(minArr[1]) < (long) ans[1] - (long) ans[0]) {
+                ans[0] = nums.get(minArr[0]).get(minArr[1]);
+                ans[1] = nums.get(maxArr[0]).get(maxArr[1]);
+            }
+            //丢弃小根堆顶元素，取其所在列表下一元素重新构建堆
+            if (minArr[1] < nums.get(minArr[0]).size() - 1) {
+                int[] newArr = new int[]{minArr[0], minArr[1] + 1};
+                minQueue.offer(newArr);
+                //因为添加相同对象，可以直接remove
+                maxQueue.remove(minArr);
+                maxQueue.offer(newArr);
+            }
+        }
+        return ans;
+    }
+
+    // 728 完美数
+    public List<Integer> selfDividingNumbers(int left, int right) {
+        List<Integer> ans = new ArrayList<>();
+        for (int n = left; n <= right; n++) {
+            int t = n;
+            boolean valid = true;
+            while (t != 0 && valid) {
+                int r = t % 10;
+                if (r == 0 || (n % r) != 0) { // 别写成 t % r 是 n%r
+                    valid = false;
+                }
+                t = t / 10;
+            }
+            if (valid) ans.add(n);
+        }
+        return ans;
+    }
+
+    // 欧拉图 https://oi-wiki.org/graph/euler/  证明欧拉图/半欧拉图存在 证明欧拉图过的节点数目和图节点数目相同
+    // 332 重新安排行程 参考花花酱答案
+    public List<String> findItinerary(List<List<String>> tickets) {
+        List<String> ans = new ArrayList<>();
+        Map<String, PriorityQueue<String>> outdeg = new HashMap<>();
+        for (List<String> pair : tickets) {
+            String src = pair.get(0);
+            String des = pair.get(1);
+            PriorityQueue<String> items = outdeg.getOrDefault(src, new PriorityQueue<String>());
+            items.add(des);
+            outdeg.put(src, items);
+        }
+        String start = "JFK";
+        schedRoute(start, outdeg, ans);
+        Collections.reverse(ans);
+        return ans;
+    }
+
+    public void schedRoute(String src, Map<String, PriorityQueue<String>> outDeg, List<String> ans) {
+        PriorityQueue<String> minHeap = outDeg.get(src);
+        while (outDeg.containsKey(src) && !minHeap.isEmpty()) {
+            String des = minHeap.poll();
+            schedRoute(des, outDeg, ans);
+        }
+        ans.add(src);
+    }
+
+    // 753 leetcode
+
+    // https://github.com/wisdompeak/LeetCode/tree/master/Hash/753.Cracking-the-Safe
+    // https://youtu.be/fjxhMLJjC3Y?t=717
+    public String crackSafe01(int n, int k) {
+        StringBuilder ans = new StringBuilder();
+        for (int i = 0; i < n - 1; i++) {
+            ans.append('0');
+        }
+        Map<String, Integer> map = new HashMap<>();
+        int count = 1;
+        for (int i = 0; i < n; i++) {
+            count = count * k;
+        }
+        for (int i = 0; i < count; i++) {
+            String key = ans.substring(ans.length() - n + 1, ans.length());
+            int val = (map.getOrDefault(key, 0) + 1) % k;
+            map.put(key, val);
+            char c = (char) (val + '0');// 注意下这里 需要强制转换
+            ans.append(c);
+        }
+        return ans.toString();
+    }
+
+    private StringBuilder ans753;
+
+    public String crackSafe02(int n, int k) {
+        ans753 = new StringBuilder();
+        for (int i = 0; i < n; i++) {
+            ans753.append('0');
+        }
+        Set<String> seen = new HashSet<>();
+        seen.add(ans753.toString());
+        int count = 1;
+        for (int i = 0; i < n; i++) {
+            count = count * k;
+        }
+        count = count + n - 1;
+        if (dfs(ans753, count, n, k, seen)) return ans753.toString();
+        return "";
+    }
+
+    public boolean dfs(StringBuilder ans, int count, int n, int k, Set<String> seen) {
+        if (ans.length() == count) {
+            return true;
+        }
+        String prefix = ans.substring(ans.length() - n + 1, ans.length());
+        for (char c = '0'; c < '0' + k; c++) {
+            prefix = prefix + c;
+            if (!seen.contains(prefix)) {
+                ans.append(c);
+                seen.add(prefix);
+                if (dfs(ans, count, n, k, seen)) return true;
+                seen.remove(prefix);
+                ans.deleteCharAt(ans.length() - 1);
+            }
+            prefix = prefix.substring(0, prefix.length() - 1);
+        }
+        return false;
+    }
+
+    // 80 删除重复元素Ⅱ 双指针
+    public int removeDuplicatesⅡ(int[] num, int k) {
+        if (num == null) return 0;
+        if (num.length <= k) return num.length;
+        int idx = k - 1;// 不重复边界指针
+        for (int i = k; i < num.length; i++) {
+            if (num[i] != num[i - k + 1]) {
+                idx++;
+                num[idx] = num[i];
+            }
+        }
+        return idx + 1;
+    }
+
+    public int removeDuplicatesⅡ(int[] nums) {
+        int j = 1, count = 1;// j代表不重复边界 exclusive
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == nums[i - 1]) {
+                count++;
+            } else {
+                count = 1;
+            }
+            if (count <= 2) {
+                nums[j++] = nums[i];
+            }
+        }
+        return j;
+    }
+
+    // 473
+    public boolean makesquare(int[] num) {
+        if (num == null || num.length <= 3) return false;
+        int sum = 0;
+        for (int i : num) {
+            sum = sum + i;
+        }
+        if (sum % 4 != 0) return false;
+        boolean[] seen = new boolean[num.length];
+        return dfsMake(0, 0, sum / 4, 0, seen, num);
+    }
+
+    public boolean dfsMake(int start, int cur, int target, int cnt, boolean[] seen, int[] nums) {
+        if (cnt == 3) return true;
+        if (cur == target) return dfsMake(0, 0, target, cnt + 1, seen, nums);
+        for (int i = start; i < nums.length; i++) {
+            if (seen[i]) continue;
+            if (cur + nums[i] <= target) {
+                seen[i] = true;
+                if (dfsMake(start + 1, cur + nums[i], target, cnt, seen, nums)) return true;
+                seen[i] = false;
+            }
+            while (i + 1 < nums.length && nums[i + 1] == nums[i]) i++;// 剪枝优化
+        }
+        return false;
+    }
+
+    // 638 https://happygirlzt.com/code/638.html
+    private int minCost = 0;
+
+    public int shoppingOffers(List<Integer> price, List<List<Integer>> special, List<Integer> needs) {
+        minCost = directBuy(price, needs);
+        helpBuy(price, special, 0, 0, needs);
+        return minCost;
+    }
+
+    private void helpBuy(List<Integer> price, List<List<Integer>> special, int index, int cost, List<Integer> needs) {
+        // base case
+        if (cost >= minCost) return;
+        if (index == special.size()) {
+            cost += directBuy(price, needs);
+            minCost = Math.min(minCost, cost);
+            return;
+        }
+        // RECURSIVE CONDITION
+        List<Integer> offer = special.get(index);
+        if (canUse(offer, needs)) {// OFFER要都比needs小
+            List<Integer> updateNeeds = new ArrayList<>();
+            int n = needs.size();
+            for (int i = 0; i < n; i++) {
+                updateNeeds.add(needs.get(i) - offer.get(i));
+            }
+            helpBuy(price, special, index, cost + offer.get(n), updateNeeds);
+            //具体 offer 无限情况下 ，如何实现去合适的某一个具体offer的数量是依靠2个 helper，第二个helper不能加 else实现的canUse也是关键点
+        }
+        helpBuy(price, special, index + 1, cost, needs);
+    }
+
+    public int directBuy(List<Integer> price, List<Integer> need) {
+        int cost = 0;
+        for (int i = 0; i < price.size(); i++) {
+            cost += price.get(i) * need.get(i);
+        }
+        return cost;
+    }
+
+    public boolean canUse(List<Integer> offer, List<Integer> needs) {
+        int n = needs.size();
+        for (int i = 0; i < n; i++) {
+            if (offer.get(i) > needs.get(i)) return false;
+        }
+        return true;
+    }
+
+    // 767 重构字符串
+    public String reorganizeString(String s) {
+        char[] chrs = s.toCharArray();
+        int[] cnt = new int[26];
+        for (char c : chrs) cnt[c - 'a']++;
+        PriorityQueue<int[]> maxHeap = new PriorityQueue<>((o1, o2) -> o2[1] - o1[1]);
+        for (int i = 0; i < 26; i++) {
+            if (cnt[i] > (s.length() + 1) / 2) return "";// "abacada" 提前返回
+            if (cnt[i] > 0) maxHeap.add(new int[]{i, cnt[i]});
+        }
+        StringBuilder ans = new StringBuilder();
+        char lastContent = ' ';
+        while (maxHeap.size() > 1) {
+            int[] max1 = maxHeap.poll();
+            int[] max2 = maxHeap.poll();
+            char c1 = (char) (max1[0] + 'a');
+            char c2 = (char) (max2[0] + 'a');
+            if (Objects.equals(lastContent, c1)) {
+                ans.append(c2).append(c1);
+            } else {
+                ans.append(c1).append(c2);
+                lastContent = c2;
+            }
+            max1[1]--;
+            max2[1]--;
+            // 这样的话顺序无关，因为lastContent做了判重
+            if (max2[1] > 0) maxHeap.add(max2);
+            if (max1[1] > 0) maxHeap.add(max1);
+        }
+        if (maxHeap.size() > 0) {
+            ans.append((char) (maxHeap.poll()[0] + 'a'));
+        }
+        return ans.toString();
+    }
+    //  1363 1203 834 862 1655 1012 233 80 940 1095 1462 1136 337 124 1632
+    // 状压DP 1349 943 473 1125 638 464 691
+    //  80  233 337 464 473 638 691 834 862 940 943 1012 1095 1125 1136 1203 1349 1363 1462 1632 1655
+
+    //  树形 dp  834
+    //  数位DP 233 1012
+    //  状压DP 473 691 943 1349 1655
+    //         862
+    //    940  1095 1125 1136 1203 1349 1363 1462 1632 1655
 
 }
 
