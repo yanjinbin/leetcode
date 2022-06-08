@@ -7194,6 +7194,43 @@ public class Solution {
     //         862
     //    940  1095 1125 1136 1203 1349 1363 1462 1632 1655
 
+    // 209
+    public int minSubArrayLen(int target, int[] nums) {
+        int len = nums.length;
+        int[] preSum = new int[len + 1];
+        preSum[0] = 0;
+        for (int i = 0; i < len; i++) {
+            preSum[i + 1] = preSum[i] + nums[i];
+        }
+        //  System.out.println(Arrays.toString(preSum));
+        int lo = 1, hi = nums.length + 1;
+        while (lo < hi) {
+            int mid = (hi - lo) / 2 + lo;
+            boolean ok = ok(preSum, mid, target);
+            if (ok) {
+                hi = mid;
+            } else {
+                lo = mid + 1;
+            }
+        }
+        if (lo >= nums.length + 1) {
+            return 0;
+        }
+        return lo;
+    }
+
+
+    // 1-index
+    static boolean ok(int[] preSum, int len, int target) {
+        for (int i = 0; i + len < preSum.length; i++) {
+            if (preSum[i + len] - preSum[i] >= target) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }
 
 

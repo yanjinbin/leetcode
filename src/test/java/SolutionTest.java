@@ -132,13 +132,13 @@ public class SolutionTest {
         ListNode l1 = ListNode.builder()
                 .val(1).next(
                         ListNode.builder().val(2).next(
-                                ListNode.builder().val(3).build()).
+                                        ListNode.builder().val(3).build()).
                                 build())
                 .build();
         ListNode l2 = ListNode.builder()
                 .val(9).next(
                         ListNode.builder().val(5).next(
-                                ListNode.builder().val(7).build()).
+                                        ListNode.builder().val(7).build()).
                                 build())
                 .build();
 
@@ -2870,15 +2870,24 @@ public class SolutionTest {
                         ListNode.builder().val(3).next(
                                 ListNode.builder().val(4).next(
                                         ListNode.builder().val(5).build()).build()).build()).build()).build();
-       // System.out.println(head);
+        // System.out.println(head);
         ListNode root = INSTANCE.reverseBetween(head, 2, 4);
         System.out.println(root);
     }
 
     @Test
-    public void reconstructString(){
+    public void reconstructString() {
         String ans = INSTANCE.reorganizeString("aaabbbcd");
 
+        System.out.println(ans);
+    }
+
+    @Test
+    public void L209() {
+//        int ans = INSTANCE.minSubArrayLen(7, new int[]{2, 3, 1, 2, 4, 3});
+//        System.out.println(ans);
+
+        int ans = INSTANCE.minSubArrayLen(11, new int[]{1,1,1,1,1,1,1,1});
         System.out.println(ans);
     }
 
