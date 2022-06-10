@@ -7194,7 +7194,7 @@ public class Solution {
     //         862
     //    940  1095 1125 1136 1203 1349 1363 1462 1632 1655
 
-    // 209
+    // L209
     public int minSubArrayLen(int target, int[] nums) {
         int len = nums.length;
         int[] preSum = new int[len + 1];
@@ -7228,6 +7228,28 @@ public class Solution {
             }
         }
         return false;
+    }
+
+    // L611 有效三角形个数
+    public int triangleNumber(int[] nums) {
+        int n = nums.length;
+        Arrays.sort(nums);
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i - 1; j >= 0; j--) {
+                int lo = 0, hi = j - 1;
+                while (lo < hi) {
+                    int mid = (lo + hi) / 2;
+                    if (nums[mid] + nums[j] > nums[i]) {
+                        hi = mid;
+                    } else {
+                        lo = mid + 1;
+                    }
+                }
+                if (nums[lo] + nums[j] > nums[i]) ans += j - lo;
+            }
+        }
+        return ans;
     }
 
 

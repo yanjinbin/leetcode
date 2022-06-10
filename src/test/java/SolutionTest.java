@@ -2891,4 +2891,10 @@ public class SolutionTest {
         System.out.println(ans);
     }
 
+    @Test
+    public void L611(){
+        int ans = INSTANCE.triangleNumber(new int[]{2, 2, 3, 4});
+        System.out.println(ans);
+    }
+
 }
