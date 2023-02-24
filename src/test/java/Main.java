@@ -4,22 +4,8 @@ public class Main {
     // 落谷OI提交用的模版
     public static void main(String args[]) {
         Scanner cin = new Scanner(System.in);
-        int N = cin.nextInt();
-        /*int[] stone = new int[N];
-        for (int i = 0; i < N; i++) {
-            stone[i] = cin.nextInt();
-        }
-        mergeStone(N,stone);*/
-        int n = cin.nextInt();
-        int[][] dp = new int[n][n];
-        int[] a = new int[n];
-        for (int i = 0; i < n; i++) {
-            dp[i][0] = a[0];
-        }
-        for (int j = 1; (1 << j) <= n; j++) {
-            for (int i = 0; i + (1 << j) - 1 <= n; i++) {
-                dp[i][j] = Math.min(dp[i][j - 1], dp[i + (1 << (j - 1))][j - 1]);
-            }
+        while (cin.hasNext()) {
+            System.out.println(cin.nextInt());
         }
 
     }

@@ -123,6 +123,7 @@ public class Solution {
         }
         return true;
     }
+/*
 
     // 快慢指针法
     public boolean isPalindrome1(ListNode head) {
@@ -152,6 +153,7 @@ public class Solution {
         }
         return true;
     }
+*/
 
     // 递归方法
     // cur必须 是个成员变量阿
@@ -1834,6 +1836,29 @@ public class Solution {
         return root;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Solution)) return false;
+        Solution solution = (Solution) o;
+        return lo == solution.lo && maxLen == solution.maxLen && delta == solution.delta && ans687 == solution.ans687 && res == solution.res && preIndex == solution.preIndex && posIndex == solution.posIndex && cnt == solution.cnt && count230 == solution.count230 && ans230 == solution.ans230 && VISITED == solution.VISITED && VISITING == solution.VISITING && cnt210 == solution.cnt210 && count52 == solution.count52 && minCost == solution.minCost && Objects.equals(cur, solution.cur) && Arrays.equals(f, solution.f) && Objects.equals(result212, solution.result212) && Objects.equals(visitedHash138, solution.visitedHash138) && Arrays.equals(letter, solution.letter) && Arrays.equals(edges, solution.edges) && Arrays.equals(head, solution.head) && Arrays.equals(deg, solution.deg) && Objects.equals(ans210, solution.ans210) && Arrays.equals(cols, solution.cols) && Arrays.equals(diag1, solution.diag1) && Arrays.equals(diag2, solution.diag2) && Arrays.equals(board, solution.board) && Objects.equals(ans, solution.ans) && Objects.equals(ans753, solution.ans753);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(cur, lo, maxLen, delta, ans687, res, preIndex, posIndex, cnt, result212, visitedHash138, count230, ans230, VISITED, VISITING, cnt210, ans210, ans, count52, ans753, minCost);
+        result = 31 * result + Arrays.hashCode(f);
+        result = 31 * result + Arrays.hashCode(letter);
+        result = 31 * result + Arrays.hashCode(edges);
+        result = 31 * result + Arrays.hashCode(head);
+        result = 31 * result + Arrays.hashCode(deg);
+        result = 31 * result + Arrays.hashCode(cols);
+        result = 31 * result + Arrays.hashCode(diag1);
+        result = 31 * result + Arrays.hashCode(diag2);
+        result = 31 * result + Arrays.hashCode(board);
+        return result;
+    }
+
     // 后续遍历
     public void postInvert(TreeNode root) {
         if (root == null) return;
@@ -2553,6 +2578,9 @@ public class Solution {
     // 253. 会议室 II
     //③ interview friendly 参考这个视频 https://youtu.be/wB884_Os58U  主要是人脑怎么处理的问题
     // 如何复用最先空出来的房间
+    // 1 3
+    // 2 5
+    // 4 6
     public int minMeetingRooms1(int[][] intervals) {
         if (intervals.length == 0) return 0;
         Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
@@ -2567,6 +2595,7 @@ public class Solution {
         }
         return pq.size();
     }
+
 
     //③  忘记没看懂
     public int minMeetingRooms0(int[][] intervals) {
@@ -5857,6 +5886,25 @@ public class Solution {
     // 2
     // 2-1-4-3-5
     // http://bit.ly/2QuAULl 评论里面有更好的
+    public ListNode reverseKGp(ListNode head, int k) {
+        ListNode cur = head;
+        int count = 0;
+        while (count < k) {
+            if (cur == null) return head;
+            cur = cur.next;
+            count++;
+        }
+        ListNode pre = reverseKGp(cur, k);
+        while (count < 0) {
+            ListNode nxt = head.next;
+            head.next = pre;
+            pre = head;
+            head = nxt;
+            count--;
+        }
+        return pre;
+    }
+
     public ListNode reverseKGroup01(ListNode head, int k) {
         ListNode cur = head;
         int count = 0;
@@ -5902,17 +5950,35 @@ public class Solution {
         return dummy.next;
     }
 
+    public ListNode reverseBw(ListNode head, int m, int n) {
+        ListNode dummy = new ListNode(-1);
+        dummy.next = head;
+        ListNode pre = dummy, cur = dummy;
+        for (int i = 0; i < m; i++) {
+            pre = cur;
+            cur = cur.next;
+        }
+        for (int i = m; i < n; i++) {
+            ListNode nxt = cur.next;
+
+            cur.next = nxt.next;
+            nxt.next = pre.next;
+            pre.next = nxt;
+        }
+        return dummy.next;
+    }
+
 
     // 92
     public ListNode reverseBetween(ListNode head, int m, int n) {
         ListNode dummy = new ListNode(-1);
         dummy.next = head;
         ListNode pre = dummy, cur = dummy;
-        for (int i = 1; i < m; i++) {
+        for (int i = 0; i < m; i++) {
+            pre = cur;
             cur = cur.next;
         }
-        pre = cur;
-        cur = cur.next;
+
         for (int i = m; i < n; i++) {// cur牵引下，每翻转1次，cur前进1位.
             ListNode nxt = cur.next;
             cur.next = nxt.next;
@@ -7252,7 +7318,7 @@ public class Solution {
         return ans;
     }
 
-   // L730 https://bit.ly/3MTc3dS
+    // L730 https://bit.ly/3MTc3dS
     public int countPalindromicSubsequences(String s) {
 
         int mod = 1000000007;
@@ -7298,6 +7364,80 @@ public class Solution {
             }
         }
         return dp[0][n - 1];
+    }
+
+//    public String reverseStr(String s, int k) {
+//        int len = s.length();
+//        StringBuilder sb = new StringBuilder();
+//        for (int start = 0; start < s.length(); start = start + 2 * k) {
+//            int restLen = len - start;
+//            if (restLen < 0) break;
+//
+//            if (restLen < k) {
+//                String rets = reverseMN(s, start, len - 1);
+//                sb.append(rets);
+//                break;
+//            }
+//
+//            if (restLen < 2 * k) {
+//                String ret = reverseMN(s, start, start + k-1);
+//                sb.append(ret).append(s, start+k, len);
+//                break;
+//            }
+//
+//            String ret = reverseMN(s, start, start + k);
+//            sb.append(ret).append(s, start+k, start+2*k);
+//        }
+//        return sb.toString();
+//    }
+
+    //    public String reverseMN(String s, int m, int n) {
+//        char[] arr = new char[n - m + 1];
+//        int start = 0, end = n - m;
+//        while (m <= n) {
+//            arr[start++] = s.charAt(m--);
+//            arr[end--] = s.charAt(n--);
+//        }
+//        return new String(arr);
+//    }
+    // 541
+    public void reverse(char[] cs, int l, int r) {
+        while (l < r) {
+            char c = cs[l];
+            cs[l] = cs[r];
+            cs[r] = c;
+            l++;
+            r--;
+        }
+    }
+
+    public String reverseStr(String s, int k) {
+        char[] cs = s.toCharArray();
+        int n = s.length();
+        for (int l = 0; l < n; l = l + 2 * k) {
+            int r = l + k - 1;
+            reverse(cs, l, Math.min(r, n - 1));
+        }
+        return String.valueOf(cs);
+    }
+
+    // 1915 https://youtu.be/QiiK-his0IQ bitMask
+    public long wonderfulSubstrings(String word) {
+        int n = word.length();
+        int state = 0, len = 1 << 10;
+        int[] count = new int[len];
+        count[0] += 1;
+        long ret = 0;
+        for (int i = 0; i < n; i++) {
+            int idx = word.charAt(i) - 'a';
+            state ^= (1 << idx);
+            ret += count[state];
+            for (int j = 0; j < 10; j++) {
+                ret += count[state ^ (1 << j)];
+            }
+            count[state]++;
+        }
+        return ret;
     }
 
 

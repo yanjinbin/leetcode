@@ -266,14 +266,13 @@ public class BinarySearch {
         for (int i = 1; i <= N; i++) {
             S[i] = S[i - 1] + cin.nextInt();
         }
-        System.out.println(Arrays.toString(S));
         double l = 0L, r = 10000;
         while (r - l > 1e-5) {
             double m = (l + r) / 2;
             if (check02(m)) r = m;
             else l = m;
         }
-        System.out.printf("%.3f", l);
+        System.out.printf("%.3f\n", l);
         return 0L;
 
     }

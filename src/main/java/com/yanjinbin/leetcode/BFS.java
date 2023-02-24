@@ -1,6 +1,12 @@
 package com.yanjinbin.leetcode;
 
 
+
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class BFS {
@@ -512,5 +518,150 @@ public class BFS {
     }
 
 
+    public static String getEarliestMeetTime(List<String> events, int k) {
+        // Write your code here
+        List<LocalTime[]> slots = new ArrayList<>();
+        for (int i = 0; i < events.size(); i++) {
+            String[] splited = events.get(i).split("\\s+");
+            int index = splited.length;
+            LocalTime start = LocalTime.parse(splited[index - 2], DateTimeFormatter.ofPattern("HH:mm"));
+            LocalTime end = LocalTime.parse(splited[index - 1], DateTimeFormatter.ofPattern("HH:mm"));
+            slots.add(new LocalTime[]{start, end});
+        }
+        // padding
+        slots.add(new LocalTime[]{LocalTime.MAX, LocalTime.MAX});
+        Collections.sort(slots, (o1, o2) -> o1[0].compareTo(o2[0]));
+        // init
+        LocalTime prevStart = LocalTime.MIN;
+        for (int i = 0; i < slots.size(); i++) {
+            LocalTime[] slot = slots.get(i);
+            LocalTime start = slot[0];
+            LocalTime end = slot[1];
+            long delta = Duration.between(prevStart, start).toMinutes();
+            if (delta >= k + 1) {
+                LocalTime res = prevStart.plusMinutes(1);
+                return res.format(DateTimeFormatter.ofPattern("HH:mm"));
+            } else {
+                prevStart = end;
+            }
+        }
+        return "-1";
+    }
+
+    public static int findLowestPrice(List<List<String>> products, List<List<String>> discounts) {
+
+
+        Map<String, String[]> rules = new HashMap<>();
+        for (List<String> discount : discounts) {
+            String tag = discount.get(0);
+            String type = discount.get(1);
+            String amount = discount.get(2);
+            rules.put(tag, new String[]{type, amount});
+        }
+        int ans = 0;
+        for (int i = 0; i < products.size(); i++) {
+            List<String> product = products.get(i);
+            int originalPrice = Integer.parseInt(product.get(0));
+            int minPrice = Integer.parseInt(product.get(0));
+            for (int j = 1; j < product.size(); j++) {
+                String discountTag = product.get(j);
+                if (discountTag.equals("EMPTY")) continue;
+                String[] info = rules.get(discountTag);
+                String discountType = info[0];
+                Integer amount = Integer.parseInt(info[1]);
+                minPrice = Math.min(minPrice, discountedPrice(originalPrice, discountType, amount));
+            }
+            ans = ans + minPrice;
+        }
+        return ans;
+    }
+
+
+    public static int discountedPrice(int originalPrice, String discountType, Integer amount) {
+        if (discountType.equals("0")) {
+            return amount;
+        }
+        if (discountType.equals("1")) {
+            return originalPrice - Math.round((originalPrice * amount) / 100.0f);
+        }
+        if (discountType.equals("2")) {
+            return originalPrice - amount;
+        }
+        return originalPrice;
+    }
+
+
+    public static List<Integer> order(int cityNodes, List<Integer> cityFrom, List<Integer> cityTo, int company) {
+        Map<Integer, ArrayList<Integer>> edges = new HashMap<>();
+        int n = cityFrom.size();
+        for (int i = 0; i < n; i++) {
+            int from = cityFrom.get(i);
+            int to = cityTo.get(i);
+            if (edges.containsKey(from)) {
+                ArrayList<Integer> data = edges.get(from);
+                data.add(to);
+                edges.put(from, data);
+            } else {
+                ArrayList<Integer> data = new ArrayList<>();
+                data.add(to);
+                edges.put(from, data);
+            }
+            if (edges.containsKey(to)) {
+                ArrayList<Integer> data = edges.get(to);
+                data.add(from);
+                edges.put(to, data);
+            } else {
+                ArrayList<Integer> data = new ArrayList<>();
+                data.add(from);
+                edges.put(to, data);
+            }
+        }
+
+        LinkedList<Integer> ans = new LinkedList<>();
+        Set<Integer> seen = new HashSet<>();
+        Queue<Integer> q = new PriorityQueue<>();
+        q.add(company);
+        while (!q.isEmpty()) {
+            int len = q.size();
+            PriorityQueue nextRound = new PriorityQueue();
+            for (int i = 0; i < len; i++) {
+                Integer item = q.poll();
+                if (seen.contains(item)) continue;
+                ans.add(item);
+                seen.add(item);
+                List<Integer> adjCity = edges.get(item);
+                // remove visited
+                for (Integer city : adjCity) {
+                    if (seen.contains(city)) continue;
+                    nextRound.add(city);
+                }
+            }
+            // update
+            q = nextRound;
+        }
+        ans.removeFirst();
+        return ans;
+
+
+    }
+
+    public static void main(String[] args) {
+        List<Integer> from = new ArrayList<>();
+        from.add(1);
+        from.add(1);
+        from.add(2);
+        from.add(3);
+        from.add(1);
+        List<Integer> to = new ArrayList<>();
+        to.add(2);
+        to.add(3);
+        to.add(4);
+        to.add(5);
+        to.add(5);
+        int citynode = 1;
+        List<Integer> ans = order(5, from, to, citynode);
+        System.out.println(ans);
+
+    }
 
 }

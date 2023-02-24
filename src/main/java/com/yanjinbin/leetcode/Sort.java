@@ -510,32 +510,45 @@ public class Sort {
         int n = nums.length;
         if (n <= 1) return;
         if (l < r) {
-            int j = partition01(nums, l, r);
+            int j = partition02(nums, l, r);
             quickSort(nums, l, j - 1);
             quickSort(nums, j + 1, r);
         }
     }
-
-    public int partition01(int[] nums, int l, int r) {
-        int pivotIdx = l;
-        l = l + 1;
-        // 左右两边扫描
-        while (l <= r) {
-            if (nums[l] > nums[pivotIdx] && nums[pivotIdx] > nums[r]) {
-                swap(nums, l++, r--);
-            }
-            if (nums[l] < nums[pivotIdx]) l++;
-            if (nums[r] > nums[pivotIdx]) r--;
-        }
-        swap(nums, pivotIdx, r);
-        return r;
-    }
+//
+//    public int partition01(int[] nums, int l, int r) {
+//        int pivotIdx = l;
+//        l = l + 1;
+//        // 左右两边扫描
+//        while (l <= r) {
+//            if (nums[l] > nums[pivotIdx] && nums[pivotIdx] > nums[r]) {
+//                swap(nums, l++, r--);
+//            }
+//            if (nums[l] < nums[pivotIdx]) l++;
+//            if (nums[r] > nums[pivotIdx]) r--;
+//        }
+//        swap(nums, pivotIdx, r);
+//        return r;
+//    }
 
     public int partition02(int[] nums, int l, int r) {
         int pivotIdx = l;
         int index = l + 1;
         // 从左至右遍历
         for (int i = index; i <= r; i++) {
+            if (nums[i] < nums[pivotIdx]) {
+                swap(nums, i, index);
+                index++;
+            }
+        }
+        swap(nums, pivotIdx, index - 1);
+        return index - 1;
+    }
+
+    public int partition_(int[] nums, int l, int r) {
+        int pivotIdx = l;
+        int index = l + 1;
+        for (int i = index; i < r; i++) {
             if (nums[i] < nums[pivotIdx]) {
                 swap(nums, i, index);
                 index++;

@@ -137,7 +137,7 @@ public class UnionFind {
         }
         Set<Integer> sets = new HashSet();
         for (int i = 0; i < N; i++) {
-            sets.add(find(i));
+            sets.add(uf.find(i));
         }
         return sets.size();
     }
