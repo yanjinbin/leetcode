@@ -1,19 +1,9 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Random;
-import java.util.Stack;
-
-
 import com.google.common.collect.Lists;
 import com.yanjinbin.leetcode.*;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.*;
 
 public class SolutionTest {
 
