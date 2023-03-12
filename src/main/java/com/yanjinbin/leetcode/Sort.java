@@ -532,6 +532,9 @@ public class Sort {
 //    }
 
     public int partition02(int[] nums, int l, int r) {
+        int idx = new Random().nextInt(r - l + 1) + l; // 随机选一个作为我们的主元
+        swap(nums, l, idx);
+
         int pivotIdx = l;
         int index = l + 1;
         // 从左至右遍历

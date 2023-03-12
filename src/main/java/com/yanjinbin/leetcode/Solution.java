@@ -1052,12 +1052,13 @@ public class Solution {
 
     // ② 215. 数组中的第K个最大元素
     // quick sort思想
-    public int findKthLargest01(int[] nums, int k) {
+
+    public int findKthLargest(int[] nums, int k) {
         int left = 0, right = nums.length - 1;
         while (true) {
             int pos = partition(nums, left, right);
-            if (pos == k - 1) return nums[pos];
-            if (pos < k - 1) {
+            if (pos == nums.length - k) return nums[pos];
+            if (pos < nums.length - k) {
                 left = pos + 1;
             } else {
                 right = pos - 1;
@@ -1065,23 +1066,20 @@ public class Solution {
         }
     }
 
-    public int partition(int[] nums, int lo, int hi) {
-        int pivot = nums[lo];
-        int l = lo + 1, r = hi;
-        while (l <= r) {
-            if (nums[l] < pivot && pivot < nums[r]) {
-                swap(nums, l++, r--);
+    int partition(int[] nums, int l, int r) {
+        int idx = new Random().nextInt(r - l + 1) + l; // 随机选一个作为我们的主元
+        swap(nums, l, idx);
+        int pivotIdx = l;
+        int index = l + 1;
+        // 从左至右遍历
+        for (int i = index; i <= r; i++) {
+            if (nums[i] < nums[pivotIdx]) {
+                swap(nums, i, index);
+                index++;
             }
-            if (nums[l] >= pivot) l++;
-            if (nums[r] <= pivot) r--;
         }
-        // l-r=1
-        //为什么必须要 交换的是R呢
-        // 分三种情况
-        // l=r的时候 nums[l]>=pivot 或者 nums[r]<=pivot
-        // l+1=r的时候 l++,r--此时 此时l = r ,r = l,那么 此时需要交交还的依旧是因为nums[r]>nums[l]
-        swap(nums, lo, r);
-        return r;
+        swap(nums, pivotIdx, index - 1);
+        return index - 1;
     }
 
     // ② 大小堆来做
@@ -4686,7 +4684,7 @@ public class Solution {
 
     //② 解法1 快排最佳实践 http://bit.ly/353KVnO  http://bit.ly/354yckZ  三项快速排序 需要构造newIdx, 需要一次中值切分
     public void wiggleSort02(int[] nums) {
-        int median = findKthLargest01(nums, (nums.length + 1) / 2);
+        int median = findKthLargest(nums, (nums.length + 1) / 2);
         int n = nums.length;
         int lt = 0, i = 0, gt = n - 1;
         while (i <= gt) {
@@ -5230,10 +5228,10 @@ public class Solution {
     public boolean canFinish01(int numCourses, int[][] prerequisites) {
         Map<Integer, List<Integer>> map = new HashMap<>();
         for (int i = 0; i < prerequisites.length; i++) {
-            int key = prerequisites[i][0];
-            List<Integer> arr = map.getOrDefault(key, new ArrayList<>());
-            arr.add(prerequisites[i][1]);
-            map.put(key, arr);
+            int v = prerequisites[i][0], u = prerequisites[i][1];
+            List<Integer> edges = map.getOrDefault(v, new ArrayList<>());
+            edges.add(u);
+            map.put(v, edges);
         }
         int[] visit = new int[numCourses];
         for (int i = 0; i < numCourses; i++) {
@@ -7438,6 +7436,28 @@ public class Solution {
             count[state]++;
         }
         return ret;
+    }
+
+    // 2406
+    public int minGroups(int[][] intervals) {
+        Arrays.sort(intervals, (o1, o2) -> o1[0] - o2[0]);
+        PriorityQueue<Integer> pq = new PriorityQueue<>((o1, o2) -> o1 - o2);
+        for (int[] item : intervals) {
+            int l = item[0], r = item[1];
+            if (pq.isEmpty() || pq.peek() >= l) {
+                // 有交集
+                // ------
+                //     ------
+                pq.add(r); // 开新区间
+            } else {
+                // 没有交集
+                // ---- 旧的右端点
+                //       -----// 更新区间右端点
+                pq.poll(); // 加入现有区间
+                pq.add(r); // 并更新区间的右端点
+            }
+        }
+        return pq.size();
     }
 
 
