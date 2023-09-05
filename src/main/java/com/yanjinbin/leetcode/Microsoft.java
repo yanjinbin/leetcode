@@ -114,8 +114,6 @@ public class Microsoft {
         return Math.max(size_incl, size_excl);
     }
 
-    //
-
 
     public static void AmicablePair(int max) {
         int N = max + 1;
@@ -149,6 +147,10 @@ public class Microsoft {
         for (int i = 0; i < n; i++) {
             start = start.next;
         }
+        // 1 2 3 4 5  , 2
+        //-1 1 2
+        // s   f
+        //     s    f
         while (start.next != null) {
             start = start.next;
             delayNode = delayNode.next;
@@ -158,6 +160,8 @@ public class Microsoft {
         // return head; 错误的原因在于head 节点也有可能Update 为Null阿  在更新code---> " delayNode.next = delayNode.next.next; "
         return dummyNode.next;
     }
+
+
 
     // 74
     // ② 240 搜索二维矩阵 Ⅱ
